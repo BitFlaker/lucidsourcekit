@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="iconColor" format="reference"/>
+    <attr name="mainColor" format="reference"/>
+    <attr name="button_primary" format="reference"/>
+    <attr name="pin_background" format="reference"/>
+    <attr name="inactivePageDot" format="reference"/>
+    <attr name="activePageDot" format="reference"/>
+    <attr name="activeTabIcon" format="reference"/>
+    <attr name="inactiveTabIcon" format="reference"/>
+</resources>

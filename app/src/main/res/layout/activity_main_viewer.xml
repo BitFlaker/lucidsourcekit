@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#08111C"
+    tools:context=".setup.SetupViewer">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tablayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#08111C"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tabIconTint="@color/tab_color_selection"
+                app:tabIndicatorAnimationMode="elastic"
+                app:tabIndicatorColor="?attr/colorPrimary"
+                app:tabIndicatorGravity="top"
+                app:tabIndicatorHeight="1dp">
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/ti_overview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:icon="@drawable/ic_baseline_view_list_24" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/ti_logging"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:icon="@drawable/ic_baseline_sticky_note_2_24" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/ti_stats"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:icon="@drawable/ic_baseline_query_stats_24" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/ti_goals"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:icon="@drawable/ic_baseline_bookmark_added_24" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/ti_events"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:icon="@drawable/ic_baseline_bedtime_24" />
+            </com.google.android.material.tabs.TabLayout>
+            <ImageButton
+                android:id="@+id/btn_more_options"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_baseline_more_vert_24"
+                android:backgroundTint="#08111c"/>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

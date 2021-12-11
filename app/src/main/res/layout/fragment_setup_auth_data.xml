@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".setup.SetupOpenSource">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/setup_deep_night" />
+
+    <RelativeLayout
+        android:id="@+id/background_scrapes"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="15dp"
+            android:scaleType="fitCenter"
+            android:backgroundTint="#030303"
+            android:background="@drawable/background_scrapes" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/background_scrapes" />
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_baseline_key_24" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txt_auth_data_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/background_scrapes"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="40dp"
+        android:text="@string/setup_auth_data_title_password"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+
+    <!-- Password login -->
+    <EditText
+        android:id="@+id/txt_setup_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="175dp"
+        android:autofillHints="password"
+        android:background="@drawable/rounded_spinner"
+        android:drawableStart="@drawable/ic_baseline_lock_24"
+        android:drawablePadding="10dp"
+        android:hint="@string/login_password_hint"
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        android:padding="15dp"
+        android:textColor="@color/white"
+        android:textColorHint="#6F9E9BB1"
+        android:visibility="visible" />
+
+    <!-- PIN login -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ll_setup_pinLayout"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="85dp"
+        android:layout_marginRight="85dp"
+        android:layout_marginBottom="100dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/txt_setup_enteredPin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="35sp"
+            android:textAlignment="center">
+
+        </TextView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ll_setup_numRow1"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/btn_setup_pin1"
+                android:text="1"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:background="@drawable/round_pin_button"
+                app:backgroundTint="?attr/pin_background"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/btn_setup_pin2"
+                android:text="2"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:background="@drawable/round_pin_button"
+                app:backgroundTint="?attr/pin_background"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/btn_setup_pin3"
+                android:text="3"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:background="@drawable/round_pin_button"
+                app:backgroundTint="?attr/pin_background"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ll_setup_numRow2"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/btn_setup_pin4"
+                android:text="4"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:background="@drawable/round_pin_button"
+                app:backgroundTint="?attr/pin_background"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/btn_setup_pin5"
+                android:text="5"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:background="@drawable/round_pin_button"
+                app:backgroundTint="?attr/pin_background"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/btn_setup_pin6"
+                android:text="6"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:background="@drawable/round_pin_button"
+                app:backgroundTint="?attr/pin_background"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ll_setup_numRow3"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/btn_setup_pin7"
+                android:text="7"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:background="@drawable/round_pin_button"
+                app:backgroundTint="?attr/pin_background"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/btn_setup_pin8"
+                android:text="8"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:background="@drawable/round_pin_button"
+                app:backgroundTint="?attr/pin_background"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/btn_setup_pin9"
+                android:text="9"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:background="@drawable/round_pin_button"
+                app:backgroundTint="?attr/pin_background"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ll_setup_numRow4"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:textSize="28sp"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_setup_pin0"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/round_pin_button"
+                android:text="0"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                app:backgroundTint="?attr/pin_background" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_setup_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/round_pin_button"
+                android:text="\u232B"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                app:backgroundTint="?attr/pin_background" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

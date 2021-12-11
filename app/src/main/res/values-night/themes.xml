@@ -1,0 +1,23 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.LucidSourceKit" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/creamy_blue</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+        <item name="iconColor">@color/darker_white</item>
+        <item name="button_primary">@color/dark_purple_blue</item>
+        <item name="pin_background">@color/dark_purple_blue_transparent</item>
+        <item name="inactivePageDot">@color/dark_blue</item>
+        <item name="activePageDot">@color/lighter_blue</item>
+        <item name="activeTabIcon">@color/creamy_blue</item>
+        <item name="inactiveTabIcon">@color/light_gray</item>
+    </style>
+</resources>
