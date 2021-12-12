@@ -3,12 +3,14 @@ package com.bitflaker.lucidsourcekit.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.setup.SetupOpenSource;
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
@@ -29,7 +31,7 @@ public class MainViewer extends AppCompatActivity {
     private ViewPagerAdapter vpAdapter;
 
     private MainOverview vwOverview;
-    private SetupOpenSource vwLogging;
+    private DreamJournal vwLogging;
     private SetupOpenSource vwPageStats;
     private SetupOpenSource vwPageGoals;
     private SetupOpenSource vwPageEvents;
@@ -38,6 +40,7 @@ public class MainViewer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_viewer);
+        Tools.makeStatusBarTransparent(this);
         initVars();
 
         vpAdapter.addFragment(vwOverview, pageOverview);
@@ -50,7 +53,16 @@ public class MainViewer extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(tabSelected());
         viewPager2.registerOnPageChangeCallback(changeTab());
         moreOptions.setOnClickListener(e -> {
-            startActivity(new Intent(this, OssLicensesMenuActivity.class));
+            PopupMenu popup = new PopupMenu(MainViewer.this, moreOptions);
+            popup.getMenuInflater().inflate(R.menu.more_options_popup_menu, popup.getMenu());
+            popup.setOnMenuItemClickListener(item -> {
+                String itemTitle = item.getTitle().toString();
+                if(itemTitle.equals(MainViewer.this.getResources().getString(R.string.third_party_licenses))) {
+                    startActivity(new Intent(this, OssLicensesMenuActivity.class));
+                }
+                return true;
+            });
+            popup.show();
         });
     }
 
@@ -70,6 +82,7 @@ public class MainViewer extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager2.setCurrentItem(tab.getPosition());
+                vwLogging.pageChanged();
             }
 
             @Override
@@ -87,7 +100,7 @@ public class MainViewer extends AppCompatActivity {
 
         vpAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
         vwOverview = new MainOverview();
-        vwLogging = new SetupOpenSource();
+        vwLogging = new DreamJournal();
         vwPageStats = new SetupOpenSource();
         vwPageGoals = new SetupOpenSource();
         vwPageEvents = new SetupOpenSource();

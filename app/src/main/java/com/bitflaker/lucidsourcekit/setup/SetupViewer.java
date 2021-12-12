@@ -59,6 +59,7 @@ public class SetupViewer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup_viewer);
+        Tools.makeStatusBarTransparent(this);
         initVars();
 
         setPrivacy.setOnAuthTypeChangedListener(authType -> {
@@ -189,8 +190,8 @@ public class SetupViewer extends AppCompatActivity {
             ImageView dotPage = new ImageView(this);
             dotPage.setScaleType(ImageView.ScaleType.FIT_CENTER);
             dotPage.setBackgroundResource(R.drawable.page_dot);
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(dpToPx(8), dpToPx(8));
-            lp.setMargins(dpToPx(2), 0, dpToPx(2), 0);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Tools.dpToPx(this, 8), Tools.dpToPx(this, 8));
+            lp.setMargins(Tools.dpToPx(this, 2), 0, Tools.dpToPx(this, 2), 0);
 
             ColorStateList stateList;
             if(i == 0){ stateList = Tools.getAttrColor(R.attr.activePageDot, getTheme()); }
@@ -271,9 +272,5 @@ public class SetupViewer extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
-    }
-
-    public int dpToPx(int dp) {
-        return (int)(dp * getResources().getDisplayMetrics().density);
     }
 }

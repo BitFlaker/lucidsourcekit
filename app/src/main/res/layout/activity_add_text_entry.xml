@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#091523"
+    tools:context=".main.createjournalentry.AddTextEntry">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/txt_top_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dream time"
+            android:textColor="@color/white"
+            android:textSize="23sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txt_date_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Date"
+            android:textColor="@color/darker_white_2x"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_top_header" />
+
+        <EditText
+            android:id="@+id/txt_date"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_border"
+            android:backgroundTint="#131f33"
+            android:ems="10"
+            android:gravity="center_vertical"
+            android:inputType="date"
+            android:textColor="@color/white"
+            android:padding="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_date_heading" />
+
+        <TextView
+            android:id="@+id/txt_time_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Time"
+            android:textColor="@color/darker_white_2x"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@+id/txt_time"
+            app:layout_constraintTop_toBottomOf="@+id/txt_top_header" />
+
+        <EditText
+            android:id="@+id/txt_time"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_border"
+            android:backgroundTint="#131f33"
+            android:ems="5"
+            android:gravity="center_vertical"
+            android:inputType="time"
+            android:textColor="@color/white"
+            android:padding="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_date"
+            app:layout_constraintTop_toBottomOf="@+id/txt_time_heading" />
+
+        <TextView
+            android:id="@+id/txt_dream_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="Dream story"
+            android:textColor="@color/white"
+            android:textSize="23sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_date" />
+
+        <TextView
+            android:id="@+id/txt_title_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Title"
+            android:textColor="@color/darker_white_2x"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@+id/txt_title_dream"
+            app:layout_constraintTop_toBottomOf="@+id/txt_dream_title" />
+
+        <EditText
+            android:id="@+id/txt_title_dream"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_border"
+            android:backgroundTint="#131f33"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:textColor="@color/white"
+            android:padding="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_title_header" />
+
+        <TextView
+            android:id="@+id/txt_description_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="Story"
+            android:textColor="@color/darker_white_2x"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@+id/txt_description_dream"
+            app:layout_constraintTop_toBottomOf="@+id/txt_title_dream" />
+
+        <EditText
+            android:id="@+id/txt_description_dream"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="fill_horizontal"
+            android:minHeight="150dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_border"
+            android:backgroundTint="#131f33"
+            android:inputType="textMultiLine"
+            android:textColor="@color/white"
+            android:padding="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_description_header" />
+
+        <TextView
+            android:id="@+id/txt_tags"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="Tags"
+            android:textColor="@color/white"
+            android:textSize="23sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_description_dream" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/flx_tags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flexWrap="wrap"
+            app:alignItems="stretch"
+            app:alignContent="stretch"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_tags">
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/rounded_spinner"
+                android:backgroundTint="#131f33"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:padding="7dp"
+                android:src="@drawable/ic_round_add_24" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <TextView
+            android:id="@+id/txt_ratings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="Ratings"
+            android:textColor="@color/white"
+            android:textSize="23sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/flx_tags" />
+
+        <TextView
+            android:id="@+id/txt_mood"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Dream mood"
+            android:textColor="@color/darker_white_2x"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_ratings" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/sld_mood"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stepSize="0.25"
+            app:labelBehavior="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_mood" />
+
+        <LinearLayout
+            android:id="@+id/ll_mood"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sld_mood">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:src="@drawable/ic_baseline_sentiment_very_dissatisfied_24" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:src="@drawable/ic_baseline_sentiment_dissatisfied_24" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_baseline_sentiment_neutral_24" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:src="@drawable/ic_baseline_sentiment_satisfied_24" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_baseline_sentiment_very_satisfied_24" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_clarity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="Dream clarity"
+            android:textColor="@color/darker_white_2x"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_mood" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/sld_clarity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stepSize="0.33333"
+            app:labelBehavior="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_clarity" />
+
+        <LinearLayout
+            android:id="@+id/ll_clarity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sld_clarity">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_baseline_brightness_4_24"/>
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="10"
+                    android:src="@drawable/ic_baseline_brightness_5_24"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="10"
+                    android:src="@drawable/ic_baseline_brightness_6_24"/>
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_baseline_brightness_7_24"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_sleep_quality"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="Sleep quality"
+            android:textColor="@color/darker_white_2x"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_clarity" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/sld_sleep_quality"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stepSize="0.33333"
+            app:labelBehavior="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_sleep_quality" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sld_sleep_quality">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:src="@drawable/ic_baseline_star_border_24"/>
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:src="@drawable/ic_baseline_star_half_24"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:src="@drawable/ic_baseline_star_24"/>
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_baseline_stars_24"/>
+        </LinearLayout>
+
+        <!-- TODO lucid and nightmare switches-->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

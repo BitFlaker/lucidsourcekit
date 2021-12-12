@@ -20,6 +20,25 @@
     <string name="setup_next_finish">Fertigstellen</string>
     <string name="setup_get_started_title">Lege los</string>
     <string name="setup_get_started_description">Alles wurde erfolgreich konfiguriert! Jetzt bist du bereit die App zu verwenden. Wirf einen Blick auf die vielen Einstellungen, notiere und analysiere deine Träume, stelle Alarme und vieles mehr. Fahre fort und bekomme das volle Erlebnis.</string>
+    <string name="settings">Einstellungen</string>
+    <string name="third_party_licenses">Drittanbieterlizenzen</string>
+    <string name="about">Über</string>
+    <string name="main_image_description">Hügel und Berge in der Nacht</string>
+    <string name="overview">Übersicht</string>
+    <string name="active_events">Aktive Ereignisse</string>
+    <string name="reality_check_reminder">Reality-Check Erinnerung</string>
+    <string name="placeholder_event">Platzhalter Erinnerung</string>
+    <string name="active_alarms">Aktive Wecker</string>
+    <string name="active_tonight">Wecker für heute</string>
+    <string name="collection">Sammlung</string>
+    <string name="all_time_counts">Allzeit Werte</string>
+    <string name="total_journal_entries">Tagebucheinträge</string>
+    <string name="lucid_journal_entries">luzide Tagebucheinträge</string>
+    <string name="goals_reached_in_total">Ziele erreicht</string>
+    <string name="days_opening_streak">Tage Streak</string>
+    <string name="dream_journal">Traumtagebuch</string>
+    <string name="empty_dream_journal">Sieht ziemlich leer aus hier. Drücke den \'+\'-Knopf unten rechts um einen neuen Eintrag hinzuzufügen.</string>
+    <string name="journal_time_at">um</string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>

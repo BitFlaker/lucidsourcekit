@@ -18,9 +18,9 @@
             android:id="@+id/img_top_graphic"
             android:layout_width="match_parent"
             android:layout_height="250dp"
+            android:contentDescription="@string/main_image_description"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/deep_night_mountains"
-            android:contentDescription="hills and mountains at night" />
+            app:srcCompat="@drawable/deep_night_mountains" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:text="Overview"
+                android:text="@string/overview"
                 android:textColor="@color/white"
                 android:textSize="23sp"
                 android:textStyle="bold" />
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:text="active events"
+                android:text="@string/active_events"
                 android:textColor="@color/darker_white_2x"
                 android:textSize="14sp" />
 
@@ -64,12 +64,12 @@
                     android:background="@drawable/rounded_border"
                     android:backgroundTint="#131f33"
                     android:drawablePadding="8dp"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
                     android:gravity="center_vertical"
-                    android:text="reality check reminder"
+                    android:paddingStart="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="5dp"
+                    android:text="@string/reality_check_reminder"
                     android:textColor="@color/darker_white_2x"
                     app:drawableStartCompat="@drawable/ic_baseline_check_24" />
 
@@ -81,12 +81,12 @@
                     android:background="@drawable/rounded_border"
                     android:backgroundTint="#131f33"
                     android:drawablePadding="8dp"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
                     android:gravity="center_vertical"
-                    android:text="some other event"
+                    android:paddingStart="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="5dp"
+                    android:text="@string/placeholder_event"
                     android:textColor="@color/darker_white_2x"
                     app:drawableStartCompat="@drawable/ic_baseline_cross_24" />
             </LinearLayout>
@@ -95,9 +95,9 @@
                 android:id="@+id/txt_alarms_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
                 android:layout_marginStart="20dp"
-                android:text="Active alarms"
+                android:layout_marginTop="30dp"
+                android:text="@string/active_alarms"
                 android:textColor="@color/white"
                 android:textSize="23sp"
                 android:textStyle="bold" />
@@ -107,46 +107,46 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:text="active tonight"
+                android:text="@string/active_tonight"
                 android:textColor="@color/darker_white_2x"
                 android:textSize="14sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
                 android:layout_marginLeft="30dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginRight="30dp"
                 android:background="@drawable/rounded_border"
-                android:padding="20dp"
                 android:backgroundTint="#131f33"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="20dp">
 
                 <TextView
                     android:id="@+id/txt_alarm1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="15dp"
-                    android:includeFontPadding="false"
-                    android:textColor="@color/darker_white_2x"
-                    android:layout_gravity="center_vertical"
                     android:layout_weight="1"
+                    android:includeFontPadding="false"
                     android:text="03:12\u000Afirst night timer"
+                    android:textColor="@color/darker_white_2x"
                     app:drawableRightCompat="@drawable/ic_round_mode_edit_24" />
 
                 <TextView
                     android:id="@+id/txt_alarm2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="15dp"
-                    android:includeFontPadding="false"
-                    android:textColor="@color/darker_white_2x"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="15dp"
                     android:layout_weight="1"
+                    android:includeFontPadding="false"
                     android:text="03:12\u000Afirst night timer"
+                    android:textColor="@color/darker_white_2x"
                     app:drawableEndCompat="@drawable/ic_round_mode_edit_24" />
             </LinearLayout>
 
@@ -154,9 +154,9 @@
                 android:id="@+id/txt_journal_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
                 android:layout_marginStart="20dp"
-                android:text="Collection"
+                android:layout_marginTop="30dp"
+                android:text="@string/collection"
                 android:textColor="@color/white"
                 android:textSize="23sp"
                 android:textStyle="bold" />
@@ -166,7 +166,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:text="all time counts"
+                android:text="@string/all_time_counts"
                 android:textColor="@color/darker_white_2x"
                 android:textSize="14sp" />
 
@@ -186,10 +186,13 @@
                     android:layout_weight="1"
                     android:background="@drawable/rounded_border"
                     android:backgroundTint="#131f33"
-                    android:padding="5dp"
-                    android:textAlignment="center"
                     android:gravity="center"
+                    android:paddingLeft="25dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="25dp"
+                    android:paddingBottom="5dp"
                     android:text="total journal entries"
+                    android:textAlignment="center"
                     android:textColor="@color/darker_white_2x" />
 
                 <TextView
@@ -200,9 +203,12 @@
                     android:layout_weight="1"
                     android:background="@drawable/rounded_border"
                     android:backgroundTint="#131f33"
-                    android:padding="5dp"
-                    android:textAlignment="center"
+                    android:paddingLeft="25dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="25dp"
+                    android:paddingBottom="5dp"
                     android:text="lucid journal entries"
+                    android:textAlignment="center"
                     android:textColor="@color/darker_white_2x" />
             </LinearLayout>
 
@@ -211,8 +217,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
                 android:layout_marginRight="25dp"
+                android:layout_marginBottom="15dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -223,9 +229,12 @@
                     android:layout_weight="1"
                     android:background="@drawable/rounded_border"
                     android:backgroundTint="#131f33"
-                    android:padding="5dp"
-                    android:textAlignment="center"
+                    android:paddingLeft="25dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="25dp"
+                    android:paddingBottom="5dp"
                     android:text="last journal entry"
+                    android:textAlignment="center"
                     android:textColor="@color/darker_white_2x" />
 
                 <TextView
@@ -236,7 +245,10 @@
                     android:layout_weight="1"
                     android:background="@drawable/rounded_border"
                     android:backgroundTint="#131f33"
-                    android:padding="5dp"
+                    android:paddingLeft="25dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="25dp"
+                    android:paddingBottom="5dp"
                     android:text="app open streak"
                     android:textAlignment="center"
                     android:textColor="@color/darker_white_2x" />

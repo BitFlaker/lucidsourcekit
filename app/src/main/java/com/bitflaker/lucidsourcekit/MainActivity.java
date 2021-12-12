@@ -39,14 +39,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dbWrapper = new DatabaseWrapper(this);
-
         Tools.loadLanguage(this);
+        Tools.makeStatusBarTransparent(this);
 
         // TODO: set language of controls
 
         String path = getFilesDir().getAbsolutePath() + "/.app_setup_done";
         File file = new File(path);
         if(file.exists()) {
+
             StoredSettings authType = dbWrapper.GetProperty("auth_type");
 
             switch (authType.getValue()) {

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/itm_settings"
+        android:title="@string/settings"/>
+    <item
+        android:id="@+id/itm_third_party"
+        android:title="@string/third_party_licenses"/>
+    <item
+        android:id="@+id/itm_about"
+        android:title="@string/about"/>
+</menu>

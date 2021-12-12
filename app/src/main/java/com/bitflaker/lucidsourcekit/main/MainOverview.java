@@ -27,10 +27,11 @@ public class MainOverview extends Fragment {
     }
 
     private void fillStats() {
-        ((TextView) getView().findViewById(R.id.txt_total_journal_entries)).setText(Html.fromHtml("<span><big><big>45</big></big></span><br /><small><small><br /></small></small><span><strong>Total Journal<br />Entries</strong></span>", Html.FROM_HTML_MODE_COMPACT));
-        ((TextView) getView().findViewById(R.id.txt_lucid_journal_entries)).setText(Html.fromHtml("<span><big><big>3</big></big></span><br /><small><small><br /></small></small><span><strong>Lucid Journal<br />Entries</strong></span>", Html.FROM_HTML_MODE_COMPACT));
-        ((TextView) getView().findViewById(R.id.txt_last_journal_entry)).setText(Html.fromHtml("<span><big><big>34</big></big><br /><small><small><br /></small></small></span><span><strong>Goals Reached<br />in Total</strong></span>", Html.FROM_HTML_MODE_COMPACT));
-        ((TextView) getView().findViewById(R.id.txt_app_open_streak)).setText(Html.fromHtml("<span><big><big>28</big></big></span><br /><small><small><br /></small></small><span><strong>Days Opening<br />Streak</strong></span>", Html.FROM_HTML_MODE_COMPACT));
+        // TODO: fill with real stats
+        ((TextView) getView().findViewById(R.id.txt_total_journal_entries)).setText(Html.fromHtml("<span><big><big>45</big></big></span><br /><small><small><br /></small></small><span><strong>" + getContext().getResources().getString(R.string.total_journal_entries) + "</strong></span>", Html.FROM_HTML_MODE_COMPACT));
+        ((TextView) getView().findViewById(R.id.txt_lucid_journal_entries)).setText(Html.fromHtml("<span><big><big>3</big></big></span><br /><small><small><br /></small></small><span><strong>" + getContext().getResources().getString(R.string.lucid_journal_entries) + "</strong></span>", Html.FROM_HTML_MODE_COMPACT));
+        ((TextView) getView().findViewById(R.id.txt_last_journal_entry)).setText(Html.fromHtml("<span><big><big>34</big></big><br /><small><small><br /></small></small></span><span><strong>" + getContext().getResources().getString(R.string.goals_reached_in_total) + "</strong></span>", Html.FROM_HTML_MODE_COMPACT));
+        ((TextView) getView().findViewById(R.id.txt_app_open_streak)).setText(Html.fromHtml("<span><big><big>28</big></big></span><br /><small><small><br /></small></small><span><strong>" + getContext().getResources().getString(R.string.days_opening_streak) + "</strong></span>", Html.FROM_HTML_MODE_COMPACT));
 
         ((TextView) getView().findViewById(R.id.txt_alarm1)).setText(Html.fromHtml("<span><big><big><strong>03:12</strong></big></big></span><br /><span>first night timer</span>", Html.FROM_HTML_MODE_COMPACT));
         ((TextView) getView().findViewById(R.id.txt_alarm2)).setText(Html.fromHtml("<span><big><big><strong>06:24</strong></big></big></span><br /><span>last night timer</span>", Html.FROM_HTML_MODE_COMPACT));
