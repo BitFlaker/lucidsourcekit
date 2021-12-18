@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#091523"
+    android:background="?attr/main_background_color"
     tools:context=".main.MainOverview"
     android:scrollbars="none">
 

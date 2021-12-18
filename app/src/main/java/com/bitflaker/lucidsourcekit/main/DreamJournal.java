@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.main.createjournalentry.AddTextEntry;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -69,19 +69,22 @@ public class DreamJournal extends Fragment {
 
         fabAdd.setOnClickListener(view13 -> animateFab());
         fabText.setOnClickListener(view12 -> {
-            animateFab();
-            Intent intent = new Intent(getContext(), AddTextEntry.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            showJournalCreator(JournalTypes.Text);
         });
         fabAudio.setOnClickListener(view1 -> {
-            animateFab();
-            Toast.makeText(getContext(), "Audio", Toast.LENGTH_SHORT).show();
+            showJournalCreator(JournalTypes.Audio);
         });
         fabForms.setOnClickListener(view1 -> {
-            animateFab();
-            Toast.makeText(getContext(), "Forms", Toast.LENGTH_SHORT).show();
+            showJournalCreator(JournalTypes.Forms);
         });
+    }
+
+    private void showJournalCreator(JournalTypes forms) {
+        animateFab();
+        Intent intent = new Intent(getContext(), AddTextEntry.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("type", forms.ordinal());
+        startActivity(intent);
     }
 
     private void animateFab(){

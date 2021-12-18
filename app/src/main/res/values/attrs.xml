@@ -8,4 +8,9 @@
     <attr name="activePageDot" format="reference"/>
     <attr name="activeTabIcon" format="reference"/>
     <attr name="inactiveTabIcon" format="reference"/>
+    <attr name="secondColor" format="reference"/>
+    <attr name="thirdColor" format="reference"/>
+    <attr name="transparent" format="reference"/>
+    <attr name="main_background_color" format="reference"/>
+    <attr name="highlight_error" format="reference"/>
 </resources>

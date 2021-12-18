@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#091523"
+    android:background="?attr/main_background_color"
     tools:context=".main.DreamJournal">
 
     <LinearLayout
@@ -30,14 +30,14 @@
             android:layout_height="48dp"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="15dp"
-            android:background="#091523"
+            android:background="?attr/main_background_color"
             android:src="@drawable/ic_baseline_sort_24" />
 
         <ImageButton
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center_vertical"
-            android:background="#091523"
+            android:background="?attr/main_background_color"
             android:src="@drawable/ic_baseline_filter_alt_24" />
     </LinearLayout>
 

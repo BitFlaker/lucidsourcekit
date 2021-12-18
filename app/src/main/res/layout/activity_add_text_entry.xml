@@ -1,376 +1,633 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#091523"
+    android:background="?attr/main_background_color"
     tools:context=".main.createjournalentry.AddTextEntry">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="20dp">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/txt_top_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dream time"
-            android:textColor="@color/white"
-            android:textSize="23sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/txt_date_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Date"
-            android:textColor="@color/darker_white_2x"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_top_header" />
-
-        <EditText
-            android:id="@+id/txt_date"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/rounded_border"
-            android:backgroundTint="#131f33"
-            android:ems="10"
-            android:gravity="center_vertical"
-            android:inputType="date"
-            android:textColor="@color/white"
-            android:padding="15dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_date_heading" />
-
-        <TextView
-            android:id="@+id/txt_time_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Time"
-            android:textColor="@color/darker_white_2x"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/txt_time"
-            app:layout_constraintTop_toBottomOf="@+id/txt_top_header" />
-
-        <EditText
-            android:id="@+id/txt_time"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/rounded_border"
-            android:backgroundTint="#131f33"
-            android:ems="5"
-            android:gravity="center_vertical"
-            android:inputType="time"
-            android:textColor="@color/white"
-            android:padding="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/txt_date"
-            app:layout_constraintTop_toBottomOf="@+id/txt_time_heading" />
-
-        <TextView
-            android:id="@+id/txt_dream_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:text="Dream story"
-            android:textColor="@color/white"
-            android:textSize="23sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_date" />
-
-        <TextView
-            android:id="@+id/txt_title_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Title"
-            android:textColor="@color/darker_white_2x"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/txt_title_dream"
-            app:layout_constraintTop_toBottomOf="@+id/txt_dream_title" />
-
-        <EditText
-            android:id="@+id/txt_title_dream"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/rounded_border"
-            android:backgroundTint="#131f33"
-            android:gravity="center_vertical"
-            android:inputType="text"
-            android:textColor="@color/white"
-            android:padding="15dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_title_header" />
-
-        <TextView
-            android:id="@+id/txt_description_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Story"
-            android:textColor="@color/darker_white_2x"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/txt_description_dream"
-            app:layout_constraintTop_toBottomOf="@+id/txt_title_dream" />
-
-        <EditText
-            android:id="@+id/txt_description_dream"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="fill_horizontal"
-            android:minHeight="150dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/rounded_border"
-            android:backgroundTint="#131f33"
-            android:inputType="textMultiLine"
-            android:textColor="@color/white"
-            android:padding="15dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_description_header" />
+            android:padding="20dp">
 
-        <TextView
-            android:id="@+id/txt_tags"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:text="Tags"
-            android:textColor="@color/white"
-            android:textSize="23sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_description_dream" />
+            <TextView
+                android:id="@+id/txt_dream_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="@string/dream_time"
+                android:textColor="@color/white"
+                android:textSize="23sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/flx_tags"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:flexWrap="wrap"
-            app:alignItems="stretch"
-            app:alignContent="stretch"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_tags">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/csl_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_dream_time">
+
+                <TextView
+                    android:id="@+id/txt_date_heading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:text="@string/dream_date"
+                    android:textColor="@color/darker_white_2x"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="3dp"
+                    android:background="@drawable/rounded_border"
+                    android:ems="10"
+                    android:inputType="date"
+                    android:text="10.12.2021"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    app:backgroundTint="#131f33"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_date_heading" />
+
+                <TextView
+                    android:id="@+id/txt_time_heading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:text="@string/dream_time_field"
+                    android:textColor="@color/darker_white_2x"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="@+id/btn_time"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="28dp"
+                    android:layout_marginTop="3dp"
+                    android:background="@drawable/rounded_border"
+                    android:ems="5"
+                    android:inputType="time"
+                    android:text="03:15"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    app:backgroundTint="#131f33"
+                    app:layout_constraintStart_toEndOf="@+id/btn_date"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_time_heading" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/txt_dream_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="75dp"
+                android:gravity="center"
+                android:text="@string/dream_story_header"
+                android:textColor="@color/white"
+                android:textSize="23sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/csl_time" />
+
+            <!--
+            Placeholder for fragments containing dream editors for specific category.
+            Fragment is added in code.
+            -->
+            <LinearLayout
+                android:id="@+id/ll_dream_editor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_dream_title" />
+
+            <TextView
+                android:id="@+id/txt_tags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tags"
+                android:textColor="@color/darker_white_2x"
+                android:textSize="14sp"
+                android:textStyle=""
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_dream_editor" />
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/flx_tags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                app:flexWrap="wrap"
+                app:justifyContent="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_tags"/>
 
             <ImageButton
-                android:id="@+id/imageButton"
+                android:id="@+id/btn_add_tag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:background="@drawable/rounded_spinner"
                 android:backgroundTint="#131f33"
+                android:contentDescription="@string/alt_tags"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
-                android:padding="7dp"
-                android:src="@drawable/ic_round_add_24" />
-        </com.google.android.flexbox.FlexboxLayout>
+                android:src="@drawable/ic_round_add_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/flx_tags"/>
+
+            <TextView
+                android:id="@+id/txt_dream_ratings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="75dp"
+                android:gravity="center"
+                android:text="@string/ratings_header"
+                android:textColor="@color/white"
+                android:textSize="23sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_add_tag" />
+
+            <LinearLayout
+                android:id="@+id/ll_slider_container1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rounded_border"
+                android:backgroundTint="?attr/secondColor"
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingTop="15dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="15dp"
+                android:elevation="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_dream_ratings">
+
+                <TextView
+                    android:id="@+id/txt_mood"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dream_mood"
+                    android:textColor="@color/darker_white_2x"
+                    android:textSize="14sp" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sld_mood"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-5dp"
+                    android:stepSize="1"
+                    android:valueTo="4"
+                    app:labelBehavior="gone" />
+
+                <LinearLayout
+                    android:id="@+id/ll_mood"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-10dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/alt_very_dissatisfied_smiley_rating"
+                        android:src="@drawable/ic_baseline_sentiment_very_dissatisfied_24"
+                        app:tint="#A9B4C3" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="10"
+                        android:contentDescription="@string/alt_dissatisfied_smiley_rating"
+                        android:src="@drawable/ic_baseline_sentiment_dissatisfied_24"
+                        app:tint="@color/darker_white" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/alt_neutral_smiley_rating"
+                        android:src="@drawable/ic_baseline_sentiment_neutral_24"
+                        app:tint="@color/darker_white" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="10"
+                        android:contentDescription="@string/alt_satisfied_smiley_rating"
+                        android:src="@drawable/ic_baseline_sentiment_satisfied_24"
+                        app:tint="@color/darker_white" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/alt_very_satisfied_smiley_rating"
+                        android:src="@drawable/ic_baseline_sentiment_very_satisfied_24"
+                        app:tint="@color/darker_white" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_slider_container2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rounded_border"
+                android:backgroundTint="?attr/secondColor"
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingTop="15dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="15dp"
+                android:elevation="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_slider_container1">
+
+                <TextView
+                    android:id="@+id/txt_clarity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dream_clarity_header"
+                    android:textColor="@color/darker_white_2x"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ll_slider_container1" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sld_clarity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-5dp"
+                    android:stepSize="1"
+                    android:valueTo="3"
+                    app:labelBehavior="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_clarity" />
+
+                <LinearLayout
+                    android:id="@+id/ll_clarity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-10dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/sld_clarity">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/alt_very_unclear"
+                        android:src="@drawable/ic_baseline_brightness_4_24"
+                        app:tint="#A9B4C3" />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="10"
+                        android:contentDescription="@string/alt_unclear"
+                        android:src="@drawable/ic_baseline_brightness_5_24"
+                        app:tint="@color/darker_white" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="10"
+                        android:contentDescription="@string/alt_clear"
+                        android:src="@drawable/ic_baseline_brightness_6_24"
+                        app:tint="@color/darker_white" />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/alt_very_clear"
+                        android:src="@drawable/ic_baseline_brightness_7_24"
+                        app:tint="@color/darker_white" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_slider_container3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rounded_border"
+                android:backgroundTint="?attr/secondColor"
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingTop="15dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="15dp"
+                android:elevation="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_slider_container2">
+
+                <TextView
+                    android:id="@+id/txt_sleep_quality"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sleep_quality_header"
+                    android:textColor="@color/darker_white_2x"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ll_slider_container2" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sld_sleep_quality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-5dp"
+                    android:stepSize="1"
+                    android:valueTo="3"
+                    app:labelBehavior="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_sleep_quality" />
+
+                <LinearLayout
+                    android:id="@+id/ll_sleep_quality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-10dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/sld_sleep_quality">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/alt_very_bad_quality"
+                        android:src="@drawable/ic_baseline_star_border_24"
+                        app:tint="#A9B4C3" />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="10"
+                        android:contentDescription="@string/alt_bad_quality"
+                        android:src="@drawable/ic_baseline_star_half_24"
+                        app:tint="@color/darker_white" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="10"
+                        android:contentDescription="@string/alt_good_quality"
+                        android:src="@drawable/ic_baseline_star_24"
+                        app:tint="@color/darker_white" />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/alt_very_good_quality"
+                        android:src="@drawable/ic_baseline_stars_24"
+                        app:tint="@color/darker_white" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_details1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rounded_border"
+                android:backgroundTint="?attr/secondColor"
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingTop="15dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="20dp"
+                android:elevation="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_slider_container3">
+
+                <TextView
+                    android:id="@+id/txt_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/dream_details_header"
+                    android:textColor="@color/darker_white_2x"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ll_slider_container3" />
+
+                <ToggleButton
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginRight="3dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/toggle_button"
+                    android:drawableStart="@drawable/ic_baseline_priority_high_24"
+                    android:padding="15dp"
+                    android:textColor="@color/white"
+                    android:textOff="@string/dream_nightmare"
+                    android:textOn="@string/dream_nightmare" />
+
+                <ToggleButton
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginRight="3dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/toggle_button"
+                    android:drawableStart="@drawable/ic_baseline_accessibility_new_24"
+                    android:padding="15dp"
+                    android:textColor="@color/white"
+                    android:textOff="@string/dream_paralysis"
+                    android:textOn="@string/dream_paralysis" />
+
+                <ToggleButton
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginRight="3dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/toggle_button"
+                    android:drawableStart="@drawable/ic_baseline_airline_seat_individual_suite_24"
+                    android:padding="15dp"
+                    android:textColor="@color/white"
+                    android:textOff="@string/dream_false_awakening"
+                    android:textOn="@string/dream_false_awakening" />
+
+                <ToggleButton
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginRight="3dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/toggle_button"
+                    android:drawableStart="@drawable/ic_baseline_deblur_24"
+                    android:padding="15dp"
+                    android:textColor="@color/white"
+                    android:textOff="@string/dream_lucid"
+                    android:textOn="@string/dream_lucid" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_create_journal_entry"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:background="@drawable/rounded_spinner"
+                android:text="@string/add_journal_entry"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_details1" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <ImageButton
+        android:id="@+id/btn_recording_tapped_outside"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/rectangle"
+        android:backgroundTint="#df000000"
+        android:contentDescription="@string/close_popup"
+        android:layout_above="@id/rl_recording"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/img_background_unfocus"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btn_recording_tapped_outside"
+        android:background="@drawable/rectangle"
+        android:backgroundTint="#df000000"
+        tools:ignore="ContentDescription"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_recording"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/top_rounded_rectangle"
+        android:backgroundTint="?attr/main_background_color"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone">
 
         <TextView
-            android:id="@+id/txt_ratings"
+            android:id="@+id/txt_recording"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:text="Ratings"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:gravity="center_horizontal"
+            android:text="@string/recording"
             android:textColor="@color/white"
-            android:textSize="23sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/flx_tags" />
-
-        <TextView
-            android:id="@+id/txt_mood"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Dream mood"
-            android:textColor="@color/darker_white_2x"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_ratings" />
-
-        <com.google.android.material.slider.Slider
-            android:id="@+id/sld_mood"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:stepSize="0.25"
-            app:labelBehavior="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_mood" />
+            android:textSize="22sp"
+            android:drawablePadding="8dp"
+            app:drawableLeftCompat="@drawable/ic_baseline_mic_24"
+            app:drawableTint="?attr/highlight_error" />
 
         <LinearLayout
-            android:id="@+id/ll_mood"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sld_mood">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_weight="1"
-                android:src="@drawable/ic_baseline_sentiment_very_dissatisfied_24" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:src="@drawable/ic_baseline_sentiment_dissatisfied_24" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ic_baseline_sentiment_neutral_24" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:src="@drawable/ic_baseline_sentiment_satisfied_24" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ic_baseline_sentiment_very_satisfied_24" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/txt_clarity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Dream clarity"
-            android:textColor="@color/darker_white_2x"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_mood" />
+            android:layout_below="@id/txt_recording"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="50dp"
+            android:orientation="horizontal">
 
-        <com.google.android.material.slider.Slider
-            android:id="@+id/sld_clarity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:stepSize="0.33333"
-            app:labelBehavior="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_clarity" />
+            <ImageButton
+                android:id="@+id/btn_pause_continue_recording"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_spinner"
+                android:backgroundTint="?attr/thirdColor"
+                android:contentDescription="@string/pause_continue_recording"
+                android:src="@drawable/ic_baseline_pause_24" />
 
-        <LinearLayout
-            android:id="@+id/ll_clarity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sld_clarity">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_baseline_brightness_4_24"/>
-                <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="5"/>
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="10"
-                    android:src="@drawable/ic_baseline_brightness_5_24"/>
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="10"
-                    android:src="@drawable/ic_baseline_brightness_6_24"/>
-                <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="5"/>
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_baseline_brightness_7_24"/>
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/txt_sleep_quality"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Sleep quality"
-            android:textColor="@color/darker_white_2x"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_clarity" />
-
-        <com.google.android.material.slider.Slider
-            android:id="@+id/sld_sleep_quality"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:stepSize="0.33333"
-            app:labelBehavior="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_sleep_quality" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sld_sleep_quality">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_weight="1"
-                android:src="@drawable/ic_baseline_star_border_24"/>
             <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="5"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:src="@drawable/ic_baseline_star_half_24"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:src="@drawable/ic_baseline_star_24"/>
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="5"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ic_baseline_stars_24"/>
+                android:layout_width="15dp"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                android:id="@+id/btn_stop_recording"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_spinner"
+                android:backgroundTint="?attr/thirdColor"
+                android:contentDescription="@string/stop_recording"
+                android:src="@drawable/ic_baseline_stop_24" />
         </LinearLayout>
-
-        <!-- TODO lucid and nightmare switches-->
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+    </RelativeLayout>
+</RelativeLayout>

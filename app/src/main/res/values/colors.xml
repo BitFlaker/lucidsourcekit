@@ -22,4 +22,10 @@
     <color name="very_dark_blue">#0B0E12</color>
     <color name="lighter_blue">#3A76AD</color>
     <color name="creamy_blue">#4C88E1</color>
+    <color name="dark_blue_lighter">#131f33</color>
+    <color name="dark_blue_glow">#293D5E</color>
+    <color name="mountain_dark_blue">#091523</color>
+    <color name="transparent">#00000000</color>
+    <color name="red">#C80707</color>
+    <color name="lighter_red">#C32C2C</color>
 </resources>

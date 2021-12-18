@@ -132,7 +132,6 @@ public class SetupViewer extends AppCompatActivity {
                                 dbWrapper.SetProperty("auth_cipher", pinCipher);
                                 dbWrapper.SetProperty("auth_key", Base64.encodeToString(secretKey, Base64.NO_WRAP));
                                 dbWrapper.SetProperty("auth_use_biometrics", setPrivacy.getUseBiometrics() ? "true" : "false");
-                                System.out.println(Base64.encodeToString(secretKey, Base64.NO_WRAP));
                                 startGetStarted();
                             } catch (Exception ex) {
                                 ex.printStackTrace();

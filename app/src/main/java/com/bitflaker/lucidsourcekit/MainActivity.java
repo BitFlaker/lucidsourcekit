@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                     storedHash = dbWrapper.GetProperty("auth_cipher").getValue();
                     storedSalt = Base64.decode(dbWrapper.GetProperty("auth_key").getValue(), Base64.DEFAULT);
-                    System.out.println(Base64.encodeToString(storedSalt, Base64.NO_WRAP));
                     break;
                 case "none":
                     Intent intent = new Intent(MainActivity.this, MainViewer.class);

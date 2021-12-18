@@ -19,5 +19,11 @@
         <item name="activePageDot">@color/lighter_blue</item>
         <item name="activeTabIcon">@color/lighter_blue</item>
         <item name="inactiveTabIcon">@color/lighter_blue</item>
+
+        <item name="secondColor">@color/dark_blue_lighter</item>
+        <item name="thirdColor">@color/dark_blue_glow</item>
+        <item name="transparent">@color/transparent</item>
+        <item name="main_background_color">@color/mountain_dark_blue</item>
+        <item name="highlight_error">@color/red</item>
     </style>
 </resources>
