@@ -25,5 +25,6 @@
         <item name="transparent">@color/transparent</item>
         <item name="main_background_color">@color/mountain_dark_blue</item>
         <item name="highlight_error">@color/lighter_red</item>
+        <item name="lightSelection">@color/clay_white</item>
     </style>
 </resources>

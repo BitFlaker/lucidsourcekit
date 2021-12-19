@@ -17,13 +17,16 @@ import androidx.core.content.ContextCompat;
 
 import com.bitflaker.lucidsourcekit.general.Crypt;
 import com.bitflaker.lucidsourcekit.general.DatabaseWrapper;
-import com.bitflaker.lucidsourcekit.general.StoredSettings;
 import com.bitflaker.lucidsourcekit.general.Tools;
+import com.bitflaker.lucidsourcekit.general.database.StoredSettings;
 import com.bitflaker.lucidsourcekit.main.MainViewer;
 import com.bitflaker.lucidsourcekit.setup.SetupViewer;
 import com.google.android.material.button.MaterialButton;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.concurrent.Executor;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +36,17 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseWrapper dbWrapper;
     private String storedHash = "";
     private byte[] storedSalt;
+
+    public static String convertStreamToString(InputStream is) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        reader.close();
+        return sb.toString();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,28 +58,30 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO: set language of controls
 
+        // List<StoredJournalEntries> entries = dbWrapper.getJournalEntries();
+
         String path = getFilesDir().getAbsolutePath() + "/.app_setup_done";
         File file = new File(path);
         if(file.exists()) {
 
-            StoredSettings authType = dbWrapper.GetProperty("auth_type");
+            StoredSettings authType = dbWrapper.getProperty("auth_type");
 
             switch (authType.getValue()) {
                 case "password":
                     setupPasswordAuthentication();
-                    if(dbWrapper.GetProperty("auth_use_biometrics").getValue().equals("true")) {
+                    if(dbWrapper.getProperty("auth_use_biometrics").getValue().equals("true")) {
                         setupBiometricAuthentication();     // TODO: should be callable again if cancelled
                     }
-                    storedHash = dbWrapper.GetProperty("auth_hash").getValue();
-                    storedSalt = Base64.decode(dbWrapper.GetProperty("auth_salt").getValue(), Base64.DEFAULT);
+                    storedHash = dbWrapper.getProperty("auth_hash").getValue();
+                    storedSalt = Base64.decode(dbWrapper.getProperty("auth_salt").getValue(), Base64.DEFAULT);
                     break;
                 case "pin":
                     setupPinAuthentication();
-                    if(dbWrapper.GetProperty("auth_use_biometrics").getValue().equals("true")) {
+                    if(dbWrapper.getProperty("auth_use_biometrics").getValue().equals("true")) {
                         setupBiometricAuthentication();     // TODO: should be callable again if cancelled
                     }
-                    storedHash = dbWrapper.GetProperty("auth_cipher").getValue();
-                    storedSalt = Base64.decode(dbWrapper.GetProperty("auth_key").getValue(), Base64.DEFAULT);
+                    storedHash = dbWrapper.getProperty("auth_cipher").getValue();
+                    storedSalt = Base64.decode(dbWrapper.getProperty("auth_key").getValue(), Base64.DEFAULT);
                     break;
                 case "none":
                     Intent intent = new Intent(MainActivity.this, MainViewer.class);

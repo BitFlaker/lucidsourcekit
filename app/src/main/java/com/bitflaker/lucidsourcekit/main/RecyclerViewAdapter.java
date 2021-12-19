@@ -15,21 +15,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.general.DreamClarity;
-import com.bitflaker.lucidsourcekit.general.DreamMoods;
-import com.bitflaker.lucidsourcekit.general.SleepQuality;
 import com.bitflaker.lucidsourcekit.general.Tools;
+import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
+import com.bitflaker.lucidsourcekit.general.database.values.DreamMoods;
+import com.bitflaker.lucidsourcekit.general.database.values.DreamTypes;
+import com.bitflaker.lucidsourcekit.general.database.values.SleepQuality;
 
 import java.text.MessageFormat;
+import java.util.List;
+import java.util.Objects;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MainViewHolder> {
-    String[] dates, times, titles, descriptions;
-    String[][] tags;
-    int[] moods, sleepQualities, dreamClarity, sleepTypes;
-    boolean[] lucid, nightmare;
+    String[] dates, times, titles, descriptions, moods, sleepQualities, dreamClarity;
+    List<String[]> tags, audioLocations, sleepTypes;
     Context context;
 
-    public RecyclerViewAdapter(Context context, String[] dates, String[] times, String[] titles, String[] descriptions, String[][] tags, int[] moods, int[] sleepQualities, int[] dreamClarity, int[] sleepTypes, boolean[] lucid, boolean[] nightmare) {
+    public RecyclerViewAdapter(Context context, String[] dates, String[] times, String[] titles, String[] descriptions, List<String[]> tags, String[] sleepQualities, String[] dreamClarity, String[] moods, List<String[]> sleepTypes, List<String[]> audioLocations) {
         this.dates = dates;
         this.times = times;
         this.titles = titles;
@@ -40,8 +41,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.dreamClarity = dreamClarity;
         this.sleepTypes = sleepTypes;
         this.context = context;
-        this.lucid = lucid;
-        this.nightmare = nightmare;
+        this.audioLocations = audioLocations;
     }
 
     @NonNull
@@ -57,44 +57,73 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.dateTime.setText(MessageFormat.format("{0} {1} {2}", dates[position], context.getResources().getString(R.string.journal_time_at), times[position]));
         holder.title.setText(titles[position]);
         holder.description.setText(descriptions[position]);
-        for (int i = 0; i < tags[position].length; i++){
+
+        int iconCount = holder.titleIcons.getChildCount();
+        int skip = 0;
+        for (int i = 0; i < iconCount; i++){
+            if(!(holder.titleIcons.getChildAt(0+skip) instanceof ImageView)){
+                skip++;
+                continue;
+            }
+            holder.titleIcons.removeViewAt(0 + skip);
+        }
+
+        int tagCount = holder.tags.getChildCount();
+        for (int i = 0; i < tagCount; i++){
+            holder.tags.removeViewAt(0);
+        }
+
+        for (int i = 0; i < tags.get(position).length; i++){
             TextView tag = new TextView(context);
-            tag.setText(tags[position][i]);
+            tag.setText(tags.get(position)[i]);
             tag.setTextColor(Color.parseColor("#ffffff"));
-            int dp5 = Tools.dpToPx(context, 5);
-            int dp2 = Tools.dpToPx(context, 2);
-            tag.setPadding(dp5,dp2,dp5,dp2);
+            int dpLarger = Tools.dpToPx(context, 8);
+            int dpSmaller = Tools.dpToPx(context, 4);
+            int dpSmall = Tools.dpToPx(context, 2);
+            tag.setPadding(dpLarger,dpSmaller,dpLarger,dpSmaller);
             tag.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
             tag.setBackground(context.getResources().getDrawable(R.drawable.rounded_spinner));
             LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            llParams.setMargins(dp2, 0, dp2, 0);
+            llParams.setMargins(dpSmall, 0, dpSmall, 0);
             tag.setLayoutParams(llParams);
             holder.tags.addView(tag);
         }
-        if(lucid[position]){
-            holder.titleIcons.addView(generateIconHighlight(R.drawable.ic_baseline_deblur_24));
+
+        for (int i = 0; i < sleepTypes.get(position).length; i++) {
+            switch (Objects.requireNonNull(DreamTypes.getEnum(sleepTypes.get(position)[i]))) {
+                case Lucid:
+                    holder.titleIcons.addView(generateIconHighlight(R.drawable.ic_baseline_deblur_24));
+                    break;
+                case Nightmare:
+                    holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_priority_high_24));
+                    break;
+                case FalseAwakening:
+                    holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_airline_seat_individual_suite_24));
+                    break;
+                case SleepParalysis:
+                    holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_accessibility_new_24));
+                    break;
+            }
         }
-        switch (DreamMoods.values()[moods[position]]){
+
+        switch (Objects.requireNonNull(DreamMoods.getEnum(moods[position]))){
             case Outstanding: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_sentiment_very_satisfied_24)); break;
             case Great: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_sentiment_satisfied_24)); break;
             case Ok: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_sentiment_neutral_24)); break;
             case Poor: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_sentiment_dissatisfied_24)); break;
             case Terrible: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_sentiment_very_dissatisfied_24)); break;
         }
-        switch (SleepQuality.values()[sleepQualities[position]]){
+        switch (Objects.requireNonNull(SleepQuality.getEnum(sleepQualities[position]))){
             case Outstanding: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_stars_24)); break;
             case Great: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_star_24)); break;
             case Poor: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_star_half_24)); break;
             case Terrible: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_star_border_24)); break;
         }
-        switch (DreamClarity.values()[dreamClarity[position]]){
+        switch (Objects.requireNonNull(DreamClarity.getEnum(dreamClarity[position]))){
             case CrystalClear: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_4_24)); break;
             case Clear: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_5_24)); break;
             case Cloudy: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_6_24)); break;
             case VeryCloudy: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_7_24)); break;
-        }
-        if(nightmare[position]){
-            holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_priority_high_24));
         }
     }
 
@@ -103,7 +132,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         icon.setImageResource(iconId);
         ColorStateList stateList = Tools.getAttrColor(R.attr.inactivePageDot, context.getTheme());
         icon.setImageTintList(stateList);
-        icon.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        int size = Tools.dpToPx(context, 20);
+        icon.setLayoutParams(new LinearLayout.LayoutParams(size, size));
         return icon;
     }
 
@@ -112,7 +142,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         icon.setImageResource(iconId);
         ColorStateList stateList = Tools.getAttrColor(R.attr.activePageDot, context.getTheme());
         icon.setImageTintList(stateList);
-        icon.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        int size = Tools.dpToPx(context, 20);
+        icon.setLayoutParams(new LinearLayout.LayoutParams(size, size));
         return icon;
     }
 

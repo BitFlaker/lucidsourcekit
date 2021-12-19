@@ -110,10 +110,10 @@ public class SetupViewer extends AppCompatActivity {
                             try {
                                 byte[] salt = Crypt.generateSalt();
                                 String pwHash = Crypt.encryptString(setAuthData.getPassword(), salt);
-                                dbWrapper.SetProperty("auth_type", "password");
-                                dbWrapper.SetProperty("auth_hash", pwHash);
-                                dbWrapper.SetProperty("auth_salt", Base64.encodeToString(salt, Base64.NO_WRAP));
-                                dbWrapper.SetProperty("auth_use_biometrics", setPrivacy.getUseBiometrics() ? "true" : "false");
+                                dbWrapper.setProperty("auth_type", "password");
+                                dbWrapper.setProperty("auth_hash", pwHash);
+                                dbWrapper.setProperty("auth_salt", Base64.encodeToString(salt, Base64.NO_WRAP));
+                                dbWrapper.setProperty("auth_use_biometrics", setPrivacy.getUseBiometrics() ? "true" : "false");
                                 startGetStarted();
                             } catch (Exception ex) {
                                 ex.printStackTrace();
@@ -128,10 +128,10 @@ public class SetupViewer extends AppCompatActivity {
                             try {
                                 byte[] secretKey = Crypt.generateSecretKey();
                                 String pinCipher = Crypt.encryptStringBlowfish(setAuthData.getPin(), secretKey);
-                                dbWrapper.SetProperty("auth_type", "pin");
-                                dbWrapper.SetProperty("auth_cipher", pinCipher);
-                                dbWrapper.SetProperty("auth_key", Base64.encodeToString(secretKey, Base64.NO_WRAP));
-                                dbWrapper.SetProperty("auth_use_biometrics", setPrivacy.getUseBiometrics() ? "true" : "false");
+                                dbWrapper.setProperty("auth_type", "pin");
+                                dbWrapper.setProperty("auth_cipher", pinCipher);
+                                dbWrapper.setProperty("auth_key", Base64.encodeToString(secretKey, Base64.NO_WRAP));
+                                dbWrapper.setProperty("auth_use_biometrics", setPrivacy.getUseBiometrics() ? "true" : "false");
                                 startGetStarted();
                             } catch (Exception ex) {
                                 ex.printStackTrace();
@@ -139,7 +139,7 @@ public class SetupViewer extends AppCompatActivity {
                         }
                         break;
                     case None:
-                        dbWrapper.SetProperty("auth_type", "none");
+                        dbWrapper.setProperty("auth_type", "none");
                         startGetStarted();
                         break;
                 }

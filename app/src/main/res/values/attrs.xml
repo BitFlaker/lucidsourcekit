@@ -13,4 +13,5 @@
     <attr name="transparent" format="reference"/>
     <attr name="main_background_color" format="reference"/>
     <attr name="highlight_error" format="reference"/>
+    <attr name="lightSelection" format="reference"/>
 </resources>

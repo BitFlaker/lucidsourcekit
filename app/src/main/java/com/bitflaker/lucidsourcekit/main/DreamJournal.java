@@ -17,20 +17,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.general.DatabaseWrapper;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
+import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntriesList;
 import com.bitflaker.lucidsourcekit.main.createjournalentry.AddTextEntry;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class DreamJournal extends Fragment {
 
     RecyclerView recyclerView;
-    String[] dates, times, titles, descriptions;
     String[][] tags;
     int[] moods, sleepQualities, sleepTypes;
     private TextView noEntryFound;
     private FloatingActionButton fabAdd, fabText, fabForms, fabAudio;
     private Animation fabOpen, fabClose, rotateForward, rotateBackward;
     private boolean isOpen = false;
+    private DatabaseWrapper dbWrapper;
 
     @Nullable
     @Override
@@ -46,14 +48,12 @@ public class DreamJournal extends Fragment {
         noEntryFound.setText(Html.fromHtml("<span><big><big><strong>Uhh...</strong></big></big><br />" + getContext().getResources().getString(R.string.empty_dream_journal) + "</span>", Html.FROM_HTML_MODE_COMPACT));
 
         recyclerView = getView().findViewById(R.id.recycler_view);
+        dbWrapper = new DatabaseWrapper(getContext());
 
-        dates = getResources().getStringArray(R.array.dates);
-        times = getResources().getStringArray(R.array.times);
-        titles = getResources().getStringArray(R.array.titles);
-        descriptions = getResources().getStringArray(R.array.descs);
-        tags = new String[][] {{"test", "test", "sometest"},{"test", "test", "sometest"},{"test", "test", "sometest"},{"test", "test", "sometest"},{"test", "test", "sometest"}};
+        DreamJournalEntriesList entries = dbWrapper.getJournalEntries();
 
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), dates, times, titles, descriptions, tags, new int[]{0,0,0,0,0}, new int[]{0,0,0,0,0}, new int[]{0,0,0,0,0}, new int[]{0,0,0,0,0}, new boolean[]{true, false, false, false, true}, new boolean[]{true, false, true, true, false});
+        // TODO desc can be null => Audio recording
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), entries.getDates(), entries.getTimes(), entries.getTitles(), entries.getDescriptions(), entries.getTags(), entries.getSleepQualities(), entries.getDreamClarities(), entries.getDreamMoods(), entries.getTypes(), entries.getAudioLocations());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 

@@ -23,12 +23,17 @@ public class SetupGetStarted extends AppCompatActivity {
             File file = new File(path);
             try {
                 file.createNewFile();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+
+            path = getFilesDir().getAbsolutePath() + "/Recordings";
+            File recFolder = new File(path);
+            if(recFolder.mkdir()){
                 Intent intent = new Intent(SetupGetStarted.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
             }
         });
     }

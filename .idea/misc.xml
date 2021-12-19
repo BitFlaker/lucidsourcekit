@@ -65,7 +65,7 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/toggle_on.xml" value="0.3728205128205128" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/top_rounded_rectangle.xml" value="0.2375" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout-v28/journal_entry.xml" value="0.2359375" />
-        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_add_text_entry.xml" value="0.33" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_add_text_entry.xml" value="0.25" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_get_started.xml" value="0.328804347826087" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_main.xml" value="0.25885416666666666" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_main_viewer.xml" value="0.3484375" />
@@ -73,7 +73,7 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_dream_audio_story.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_dream_forms_story.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_dream_journal.xml" value="0.25" />
-        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_dream_text_story.xml" value="0.25" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_dream_text_story.xml" value="0.16" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_main_overview.xml" value="0.3523550724637681" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/journal_entry.xml" value="0.5" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/menu/add_open.xml" value="0.2359375" />

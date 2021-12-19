@@ -1,12 +1,12 @@
-package com.bitflaker.lucidsourcekit.general;
+package com.bitflaker.lucidsourcekit.general.database;
 
 public class StoredSettings {
     public static final String TABLE_NAME = "settings";
-    public static final String COLUMN_NAME_PROPERTY = "property";
-    public static final String COLUMN_NAME_VALUE = "value";
+    public static final String PROPERTY = "property";
+    public static final String VALUE = "value";
 
-    private String property;
-    private String value;
+    private final String property;
+    private final String value;
 
     public StoredSettings(String property, String value) {
         this.property = property;
