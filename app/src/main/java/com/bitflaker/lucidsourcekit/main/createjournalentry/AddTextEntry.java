@@ -5,6 +5,7 @@ import static java.util.UUID.randomUUID;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -120,19 +121,20 @@ public class AddTextEntry extends AppCompatActivity {
         setupAddEntryButton();
 
         currentType = JournalTypes.values()[getIntent().getIntExtra("type", -1)];
+        getIntent().getIntExtra("type", -1);
         switch(currentType){
             case Text:
-                getFragmentManager().beginTransaction().add(dreamEditorBox.getId(), TextJournalEditorFrag.newInstance(), "").commit();   // TODO check tag argument s
+                getFragmentManager().beginTransaction().add(dreamEditorBox.getId(), TextJournalEditorFrag.newInstance(), null).commit();   // TODO check tag argument s
                 break;
             case Audio:
                 setupRecordingPopup();
                 audioFrag = AudioJournalEditorFrag.newInstance();
                 audioFrag.setOnAudioRecordingRequested(this::showRecording);
-                getFragmentManager().beginTransaction().add(dreamEditorBox.getId(), audioFrag, "").commit();   // TODO check tag argument s
+                getFragmentManager().beginTransaction().add(dreamEditorBox.getId(), audioFrag, null).commit();   // TODO check tag argument s
                 break;
             case Forms:
                 formsFrag = FormsJournalEditorFrag.newInstance();
-                getFragmentManager().beginTransaction().add(dreamEditorBox.getId(), formsFrag, "").commit();   // TODO check tag argument s
+                getFragmentManager().beginTransaction().add(dreamEditorBox.getId(), formsFrag, null).commit();   // TODO check tag argument s
                 break;
         }
     }
@@ -157,17 +159,20 @@ public class AddTextEntry extends AppCompatActivity {
 
             int id = dbWrapper.addJournalEntry(-1, selectedDate, selectedTime, title, description, quality, clarity, mood);
 
-            if(nightmare.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.Nightmare.getId()); }
-            if(paralysis.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.SleepParalysis.getId()); }
-            if(falseAwakening.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.FalseAwakening.getId()); }
-            if(lucid.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.Lucid.getId()); }
+            List<String> dreamTypes = new ArrayList<>();
+            if(nightmare.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.Nightmare.getId()); dreamTypes.add(DreamTypes.Nightmare.getId()); }
+            if(paralysis.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.SleepParalysis.getId()); dreamTypes.add(DreamTypes.SleepParalysis.getId()); }
+            if(falseAwakening.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.FalseAwakening.getId()); dreamTypes.add(DreamTypes.FalseAwakening.getId()); }
+            if(lucid.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.Lucid.getId()); dreamTypes.add(DreamTypes.Lucid.getId()); }
 
+            List<String> tags = new ArrayList<>();
             FlexboxLayout tagContainer = (FlexboxLayout) findViewById(R.id.flx_tags);
             int childCount = tagContainer.getChildCount();
             for (int i = 0; i < childCount; i++){
                 if(tagContainer.getChildAt(i) instanceof TextView){
                     TextView storedTag = (TextView) tagContainer.getChildAt(i);
                     String tag = storedTag.getText().toString();
+                    tags.add(tag);
                     dbWrapper.addDreamTagToEntry(id, tag);
                 }
             }
@@ -176,7 +181,19 @@ public class AddTextEntry extends AppCompatActivity {
                 dbWrapper.addDreamAudioRecording(id, recordedAudios.get(i));
             }
 
-            // TODO: hide and get back to journal which should be refreshed!
+            Intent data = new Intent();
+            data.putExtra("date", selectedDate);
+            data.putExtra("time", selectedTime);
+            data.putExtra("title", title);
+            data.putExtra("description", description);
+            data.putExtra("quality", quality);
+            data.putExtra("clarity", clarity);
+            data.putExtra("mood", mood);
+            data.putExtra("dreamTypes", dreamTypes.toArray(new String[0]));
+            data.putExtra("tags", tags.toArray(new String[0]));
+            data.putExtra("recordings", recordedAudios.toArray(new String[0]));
+            setResult(RESULT_OK, data);
+            finish();
         });
     }
 
@@ -353,7 +370,7 @@ public class AddTextEntry extends AppCompatActivity {
     private void storeRecording() {
         stopRecordingAudio();
         hideRecording();
-        String title = "Recording 1"; // TODO add counter for recordings. does counter make sense? => when previous removed it is out of order
+        String title = "Recording"; // TODO replace text with icon?
         String length = "02:35"; // TODO get length
         audioFrag.addRecordingToList(title, length);
     }

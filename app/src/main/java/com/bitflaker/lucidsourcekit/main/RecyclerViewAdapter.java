@@ -20,6 +20,7 @@ import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamMoods;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamTypes;
 import com.bitflaker.lucidsourcekit.general.database.values.SleepQuality;
+import com.google.android.flexbox.FlexboxLayout;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -42,6 +43,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.sleepTypes = sleepTypes;
         this.context = context;
         this.audioLocations = audioLocations;
+    }
+
+    public void addEntry(String date, String time, String title, String description, String[] tags, String sleepQuality, String dreamClarity, String mood, String[] sleepTypes, String[] audioLocations) {
+        this.dates = Tools.addFirst(this.dates, date);
+        this.times = Tools.addFirst(this.times, time);
+        this.titles = Tools.addFirst(this.titles, title);
+        this.descriptions = Tools.addFirst(this.descriptions, description);
+        this.tags.add(0, tags);
+        this.moods = Tools.addFirst(this.moods, mood);
+        this.sleepQualities = Tools.addFirst(this.sleepQualities, sleepQuality);
+        this.dreamClarity = Tools.addFirst(this.dreamClarity, dreamClarity);
+        this.sleepTypes.add(0, sleepTypes);
+        this.audioLocations.add(0, audioLocations);
     }
 
     @NonNull
@@ -84,7 +98,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             tag.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
             tag.setBackground(context.getResources().getDrawable(R.drawable.rounded_spinner));
             LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            llParams.setMargins(dpSmall, 0, dpSmall, 0);
+            llParams.setMargins(dpSmall, dpSmall, dpSmall, dpSmall);
             tag.setLayoutParams(llParams);
             holder.tags.addView(tag);
         }
@@ -154,7 +168,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public class MainViewHolder extends RecyclerView.ViewHolder{
         TextView title, description, dateTime;
-        LinearLayout titleIcons, tags;
+        LinearLayout titleIcons;
+        FlexboxLayout tags;
 
         public MainViewHolder(@NonNull View itemView) {
             super(itemView);

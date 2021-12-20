@@ -48,7 +48,7 @@
 
             <TextView
                 android:id="@+id/txt_title"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Title"
@@ -59,23 +59,24 @@
 
             <TextView
                 android:id="@+id/txt_description"
-                android:layout_width="74dp"
+                android:layout_width="match_parent"
                 android:layout_height="19dp"
                 android:text="Description"
                 android:textColor="#999999"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txt_title" />
 
-            <LinearLayout
+            <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/ll_tags"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="8dp"
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_description">
-            </LinearLayout>
+                app:layout_constraintTop_toBottomOf="@+id/txt_description" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

@@ -14,6 +14,7 @@ import android.view.View;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 public class Tools {
@@ -52,5 +53,14 @@ public class Tools {
 
     public static int dpToPx(Context context, int dp) {
         return (int)(dp * context.getResources().getDisplayMetrics().density);
+    }
+
+    public static <T> T[] addFirst(T[] elements, T element)
+    {
+        T[] finishedArray = Arrays.copyOf(elements, elements.length + 1);
+        finishedArray[0] = element;
+        System.arraycopy(elements, 0, finishedArray, 1, elements.length);
+
+        return finishedArray;
     }
 }
