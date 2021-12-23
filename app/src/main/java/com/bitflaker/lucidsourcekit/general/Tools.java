@@ -63,4 +63,11 @@ public class Tools {
 
         return finishedArray;
     }
+
+    public static <T> T[] removeAt(T[] array, int index)
+    {
+        T[] finishedArray = Arrays.copyOf(array, array.length - 1);
+        System.arraycopy(array, index + 1, finishedArray, index, array.length - 1 - index);
+        return finishedArray;
+    }
 }

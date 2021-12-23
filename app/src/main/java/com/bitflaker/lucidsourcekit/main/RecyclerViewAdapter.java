@@ -1,6 +1,7 @@
 package com.bitflaker.lucidsourcekit.main;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.util.TypedValue;
@@ -12,9 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamMoods;
@@ -29,9 +32,13 @@ import java.util.Objects;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MainViewHolder> {
     String[] dates, times, titles, descriptions, moods, sleepQualities, dreamClarity;
     List<String[]> tags, audioLocations, sleepTypes;
+    Integer[] entryIds;
     Context context;
+    DreamJournal journalList;
 
-    public RecyclerViewAdapter(Context context, String[] dates, String[] times, String[] titles, String[] descriptions, List<String[]> tags, String[] sleepQualities, String[] dreamClarity, String[] moods, List<String[]> sleepTypes, List<String[]> audioLocations) {
+    public RecyclerViewAdapter(DreamJournal journalList, Context context, Integer[] entryIds, String[] dates, String[] times, String[] titles, String[] descriptions, List<String[]> tags, String[] sleepQualities, String[] dreamClarity, String[] moods, List<String[]> sleepTypes, List<String[]> audioLocations) {
+        this.entryIds = entryIds;
+        this.journalList = journalList;
         this.dates = dates;
         this.times = times;
         this.titles = titles;
@@ -45,7 +52,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.audioLocations = audioLocations;
     }
 
-    public void addEntry(String date, String time, String title, String description, String[] tags, String sleepQuality, String dreamClarity, String mood, String[] sleepTypes, String[] audioLocations) {
+    public void addEntry(Integer entryId, String date, String time, String title, String description, String[] tags, String sleepQuality, String dreamClarity, String mood, String[] sleepTypes, String[] audioLocations) {
+        this.entryIds = Tools.addFirst(this.entryIds, entryId);
         this.dates = Tools.addFirst(this.dates, date);
         this.times = Tools.addFirst(this.times, time);
         this.titles = Tools.addFirst(this.titles, title);
@@ -56,6 +64,34 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.dreamClarity = Tools.addFirst(this.dreamClarity, dreamClarity);
         this.sleepTypes.add(0, sleepTypes);
         this.audioLocations.add(0, audioLocations);
+    }
+
+    public void changeEntryAt(int position, String date, String time, String title, String description, String[] tags, String sleepQuality, String dreamClarity, String mood, String[] sleepTypes, String[] audioLocations) {
+        this.dates[position] = date;
+        this.times[position] = time;
+        this.titles[position] = title;
+        this.descriptions[position] = description;
+        this.moods[position] = mood;
+        this.sleepQualities[position] = sleepQuality;
+        this.dreamClarity[position] = dreamClarity;
+        this.tags.set(position, tags);
+        this.sleepTypes.set(position, sleepTypes);
+        this.audioLocations.set(position, audioLocations);
+        // TODO after removing item: still works correctly?
+    }
+
+    public void removeEntryAt(int position) {
+        this.entryIds = Tools.removeAt(this.entryIds, position);
+        this.dates = Tools.removeAt(this.dates, position);
+        this.times = Tools.removeAt(this.times, position);
+        this.titles = Tools.removeAt(this.titles, position);
+        this.descriptions = Tools.removeAt(this.descriptions, position);
+        this.moods = Tools.removeAt(this.moods, position);
+        this.sleepQualities = Tools.removeAt(this.sleepQualities, position);
+        this.dreamClarity = Tools.removeAt(this.dreamClarity, position);
+        this.tags.remove(position);
+        this.sleepTypes.remove(position);
+        this.audioLocations.remove(position);
     }
 
     @NonNull
@@ -70,7 +106,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
         holder.dateTime.setText(MessageFormat.format("{0} {1} {2}", dates[position], context.getResources().getString(R.string.journal_time_at), times[position]));
         holder.title.setText(titles[position]);
-        holder.description.setText(descriptions[position]);
+        if(descriptions[position] == null){
+            holder.description.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_mic_24, 0, 0, 0);
+            int audioCount = audioLocations.get(position).length;
+            holder.description.setText(audioCount == 1 ? "1 " + context.getResources().getString(R.string.recording_single) : audioCount + " " + context.getResources().getString(R.string.recording_multiple));
+            ConstraintLayout.LayoutParams lparamsDesc = (ConstraintLayout.LayoutParams) holder.description.getLayoutParams();
+            int slightMargin = Tools.dpToPx(context, 10);
+            int verySlightMargin = Tools.dpToPx(context, 5);
+            lparamsDesc.setMargins(-verySlightMargin, slightMargin, 0, slightMargin);
+            holder.description.setLayoutParams(lparamsDesc);
+        }
+        else {
+            holder.description.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            holder.description.setText(descriptions[position]);
+            ConstraintLayout.LayoutParams lparamsDesc = (ConstraintLayout.LayoutParams) holder.description.getLayoutParams();
+            lparamsDesc.setMargins(0, 0, 0, 0);
+            holder.description.setLayoutParams(lparamsDesc);
+        }
 
         int iconCount = holder.titleIcons.getChildCount();
         int skip = 0;
@@ -134,11 +186,30 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             case Terrible: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_star_border_24)); break;
         }
         switch (Objects.requireNonNull(DreamClarity.getEnum(dreamClarity[position]))){
-            case CrystalClear: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_4_24)); break;
-            case Clear: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_5_24)); break;
-            case Cloudy: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_6_24)); break;
-            case VeryCloudy: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_7_24)); break;
+            case CrystalClear: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_7_24)); break;
+            case Clear: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_6_24)); break;
+            case Cloudy: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_5_24)); break;
+            case VeryCloudy: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_4_24)); break;
         }
+
+        holder.entry.setOnClickListener(e -> {
+            Intent intent = new Intent(context, ViewJournalEntry.class);
+            intent.putExtra("position", position);
+            intent.putExtra("type", descriptions[position] == null ? JournalTypes.Audio.ordinal() : JournalTypes.Text.ordinal());
+            intent.putExtra("entryId", entryIds[position]);
+            intent.putExtra("date", dates[position]);
+            intent.putExtra("time", times[position]);
+            intent.putExtra("title", titles[position]);
+            intent.putExtra("description", descriptions[position]);
+            intent.putExtra("quality", sleepQualities[position]);
+            intent.putExtra("clarity", dreamClarity[position]);
+            intent.putExtra("mood", moods[position]);
+            intent.putExtra("dreamTypes", sleepTypes.get(position));
+            intent.putExtra("tags", tags.get(position));
+            intent.putExtra("recordings", audioLocations.get(position));
+            //context.startActivity(intent);
+            journalList.viewEntryActivityResultLauncher.launch(intent);
+        });
     }
 
     private View generateIcon(int iconId) {
@@ -170,6 +241,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView title, description, dateTime;
         LinearLayout titleIcons;
         FlexboxLayout tags;
+        ConstraintLayout entry;
 
         public MainViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -178,6 +250,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             dateTime = itemView.findViewById(R.id.txt_date_time);
             titleIcons = itemView.findViewById(R.id.ll_title_icons);
             tags = itemView.findViewById(R.id.ll_tags);
+            entry = itemView.findViewById(R.id.csl_entry);
         }
     }
 }

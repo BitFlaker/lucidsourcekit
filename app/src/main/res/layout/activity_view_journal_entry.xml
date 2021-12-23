@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/main_background_color"
+    tools:context=".main.ViewJournalEntry">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="25dp">
+
+        <LinearLayout
+            android:id="@+id/ll_top_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_entry_time"
+                android:layout_below="@id/ll_top_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="21 December 2021 at 03:05"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:textColor="@color/darker_white_2x" />
+
+            <ImageButton
+                android:id="@+id/btn_delete_entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_delete_24"
+                android:layout_marginRight="10dp"
+                android:backgroundTint="?attr/main_background_color"/>
+
+            <ImageButton
+                android:id="@+id/btn_edit_entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_round_mode_edit_24"
+                android:backgroundTint="?attr/main_background_color"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_entry_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_top_header"
+            android:layout_marginTop="40dp"
+            android:text="Some title"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/ll_dream_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_entry_title"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/flx_entry_tags"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:layout_centerHorizontal="true"
+            app:flexWrap="wrap"
+            app:justifyContent="center"
+            android:layout_below="@id/ll_dream_content"/>
+
+        <LinearLayout
+            android:id="@+id/ll_dream_types"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/flx_entry_tags"
+            android:layout_marginTop="50dp"
+            android:gravity="center_horizontal"/>
+
+        <LinearLayout
+            android:id="@+id/ll_dream_ratings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_dream_types"
+            android:layout_marginTop="50dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/darker_white_2x"
+                    android:text="@string/dream_mood" />
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/prg_entry_mood"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_weight="1"
+                    android:max="4"
+                    android:progress="4" />
+
+                <ImageView
+                    android:id="@+id/img_entry_mood"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_baseline_sentiment_dissatisfied_24" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/darker_white_2x"
+                    android:text="@string/dream_clarity_header" />
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/prg_entry_clarity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_weight="1"
+                    android:max="3"
+                    android:progress="1" />
+
+                <ImageView
+                    android:id="@+id/img_entry_clarity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_baseline_brightness_6_24" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/darker_white_2x"
+                    android:text="@string/sleep_quality_header" />
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/prg_entry_quality"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_weight="1"
+                    android:max="3"
+                    android:progress="2" />
+
+                <ImageView
+                    android:id="@+id/img_entry_quality"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_baseline_stars_24" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>

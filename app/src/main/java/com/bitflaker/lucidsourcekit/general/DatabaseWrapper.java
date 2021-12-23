@@ -101,7 +101,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper {
             String qual = cursor.getString(cursor.getColumnIndexOrThrow(StoredJournalEntries.QUALITY_ID));
             String clar = cursor.getString(cursor.getColumnIndexOrThrow(StoredJournalEntries.CLARITY_ID));
             String mood = cursor.getString(cursor.getColumnIndexOrThrow(StoredJournalEntries.MOOD_ID));
-            entries.add(new StoredJournalEntries(Integer.toString(id), date, time, title, desc, qual, clar, mood), getAssignedTags(id), getAssignedAudioLocations(id), getAssignedTypes(id));
+            entries.add(new StoredJournalEntries(id, date, time, title, desc, qual, clar, mood), getAssignedTags(id), getAssignedAudioLocations(id), getAssignedTypes(id));
         }
         cursor.close();
         return entries;
@@ -187,6 +187,17 @@ public class DatabaseWrapper extends SQLiteOpenHelper {
             writableDB.update(StoredJournalEntries.TABLE_NAME, initialValues, StoredJournalEntries.ENTRY_ID + "=?", new String[] { Integer.toString(entry_id) });
         }
         return id;
+    }
+
+    public void clearRelationsForEntry(int entry_id) {
+        writableDB.delete(StoredJournalHasTag.TABLE_NAME, StoredJournalHasTag.ENTRY_ID + "=?", new String[] { Integer.toString(entry_id) });
+        writableDB.delete(StoredJournalIsType.TABLE_NAME, StoredJournalIsType.ENTRY_ID + "=?", new String[] { Integer.toString(entry_id) });
+        writableDB.delete(StoredJournalAudioLocations.TABLE_NAME, StoredJournalAudioLocations.ENTRY_ID + "=?", new String[] { Integer.toString(entry_id) });
+    }
+
+    public void deleteEntry(int entry_id) {
+        clearRelationsForEntry(entry_id);
+        writableDB.delete(StoredJournalEntries.TABLE_NAME, StoredJournalEntries.ENTRY_ID + "=?", new String[] { Integer.toString(entry_id) });
     }
 
     public void addDreamTypeToEntry(int entry_id, String dreamType_id) {

@@ -71,6 +71,7 @@
     <string name="dream_false_awakening">False awakening</string>
     <string name="dream_lucid">Lucid</string>
     <string name="add_journal_entry">Add Entry</string>
+    <string name="save_journal_entry_changes">Save changes</string>
     <string name="add_audio">Add</string>
     <string name="close_popup">close popup</string>
     <string name="recording">Recording…</string>
@@ -81,6 +82,13 @@
     <string name="no">No</string>
     <string name="pause_continue_recording">pause/continue recording</string>
     <string name="stop_recording">stop recording</string>
+    <string name="recording_single">Recording</string>
+    <string name="recording_multiple">Recordings</string>
+    <string name="no_tags_heading">No tags</string>
+    <string name="no_tags_message">This journal entry has no assigned tags. Are you sure you want to add this entry without any tags?</string>
+    <string name="form_not_filled">Not all fields have been filled out</string>
+    <string name="entry_delete_header">Delete journal entry</string>
+    <string name="entry_delete_message">Are you sure you want to delete this journal entry?</string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>
@@ -89,33 +97,5 @@
         <item>PIN</item>
         <item>Password</item>
         <item>None</item>
-    </string-array>
-    <string-array name="titles">
-        <item>SomeTitle</item>
-        <item>SomeTitle</item>
-        <item>SomeTitle</item>
-        <item>SomeTitle</item>
-        <item>SomeTitle</item>
-    </string-array>
-    <string-array name="descs">
-        <item>Some random description</item>
-        <item>Some random description</item>
-        <item>Some random description</item>
-        <item>Some random description</item>
-        <item>Some random description</item>
-    </string-array>
-    <string-array name="dates">
-        <item>15.12.2021</item>
-        <item>15.12.2021</item>
-        <item>15.12.2021</item>
-        <item>15.12.2021</item>
-        <item>15.12.2021</item>
-    </string-array>
-    <string-array name="times">
-        <item>04:16</item>
-        <item>04:16</item>
-        <item>04:16</item>
-        <item>04:16</item>
-        <item>04:16</item>
     </string-array>
 </resources>

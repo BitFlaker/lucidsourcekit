@@ -18,6 +18,14 @@ public class DreamJournalEntriesList {
         audioLocations = new ArrayList<>();
     }
 
+    public Integer[] getEntryIds(){
+        Integer[] entryIds = new Integer[size()];
+        for (int i = 0; i < entryIds.length; i++) {
+            entryIds[i] = entries.get(i).getEntryId();
+        }
+        return entryIds;
+    }
+
     public String[] getDates(){
         String[] dates = new String[size()];
         for (int i = 0; i < dates.length; i++) {

@@ -29,23 +29,23 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class DreamJournal extends Fragment {
 
     RecyclerView recyclerView;
-    String[][] tags;
-    int[] moods, sleepQualities, sleepTypes;
     private TextView noEntryFound;
     private FloatingActionButton fabAdd, fabText, fabForms, fabAudio;
     private Animation fabOpen, fabClose, rotateForward, rotateBackward;
     private boolean isOpen = false;
     private DatabaseWrapper dbWrapper;
     private RecyclerViewAdapter recyclerViewAdapter;
-    private ActivityResultLauncher<Intent> someActivityResultLauncher;
+    private ActivityResultLauncher<Intent> createEntryActivityResultLauncher;
+    public ActivityResultLauncher<Intent> viewEntryActivityResultLauncher;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        someActivityResultLauncher = registerForActivityResult(
+        createEntryActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent data = result.getData();
+                        int entryId = data.getIntExtra("entryId", -1);
                         String selectedDate = data.getStringExtra("date");
                         String selectedTime = data.getStringExtra("time");
                         String title = data.getStringExtra("title");
@@ -56,9 +56,40 @@ public class DreamJournal extends Fragment {
                         String[] dreamTypes = data.getStringArrayExtra("dreamTypes");
                         String[] tags = data.getStringArrayExtra("tags");
                         String[] recordedAudios = data.getStringArrayExtra("recordings");
-                        recyclerViewAdapter.addEntry(selectedDate, selectedTime, title, description, tags, quality, clarity, mood, dreamTypes, recordedAudios);
+                        recyclerViewAdapter.addEntry(entryId, selectedDate, selectedTime, title, description, tags, quality, clarity, mood, dreamTypes, recordedAudios);
                         recyclerViewAdapter.notifyItemInserted(0);
                         recyclerView.scrollToPosition(0);
+                    }
+                });
+        viewEntryActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if(data.hasExtra("action")) {
+                            String action = data.getStringExtra("action");
+                            if(action.equals("EDIT")) {
+                                int position = data.getIntExtra("position", -1);
+                                String selectedDate = data.getStringExtra("date");
+                                String selectedTime = data.getStringExtra("time");
+                                String title = data.getStringExtra("title");
+                                String description = data.getStringExtra("description");
+                                String quality = data.getStringExtra("quality");
+                                String clarity = data.getStringExtra("clarity");
+                                String mood = data.getStringExtra("mood");
+                                String[] dreamTypes = data.getStringArrayExtra("dreamTypes");
+                                String[] tags = data.getStringArrayExtra("tags");
+                                String[] recordedAudios = data.getStringArrayExtra("recordings");
+                                recyclerViewAdapter.changeEntryAt(position, selectedDate, selectedTime, title, description, tags, quality, clarity, mood, dreamTypes, recordedAudios);
+                                recyclerViewAdapter.notifyItemChanged(position);
+                                recyclerView.scrollToPosition(position);
+                            }
+                            else if (action.equals("DELETE")) {
+                                int position = data.getIntExtra("position", -1);
+                                recyclerViewAdapter.removeEntryAt(position);
+                                recyclerViewAdapter.notifyItemRemoved(position);
+                                recyclerViewAdapter.notifyItemRangeChanged(position, recyclerViewAdapter.getItemCount());
+                            }
+                        }
                     }
                 });
         return inflater.inflate(R.layout.fragment_dream_journal, container, false);
@@ -76,8 +107,7 @@ public class DreamJournal extends Fragment {
 
         DreamJournalEntriesList entries = dbWrapper.getJournalEntries();
 
-        // TODO desc can be null => Audio recording
-        recyclerViewAdapter = new RecyclerViewAdapter(getContext(), entries.getDates(), entries.getTimes(), entries.getTitles(), entries.getDescriptions(), entries.getTags(), entries.getSleepQualities(), entries.getDreamClarities(), entries.getDreamMoods(), entries.getTypes(), entries.getAudioLocations());
+        recyclerViewAdapter = new RecyclerViewAdapter(this, getContext(), entries.getEntryIds(), entries.getDates(), entries.getTimes(), entries.getTitles(), entries.getDescriptions(), entries.getTags(), entries.getSleepQualities(), entries.getDreamClarities(), entries.getDreamMoods(), entries.getTypes(), entries.getAudioLocations());
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -108,7 +138,7 @@ public class DreamJournal extends Fragment {
         Intent intent = new Intent(getContext(), AddTextEntry.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("type", forms.ordinal());
-        someActivityResultLauncher.launch(intent);
+        createEntryActivityResultLauncher.launch(intent);
     }
 
     private void animateFab(){

@@ -1,6 +1,7 @@
 package com.bitflaker.lucidsourcekit.main.createjournalentry;
 
 import android.app.Fragment;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -18,11 +19,17 @@ import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.button.MaterialButton;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
 public class AudioJournalEditorFrag extends Fragment {
     private MaterialButton addButton;
-    OnAudioRecordingRequested mListener;
+    OnAudioRecordingRequested mListenerRecRequested;
+    OnAudioRecordingRemoved mListenerRecRemoved;
     private ImageButton currentPlayingImageButton = null;
-    private boolean currentlyPlaying = false;
+    private MediaPlayer mPlayer;
+    private ArrayList<String> audiosToBeAddedOnReady;
 
     public static AudioJournalEditorFrag newInstance() {
         return new AudioJournalEditorFrag();
@@ -37,18 +44,24 @@ public class AudioJournalEditorFrag extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        for (String recording : audiosToBeAddedOnReady) {
+            addRecordingToList(recording);
+        }
+
         addButton = getView().findViewById(R.id.btn_add_audio);
         addButton.setOnClickListener(e -> {
-            if(currentlyPlaying){
-                currentPlayingImageButton.setImageResource(R.drawable.ic_baseline_play_arrow_24);   // TODO stop playing record
+            if(mPlayer != null && mPlayer.isPlaying()){
+                currentPlayingImageButton.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+                mPlayer.stop();
+                mPlayer.release();
+                mPlayer = null;
                 currentPlayingImageButton = null;
-                currentlyPlaying = false;
             }
-            mListener.onEvent();
+            mListenerRecRequested.onEvent();
         });
     }
 
-    public void addRecordingToList(String title, String length) {
+    public void addRecordingToList(String audioFile) {
         LinearLayout llContainer = new LinearLayout(getContext());
         LinearLayout.LayoutParams llparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         llparams.setMargins(0, Tools.dpToPx(getContext(), 5), 0, Tools.dpToPx(getContext(), 5));
@@ -67,39 +80,65 @@ public class AudioJournalEditorFrag extends Fragment {
         playPause.setImageResource(R.drawable.ic_baseline_play_arrow_24);
         playPause.setBackgroundTintList(Tools.getAttrColor(R.attr.transparent, getContext().getTheme()));
         playPause.setOnClickListener(e -> {
-            if(currentlyPlaying && currentPlayingImageButton == playPause) {
-                playPause.setImageResource(R.drawable.ic_baseline_play_arrow_24);   // TODO stop playing record
+            if(mPlayer != null && mPlayer.isPlaying() && currentPlayingImageButton == playPause) {
+                playPause.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+                mPlayer.stop();
+                mPlayer.release();
+                mPlayer = null;
                 currentPlayingImageButton = null;
-                currentlyPlaying = false;
             }
-            else if(currentlyPlaying) {
-                currentPlayingImageButton.setImageResource(R.drawable.ic_baseline_play_arrow_24);   // TODO stop playing old record
-                playPause.setImageResource(R.drawable.ic_baseline_pause_24);    // TODO start playing record
-                currentPlayingImageButton = playPause;
-                currentlyPlaying = true;
+            else if(mPlayer != null && mPlayer.isPlaying()) {
+                currentPlayingImageButton.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+                playPause.setImageResource(R.drawable.ic_baseline_pause_24);
+                mPlayer.stop();
+                mPlayer.release();
+                mPlayer = null;
+                try {
+                    setupAudioPlayer(getContext().getFilesDir().getAbsolutePath() + audioFile, playPause);
+                    currentPlayingImageButton = playPause;
+                } catch (IOException ex) {
+                    playPause.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+                    currentPlayingImageButton = null;
+                    ex.printStackTrace();
+                }
             }
             else {
-                playPause.setImageResource(R.drawable.ic_baseline_pause_24);    // TODO start playing record
-                currentPlayingImageButton = playPause;
-                currentlyPlaying = true;
+                playPause.setImageResource(R.drawable.ic_baseline_pause_24);
+                try {
+                    setupAudioPlayer(getContext().getFilesDir().getAbsolutePath() + audioFile, playPause);
+                    currentPlayingImageButton = playPause;
+                } catch (IOException ex) {
+                    playPause.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+                    currentPlayingImageButton = null;
+                    ex.printStackTrace();
+                }
             }
         });
-        // TODO if recording track ended reset pause button to play button
 
         TextView titleView = new TextView(getContext());
         LinearLayout.LayoutParams lparamsTxt = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
         lparamsTxt.weight = 1;
         lparamsTxt.gravity = Gravity.CENTER_VERTICAL;
         titleView.setLayoutParams(lparamsTxt);
-        titleView.setText(title);
+        titleView.setText("Recording");
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
         TextView lengthView = new TextView(getContext());
         LinearLayout.LayoutParams lparamsTxtLength = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lparamsTxtLength.gravity = Gravity.CENTER_VERTICAL;
         lengthView.setLayoutParams(lparamsTxtLength);
-        lengthView.setText(length);
-
+        MediaPlayer mp = new MediaPlayer();
+        try {
+            mp.setDataSource(getContext().getFilesDir().getAbsolutePath() + audioFile);
+            mp.prepare();
+            lengthView.setText(String.format("%02d:%02d",
+                    TimeUnit.MILLISECONDS.toMinutes(mp.getDuration()),
+                    TimeUnit.MILLISECONDS.toSeconds(mp.getDuration()) -
+                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(mp.getDuration()))
+            ));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         ImageButton remove = new ImageButton(getContext());
         LinearLayout.LayoutParams removeLparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         removeLparams.gravity = Gravity.CENTER_VERTICAL;
@@ -111,9 +150,13 @@ public class AudioJournalEditorFrag extends Fragment {
             new AlertDialog.Builder(getContext()).setTitle(getResources().getString(R.string.recording_delete_header)).setMessage(getResources().getString(R.string.recording_delete_message))
                     .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                         if(currentPlayingImageButton == playPause) {
-                            // TODO stop playing record
+                            if(mPlayer != null){
+                                mPlayer.stop();
+                                mPlayer.release();
+                                mPlayer = null;
+                            }
                             currentPlayingImageButton = null;
-                            currentlyPlaying = false;
+                            mListenerRecRemoved.onEvent(audioFile);
                         }
                         ((LinearLayout) getView().findViewById(R.id.ll_records_container)).removeView(llContainer);
                     })
@@ -129,11 +172,49 @@ public class AudioJournalEditorFrag extends Fragment {
         ((LinearLayout) getView().findViewById(R.id.ll_records_container)).addView(llContainer);
     }
 
+    @Override
+    public void onStop() {
+        if(mPlayer != null){
+            mPlayer.stop();
+            mPlayer.release();
+            mPlayer = null;
+        }
+        super.onStop();
+    }
+
+    private void setupAudioPlayer(String audioFile, ImageButton playPause) throws IOException {
+        mPlayer = new MediaPlayer();
+        mPlayer.setDataSource(audioFile);
+        mPlayer.setOnCompletionListener(e -> {
+            playPause.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+            mPlayer.stop();
+            mPlayer.release();
+            mPlayer = null;
+        });
+        mPlayer.prepare();
+        mPlayer.start();
+    }
+
+    public void addRecordingToListOnReady(String recordingLocation) {
+        if (audiosToBeAddedOnReady == null){
+            audiosToBeAddedOnReady = new ArrayList<>();
+        }
+        audiosToBeAddedOnReady.add(recordingLocation);
+    }
+
     public interface OnAudioRecordingRequested {
         void onEvent();
     }
 
     public void setOnAudioRecordingRequested(OnAudioRecordingRequested eventListener) {
-        mListener = eventListener;
+        mListenerRecRequested = eventListener;
+    }
+
+    public interface OnAudioRecordingRemoved {
+        void onEvent(String path);
+    }
+
+    public void setOnAudioRecordingRemoved(OnAudioRecordingRemoved eventListener) {
+        mListenerRecRemoved = eventListener;
     }
 }

@@ -5,15 +5,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 
 import com.bitflaker.lucidsourcekit.R;
 
 public class TextJournalEditorFrag extends Fragment {
-    public static Fragment newInstance() {
-        return new TextJournalEditorFrag();
-    }
+    private String textToSetOnReady = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -23,5 +22,10 @@ public class TextJournalEditorFrag extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ((EditText) getView().findViewById(R.id.txt_description_dream)).setText(textToSetOnReady);
+    }
+
+    public void setTextOnReady(String text) {
+        textToSetOnReady = text;
     }
 }

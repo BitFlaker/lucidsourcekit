@@ -72,6 +72,7 @@
     <string name="dream_false_awakening">Falsches Erwachen</string>
     <string name="dream_lucid">Luzid</string>
     <string name="add_journal_entry">Eintrag hinzufügen</string>
+    <string name="save_journal_entry_changes">Änderungen speichern</string>
     <string name="add_audio">Hinzufügen</string>
     <string name="close_popup">Popup schließen</string>
     <string name="recording">Aufnahme läuft…</string>
@@ -82,6 +83,13 @@
     <string name="no">Nein</string>
     <string name="pause_continue_recording">Aufnahme pausieren/fortsetzen</string>
     <string name="stop_recording">Aufnahme stoppen</string>
+    <string name="recording_single">Aufnahme</string>
+    <string name="recording_multiple">Aufnahmen</string>
+    <string name="no_tags_heading">Keine Tags</string>
+    <string name="no_tags_message">Dieser Tagebucheintrag besitzt keine zugewiesenen Tags. Sind Sie sicher, dass der Eintrag ohne zugewiesene Tags gespeichert werden sollte?</string>
+    <string name="form_not_filled">Es wurden nicht alle Felder ausgefüllt</string>
+    <string name="entry_delete_header">Tagebucheintrag löschen</string>
+    <string name="entry_delete_message">Soll dieser Tagebucheintrag wirklich endgültig gelöscht werden?</string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>

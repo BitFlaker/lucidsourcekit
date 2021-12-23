@@ -11,7 +11,7 @@ public class StoredJournalEntries {
     public static final String CLARITY_ID = "clarity_id";
     public static final String MOOD_ID = "mood_id";
 
-    private final String entryId;
+    private final int entryId;
     private final String date;
     private final String time;
     private final String title;
@@ -20,7 +20,7 @@ public class StoredJournalEntries {
     private final String clarity_id;
     private final String mood_id;
 
-    public StoredJournalEntries(String entryId, String date, String time, String title, String description, String quality_id, String clarity_id, String mood_id) {
+    public StoredJournalEntries(int entryId, String date, String time, String title, String description, String quality_id, String clarity_id, String mood_id) {
         this.entryId = entryId;
         this.date = date;
         this.time = time;
@@ -35,7 +35,7 @@ public class StoredJournalEntries {
         return description;
     }
 
-    public String getEntryId() {
+    public int getEntryId() {
         return entryId;
     }
 

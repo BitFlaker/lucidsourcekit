@@ -110,10 +110,10 @@
                 android:id="@+id/txt_title_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
                 android:text="@string/dream_title"
                 android:textColor="@color/darker_white_2x"
                 android:textSize="14sp"
-                android:layout_marginStart="15dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txt_dream_title" />
 
@@ -173,7 +173,7 @@
                 app:justifyContent="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_tags"/>
+                app:layout_constraintTop_toBottomOf="@+id/txt_tags" />
 
             <ImageButton
                 android:id="@+id/btn_add_tag"

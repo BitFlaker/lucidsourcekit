@@ -22,8 +22,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.app.ActivityCompat;
@@ -43,6 +45,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.slider.Slider;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -53,18 +56,14 @@ import java.util.List;
 
 public class AddTextEntry extends AppCompatActivity {
 
-    private MaterialButton dateButton;
-    private MaterialButton timeButton;
+    private MaterialButton dateButton, timeButton;
     private ImageButton addTag;
     private DatePickerDialog dpd;
     private DateFormat dateFormat;
     private TimePickerDialog tpd;
     private LinearLayout dreamEditorBox;
     private MaterialButton addEntry;
-    private ToggleButton nightmare;
-    private ToggleButton paralysis;
-    private ToggleButton falseAwakening;
-    private ToggleButton lucid;
+    private ToggleButton nightmare, paralysis, falseAwakening, lucid;
     private Slider qualitySlider;
     private Slider claritySlider;
     private Slider moodSlider;
@@ -74,19 +73,25 @@ public class AddTextEntry extends AppCompatActivity {
     private List<String> recordedAudios;
     public static final int REQUEST_AUDIO_PERMISSION_CODE = 1;
 
-    private ImageButton tapOutsideRecording;
-    private ImageButton pauseContinueRecording;
-    private ImageButton stopRecording;
+    private ImageButton tapOutsideRecording, pauseContinueRecording, stopRecording;
     private ImageView backgroundUnfocus;
     private TextView recordingText;
     private boolean isRecordingRunning;
     private AudioJournalEditorFrag audioFrag;
     private FormsJournalEditorFrag formsFrag;
+    private TextJournalEditorFrag textFrag;
 
     private DatabaseWrapper dbWrapper;
     private String selectedDate;
     private String selectedTime;
     private JournalTypes currentType;
+
+    private boolean storedByUser = false;
+    private FlexboxLayout tagContainer;
+
+    private EditText entryTitle;
+    private boolean isInEditingMode = false;
+    private int entryId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +115,8 @@ public class AddTextEntry extends AppCompatActivity {
         qualitySlider = findViewById(R.id.sld_sleep_quality);
         claritySlider = findViewById(R.id.sld_clarity);
         moodSlider = findViewById(R.id.sld_mood);
+        tagContainer = findViewById(R.id.flx_tags);
+        entryTitle = findViewById(R.id.txt_title_dream);
         isRecordingRunning = false;
         recordedAudios = new ArrayList<>();
 
@@ -119,30 +126,84 @@ public class AddTextEntry extends AppCompatActivity {
         setupTagsPopup();
         setupSliders();
         setupAddEntryButton();
+        Intent data = getIntent();
 
-        currentType = JournalTypes.values()[getIntent().getIntExtra("type", -1)];
-        getIntent().getIntExtra("type", -1);
+        currentType = JournalTypes.values()[data.getIntExtra("type", -1)];
+        data.getIntExtra("type", -1);
         switch(currentType){
             case Text:
-                getFragmentManager().beginTransaction().add(dreamEditorBox.getId(), TextJournalEditorFrag.newInstance(), null).commit();   // TODO check tag argument s
+                textFrag = new TextJournalEditorFrag();
+                getFragmentManager().beginTransaction().add(dreamEditorBox.getId(), textFrag, null).commit();
                 break;
             case Audio:
                 setupRecordingPopup();
                 audioFrag = AudioJournalEditorFrag.newInstance();
                 audioFrag.setOnAudioRecordingRequested(this::showRecording);
-                getFragmentManager().beginTransaction().add(dreamEditorBox.getId(), audioFrag, null).commit();   // TODO check tag argument s
+                audioFrag.setOnAudioRecordingRemoved(e -> {
+                    File audio = new File(getFilesDir().getAbsolutePath() + e);
+                    audio.delete();
+                    recordedAudios.remove(e);
+                });
+                getFragmentManager().beginTransaction().add(dreamEditorBox.getId(), audioFrag, null).commit();
                 break;
             case Forms:
                 formsFrag = FormsJournalEditorFrag.newInstance();
-                getFragmentManager().beginTransaction().add(dreamEditorBox.getId(), formsFrag, null).commit();   // TODO check tag argument s
+                getFragmentManager().beginTransaction().add(dreamEditorBox.getId(), formsFrag, null).commit();
                 break;
+        }
+
+        if(data.hasExtra("mode") && data.getStringExtra("mode").equals("EDIT")) {
+            isInEditingMode = true;
+
+            entryId = data.getIntExtra("entryId", -1);
+
+            selectedDate = data.getStringExtra("date");
+            String[] splitDate = selectedDate.split("\\.");
+            dateButton.setText(dateFormat.format(new Date(Integer.parseInt(splitDate[2]), Integer.parseInt(splitDate[1])-1, Integer.parseInt(splitDate[0]))));
+
+            selectedTime = data.getStringExtra("time");
+            timeButton.setText(selectedTime);
+
+            entryTitle.setText(data.getStringExtra("title"));
+            if(currentType == JournalTypes.Text) {
+                textFrag.setTextOnReady(data.getStringExtra("description"));
+            }
+
+            qualitySlider.setValue(SleepQuality.getEnum(data.getStringExtra("quality")).ordinal());
+            claritySlider.setValue(DreamClarity.getEnum(data.getStringExtra("clarity")).ordinal());
+            moodSlider.setValue(DreamMoods.getEnum(data.getStringExtra("mood")).ordinal());
+
+            String[] editDreamTypes = data.getStringArrayExtra("dreamTypes");
+            for (String editDreamType : editDreamTypes) {
+                switch (DreamTypes.getEnum(editDreamType)) {
+                    case Lucid: lucid.setChecked(true); break;
+                    case FalseAwakening: falseAwakening.setChecked(true); break;
+                    case SleepParalysis: paralysis.setChecked(true); break;
+                    case Nightmare: nightmare.setChecked(true); break;
+                }
+            }
+
+            String[] editTags = data.getStringArrayExtra("tags");
+            for (String editTag : editTags) {
+                tagContainer.addView(generateTagView(editTag));
+            }
+
+            if(currentType == JournalTypes.Audio) {
+                String[] editRecordings = data.getStringArrayExtra("recordings");
+                for (String editRecording : editRecordings) {
+                    recordedAudios.add(editRecording);
+                    audioFrag.addRecordingToListOnReady(editRecording);
+                }
+            }
+
+            addEntry.setText(getResources().getString(R.string.save_journal_entry_changes));
         }
     }
 
     private void setupAddEntryButton() {
         addEntry.setOnClickListener(e -> {
             dbWrapper = new DatabaseWrapper(this);
-            String title = ((EditText) findViewById(R.id.txt_title_dream)).getText().toString();
+            String title = entryTitle.getText().toString();
             String description = null;
             switch (currentType) {
                 case Text:
@@ -153,48 +214,90 @@ public class AddTextEntry extends AppCompatActivity {
                     break;
             }
 
-            String quality = SleepQuality.values()[((int) qualitySlider.getValue())].getId();
-            String clarity = DreamClarity.values()[((int) claritySlider.getValue())].getId();
-            String mood = DreamMoods.values()[((int) moodSlider.getValue())].getId();
-
-            int id = dbWrapper.addJournalEntry(-1, selectedDate, selectedTime, title, description, quality, clarity, mood);
-
-            List<String> dreamTypes = new ArrayList<>();
-            if(nightmare.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.Nightmare.getId()); dreamTypes.add(DreamTypes.Nightmare.getId()); }
-            if(paralysis.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.SleepParalysis.getId()); dreamTypes.add(DreamTypes.SleepParalysis.getId()); }
-            if(falseAwakening.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.FalseAwakening.getId()); dreamTypes.add(DreamTypes.FalseAwakening.getId()); }
-            if(lucid.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.Lucid.getId()); dreamTypes.add(DreamTypes.Lucid.getId()); }
-
-            List<String> tags = new ArrayList<>();
-            FlexboxLayout tagContainer = (FlexboxLayout) findViewById(R.id.flx_tags);
-            int childCount = tagContainer.getChildCount();
-            for (int i = 0; i < childCount; i++){
-                if(tagContainer.getChildAt(i) instanceof TextView){
-                    TextView storedTag = (TextView) tagContainer.getChildAt(i);
-                    String tag = storedTag.getText().toString();
-                    tags.add(tag);
-                    dbWrapper.addDreamTagToEntry(id, tag);
+            if(isVitalDataFilledIn(title, description)) {
+                if(((FlexboxLayout) findViewById(R.id.flx_tags)).getChildCount() == 0){
+                    String finalDescription = description;
+                    new AlertDialog.Builder(AddTextEntry.this).setTitle(getResources().getString(R.string.no_tags_heading)).setMessage(getResources().getString(R.string.no_tags_message))
+                            .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
+                                storeEntry(title, finalDescription);
+                            })
+                            .setNegativeButton(getResources().getString(R.string.no), null)
+                            .show();
+                }
+                else {
+                    storeEntry(title, description);
                 }
             }
-
-            for (int i = 0; i < recordedAudios.size(); i++){
-                dbWrapper.addDreamAudioRecording(id, recordedAudios.get(i));
+            else{
+                Toast.makeText(AddTextEntry.this, getResources().getString(R.string.form_not_filled), Toast.LENGTH_SHORT).show();
             }
-
-            Intent data = new Intent();
-            data.putExtra("date", selectedDate);
-            data.putExtra("time", selectedTime);
-            data.putExtra("title", title);
-            data.putExtra("description", description);
-            data.putExtra("quality", quality);
-            data.putExtra("clarity", clarity);
-            data.putExtra("mood", mood);
-            data.putExtra("dreamTypes", dreamTypes.toArray(new String[0]));
-            data.putExtra("tags", tags.toArray(new String[0]));
-            data.putExtra("recordings", recordedAudios.toArray(new String[0]));
-            setResult(RESULT_OK, data);
-            finish();
         });
+    }
+
+    private void storeEntry(String title, String description) {
+        String quality = SleepQuality.values()[((int) qualitySlider.getValue())].getId();
+        String clarity = DreamClarity.values()[((int) claritySlider.getValue())].getId();
+        String mood = DreamMoods.values()[((int) moodSlider.getValue())].getId();
+
+        if(entryId != -1) {
+            dbWrapper.clearRelationsForEntry(entryId);
+        }
+
+        int id = dbWrapper.addJournalEntry(entryId, selectedDate, selectedTime, title, description, quality, clarity, mood);
+
+        List<String> dreamTypes = new ArrayList<>();
+        if(nightmare.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.Nightmare.getId()); dreamTypes.add(DreamTypes.Nightmare.getId()); }
+        if(paralysis.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.SleepParalysis.getId()); dreamTypes.add(DreamTypes.SleepParalysis.getId()); }
+        if(falseAwakening.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.FalseAwakening.getId()); dreamTypes.add(DreamTypes.FalseAwakening.getId()); }
+        if(lucid.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.Lucid.getId()); dreamTypes.add(DreamTypes.Lucid.getId()); }
+
+        List<String> tags = new ArrayList<>();
+        int childCount = tagContainer.getChildCount();
+        for (int i = 0; i < childCount; i++){
+            if(tagContainer.getChildAt(i) instanceof TextView){
+                TextView storedTag = (TextView) tagContainer.getChildAt(i);
+                String tag = storedTag.getText().toString();
+                tags.add(tag);
+                dbWrapper.addDreamTagToEntry(id, tag);
+            }
+        }
+
+        for (int i = 0; i < recordedAudios.size(); i++){
+            dbWrapper.addDreamAudioRecording(id, recordedAudios.get(i));
+        }
+
+        Intent data = new Intent();
+        data.putExtra("date", selectedDate);
+        data.putExtra("time", selectedTime);
+        data.putExtra("title", title);
+        data.putExtra("description", description);
+        data.putExtra("quality", quality);
+        data.putExtra("clarity", clarity);
+        data.putExtra("mood", mood);
+        data.putExtra("dreamTypes", dreamTypes.toArray(new String[0]));
+        data.putExtra("tags", tags.toArray(new String[0]));
+        data.putExtra("recordings", recordedAudios.toArray(new String[0]));
+        setResult(RESULT_OK, data);
+        storedByUser = true;
+        finish();
+    }
+
+    private boolean isVitalDataFilledIn(String title, String description) {
+        boolean titleOk = title.length() > 0;
+        boolean descriptionOk = currentType.compareTo(JournalTypes.Audio) == 0 || description.length() > 0;
+        boolean audioOk = currentType.compareTo(JournalTypes.Audio) != 0 || recordedAudios.size() > 0;
+        return titleOk && descriptionOk && audioOk;
+    }
+
+    @Override
+    protected void onStop() {
+        if(!storedByUser){
+            for (String recordedAudio : recordedAudios) {
+                File audio = new File(getFilesDir().getAbsolutePath() + recordedAudio);
+                audio.delete();
+            }
+        }
+        super.onStop();
     }
 
     private void setupTagsPopup() {
@@ -370,9 +473,8 @@ public class AddTextEntry extends AppCompatActivity {
     private void storeRecording() {
         stopRecordingAudio();
         hideRecording();
-        String title = "Recording"; // TODO replace text with icon?
-        String length = "02:35"; // TODO get length
-        audioFrag.addRecordingToList(title, length);
+        // TODO replace text with icon?
+        audioFrag.addRecordingToList(recordedAudios.get(recordedAudios.size() - 1));
     }
 
     private void setupTimePicker() {
@@ -389,7 +491,7 @@ public class AddTextEntry extends AppCompatActivity {
     private void setupDatePicker() {
         dpd = new DatePickerDialog(AddTextEntry.this);
         dateFormat = android.text.format.DateFormat.getDateFormat(getApplicationContext());
-        SimpleDateFormat storeDateFormatter= new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat storeDateFormatter = new SimpleDateFormat("dd.MM.yyyy");
         Date currDate = java.util.Calendar.getInstance().getTime();
         dateButton.setText(dateFormat.format(currDate));
         selectedDate = storeDateFormatter.format(currDate);
@@ -425,7 +527,6 @@ public class AddTextEntry extends AppCompatActivity {
             newTagsContainer.removeView(newTagsContainer.getChildAt(0));
         }
 
-        FlexboxLayout tagContainer = (FlexboxLayout) findViewById(R.id.flx_tags);
         int childCount = tagContainer.getChildCount();
         for (int i = 0; i < childCount; i++){
             if(tagContainer.getChildAt(i) instanceof TextView){
@@ -442,7 +543,6 @@ public class AddTextEntry extends AppCompatActivity {
     }
 
     private void hideTagEditor() {
-        FlexboxLayout tagContainer = (FlexboxLayout) findViewById(R.id.flx_tags);
         int childCount = tagContainer.getChildCount();
         for (int i = 0; i < childCount; i++){
             tagContainer.removeView(tagContainer.getChildAt(0));
