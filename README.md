@@ -1,4 +1,4 @@
-<img alt="Logo" align="left" src="https://github.com/BitFlaker/lucidsourcekit/.github/lucidsourcekit_icon.png" width="35px" />
+<img alt="Logo" align="left" src="https://github.com/BitFlaker/lucidsourcekit/blob/main/.github/lucidsourcekit_icon.png" width="35px" />
 
 # &nbsp;&nbsp;LucidSourceKit
 
