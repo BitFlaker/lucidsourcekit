@@ -1,11 +1,15 @@
-# LucidSourceKit
+<img alt="Logo" align="left" src="https://github.com/BitFlaker/lucidsourcekit/.github/lucidsourcekit_icon.png" width="35px" />
+
+# &nbsp;&nbsp;LucidSourceKit
 
 ## Introduction
 
-**LucidSourceKit** is an all-you-need toolkit for lucid dreaming, dream analyzing and more. Currently the following are implemented:
+**LucidSourceKit** is an all-you-need toolkit for lucid dreaming, dream analyzing and more. Currently the following features are implemented:
 * Protecting the app using **PIN, password or biometrics**.
 * Getting an **overview** of settings, stats, alarms and more.
 * **Changing the language** on the fly.
+* Creating **dream journal entries** with **recordings, plain text or a dream journal form**.
+* **Categorizing** and **rating** dream journal entries.
 
 ## Supported languages
 
