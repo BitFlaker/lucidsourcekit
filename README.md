@@ -1,6 +1,6 @@
 
 
-# <img alt="Logo" align="left" src="https://github.com/BitFlaker/lucidsourcekit/blob/main/.github/lucidsourcekit_icon.png" height="40px" /> LucidSourceKit
+# <img alt="Logo" align="left" src="https://github.com/BitFlaker/lucidsourcekit/blob/main/.github/new_lucidsourcekit_icon.png" height="40px" /> LucidSourceKit
 
 ## Introduction
 
