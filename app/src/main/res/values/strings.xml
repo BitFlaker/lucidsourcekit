@@ -1,11 +1,13 @@
 <resources>
-    <string name="app_name">LucidSourceKit</string>
+    <string name="app_name">Lucid Source Kit</string>
     <string name="login_background_description">Sunset with mountains and a pathway</string>
     <string name="login_password_hint">Password</string>
     <string name="login_password_unlock_button">Unlock</string>
     <string name="setup_language_title">Welcome!</string>
     <string name="setup_languages_description">Please select the language you want to use the app. You can always change this later within the settings menu.</string>
     <string name="setup_next">Next</string>
+    <string name="password_too_short">Password too short!</string>
+    <string name="pin_too_short">PIN too short!</string>
     <string name="setup_security_title">Stay secure</string>
     <string name="setup_security_description">Your dream journal entries, alarms, statistics, etc. can be protected locally by enabling the built-in authentication feature.</string>
     <string name="setup_open_source_title">Open Source</string>
@@ -89,6 +91,7 @@
     <string name="form_not_filled">Not all fields have been filled out</string>
     <string name="entry_delete_header">Delete journal entry</string>
     <string name="entry_delete_message">Are you sure you want to delete this journal entry?</string>
+    <string name="recurring">Recurring</string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>

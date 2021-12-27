@@ -5,7 +5,8 @@ public enum DreamMoods {
     Poor("POR"),
     Ok("OKM"),
     Great("GRT"),
-    Outstanding("OSD");
+    Outstanding("OSD"),
+    None("");
 
     private String id;
 

@@ -44,8 +44,10 @@ public class AudioJournalEditorFrag extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        for (String recording : audiosToBeAddedOnReady) {
-            addRecordingToList(recording);
+        if(audiosToBeAddedOnReady != null){
+            for (String recording : audiosToBeAddedOnReady) {
+                addRecordingToList(recording);
+            }
         }
 
         addButton = getView().findViewById(R.id.btn_add_audio);

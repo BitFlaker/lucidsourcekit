@@ -1,6 +1,7 @@
 package com.bitflaker.lucidsourcekit.main.createjournalentry;
 
 import static android.Manifest.permission.RECORD_AUDIO;
+import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import static java.util.UUID.randomUUID;
 
 import android.app.DatePickerDialog;
@@ -11,8 +12,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,6 +91,8 @@ public class AddTextEntry extends AppCompatActivity {
     private EditText entryTitle;
     private boolean isInEditingMode = false;
     private int entryId = -1;
+    private EditText tagsEnter;
+    private FlexboxLayout tagsToAddContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +120,8 @@ public class AddTextEntry extends AppCompatActivity {
         entryTitle = findViewById(R.id.txt_title_dream);
         isRecordingRunning = false;
         recordedAudios = new ArrayList<>();
+        tagsEnter = findViewById(R.id.txt_tags_enter);
+        tagsToAddContainer = findViewById(R.id.flx_tags_to_add);
 
         setupTimePicker();
         setupDatePicker();
@@ -267,6 +270,7 @@ public class AddTextEntry extends AppCompatActivity {
         }
 
         Intent data = new Intent();
+        data.putExtra("entryId", id);
         data.putExtra("date", selectedDate);
         data.putExtra("time", selectedTime);
         data.putExtra("title", title);
@@ -300,26 +304,26 @@ public class AddTextEntry extends AppCompatActivity {
         super.onStop();
     }
 
+    // TODO change to AutocompleteEditText and set Data
     private void setupTagsPopup() {
-        EditText tagsEnter = findViewById(R.id.txt_tags_enter);
-        FlexboxLayout tagsContainer = findViewById(R.id.flx_tags_to_add);
-
-        tagsEnter.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(tagsEnter.getText().length() > 0 && tagsEnter.getText().charAt(tagsEnter.getText().length()-1) == ','){
-                    Chip tag = generateTagChip(tagsEnter.getText().toString().substring(0, tagsEnter.getText().toString().length() - 1));
-                    tag.setOnClickListener(e -> tagsContainer.removeView(tag));
-                    tagsContainer.addView(tag);
-                    tagsEnter.setText("");
-                }
+        tagsEnter.setOnEditorActionListener((textView, i, keyEvent) -> {
+            String enteredTag = tagsEnter.getText().toString();
+            if(i == IME_ACTION_DONE && !getCurrentTagsToAdd().contains(enteredTag) && enteredTag.length() > 0){
+                Chip tag = generateTagChip(tagsEnter.getText().toString());
+                tag.setOnClickListener(e -> tagsToAddContainer.removeView(tag));
+                tagsToAddContainer.addView(tag);
+                tagsEnter.setText("");
             }
-
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-            @Override
-            public void afterTextChanged(Editable editable) { }
+            return true;
         });
+    }
+
+    private List<String> getCurrentTagsToAdd() {
+        List<String> tags = new ArrayList<>();
+        for (int i = 0; i < tagsToAddContainer.getChildCount(); i++){
+            tags.add(((Chip) tagsToAddContainer.getChildAt(i)).getText().toString());
+        }
+        return tags;
     }
 
     private Chip generateTagChip(String text) {
@@ -447,8 +451,10 @@ public class AddTextEntry extends AppCompatActivity {
             recordedAudios.add(filename);
             mRecorder = new MediaRecorder();
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
-            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC_ELD);
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            mRecorder.setAudioEncodingBitRate(128000);
+            mRecorder.setAudioSamplingRate(44100);
             mRecorder.setOutputFile(audioFName);
             try {
                 mRecorder.prepare();
@@ -521,10 +527,9 @@ public class AddTextEntry extends AppCompatActivity {
     }
 
     private void showTagEditor() {
-        FlexboxLayout newTagsContainer = findViewById(R.id.flx_tags_to_add);
-        int newChildCount = newTagsContainer.getChildCount();
+        int newChildCount = tagsToAddContainer.getChildCount();
         for (int i = 0; i < newChildCount; i++){
-            newTagsContainer.removeView(newTagsContainer.getChildAt(0));
+            tagsToAddContainer.removeView(tagsToAddContainer.getChildAt(0));
         }
 
         int childCount = tagContainer.getChildCount();
@@ -532,8 +537,8 @@ public class AddTextEntry extends AppCompatActivity {
             if(tagContainer.getChildAt(i) instanceof TextView){
                 TextView storedTag = (TextView) tagContainer.getChildAt(i);
                 Chip tag = generateTagChip(storedTag.getText().toString());
-                tag.setOnClickListener(e -> newTagsContainer.removeView(tag));
-                newTagsContainer.addView(tag);
+                tag.setOnClickListener(e -> tagsToAddContainer.removeView(tag));
+                tagsToAddContainer.addView(tag);
             }
         }
         tapOutsideRecording.setOnClickListener(e -> hideTagEditor());
@@ -548,11 +553,10 @@ public class AddTextEntry extends AppCompatActivity {
             tagContainer.removeView(tagContainer.getChildAt(0));
         }
 
-        FlexboxLayout newTagsContainer = findViewById(R.id.flx_tags_to_add);
-        int newChildCount = newTagsContainer.getChildCount();
+        int newChildCount = tagsToAddContainer.getChildCount();
         for (int i = 0; i < newChildCount; i++){
-            if(newTagsContainer.getChildAt(i) instanceof Chip){
-                Chip chip = (Chip)newTagsContainer.getChildAt(i);
+            if(tagsToAddContainer.getChildAt(i) instanceof Chip){
+                Chip chip = (Chip)tagsToAddContainer.getChildAt(i);
                 tagContainer.addView(generateTagView(chip.getText().toString()));
             }
         }

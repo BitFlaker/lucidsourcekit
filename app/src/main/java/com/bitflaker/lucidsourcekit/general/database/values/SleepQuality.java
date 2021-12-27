@@ -4,7 +4,8 @@ public enum SleepQuality {
     Terrible("TRB"),
     Poor("POR"),
     Great("GRT"),
-    Outstanding("OSD");
+    Outstanding("OSD"),
+    None("");
 
     private String id;
 

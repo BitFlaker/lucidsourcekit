@@ -730,6 +730,7 @@
             android:layout_marginTop="10dp"
             android:inputType="text"
             android:layout_marginBottom="35dp"
+            android:imeOptions="actionDone"
             android:textColor="@color/white"/>
     </RelativeLayout>
 </RelativeLayout>

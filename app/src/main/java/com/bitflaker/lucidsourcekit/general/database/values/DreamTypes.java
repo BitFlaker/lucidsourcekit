@@ -4,7 +4,9 @@ public enum DreamTypes {
     Nightmare("NTM"),
     SleepParalysis("SPL"),
     FalseAwakening("FAW"),
-    Lucid("LCD");
+    Lucid("LCD"),
+    Recurring("REC"),
+    None("");
 
     private String id;
 

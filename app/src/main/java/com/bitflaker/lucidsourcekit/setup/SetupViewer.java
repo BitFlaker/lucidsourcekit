@@ -104,8 +104,7 @@ public class SetupViewer extends AppCompatActivity {
                 switch (selectedAuthType) {
                     case Password:
                         if (setAuthData.getPassword().length() == 0) {
-                            // TODO extract string resource
-                            Toast.makeText(SetupViewer.this, "Password too short!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SetupViewer.this, getResources().getString(R.string.password_too_short), Toast.LENGTH_SHORT).show();
                         } else {
                             try {
                                 byte[] salt = Crypt.generateSalt();
@@ -122,8 +121,7 @@ public class SetupViewer extends AppCompatActivity {
                         break;
                     case Pin:
                         if (setAuthData.getPin().length() == 0) {
-                            // TODO extract string resource
-                            Toast.makeText(SetupViewer.this, "PIN too short!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SetupViewer.this, getResources().getString(R.string.pin_too_short), Toast.LENGTH_SHORT).show();
                         } else {
                             try {
                                 byte[] secretKey = Crypt.generateSecretKey();

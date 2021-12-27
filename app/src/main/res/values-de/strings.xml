@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LucidSourceKit</string>
+    <string name="app_name">Lucid Source Kit</string>
     <string name="login_background_description">Sonnenuntergang mit Bergen und einem Pfad</string>
     <string name="login_password_hint">Passwort</string>
     <string name="login_password_unlock_button">Entsperren</string>
     <string name="setup_language_title">Willkommen!</string>
     <string name="setup_languages_description">Bitte wähle die Sprache aus, in er du die App benutzen möchtest. Dies kann später jederzeit in den Einstellungen geändert werden.</string>
     <string name="setup_next">Weiter</string>
+    <string name="password_too_short">Passwort zu kurz!</string>
+    <string name="pin_too_short">PIN zu kurz!</string>
     <string name="setup_security_title">Bleib sicher</string>
     <string name="setup_security_description">Deine Traumtagebucheinträge, Alarme, Statistiken, etc. können durch Aktivieren der mitgelieferten Authentifikations-Funktion lokal geschützt werden.</string>
     <string name="setup_open_source_title">Open Source</string>
@@ -90,6 +92,7 @@
     <string name="form_not_filled">Es wurden nicht alle Felder ausgefüllt</string>
     <string name="entry_delete_header">Tagebucheintrag löschen</string>
     <string name="entry_delete_message">Soll dieser Tagebucheintrag wirklich endgültig gelöscht werden?</string>
+    <string name="recurring">Wiederkehrend</string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>

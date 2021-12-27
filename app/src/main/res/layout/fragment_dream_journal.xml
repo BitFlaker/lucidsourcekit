@@ -26,6 +26,7 @@
             android:textStyle="bold" />
 
         <ImageButton
+            android:id="@+id/btn_sort"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center_vertical"
@@ -34,11 +35,21 @@
             android:src="@drawable/ic_baseline_sort_24" />
 
         <ImageButton
+            android:id="@+id/btn_filter"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center_vertical"
             android:background="?attr/main_background_color"
             android:src="@drawable/ic_baseline_filter_alt_24" />
+
+        <ImageButton
+            android:id="@+id/btn_filter_off"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
+            android:background="?attr/main_background_color"
+            android:src="@drawable/ic_baseline_filter_alt_off_24"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

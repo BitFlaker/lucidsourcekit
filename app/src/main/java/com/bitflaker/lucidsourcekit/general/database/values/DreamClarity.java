@@ -4,7 +4,8 @@ public enum DreamClarity {
     VeryCloudy("VCL"),
     Cloudy("CLD"),
     Clear("CLR"),
-    CrystalClear("CCL");
+    CrystalClear("CCL"),
+    None("");
 
     private String id;
 

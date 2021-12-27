@@ -11,7 +11,7 @@ public class StoredJournalEntries {
     public static final String CLARITY_ID = "clarity_id";
     public static final String MOOD_ID = "mood_id";
 
-    private final int entryId;
+    private int entryId;
     private final String date;
     private final String time;
     private final String title;
@@ -61,5 +61,9 @@ public class StoredJournalEntries {
 
     public String getMood_id() {
         return mood_id;
+    }
+
+    public void setEntryId(int entryId) {
+        this.entryId = entryId;
     }
 }

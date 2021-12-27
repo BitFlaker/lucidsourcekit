@@ -27,4 +27,8 @@
         <item name="highlight_error">@color/red</item>
         <item name="lightSelection">@color/clay_white</item>
     </style>
+
+    <style name="ThemedDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="android:background">?attr/main_background_color</item>
+    </style>
 </resources>

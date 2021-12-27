@@ -14,7 +14,9 @@ import android.view.View;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class Tools {
@@ -69,5 +71,17 @@ public class Tools {
         T[] finishedArray = Arrays.copyOf(array, array.length - 1);
         System.arraycopy(array, index + 1, finishedArray, index, array.length - 1 - index);
         return finishedArray;
+    }
+
+    public static String[] getUniqueOnly(List<String[]> items) {
+        List<String> uniques = new ArrayList<>();
+        for (String[] arr : items) {
+            for (String item : arr) {
+                if(!uniques.contains(item)){
+                    uniques.add(item);
+                }
+            }
+        }
+        return uniques.toArray(new String[0]);
     }
 }
