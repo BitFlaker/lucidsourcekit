@@ -4,7 +4,6 @@ import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -142,10 +141,10 @@ public class FilterDialog extends Dialog implements android.view.View.OnClickLis
 
     private void radioSelectionWatcher(MaterialButton categoryButton, RadioGroup container) {
         if(((RadioButton) container.getChildAt(0)).isChecked()){
-            TextViewCompat.setCompoundDrawableTintList(categoryButton, ColorStateList.valueOf(getContext().getColor(R.color.darker_white)));
+            TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.slightElevated, getContext().getTheme()));
         }
         else {
-            TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.activePageDot, getContext().getTheme()));
+            TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
         }
     }
 
@@ -159,10 +158,10 @@ public class FilterDialog extends Dialog implements android.view.View.OnClickLis
             }
         }
         if(anythingChecked){
-            TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.activePageDot, getContext().getTheme()));
+            TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
         }
         else{
-            TextViewCompat.setCompoundDrawableTintList(categoryButton, ColorStateList.valueOf(getContext().getColor(R.color.darker_white)));
+            TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.slightElevated, getContext().getTheme()));
         }
     }
 

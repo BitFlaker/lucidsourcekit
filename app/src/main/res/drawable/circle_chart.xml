@@ -5,7 +5,7 @@
             android:shape="ring"
             android:thicknessRatio="12"
             android:useLevel="false">
-            <solid android:color="?attr/activeTabIcon"/>
+            <solid android:color="?attr/colorPrimary"/>
         </shape>
     </item>
     <item>
@@ -16,7 +16,7 @@
                 android:shape="ring"
                 android:thicknessRatio="12"
                 android:useLevel="true">
-                <solid android:color="?attr/highlight_success"/>
+                <solid android:color="?attr/colorSecondary"/>
             </shape>
         </rotate>
     </item>

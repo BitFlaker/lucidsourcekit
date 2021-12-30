@@ -39,7 +39,13 @@ public class Tools {
                 THEME_DIALOG = R.style.ThemedDialog_Amoled_Dark;
                 THEME_POPUP = R.style.PopupMenu_LCDark;
                 break;
+            case R.style.Theme_LucidSourceKit_Dark:
+                THEME_DIALOG = R.style.ThemedDialog_Dark;
+                THEME_POPUP = R.style.PopupMenu_Dark;
+                break;
         }
+        THEME_DIALOG = R.style.ThemedDialog_Dark;
+        THEME_POPUP = R.style.PopupMenu_Dark;
     }
 
     public static int getThemeDialog(){

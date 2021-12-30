@@ -348,8 +348,8 @@ public class AddTextEntry extends AppCompatActivity {
         lparams.leftMargin = Tools.dpToPx(AddTextEntry.this, 3);
         lparams.rightMargin = Tools.dpToPx(AddTextEntry.this, 3);
         tag.setLayoutParams(lparams);
-        tag.setChipBackgroundColor(Tools.getAttrColorStateList(R.attr.secondColor, getTheme()));
-        tag.setTextColor(Tools.getAttrColorStateList(R.attr.bright_text_color, getTheme()));
+        tag.setChipBackgroundColor(Tools.getAttrColorStateList(R.attr.slightElevated, getTheme()));
+        tag.setTextColor(Tools.getAttrColorStateList(R.attr.primaryTextColor, getTheme()));
         tag.setCloseIconTint(ColorStateList.valueOf(getResources().getColor(R.color.white, getTheme())));
         tag.setCheckedIconVisible(false);
         tag.setCloseIconVisible(true);
@@ -415,7 +415,7 @@ public class AddTextEntry extends AppCompatActivity {
     }
 
     private void setIconActive(ImageView img) {
-        img.setImageTintList(Tools.getAttrColorStateList(R.attr.lightSelection, AddTextEntry.this.getTheme()));
+        img.setImageTintList(Tools.getAttrColorStateList(R.attr.primaryTextColor, AddTextEntry.this.getTheme()));
         android.view.ViewGroup.LayoutParams lparam = img.getLayoutParams();
         lparam.height = Tools.dpToPx(AddTextEntry.this, 30);
         img.setLayoutParams(lparam);
@@ -423,7 +423,7 @@ public class AddTextEntry extends AppCompatActivity {
 
     private void disableAllHighlighted(ImageView[] imageViews) {
         for (ImageView img : imageViews) {
-            img.setImageTintList(Tools.getAttrColorStateList(R.attr.iconColor, AddTextEntry.this.getTheme()));
+            img.setImageTintList(Tools.getAttrColorStateList(R.attr.secondaryTextColor, AddTextEntry.this.getTheme()));
             android.view.ViewGroup.LayoutParams lparam = img.getLayoutParams();
             lparam.height = Tools.dpToPx(AddTextEntry.this, 20);
             img.setLayoutParams(lparam);
@@ -595,14 +595,14 @@ public class AddTextEntry extends AppCompatActivity {
     private View generateTagView(String text) {
         TextView tag = new TextView(this);
         tag.setText(text);
-        tag.setTextColor(Tools.getAttrColorStateList(R.attr.bright_text_color, getTheme()));
+        tag.setTextColor(Tools.getAttrColorStateList(R.attr.primaryTextColor, getTheme()));
         int horizontal = Tools.dpToPx(this, 12);
         int vertical = Tools.dpToPx(this, 8);
         int smallMargin = Tools.dpToPx(this, 3);
         tag.setPadding(horizontal,vertical,horizontal,vertical);
         tag.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         tag.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_border, getTheme()));
-        tag.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.secondColor, getTheme()));
+        tag.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getTheme()));
         LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         llParams.setMargins(smallMargin, smallMargin, smallMargin, smallMargin);
         tag.setLayoutParams(llParams);

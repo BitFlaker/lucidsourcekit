@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/main_background_color"
     tools:context=".main.createjournalentry.AddTextEntry">
 
     <ScrollView
@@ -24,7 +23,7 @@
                 android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:text="@string/dream_time"
-                android:textColor="?attr/bright_text_color"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="23sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -43,9 +42,9 @@
                     android:id="@+id/txt_date_heading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
+                    android:layout_marginStart="5dp"
                     android:text="@string/dream_date"
-                    android:textColor="?attr/bright_text_color"
+                    android:textColor="?attr/primaryTextColor"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -53,25 +52,27 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_date"
                     android:layout_width="wrap_content"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
-                    android:background="@drawable/rounded_border"
                     android:ems="10"
                     android:inputType="date"
                     android:text="10.12.2021"
                     android:textAlignment="center"
-                    android:textColor="?attr/bright_text_color"
-                    app:backgroundTint="?attr/secondColor"
+                    android:background="@drawable/medium_rounded_rectangle"
+                    android:textColor="?attr/primaryTextColor"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                    app:backgroundTint="?attr/slightElevated"
+                    app:cornerRadius="30dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_date_heading" />
+                    app:layout_constraintTop_toBottomOf="@+id/txt_date_heading"/>
 
                 <TextView
                     android:id="@+id/txt_time_heading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
+                    android:layout_marginStart="5dp"
                     android:text="@string/dream_time_field"
-                    android:textColor="?attr/bright_text_color"
+                    android:textColor="?attr/primaryTextColor"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="@+id/btn_time"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -82,13 +83,15 @@
                     android:layout_height="48dp"
                     android:layout_marginStart="28dp"
                     android:layout_marginTop="3dp"
-                    android:background="@drawable/rounded_border"
                     android:ems="5"
                     android:inputType="time"
                     android:text="03:15"
                     android:textAlignment="center"
-                    android:textColor="?attr/bright_text_color"
-                    app:backgroundTint="?attr/secondColor"
+                    android:background="@drawable/medium_rounded_rectangle"
+                    android:textColor="?attr/primaryTextColor"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                    app:backgroundTint="?attr/slightElevated"
+                    app:cornerRadius="30dp"
                     app:layout_constraintStart_toEndOf="@+id/btn_date"
                     app:layout_constraintTop_toBottomOf="@+id/txt_time_heading" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -100,7 +103,7 @@
                 android:layout_marginTop="75dp"
                 android:gravity="center"
                 android:text="@string/dream_story_header"
-                android:textColor="?attr/bright_text_color"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="23sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -112,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:text="@string/dream_title"
-                android:textColor="?attr/bright_text_color"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txt_dream_title" />
@@ -123,14 +126,14 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="3dp"
                 android:background="@drawable/rounded_border"
-                android:backgroundTint="?attr/secondColor"
+                android:backgroundTint="?attr/slightElevated"
                 android:gravity="center_vertical"
                 android:hint="@string/dream_title_hint"
                 android:importantForAutofill="no"
                 android:inputType="text"
                 android:padding="15dp"
-                android:textColor="?attr/bright_text_color"
-                android:textColorHint="@color/darker_white"
+                android:textColor="?attr/primaryTextColor"
+                android:textColorHint="?attr/secondaryTextColor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txt_title_header" />
@@ -154,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/tags"
-                android:textColor="?attr/bright_text_color"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="14sp"
                 android:textStyle=""
                 app:layout_constraintEnd_toEndOf="parent"
@@ -180,12 +183,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_spinner"
-                android:backgroundTint="?attr/secondColor"
+                android:backgroundTint="?attr/slightElevated"
                 android:contentDescription="@string/alt_tags"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
                 android:src="@drawable/ic_round_add_24"
-                app:tint="?attr/bright_text_color"
+                app:tint="?attr/primaryTextColor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/flx_tags" />
@@ -197,403 +200,420 @@
                 android:layout_marginTop="75dp"
                 android:gravity="center"
                 android:text="@string/ratings_header"
-                android:textColor="?attr/bright_text_color"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="23sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btn_add_tag" />
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/ll_slider_container1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:background="@drawable/rounded_border"
-                android:backgroundTint="?attr/secondColor"
-                android:elevation="5dp"
-                android:orientation="vertical"
-                android:paddingLeft="20dp"
-                android:paddingTop="15dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="15dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_dream_ratings">
-
-                <TextView
-                    android:id="@+id/txt_mood"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dream_mood"
-                    android:textColor="?attr/bright_text_color"
-                    android:textSize="14sp" />
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/sld_mood"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-5dp"
-                    android:stepSize="1"
-                    android:valueTo="4"
-                    app:labelBehavior="gone" />
+                app:layout_constraintTop_toBottomOf="@+id/txt_dream_ratings"
+                app:cardCornerRadius="30dp">
 
                 <LinearLayout
-                    android:id="@+id/ll_mood"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-10dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent">
+                    android:orientation="vertical"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="15dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="15dp">
 
-                    <ImageView
-                        android:id="@+id/img_very_dissatisfied"
+                    <TextView
+                        android:id="@+id/txt_mood"
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/alt_very_dissatisfied_smiley_rating"
-                        android:src="@drawable/ic_baseline_sentiment_very_dissatisfied_24"
-                        app:tint="#A9B4C3" />
+                        android:layout_height="wrap_content"
+                        android:text="@string/dream_mood"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="14sp" />
 
-                    <ImageView
-                        android:id="@+id/img_dissatisfied"
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="10"
-                        android:contentDescription="@string/alt_dissatisfied_smiley_rating"
-                        android:src="@drawable/ic_baseline_sentiment_dissatisfied_24"
-                        app:tint="@color/darker_white" />
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/sld_mood"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-5dp"
+                        android:stepSize="1"
+                        android:valueTo="4"
+                        app:labelBehavior="gone" />
 
-                    <ImageView
-                        android:id="@+id/img_neutral_satisfied"
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/alt_neutral_smiley_rating"
-                        android:src="@drawable/ic_baseline_sentiment_neutral_24"
-                        app:tint="@color/darker_white" />
+                    <LinearLayout
+                        android:id="@+id/ll_mood"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-10dp"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent">
 
-                    <ImageView
-                        android:id="@+id/img_satisfied"
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="10"
-                        android:contentDescription="@string/alt_satisfied_smiley_rating"
-                        android:src="@drawable/ic_baseline_sentiment_satisfied_24"
-                        app:tint="@color/darker_white" />
+                        <ImageView
+                            android:id="@+id/img_very_dissatisfied"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:contentDescription="@string/alt_very_dissatisfied_smiley_rating"
+                            android:src="@drawable/ic_baseline_sentiment_very_dissatisfied_24"
+                            app:tint="?attr/primaryTextColor" />
 
-                    <ImageView
-                        android:id="@+id/img_very_satisfied"
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/alt_very_satisfied_smiley_rating"
-                        android:src="@drawable/ic_baseline_sentiment_very_satisfied_24"
-                        app:tint="@color/darker_white" />
+                        <ImageView
+                            android:id="@+id/img_dissatisfied"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="10"
+                            android:contentDescription="@string/alt_dissatisfied_smiley_rating"
+                            android:src="@drawable/ic_baseline_sentiment_dissatisfied_24"
+                            app:tint="?attr/secondaryTextColor" />
+
+                        <ImageView
+                            android:id="@+id/img_neutral_satisfied"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:contentDescription="@string/alt_neutral_smiley_rating"
+                            android:src="@drawable/ic_baseline_sentiment_neutral_24"
+                            app:tint="?attr/secondaryTextColor" />
+
+                        <ImageView
+                            android:id="@+id/img_satisfied"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="10"
+                            android:contentDescription="@string/alt_satisfied_smiley_rating"
+                            android:src="@drawable/ic_baseline_sentiment_satisfied_24"
+                            app:tint="?attr/secondaryTextColor" />
+
+                        <ImageView
+                            android:id="@+id/img_very_satisfied"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:contentDescription="@string/alt_very_satisfied_smiley_rating"
+                            android:src="@drawable/ic_baseline_sentiment_very_satisfied_24"
+                            app:tint="?attr/secondaryTextColor" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/ll_slider_container2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:background="@drawable/rounded_border"
-                android:backgroundTint="?attr/secondColor"
-                android:elevation="5dp"
-                android:orientation="vertical"
-                android:paddingLeft="20dp"
-                android:paddingTop="15dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="15dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ll_slider_container1">
-
-                <TextView
-                    android:id="@+id/txt_clarity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dream_clarity_header"
-                    android:textColor="?attr/bright_text_color"
-                    android:textSize="14sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ll_slider_container1" />
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/sld_clarity"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-5dp"
-                    android:stepSize="1"
-                    android:valueTo="3"
-                    app:labelBehavior="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_clarity" />
+                app:layout_constraintTop_toBottomOf="@+id/ll_slider_container1"
+                app:cardCornerRadius="30dp">
 
                 <LinearLayout
-                    android:id="@+id/ll_clarity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-10dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/sld_clarity">
+                    android:orientation="vertical"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="15dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="15dp">
 
-                    <ImageView
-                        android:id="@+id/img_very_unclear"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/alt_very_unclear"
-                        android:src="@drawable/ic_baseline_brightness_4_24"
-                        app:tint="#A9B4C3" />
-
-                    <Space
+                    <TextView
+                        android:id="@+id/txt_clarity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="5" />
+                        android:text="@string/dream_clarity_header"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/ll_slider_container1" />
 
-                    <ImageView
-                        android:id="@+id/img_unclear"
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="10"
-                        android:contentDescription="@string/alt_unclear"
-                        android:src="@drawable/ic_baseline_brightness_5_24"
-                        app:tint="@color/darker_white" />
-
-                    <ImageView
-                        android:id="@+id/img_clear"
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="10"
-                        android:contentDescription="@string/alt_clear"
-                        android:src="@drawable/ic_baseline_brightness_6_24"
-                        app:tint="@color/darker_white" />
-
-                    <Space
-                        android:layout_width="wrap_content"
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/sld_clarity"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="5" />
+                        android:layout_marginTop="-5dp"
+                        android:stepSize="1"
+                        android:valueTo="3"
+                        app:labelBehavior="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/txt_clarity" />
 
-                    <ImageView
-                        android:id="@+id/img_very_clear"
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/alt_very_clear"
-                        android:src="@drawable/ic_baseline_brightness_7_24"
-                        app:tint="@color/darker_white" />
+                    <LinearLayout
+                        android:id="@+id/ll_clarity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-10dp"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/sld_clarity">
+
+                        <ImageView
+                            android:id="@+id/img_very_unclear"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:contentDescription="@string/alt_very_unclear"
+                            android:src="@drawable/ic_baseline_brightness_4_24"
+                            app:tint="?attr/primaryTextColor" />
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5" />
+
+                        <ImageView
+                            android:id="@+id/img_unclear"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="10"
+                            android:contentDescription="@string/alt_unclear"
+                            android:src="@drawable/ic_baseline_brightness_5_24"
+                            app:tint="?attr/secondaryTextColor" />
+
+                        <ImageView
+                            android:id="@+id/img_clear"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="10"
+                            android:contentDescription="@string/alt_clear"
+                            android:src="@drawable/ic_baseline_brightness_6_24"
+                            app:tint="?attr/secondaryTextColor" />
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5" />
+
+                        <ImageView
+                            android:id="@+id/img_very_clear"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:contentDescription="@string/alt_very_clear"
+                            android:src="@drawable/ic_baseline_brightness_7_24"
+                            app:tint="?attr/secondaryTextColor" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/ll_slider_container3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:background="@drawable/rounded_border"
-                android:backgroundTint="?attr/secondColor"
-                android:elevation="5dp"
-                android:orientation="vertical"
-                android:paddingLeft="20dp"
-                android:paddingTop="15dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="15dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ll_slider_container2">
-
-                <TextView
-                    android:id="@+id/txt_sleep_quality"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sleep_quality_header"
-                    android:textColor="?attr/bright_text_color"
-                    android:textSize="14sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ll_slider_container2" />
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/sld_sleep_quality"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-5dp"
-                    android:stepSize="1"
-                    android:valueTo="3"
-                    app:labelBehavior="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_sleep_quality" />
+                app:layout_constraintTop_toBottomOf="@+id/ll_slider_container2"
+                app:cardCornerRadius="30dp">
 
                 <LinearLayout
-                    android:id="@+id/ll_sleep_quality"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-10dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/sld_sleep_quality">
+                    android:orientation="vertical"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="15dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="15dp">
 
-                    <ImageView
-                        android:id="@+id/img_very_bad_quality"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/alt_very_bad_quality"
-                        android:src="@drawable/ic_baseline_star_border_24"
-                        app:tint="#A9B4C3" />
-
-                    <Space
+                    <TextView
+                        android:id="@+id/txt_sleep_quality"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="5" />
+                        android:text="@string/sleep_quality_header"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/ll_slider_container2" />
 
-                    <ImageView
-                        android:id="@+id/img_bad_quality"
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="10"
-                        android:contentDescription="@string/alt_bad_quality"
-                        android:src="@drawable/ic_baseline_star_half_24"
-                        app:tint="@color/darker_white" />
-
-                    <ImageView
-                        android:id="@+id/img_good_quality"
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="10"
-                        android:contentDescription="@string/alt_good_quality"
-                        android:src="@drawable/ic_baseline_star_24"
-                        app:tint="@color/darker_white" />
-
-                    <Space
-                        android:layout_width="wrap_content"
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/sld_sleep_quality"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="5" />
+                        android:layout_marginTop="-5dp"
+                        android:stepSize="1"
+                        android:valueTo="3"
+                        app:labelBehavior="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/txt_sleep_quality" />
 
-                    <ImageView
-                        android:id="@+id/img_very_good_quality"
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/alt_very_good_quality"
-                        android:src="@drawable/ic_baseline_stars_24"
-                        app:tint="@color/darker_white" />
+                    <LinearLayout
+                        android:id="@+id/ll_sleep_quality"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-10dp"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/sld_sleep_quality">
+
+                        <ImageView
+                            android:id="@+id/img_very_bad_quality"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:contentDescription="@string/alt_very_bad_quality"
+                            android:src="@drawable/ic_baseline_star_border_24"
+                            app:tint="?attr/primaryTextColor" />
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5" />
+
+                        <ImageView
+                            android:id="@+id/img_bad_quality"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="10"
+                            android:contentDescription="@string/alt_bad_quality"
+                            android:src="@drawable/ic_baseline_star_half_24"
+                            app:tint="?attr/secondaryTextColor" />
+
+                        <ImageView
+                            android:id="@+id/img_good_quality"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="10"
+                            android:contentDescription="@string/alt_good_quality"
+                            android:src="@drawable/ic_baseline_star_24"
+                            app:tint="?attr/secondaryTextColor" />
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5" />
+
+                        <ImageView
+                            android:id="@+id/img_very_good_quality"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:contentDescription="@string/alt_very_good_quality"
+                            android:src="@drawable/ic_baseline_stars_24"
+                            app:tint="?attr/secondaryTextColor" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/ll_details1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:background="@drawable/rounded_border"
-                android:backgroundTint="?attr/secondColor"
-                android:elevation="5dp"
-                android:orientation="vertical"
-                android:paddingLeft="20dp"
-                android:paddingTop="15dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ll_slider_container3">
+                app:layout_constraintTop_toBottomOf="@+id/ll_slider_container3"
+                app:cardCornerRadius="30dp">
 
-                <TextView
-                    android:id="@+id/txt_details"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="@string/dream_details_header"
-                    android:textColor="?attr/bright_text_color"
-                    android:textSize="14sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ll_slider_container3" />
+                    android:orientation="vertical"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="15dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="20dp"
+                    app:layout_constraintEnd_toEndOf="parent">
 
-                <ToggleButton
-                    android:id="@+id/tgl_nightmare"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginRight="3dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/toggle_button"
-                    android:drawableStart="@drawable/ic_baseline_priority_high_24"
-                    android:padding="15dp"
-                    android:textColor="?attr/bright_text_color"
-                    android:textOff="@string/dream_nightmare"
-                    android:textOn="@string/dream_nightmare" />
+                    <TextView
+                        android:id="@+id/txt_details"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="@string/dream_details_header"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/ll_slider_container3" />
 
-                <ToggleButton
-                    android:id="@+id/tgl_paralysis"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginRight="3dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/toggle_button"
-                    android:drawableStart="@drawable/ic_baseline_accessibility_new_24"
-                    android:padding="15dp"
-                    android:textColor="?attr/bright_text_color"
-                    android:textOff="@string/dream_paralysis"
-                    android:textOn="@string/dream_paralysis" />
+                    <ToggleButton
+                        android:id="@+id/tgl_nightmare"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/toggle_button"
+                        android:drawableStart="@drawable/ic_baseline_priority_high_24"
+                        android:padding="15dp"
+                        android:textColor="@drawable/toggle_button_color"
+                        android:drawableTint="@drawable/toggle_button_color"
+                        android:textOff="@string/dream_nightmare"
+                        android:textOn="@string/dream_nightmare" />
 
-                <ToggleButton
-                    android:id="@+id/tgl_false_awakening"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginRight="3dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/toggle_button"
-                    android:drawableStart="@drawable/ic_baseline_airline_seat_individual_suite_24"
-                    android:padding="15dp"
-                    android:textColor="?attr/bright_text_color"
-                    android:textOff="@string/dream_false_awakening"
-                    android:textOn="@string/dream_false_awakening" />
+                    <ToggleButton
+                        android:id="@+id/tgl_paralysis"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/toggle_button"
+                        android:drawableStart="@drawable/ic_baseline_accessibility_new_24"
+                        android:padding="15dp"
+                        android:textColor="@drawable/toggle_button_color"
+                        android:drawableTint="@drawable/toggle_button_color"
+                        android:textOff="@string/dream_paralysis"
+                        android:textOn="@string/dream_paralysis" />
 
-                <ToggleButton
-                    android:id="@+id/tgl_lucid"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginRight="3dp"
-                    android:layout_marginBottom="15dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/toggle_button"
-                    android:drawableStart="@drawable/ic_baseline_deblur_24"
-                    android:padding="15dp"
-                    android:textColor="?attr/bright_text_color"
-                    android:textOff="@string/dream_lucid"
-                    android:textOn="@string/dream_lucid" />
-            </LinearLayout>
+                    <ToggleButton
+                        android:id="@+id/tgl_false_awakening"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/toggle_button"
+                        android:drawableStart="@drawable/ic_baseline_airline_seat_individual_suite_24"
+                        android:padding="15dp"
+                        android:textColor="@drawable/toggle_button_color"
+                        android:drawableTint="@drawable/toggle_button_color"
+                        android:textOff="@string/dream_false_awakening"
+                        android:textOn="@string/dream_false_awakening" />
+
+                    <ToggleButton
+                        android:id="@+id/tgl_lucid"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="3dp"
+                        android:layout_marginBottom="15dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/toggle_button"
+                        android:drawableStart="@drawable/ic_baseline_deblur_24"
+                        android:padding="15dp"
+                        android:textColor="@drawable/toggle_button_color"
+                        android:drawableTint="@drawable/toggle_button_color"
+                        android:textOff="@string/dream_lucid"
+                        android:textOn="@string/dream_lucid" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_create_journal_entry"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="35dp"
-                android:background="@drawable/rounded_spinner"
                 android:text="@string/add_journal_entry"
-                android:textColor="?attr/priorityColor"
+                android:textColor="?attr/colorOnPrimary"
+                android:background="@drawable/medium_rounded_rectangle"
+                app:cornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ll_details1" />
@@ -626,7 +646,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@drawable/top_rounded_rectangle"
-        android:backgroundTint="?attr/main_background_color"
+        android:backgroundTint="?attr/backgroundColor"
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
@@ -640,11 +660,11 @@
             android:layout_marginTop="50dp"
             android:gravity="center_horizontal"
             android:text="@string/recording"
-            android:textColor="?attr/bright_text_color"
+            android:textColor="?attr/primaryTextColor"
             android:textSize="22sp"
             android:drawablePadding="8dp"
             app:drawableLeftCompat="@drawable/ic_baseline_mic_24"
-            app:drawableTint="?attr/highlight_error" />
+            app:drawableTint="?attr/colorError" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -660,7 +680,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@drawable/rounded_spinner"
-                android:backgroundTint="?attr/secondColor"
+                android:backgroundTint="?attr/slightElevated"
                 android:contentDescription="@string/pause_continue_recording"
                 android:src="@drawable/ic_baseline_pause_24" />
 
@@ -673,7 +693,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@drawable/rounded_spinner"
-                android:backgroundTint="?attr/secondColor"
+                android:backgroundTint="?attr/slightElevated"
                 android:contentDescription="@string/stop_recording"
                 android:src="@drawable/ic_baseline_stop_24" />
         </LinearLayout>
@@ -685,7 +705,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@drawable/top_rounded_rectangle"
-        android:backgroundTint="?attr/main_background_color"
+        android:backgroundTint="?attr/backgroundColor"
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
@@ -698,7 +718,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
             android:text="Add Tags"
-            android:textColor="?attr/bright_text_color"
+            android:textColor="?attr/primaryTextColor"
             android:textSize="22sp"
             android:drawablePadding="8dp"
             app:drawableLeftCompat="@drawable/ic_baseline_label_24"
@@ -718,20 +738,20 @@
             android:layout_height="wrap_content"
             android:minWidth="100dp"
             android:hint="enter tag to add"
-            android:textColorHint="@color/darker_white"
+            android:textColorHint="?attr/secondaryTextColor"
             android:textSize="18sp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:background="@drawable/rounded_border"
-            android:backgroundTint="?attr/secondColor"
+            android:backgroundTint="?attr/slightElevated"
             android:layout_below="@id/flx_tags_to_add"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:inputType="textAutoComplete"
             android:layout_marginBottom="35dp"
             android:imeOptions="actionDone"
-            android:textColor="?attr/bright_text_color"/>
+            android:textColor="?attr/primaryTextColor"/>
     </RelativeLayout>
 </RelativeLayout>

@@ -70,7 +70,7 @@ public class AudioJournalEditorFrag extends Fragment {
         llContainer.setLayoutParams(llparams);
         llContainer.setOrientation(LinearLayout.HORIZONTAL);
         llContainer.setBackground(getResources().getDrawable(R.drawable.rounded_border));
-        llContainer.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.secondColor, getContext().getTheme()));
+        llContainer.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getContext().getTheme()));
         int dp15 = Tools.dpToPx(getContext(), 5);
         llContainer.setPadding(dp15, dp15, dp15, dp15);
 

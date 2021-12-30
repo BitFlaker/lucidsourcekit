@@ -5,7 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/main_background_color"
     tools:context=".main.MainOverview"
     android:scrollbars="none">
 
@@ -35,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="@string/overview"
-                android:textColor="?attr/bright_text_color"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="23sp"
                 android:textStyle="bold" />
 
@@ -45,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="@string/active_events"
-                android:textColor="?attr/darker_text_color"
+                android:textColor="?attr/secondaryTextColor"
                 android:textSize="14sp" />
 
             <GridLayout
@@ -54,77 +53,101 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="25dp"
-                android:useDefaultMargins="true"
-                android:columnCount="2">
+                android:columnCount="2"
+                android:useDefaultMargins="true">
 
-                <TextView
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/rounded_border"
-                    android:backgroundTint="?attr/secondColor"
-                    android:drawablePadding="8dp"
-                    android:layout_gravity="fill"
-                    android:layout_columnWeight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="5dp"
-                    android:text="@string/reality_check_reminder"
-                    android:textColor="?attr/bright_text_color"
-                    app:drawableStartCompat="@drawable/ic_baseline_check_24" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/rounded_border"
-                    android:backgroundTint="?attr/secondColor"
-                    android:drawablePadding="8dp"
-                    android:layout_gravity="fill"
-                    android:layout_columnWeight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="5dp"
-                    android:text="permanent notification"
-                    android:textColor="?attr/bright_text_color"
-                    app:drawableStartCompat="@drawable/ic_baseline_cross_24" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/rounded_border"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="30dp"
+                    app:cardElevation="1dp"
                     android:layout_columnWeight="1"
                     android:layout_gravity="fill"
-                    android:backgroundTint="?attr/secondColor"
-                    android:drawablePadding="8dp"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="5dp"
-                    android:text="lockscreen journal writer"
-                    android:textColor="?attr/bright_text_color"
-                    app:drawableStartCompat="@drawable/ic_baseline_cross_24" />
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:paddingStart="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="5dp"
+                        android:text="@string/reality_check_reminder"
+                        android:textColor="?attr/secondaryTextColor"
+                        app:drawableStartCompat="@drawable/ic_baseline_check_24" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="30dp"
+                    app:cardElevation="1dp"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="fill"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:paddingStart="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="5dp"
+                        android:text="permanent notification"
+                        android:textColor="?attr/secondaryTextColor"
+                        app:drawableStartCompat="@drawable/ic_baseline_cross_24"/>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="30dp"
+                    app:cardElevation="1dp"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="fill"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:paddingStart="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="5dp"
+                        android:text="lockscreen journal writer"
+                        android:textColor="?attr/secondaryTextColor"
+                        app:drawableStartCompat="@drawable/ic_baseline_cross_24"/>
+                </com.google.android.material.card.MaterialCardView>
 
                 <!-- morning / evening reminder -->
-                <TextView
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/rounded_border"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="30dp"
+                    app:cardElevation="1dp"
                     android:layout_columnWeight="1"
                     android:layout_gravity="fill"
-                    android:backgroundTint="?attr/secondColor"
-                    android:drawablePadding="8dp"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="5dp"
-                    android:text="task reminder"
-                    android:textColor="?attr/bright_text_color"
-                    app:drawableStartCompat="@drawable/ic_baseline_cross_24" />
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:paddingStart="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="5dp"
+                        android:text="task reminder"
+                        android:textColor="?attr/secondaryTextColor"
+                        app:drawableStartCompat="@drawable/ic_baseline_cross_24"/>
+                </com.google.android.material.card.MaterialCardView>
             </GridLayout>
 
             <TextView
@@ -134,7 +157,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="30dp"
                 android:text="@string/active_alarms"
-                android:textColor="?attr/bright_text_color"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="23sp"
                 android:textStyle="bold" />
 
@@ -144,47 +167,54 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="@string/active_tonight"
-                android:textColor="?attr/darker_text_color"
+                android:textColor="?attr/secondaryTextColor"
                 android:textSize="14sp" />
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="25dp"
                 android:layout_marginTop="15dp"
-                android:layout_marginRight="30dp"
-                android:background="@drawable/rounded_border"
-                android:backgroundTint="?attr/secondColor"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:layout_marginRight="25dp"
+                android:padding="20dp"
+                app:cardCornerRadius="30dp"
+                app:cardElevation="1dp">
 
-                <TextView
-                    android:id="@+id/txt_alarm1"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="15dp"
-                    android:layout_weight="1"
-                    android:includeFontPadding="false"
-                    android:text="03:12\u000Afirst night timer"
-                    android:textColor="?attr/bright_text_color"
-                    app:drawableRightCompat="@drawable/ic_round_mode_edit_24" />
+                    android:elevation="2dp"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-                <TextView
-                    android:id="@+id/txt_alarm2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:layout_weight="1"
-                    android:includeFontPadding="false"
-                    android:text="03:12\u000Afirst night timer"
-                    android:textColor="?attr/bright_text_color"
-                    app:drawableEndCompat="@drawable/ic_round_mode_edit_24" />
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/txt_alarm1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_weight="1"
+                        android:includeFontPadding="false"
+                        android:text="03:12\u000Afirst night timer"
+                        android:textColor="?attr/secondaryTextColor"
+                        app:drawableRightCompat="@drawable/ic_round_mode_edit_24" />
+
+                    <TextView
+                        android:id="@+id/txt_alarm2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="25dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_weight="1"
+                        android:includeFontPadding="false"
+                        android:text="03:12\u000Afirst night timer"
+                        android:textColor="?attr/secondaryTextColor"
+                        app:drawableEndCompat="@drawable/ic_round_mode_edit_24" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:id="@+id/txt_journal_title"
@@ -193,7 +223,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="30dp"
                 android:text="@string/collection"
-                android:textColor="?attr/bright_text_color"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="23sp"
                 android:textStyle="bold" />
 
@@ -203,189 +233,221 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="@string/all_time_counts"
-                android:textColor="?attr/darker_text_color"
+                android:textColor="?attr/secondaryTextColor"
                 android:textSize="14sp" />
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="25dp"
-                android:background="@drawable/rounded_border"
-                android:backgroundTint="?attr/secondColor"
-                android:orientation="horizontal"
-                android:padding="10dp">
-
-                <TextView
-                    android:id="@+id/txt_total_journal_entries"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="15dp"
-                    android:gravity="center"
-                    android:text="196"
-                    android:textSize="40sp"
-                    android:textStyle="bold" />
+                android:padding="15dp"
+                app:cardCornerRadius="30dp"
+                app:cardElevation="1dp">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:elevation="2dp"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/total_journal_entries"
-                        android:textColor="?attr/bright_text_color"
-                        android:textSize="18sp"
+                        android:id="@+id/txt_total_journal_entries"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="15dp"
+                        android:gravity="top"
+                        android:text="196"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="40sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/total_journal_entries_description"
-                        android:textColor="?attr/darker_text_color"
-                        android:textSize="14sp"
-                        android:textStyle="italic" />
-                </LinearLayout>
-            </LinearLayout>
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-            <LinearLayout
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/total_journal_entries"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/total_journal_entries_description"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="14sp"
+                            android:textStyle="italic" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="25dp"
-                android:background="@drawable/rounded_border"
-                android:backgroundTint="?attr/secondColor"
-                android:orientation="horizontal"
-                android:padding="10dp">
-
-                <TextView
-                    android:id="@+id/txt_lucid_journal_entries"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="15dp"
-                    android:gravity="center"
-                    android:text="2"
-                    android:textSize="40sp"
-                    android:textStyle="bold" />
+                android:padding="15dp"
+                app:cardCornerRadius="30dp"
+                app:cardElevation="1dp">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:elevation="2dp"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/lucid_journal_entries"
-                        android:textColor="?attr/bright_text_color"
-                        android:textSize="18sp"
+                        android:id="@+id/txt_lucid_journal_entries"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="15dp"
+                        android:gravity="top"
+                        android:text="2"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="40sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/lucid_journal_entries_description"
-                        android:textColor="?attr/darker_text_color"
-                        android:textSize="14sp"
-                        android:textStyle="italic" />
-                </LinearLayout>
-            </LinearLayout>
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-            <LinearLayout
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/lucid_journal_entries"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/lucid_journal_entries_description"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="14sp"
+                            android:textStyle="italic" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="25dp"
-                android:background="@drawable/rounded_border"
-                android:backgroundTint="?attr/secondColor"
-                android:orientation="horizontal"
-                android:padding="10dp">
-
-                <TextView
-                    android:id="@+id/txt_days_streak"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="15dp"
-                    android:gravity="center"
-                    android:text="18"
-                    android:textSize="40sp"
-                    android:textStyle="bold" />
+                android:padding="15dp"
+                app:cardCornerRadius="30dp"
+                app:cardElevation="1dp">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:elevation="2dp"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/days_opening_streak"
-                        android:textColor="?attr/bright_text_color"
-                        android:textSize="18sp"
+                        android:id="@+id/txt_days_streak"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="15dp"
+                        android:gravity="top"
+                        android:text="18"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="40sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/app_opening_streak_description"
-                        android:textColor="?attr/darker_text_color"
-                        android:textSize="14sp"
-                        android:textStyle="italic" />
-                </LinearLayout>
-            </LinearLayout>
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-            <LinearLayout
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/days_opening_streak"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/app_opening_streak_description"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="14sp"
+                            android:textStyle="italic" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="15dp"
+                android:layout_marginBottom="25dp"
                 android:layout_marginRight="25dp"
-                android:background="@drawable/rounded_border"
-                android:backgroundTint="?attr/secondColor"
-                android:orientation="horizontal"
-                android:padding="10dp"
-                android:layout_marginBottom="30dp">
-
-                <TextView
-                    android:id="@+id/txt_total_goals_reached"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="15dp"
-                    android:gravity="center"
-                    android:text="56"
-                    android:textSize="40sp"
-                    android:textStyle="bold" />
+                android:padding="15dp"
+                app:cardCornerRadius="30dp"
+                app:cardElevation="1dp">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:elevation="2dp"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/goals_reached"
-                        android:textColor="?attr/bright_text_color"
-                        android:textSize="18sp"
+                        android:id="@+id/txt_total_goals_reached"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="15dp"
+                        android:gravity="top"
+                        android:text="56"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="40sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/goals_reached_description"
-                        android:textColor="?attr/darker_text_color"
-                        android:textSize="14sp"
-                        android:textStyle="italic" />
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/goals_reached"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/goals_reached_description"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="14sp"
+                            android:textStyle="italic" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </RelativeLayout>
 </ScrollView>

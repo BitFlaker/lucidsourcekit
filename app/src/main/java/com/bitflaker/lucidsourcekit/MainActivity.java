@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Tools.setThemeColors(R.style.Theme_LucidSourceKit_LCDark);
+        Tools.setThemeColors(R.style.Theme_LucidSourceKit_Dark);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dbWrapper = new DatabaseWrapper(this);

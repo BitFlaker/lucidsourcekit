@@ -1,4 +1,4 @@
-package com.bitflaker.lucidsourcekit.main;
+package com.bitflaker.lucidsourcekit.charts;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -34,7 +34,7 @@ public class LineGraph extends View {
         super(context);
         dataPainter.setColor(Color.BLUE);
         axisLinePaint.setColor(Color.GRAY);
-        dataLinePaint.setColor(Tools.getAttrColor(R.attr.highlight_success, getContext().getTheme()));
+        dataLinePaint.setColor(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()));
         dataLinePaint.setStrokeCap(Paint.Cap.ROUND);
         dataLinePaint.setAntiAlias(true);
         axisLinePaint.setStrokeWidth(Tools.dpToPx(getContext(), 3));
@@ -80,7 +80,7 @@ public class LineGraph extends View {
                 polygonPos.add(topRight);
                 polygonPos.add(bottomRight);
                 polygonPos.add(bottomLeft);
-                drawPoly(canvas, Tools.getAttrColor(R.attr.highlight_success, getContext().getTheme()), polygonPos);
+                drawPoly(canvas, Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), polygonPos);
 
                 canvas.drawLine(realX, realY, nextEndX, nextEndY, dataLinePaint);
             }
@@ -119,10 +119,3 @@ public class LineGraph extends View {
     }
 }
 
-class DataPoint {
-    int val;
-
-    public DataPoint(int val){
-        this.val = val;
-    }
-}

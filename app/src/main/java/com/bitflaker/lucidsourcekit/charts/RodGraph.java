@@ -1,4 +1,4 @@
-package com.bitflaker.lucidsourcekit.main;
+package com.bitflaker.lucidsourcekit.charts;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -32,13 +32,13 @@ public class RodGraph extends View {
     public RodGraph(Context context){
         super(context);
         axisLinePaint.setColor(Color.GRAY);
-        dataLinePaintBackground.setColor(Tools.getAttrColor(R.attr.secondColor, getContext().getTheme()));
+        dataLinePaintBackground.setColor(Tools.getAttrColor(R.attr.backgroundColor, getContext().getTheme()));
         dataLinePaintBackground.setStrokeCap(Paint.Cap.ROUND);
         dataLinePaintBackground.setAntiAlias(true);
-        dataLinePaint.setColor(Tools.getAttrColor(R.attr.highlight_success, getContext().getTheme()));
+        dataLinePaint.setColor(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()));
         dataLinePaint.setStrokeCap(Paint.Cap.ROUND);
         dataLinePaint.setAntiAlias(true);
-        dataLabelPaint.setColor(Tools.getAttrColor(R.attr.darker_text_color, getContext().getTheme()));
+        dataLabelPaint.setColor(Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme()));
         dataLabelPaint.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14, getResources().getDisplayMetrics()));
         dataLabelPaint.setTextAlign(Paint.Align.CENTER);
         dataLabelPaint.setAntiAlias(true);
@@ -50,14 +50,26 @@ public class RodGraph extends View {
         this.iconSize = iconSize;
         this.icons = getBitmapsFromDrawableArray(icons);
         this.textHeight = 0;
-        yMax = icons.length - 1;
+        if(icons != null){ yMax = icons.length - 1; }
+        else { yMax = getMaxValueFrom(data); }
         xMax = data.size();
         dataLinePaintBackground.setStrokeWidth(Tools.dpToPx(getContext(), lineWidth));
         dataLinePaint.setStrokeWidth(Tools.dpToPx(getContext(), lineWidth));
         invalidate();
     }
 
+    private float getMaxValueFrom(List<DataValue> data) {
+        int maxVal = 0;
+        for (DataValue dv : data) {
+            if(dv.val > maxVal) {
+                maxVal = dv.val;
+            }
+        }
+        return maxVal;
+    }
+
     private Bitmap[] getBitmapsFromDrawableArray(Drawable[] icons) {
+        if(icons == null){ return null; }
         Bitmap[] bitmaps = new Bitmap[icons.length];
         for (int i = 0; i < bitmaps.length; i++){
             bitmaps[i] = drawableToBitmap(icons[i], iconSize);
@@ -75,8 +87,9 @@ public class RodGraph extends View {
         for (int i = 0; i < data.size(); i++) {
             DataValue current = data.get(i);
             int minRadMargin = Tools.dpToPx(getContext(), 4);
-            marginForRodRadius = Math.max(iconSize / 2.0f, minRadMargin);
-            float xPos = i / xMax * (getWidth() - iconSize) + ((getWidth() - iconSize) / xMax) / 2 + iconSize;
+            int iconPlaceholder = icons != null ? iconSize + Tools.dpToPx(getContext(), 5) : 0;
+            marginForRodRadius = Math.max(iconPlaceholder / 2.0f, minRadMargin);
+            float xPos = i / xMax * (getWidth() - iconPlaceholder) + ((getWidth() - iconPlaceholder) / xMax) / 2 + iconPlaceholder;
             float bottomPoint = getHeight() - marginForRodRadius;
 
             int yText = drawTextIfAvailable(canvas, current, xPos);
@@ -96,12 +109,21 @@ public class RodGraph extends View {
 
     private void clacMinHeight() {
         if(minHeight == 0){
-            minHeight = (int)Math.ceil(iconSize * icons.length + this.textHeight);
+            if(icons != null){
+                minHeight = (int)Math.ceil(iconSize * icons.length + this.textHeight);
+                if(this.textHeight == 0){
+                    minHeight += iconSize;
+                }
+            }
+            else{
+                minHeight = iconSize * 5;
+            }
             setMinimumHeight(minHeight);
         }
     }
 
     private void drawIcons(Canvas canvas, float marginForRodRadius, float bottomPointWithTextMargin) {
+        if(icons == null){ return; }
         for (int j = 0; j < icons.length; j++){
             float yPos = (bottomPointWithTextMargin - (bottomPointWithTextMargin / yMax * j)) + ((marginForRodRadius / yMax) * j) - iconSize / 2f;
             canvas.drawBitmap(icons[j], 0, yPos, dataLinePaintBackground);
@@ -117,9 +139,9 @@ public class RodGraph extends View {
     private int drawTextIfAvailable(Canvas canvas, DataValue dataPoint, float xPos) {
         Paint.FontMetrics metric = dataLabelPaint.getFontMetrics();
         int textHeight = (int) Math.ceil(metric.descent - metric.ascent);
-        String[] lines = dataPoint.label.split("\n");
         int yText = 0;
-        if(dataPoint.label.length() > 0){
+        if(dataPoint.label != null && dataPoint.label.length() > 0){
+            String[] lines = dataPoint.label.split("\n");
             yText = (int)metric.descent;
             for (int j = lines.length - 1; j >= 0; j--){
                 canvas.drawText(lines[j], xPos, getHeight() - yText, dataLabelPaint);
@@ -140,15 +162,5 @@ public class RodGraph extends View {
         drawable.draw(canvas);
 
         return bitmap;
-    }
-}
-
-class DataValue {
-    int val;
-    String label;
-
-    public DataValue(int val, String label){
-        this.val = val;
-        this.label = label;
     }
 }

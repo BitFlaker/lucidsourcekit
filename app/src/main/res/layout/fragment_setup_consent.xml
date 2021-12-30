@@ -56,7 +56,7 @@
         android:layout_marginEnd="40dp"
         android:text="@string/setup_experimental_title"
         android:textAlignment="center"
-        android:textColor="?attr/bright_text_color"
+        android:textColor="?attr/primaryTextColor"
         android:textSize="26sp"
         android:textStyle="bold" />
 
@@ -70,7 +70,7 @@
         android:layout_marginEnd="40dp"
         android:text="@string/setup_experimental_description"
         android:textAlignment="center"
-        android:textColor="?attr/bright_text_color"
+        android:textColor="?attr/primaryTextColor"
         android:textSize="18sp" />
 
     <CheckBox
@@ -83,7 +83,7 @@
         android:layout_marginRight="70dp"
         android:layout_marginBottom="175dp"
         android:text="@string/setup_consent_checkbox"
-        android:textColor="?attr/bright_text_color"
+        android:textColor="?attr/primaryTextColor"
         android:background="@drawable/rounded_spinner"
         android:drawableLeft="@drawable/ic_baseline_check_box_outline_blank_24"
         android:drawablePadding="10dp"

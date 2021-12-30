@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/main_background_color"
     tools:context=".main.ViewJournalEntry">
 
     <RelativeLayout
@@ -28,7 +27,7 @@
                 android:text="21 December 2021 at 03:05"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:textColor="?attr/bright_text_color" />
+                android:textColor="?attr/primaryTextColor" />
 
             <ImageButton
                 android:id="@+id/btn_delete_entry"
@@ -36,14 +35,14 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_baseline_delete_24"
                 android:layout_marginRight="10dp"
-                android:backgroundTint="?attr/main_background_color"/>
+                android:backgroundTint="?attr/backgroundColor"/>
 
             <ImageButton
                 android:id="@+id/btn_edit_entry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_round_mode_edit_24"
-                android:backgroundTint="?attr/main_background_color"/>
+                android:backgroundTint="?attr/backgroundColor"/>
         </LinearLayout>
 
         <TextView
@@ -54,7 +53,7 @@
             android:layout_marginTop="40dp"
             android:text="Some title"
             android:textAlignment="center"
-            android:textColor="?attr/bright_text_color"
+            android:textColor="?attr/primaryTextColor"
             android:textSize="26sp"
             android:textStyle="bold" />
 
@@ -105,7 +104,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:textColor="?attr/bright_text_color"
+                    android:textColor="?attr/primaryTextColor"
                     android:text="@string/dream_mood" />
 
                 <com.google.android.material.progressindicator.LinearProgressIndicator
@@ -136,7 +135,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:textColor="?attr/bright_text_color"
+                    android:textColor="?attr/primaryTextColor"
                     android:text="@string/dream_clarity_header" />
 
                 <com.google.android.material.progressindicator.LinearProgressIndicator
@@ -167,7 +166,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:textColor="?attr/bright_text_color"
+                    android:textColor="?attr/primaryTextColor"
                     android:text="@string/sleep_quality_header" />
 
                 <com.google.android.material.progressindicator.LinearProgressIndicator

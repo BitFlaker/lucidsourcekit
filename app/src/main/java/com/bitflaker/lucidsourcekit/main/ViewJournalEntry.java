@@ -133,7 +133,7 @@ public class ViewJournalEntry extends AppCompatActivity {
             description.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             description.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
             description.setText(descriptionContent);
-            description.setTextColor(Tools.getAttrColorStateList(R.attr.darker_text_color, getTheme()));
+            description.setTextColor(Tools.getAttrColorStateList(R.attr.secondaryTextColor, getTheme()));
             dreamContent.addView(description);
         }
         else {
@@ -144,14 +144,14 @@ public class ViewJournalEntry extends AppCompatActivity {
         for (String tag : tags) {
             TextView tagView = new TextView(ViewJournalEntry.this);
             tagView.setText(tag);
-            tagView.setTextColor(Tools.getAttrColorStateList(R.attr.bright_text_color, getTheme()));
+            tagView.setTextColor(Tools.getAttrColorStateList(R.attr.primaryTextColor, getTheme()));
             int dpLarger = Tools.dpToPx(ViewJournalEntry.this, 8);
             int dpSmaller = Tools.dpToPx(ViewJournalEntry.this, 4);
             int dpSmall = Tools.dpToPx(ViewJournalEntry.this, 2);
             tagView.setPadding(dpLarger, dpSmaller, dpLarger, dpSmaller);
             tagView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
             tagView.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_spinner, getTheme()));
-            tagView.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.secondColor, getTheme()));
+            tagView.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getTheme()));
             LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             llParams.setMargins(dpSmall, dpSmall, dpSmall, dpSmall);
             tagView.setLayoutParams(llParams);
@@ -216,7 +216,7 @@ public class ViewJournalEntry extends AppCompatActivity {
         type.setCompoundDrawablesWithIntrinsicBounds(ResourcesCompat.getDrawable(getResources(), icon, getTheme()), null, null, null);
         type.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         type.setText(text);
-        type.setTextColor(Tools.getAttrColorStateList(R.attr.darker_text_color, getTheme()));
+        type.setTextColor(Tools.getAttrColorStateList(R.attr.secondaryTextColor, getTheme()));
         type.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
         type.setCompoundDrawablePadding(Tools.dpToPx(ViewJournalEntry.this, 5));
         type.setGravity(Gravity.CENTER_VERTICAL);
@@ -226,10 +226,10 @@ public class ViewJournalEntry extends AppCompatActivity {
     private View generateTextHighlight(int icon, int text) {
         TextView type = new TextView(ViewJournalEntry.this);
         type.setCompoundDrawablesWithIntrinsicBounds(ResourcesCompat.getDrawable(getResources(), icon, getTheme()), null, null, null);
-        TextViewCompat.setCompoundDrawableTintList(type, Tools.getAttrColorStateList(R.attr.activePageDot, getTheme()));
+        TextViewCompat.setCompoundDrawableTintList(type, Tools.getAttrColorStateList(R.attr.colorPrimary, getTheme()));
         type.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         type.setText(text);
-        type.setTextColor(Tools.getAttrColorStateList(R.attr.darker_text_color, getTheme()));
+        type.setTextColor(Tools.getAttrColorStateList(R.attr.secondaryTextColor, getTheme()));
         type.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
         type.setCompoundDrawablePadding(Tools.dpToPx(ViewJournalEntry.this, 5));
         type.setGravity(Gravity.CENTER_VERTICAL);
@@ -243,7 +243,7 @@ public class ViewJournalEntry extends AppCompatActivity {
         llContainer.setLayoutParams(llparams);
         llContainer.setOrientation(LinearLayout.HORIZONTAL);
         llContainer.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_border, getTheme()));
-        llContainer.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.secondColor, getTheme()));
+        llContainer.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getTheme()));
         int dp15 = Tools.dpToPx(ViewJournalEntry.this, 5);
         llContainer.setPadding(dp15, dp15, dp15, dp15);
 

@@ -10,7 +10,6 @@
     <attr name="inactiveTabIcon" format="reference"/>
     <attr name="secondColor" format="reference"/>
     <attr name="main_background_color" format="reference"/>
-    <attr name="highlight_error" format="reference"/>
     <attr name="highlight_success" format="reference"/>
     <attr name="lightSelection" format="reference"/>
     <attr name="background_stand_out" format="reference"/>
@@ -18,4 +17,9 @@
     <attr name="darker_text_color" format="reference"/>
     <attr name="main_overview_graphic" format="reference"/>
     <attr name="priorityColor" format="reference"/>
+
+    <attr name="primaryTextColor" format="reference"/>
+    <attr name="secondaryTextColor" format="reference"/>
+    <attr name="slightElevated" format="reference"/>
+    <attr name="colorPrimaryTranslucent" format="reference"/>
 </resources>

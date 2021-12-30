@@ -57,7 +57,7 @@
         android:layout_marginEnd="40dp"
         android:text="@string/setup_open_source_title"
         android:textAlignment="center"
-        android:textColor="?attr/bright_text_color"
+        android:textColor="?attr/primaryTextColor"
         android:textSize="26sp"
         android:textStyle="bold" />
 
@@ -71,6 +71,6 @@
         android:layout_marginTop="2dp"
         android:textAlignment="center"
         android:text="@string/setup_open_source_description"
-        android:textColor="?attr/bright_text_color"
+        android:textColor="?attr/primaryTextColor"
         android:textSize="18sp" />
 </RelativeLayout>

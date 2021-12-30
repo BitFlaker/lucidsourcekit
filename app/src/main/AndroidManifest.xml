@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_pure_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.LucidSourceKit.LCDark">
+        android:theme="@style/Theme.LucidSourceKit.Dark">
         <activity
             android:name=".main.ViewJournalEntry"
             android:configChanges="orientation|screenSize"

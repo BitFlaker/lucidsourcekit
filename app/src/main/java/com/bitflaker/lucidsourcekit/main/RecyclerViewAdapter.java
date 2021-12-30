@@ -133,14 +133,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         for (int i = 0; i < current.getTags().get(position).length; i++){
             TextView tag = new TextView(context);
             tag.setText(current.getTags().get(position)[i]);
-            tag.setTextColor(Tools.getAttrColorStateList(R.attr.bright_text_color, context.getTheme()));
+            tag.setTextColor(Tools.getAttrColorStateList(R.attr.primaryTextColor, context.getTheme()));
             int dpLarger = Tools.dpToPx(context, 8);
             int dpSmaller = Tools.dpToPx(context, 4);
             int dpSmall = Tools.dpToPx(context, 2);
             tag.setPadding(dpLarger,dpSmaller,dpLarger,dpSmaller);
             tag.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
             tag.setBackground(context.getResources().getDrawable(R.drawable.rounded_spinner));
-            tag.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.secondColor, context.getTheme()));
+            tag.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, context.getTheme()));
             LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             llParams.setMargins(dpSmall, dpSmall, dpSmall, dpSmall);
             tag.setLayoutParams(llParams);
@@ -207,7 +207,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private View generateIcon(int iconId) {
         ImageView icon = new ImageView(context);
         icon.setImageResource(iconId);
-        ColorStateList stateList = Tools.getAttrColorStateList(R.attr.inactivePageDot, context.getTheme());
+        ColorStateList stateList = Tools.getAttrColorStateList(R.attr.secondaryTextColor, context.getTheme());
         icon.setImageTintList(stateList);
         int size = Tools.dpToPx(context, 20);
         icon.setLayoutParams(new LinearLayout.LayoutParams(size, size));
@@ -217,7 +217,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private View generateIconHighlight(int iconId) {
         ImageView icon = new ImageView(context);
         icon.setImageResource(iconId);
-        ColorStateList stateList = Tools.getAttrColorStateList(R.attr.activePageDot, context.getTheme());
+        ColorStateList stateList = Tools.getAttrColorStateList(R.attr.secondaryTextColor, context.getTheme());
         icon.setImageTintList(stateList);
         int size = Tools.dpToPx(context, 20);
         icon.setLayoutParams(new LinearLayout.LayoutParams(size, size));
