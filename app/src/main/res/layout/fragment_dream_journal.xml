@@ -21,7 +21,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:text="@string/dream_journal"
-            android:textColor="@color/white"
+            android:textColor="?attr/bright_text_color"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -68,26 +68,27 @@
         android:textAlignment="center"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/white"
+        android:textColor="?attr/bright_text_color"
         android:drawablePadding="15dp"
         app:drawableTopCompat="@drawable/big_note"
         android:visibility="gone"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_add_journal_entry"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="25dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_spinner"
         android:backgroundTint="?attr/colorPrimary"
-        app:borderWidth="0dp"
         android:src="@drawable/ic_round_add_24"
-        app:tint="#ffffff"/>
+        app:borderWidth="0dp"
+        app:tint="?attr/priorityColor" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_text"

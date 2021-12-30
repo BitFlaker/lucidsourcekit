@@ -53,7 +53,7 @@
                     android:drawableTint="@color/darker_white"
                     android:text="Dream Type"
                     android:textAlignment="textStart"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     app:backgroundTint="@android:color/transparent" />
 
                 <LinearLayout
@@ -118,7 +118,7 @@
                     android:drawableTint="@color/darker_white"
                     android:text="Tags"
                     android:textAlignment="textStart"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     app:backgroundTint="@android:color/transparent" />
 
                 <LinearLayout
@@ -156,7 +156,7 @@
                     android:drawableTint="@color/darker_white"
                     android:text="Journal Type"
                     android:textAlignment="textStart"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     app:backgroundTint="@android:color/transparent" />
 
                 <RadioGroup
@@ -206,7 +206,7 @@
                     android:drawableTint="@color/darker_white"
                     android:text="Dream Mood"
                     android:textAlignment="textStart"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     app:backgroundTint="@android:color/transparent" />
 
                 <RadioGroup
@@ -277,7 +277,7 @@
                     android:drawableTint="@color/darker_white"
                     android:text="Dream Clarity"
                     android:textAlignment="textStart"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     app:backgroundTint="@android:color/transparent" />
 
                 <RadioGroup
@@ -341,7 +341,7 @@
                     android:drawableTint="@color/darker_white"
                     android:text="Sleep Quality"
                     android:textAlignment="textStart"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     app:backgroundTint="@android:color/transparent" />
 
                 <RadioGroup
@@ -408,7 +408,7 @@
             android:background="@drawable/rounded_spinner"
             android:text="cancel"
             android:textColor="?attr/activeTabIcon"
-            app:backgroundTint="?attr/main_background_color" />
+            app:backgroundTint="?attr/background_stand_out" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_filter_ok"
@@ -418,6 +418,6 @@
             android:background="@drawable/rounded_spinner"
             android:text="OK"
             android:textColor="?attr/activeTabIcon"
-            app:backgroundTint="?attr/main_background_color" />
+            app:backgroundTint="?attr/background_stand_out" />
     </LinearLayout>
 </LinearLayout>

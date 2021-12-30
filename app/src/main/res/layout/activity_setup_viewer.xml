@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_button_primary_2"
             app:backgroundTint="#1F5D96"
-            android:textColor="@color/darker_white_2x"
+            android:textColor="?attr/bright_text_color"
             android:drawableRight="@drawable/ic_baseline_arrow_forward_24"
             android:text="@string/setup_next" />
     </LinearLayout>

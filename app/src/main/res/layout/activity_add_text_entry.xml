@@ -24,7 +24,7 @@
                 android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:text="@string/dream_time"
-                android:textColor="@color/white"
+                android:textColor="?attr/bright_text_color"
                 android:textSize="23sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
                     android:text="@string/dream_date"
-                    android:textColor="@color/darker_white_2x"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -60,8 +60,8 @@
                     android:inputType="date"
                     android:text="10.12.2021"
                     android:textAlignment="center"
-                    android:textColor="@color/white"
-                    app:backgroundTint="#131f33"
+                    android:textColor="?attr/bright_text_color"
+                    app:backgroundTint="?attr/secondColor"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/txt_date_heading" />
 
@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
                     android:text="@string/dream_time_field"
-                    android:textColor="@color/darker_white_2x"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="@+id/btn_time"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -87,8 +87,8 @@
                     android:inputType="time"
                     android:text="03:15"
                     android:textAlignment="center"
-                    android:textColor="@color/white"
-                    app:backgroundTint="#131f33"
+                    android:textColor="?attr/bright_text_color"
+                    app:backgroundTint="?attr/secondColor"
                     app:layout_constraintStart_toEndOf="@+id/btn_date"
                     app:layout_constraintTop_toBottomOf="@+id/txt_time_heading" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -100,7 +100,7 @@
                 android:layout_marginTop="75dp"
                 android:gravity="center"
                 android:text="@string/dream_story_header"
-                android:textColor="@color/white"
+                android:textColor="?attr/bright_text_color"
                 android:textSize="23sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -112,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:text="@string/dream_title"
-                android:textColor="@color/darker_white_2x"
+                android:textColor="?attr/bright_text_color"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txt_dream_title" />
@@ -123,13 +123,13 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="3dp"
                 android:background="@drawable/rounded_border"
-                android:backgroundTint="#1C283D"
+                android:backgroundTint="?attr/secondColor"
                 android:gravity="center_vertical"
                 android:hint="@string/dream_title_hint"
                 android:importantForAutofill="no"
                 android:inputType="text"
                 android:padding="15dp"
-                android:textColor="@color/white"
+                android:textColor="?attr/bright_text_color"
                 android:textColorHint="@color/darker_white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -154,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/tags"
-                android:textColor="@color/darker_white_2x"
+                android:textColor="?attr/bright_text_color"
                 android:textSize="14sp"
                 android:textStyle=""
                 app:layout_constraintEnd_toEndOf="parent"
@@ -180,11 +180,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_spinner"
-                android:backgroundTint="#131f33"
+                android:backgroundTint="?attr/secondColor"
                 android:contentDescription="@string/alt_tags"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
                 android:src="@drawable/ic_round_add_24"
+                app:tint="?attr/bright_text_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/flx_tags" />
@@ -196,7 +197,7 @@
                 android:layout_marginTop="75dp"
                 android:gravity="center"
                 android:text="@string/ratings_header"
-                android:textColor="@color/white"
+                android:textColor="?attr/bright_text_color"
                 android:textSize="23sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -223,7 +224,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/dream_mood"
-                    android:textColor="@color/darker_white_2x"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="14sp" />
 
                 <com.google.android.material.slider.Slider
@@ -316,7 +317,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/dream_clarity_header"
-                    android:textColor="@color/darker_white_2x"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/ll_slider_container1" />
@@ -416,7 +417,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/sleep_quality_header"
-                    android:textColor="@color/darker_white_2x"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/ll_slider_container2" />
@@ -518,7 +519,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:text="@string/dream_details_header"
-                    android:textColor="@color/darker_white_2x"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/ll_slider_container3" />
@@ -534,7 +535,7 @@
                     android:background="@drawable/toggle_button"
                     android:drawableStart="@drawable/ic_baseline_priority_high_24"
                     android:padding="15dp"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     android:textOff="@string/dream_nightmare"
                     android:textOn="@string/dream_nightmare" />
 
@@ -549,7 +550,7 @@
                     android:background="@drawable/toggle_button"
                     android:drawableStart="@drawable/ic_baseline_accessibility_new_24"
                     android:padding="15dp"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     android:textOff="@string/dream_paralysis"
                     android:textOn="@string/dream_paralysis" />
 
@@ -564,7 +565,7 @@
                     android:background="@drawable/toggle_button"
                     android:drawableStart="@drawable/ic_baseline_airline_seat_individual_suite_24"
                     android:padding="15dp"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     android:textOff="@string/dream_false_awakening"
                     android:textOn="@string/dream_false_awakening" />
 
@@ -580,7 +581,7 @@
                     android:background="@drawable/toggle_button"
                     android:drawableStart="@drawable/ic_baseline_deblur_24"
                     android:padding="15dp"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     android:textOff="@string/dream_lucid"
                     android:textOn="@string/dream_lucid" />
             </LinearLayout>
@@ -592,6 +593,7 @@
                 android:layout_marginTop="35dp"
                 android:background="@drawable/rounded_spinner"
                 android:text="@string/add_journal_entry"
+                android:textColor="?attr/priorityColor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ll_details1" />
@@ -638,7 +640,7 @@
             android:layout_marginTop="50dp"
             android:gravity="center_horizontal"
             android:text="@string/recording"
-            android:textColor="@color/white"
+            android:textColor="?attr/bright_text_color"
             android:textSize="22sp"
             android:drawablePadding="8dp"
             app:drawableLeftCompat="@drawable/ic_baseline_mic_24"
@@ -658,7 +660,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@drawable/rounded_spinner"
-                android:backgroundTint="?attr/thirdColor"
+                android:backgroundTint="?attr/secondColor"
                 android:contentDescription="@string/pause_continue_recording"
                 android:src="@drawable/ic_baseline_pause_24" />
 
@@ -671,7 +673,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@drawable/rounded_spinner"
-                android:backgroundTint="?attr/thirdColor"
+                android:backgroundTint="?attr/secondColor"
                 android:contentDescription="@string/stop_recording"
                 android:src="@drawable/ic_baseline_stop_24" />
         </LinearLayout>
@@ -696,7 +698,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
             android:text="Add Tags"
-            android:textColor="@color/white"
+            android:textColor="?attr/bright_text_color"
             android:textSize="22sp"
             android:drawablePadding="8dp"
             app:drawableLeftCompat="@drawable/ic_baseline_label_24"
@@ -710,13 +712,12 @@
             app:flexWrap="wrap"
             app:justifyContent="center"/>
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/txt_tags_enter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="100dp"
-            android:text=""
-            android:hint="Enter tags comma separated"
+            android:hint="enter tag to add"
             android:textColorHint="@color/darker_white"
             android:textSize="18sp"
             android:paddingTop="5dp"
@@ -728,9 +729,9 @@
             android:layout_below="@id/flx_tags_to_add"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:inputType="text"
+            android:inputType="textAutoComplete"
             android:layout_marginBottom="35dp"
             android:imeOptions="actionDone"
-            android:textColor="@color/white"/>
+            android:textColor="?attr/bright_text_color"/>
     </RelativeLayout>
 </RelativeLayout>

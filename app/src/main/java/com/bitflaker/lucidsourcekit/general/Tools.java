@@ -14,12 +14,41 @@ import android.view.View;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 
+import com.bitflaker.lucidsourcekit.R;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 public class Tools {
+    private static int THEME_DIALOG;
+    private static int THEME_POPUP;
+
+    public static void setThemeColors(int theme){
+        switch(theme){
+            case R.style.Theme_LucidSourceKit_Light:
+                THEME_DIALOG = R.style.ThemedDialog_Light;
+                THEME_POPUP = R.style.PopupMenu_Light;
+                break;
+            case R.style.Theme_LucidSourceKit_LCDark:
+                THEME_DIALOG = R.style.ThemedDialog_LCDark;
+                THEME_POPUP = R.style.PopupMenu_LCDark;
+                break;
+            case R.style.Theme_LucidSourceKit_Amoled_Dark:
+                THEME_DIALOG = R.style.ThemedDialog_Amoled_Dark;
+                THEME_POPUP = R.style.PopupMenu_LCDark;
+                break;
+        }
+    }
+
+    public static int getThemeDialog(){
+        return THEME_DIALOG;
+    }
+
+    public static int getPopupTheme() {
+        return THEME_POPUP;
+    }
 
     public static void loadLanguage(Activity activity){
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
@@ -35,10 +64,16 @@ public class Tools {
         activity.getBaseContext().getResources().updateConfiguration(config, activity.getBaseContext().getResources().getDisplayMetrics());
     }
 
-    public static ColorStateList getAttrColor(int colorAttr, Resources.Theme theme) {
+    public static ColorStateList getAttrColorStateList(int colorAttr, Resources.Theme theme) {
         TypedValue typedValue = getAttrValue(colorAttr, theme);
         @ColorInt int color = typedValue.data;
         return ColorStateList.valueOf(color);
+    }
+
+    public static int getAttrColor(int colorAttr, Resources.Theme theme) {
+        TypedValue typedValue = getAttrValue(colorAttr, theme);
+        @ColorInt int color = typedValue.data;
+        return color;
     }
 
     @NonNull
@@ -53,8 +88,12 @@ public class Tools {
         activity.getWindow().setStatusBarColor(Color.TRANSPARENT);
     }
 
-    public static int dpToPx(Context context, int dp) {
+    public static int dpToPx(Context context, double dp) {
         return (int)(dp * context.getResources().getDisplayMetrics().density);
+    }
+
+    public static int pxToDp(Context context, double px) {
+        return (int)(px / context.getResources().getDisplayMetrics().density);
     }
 
     public static <T> T[] addFirst(T[] elements, T element)

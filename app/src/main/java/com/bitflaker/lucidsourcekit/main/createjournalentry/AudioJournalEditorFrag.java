@@ -70,7 +70,7 @@ public class AudioJournalEditorFrag extends Fragment {
         llContainer.setLayoutParams(llparams);
         llContainer.setOrientation(LinearLayout.HORIZONTAL);
         llContainer.setBackground(getResources().getDrawable(R.drawable.rounded_border));
-        llContainer.setBackgroundTintList(Tools.getAttrColor(R.attr.secondColor, getContext().getTheme()));
+        llContainer.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.secondColor, getContext().getTheme()));
         int dp15 = Tools.dpToPx(getContext(), 5);
         llContainer.setPadding(dp15, dp15, dp15, dp15);
 
@@ -80,7 +80,7 @@ public class AudioJournalEditorFrag extends Fragment {
         lparams.leftMargin = Tools.dpToPx(getContext(), 5);
         playPause.setLayoutParams(lparams);
         playPause.setImageResource(R.drawable.ic_baseline_play_arrow_24);
-        playPause.setBackgroundTintList(Tools.getAttrColor(R.attr.transparent, getContext().getTheme()));
+        playPause.setBackgroundTintList(Tools.getAttrColorStateList(android.R.color.transparent, getContext().getTheme()));
         playPause.setOnClickListener(e -> {
             if(mPlayer != null && mPlayer.isPlaying() && currentPlayingImageButton == playPause) {
                 playPause.setImageResource(R.drawable.ic_baseline_play_arrow_24);
@@ -147,9 +147,9 @@ public class AudioJournalEditorFrag extends Fragment {
         removeLparams.rightMargin = Tools.dpToPx(getContext(), 5);
         remove.setLayoutParams(removeLparams);
         remove.setImageResource(R.drawable.ic_baseline_cross_24);
-        remove.setBackgroundTintList(Tools.getAttrColor(R.attr.transparent, getContext().getTheme()));
+        remove.setBackgroundTintList(Tools.getAttrColorStateList(android.R.color.transparent, getContext().getTheme()));
         remove.setOnClickListener(e -> {
-            new AlertDialog.Builder(getContext()).setTitle(getResources().getString(R.string.recording_delete_header)).setMessage(getResources().getString(R.string.recording_delete_message))
+            new AlertDialog.Builder(getContext(), Tools.getThemeDialog()).setTitle(getResources().getString(R.string.recording_delete_header)).setMessage(getResources().getString(R.string.recording_delete_message))
                     .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                         if(currentPlayingImageButton == playPause) {
                             if(mPlayer != null){

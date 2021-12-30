@@ -55,7 +55,7 @@
         android:layout_marginEnd="40dp"
         android:text="@string/setup_get_started_title"
         android:textAlignment="center"
-        android:textColor="@color/white"
+        android:textColor="?attr/bright_text_color"
         android:textSize="26sp"
         android:textStyle="bold" />
 
@@ -69,7 +69,7 @@
         android:layout_marginTop="2dp"
         android:textAlignment="center"
         android:text="@string/setup_get_started_description"
-        android:textColor="@color/darker_white_2x"
+        android:textColor="?attr/bright_text_color"
         android:textSize="18sp" />
 
     <com.google.android.material.button.MaterialButton
@@ -82,6 +82,6 @@
         android:layout_marginBottom="25dp"
         android:background="@drawable/rounded_button_primary_2"
         android:text="@string/setup_get_started_title"
-        android:textColor="@color/darker_white_2x"
+        android:textColor="?attr/bright_text_color"
         app:backgroundTint="#1F5D96" />
 </RelativeLayout>

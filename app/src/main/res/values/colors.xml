@@ -6,13 +6,19 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="gray">#424242</color>
+    <color name="darker_gray">#222222</color>
+    <color name="dark_gray">#141414</color>
     <color name="white">#FFFFFFFF</color>
 
     <color name="darker_white">#449795AC</color>
     <color name="clay_white">#A9B4C3</color>
+    <color name="darker_gray_white">#C6CBCF</color>
+    <color name="gray_white">#e5e5e5</color>
+    <color name="clay_gray_white">#F3F3F3</color>
     <color name="darker_white_2x">#BEBEBF</color>
     <color name="darker_white_3x">#445D5D5E</color>
-    <color name="light_gray">#7E7F83</color>
+    <color name="light_gray">#6B7585</color>
     <color name="dark_purple_blue">#363883</color>
     <color name="dark_purple_blue_transparent">#3B6F2FE6</color>
     <color name="light_blue_600">#FF039BE5</color>
@@ -24,10 +30,22 @@
     <color name="very_dark_blue">#0B0E12</color>
     <color name="lighter_blue">#3A76AD</color>
     <color name="creamy_blue">#4C88E1</color>
-    <color name="dark_blue_lighter">#131f33</color>
-    <color name="dark_blue_glow">#293D5E</color>
-    <color name="mountain_dark_blue">#091523</color>
+    <color name="dark_blue_lighter">#1d2633</color>
+    <color name="dark_blue_glow">#778191</color>
+    <color name="mountain_dark_blue">#0c0f14</color>
+    <color name="mountain_dark_blue_lighter">#161d2a</color>
     <color name="transparent">#00000000</color>
     <color name="red">#C80707</color>
     <color name="lighter_red">#C32C2C</color>
+    <color name="darker_green">#43DD6F</color>
+    <color name="scratched_blue">#142740</color>
+    <color name="lit_scratched_blue">#23334b</color>
+    <color name="darker_scratched_blue">#0e213b</color>
+
+    <color name="blue_300">#64b5f6</color>
+    <color name="blue_var">#467EAC</color>
+    <color name="teal_300">#4db6ac</color>
+    <color name="teal_var">#357F78</color>
+    <color name="background">#121212</color>
+    <color name="background_paper">#1d1d1d</color>
 </resources>

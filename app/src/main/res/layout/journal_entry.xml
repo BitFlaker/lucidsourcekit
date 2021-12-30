@@ -21,7 +21,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:background="@drawable/rounded_border"
-            android:backgroundTint="#131f33"
+            android:backgroundTint="?attr/secondColor"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="15dp"
@@ -44,6 +44,7 @@
                     android:layout_weight="1"
                     android:layout_gravity="center_vertical"
                     android:text="15.12.2021 at 04:16"
+                    android:textColor="?attr/darker_text_color"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </LinearLayout>
@@ -56,6 +57,7 @@
                 android:text="Title"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:textColor="?attr/bright_text_color"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ll_title_icons" />
 
@@ -64,7 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="19dp"
                 android:text="Description"
-                android:textColor="#999999"
+                android:textColor="?attr/darker_text_color"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txt_title" />
 

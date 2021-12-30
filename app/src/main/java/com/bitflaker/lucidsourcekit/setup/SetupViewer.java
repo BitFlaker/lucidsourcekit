@@ -161,7 +161,7 @@ public class SetupViewer extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager2.setCurrentItem(tab.getPosition());
-                pageDots.get(tab.getPosition()).setBackgroundTintList(Tools.getAttrColor(R.attr.activePageDot, getTheme()));
+                pageDots.get(tab.getPosition()).setBackgroundTintList(Tools.getAttrColorStateList(R.attr.activePageDot, getTheme()));
 
                 if (tabLayout.getSelectedTabPosition() + 1 == pageCount) {
                     ((MaterialButton) findViewById(R.id.btn_next)).setText(R.string.setup_next_finish);
@@ -174,7 +174,7 @@ public class SetupViewer extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                pageDots.get(tab.getPosition()).setBackgroundTintList(Tools.getAttrColor(R.attr.inactivePageDot, getTheme()));
+                pageDots.get(tab.getPosition()).setBackgroundTintList(Tools.getAttrColorStateList(R.attr.inactivePageDot, getTheme()));
             }
 
             @Override
@@ -191,8 +191,8 @@ public class SetupViewer extends AppCompatActivity {
             lp.setMargins(Tools.dpToPx(this, 2), 0, Tools.dpToPx(this, 2), 0);
 
             ColorStateList stateList;
-            if(i == 0){ stateList = Tools.getAttrColor(R.attr.activePageDot, getTheme()); }
-            else{ stateList = Tools.getAttrColor(R.attr.inactivePageDot, getTheme()); }
+            if(i == 0){ stateList = Tools.getAttrColorStateList(R.attr.activePageDot, getTheme()); }
+            else{ stateList = Tools.getAttrColorStateList(R.attr.inactivePageDot, getTheme()); }
             dotPage.setBackgroundTintList(stateList);
 
             pageDotContainer.addView(dotPage, lp);

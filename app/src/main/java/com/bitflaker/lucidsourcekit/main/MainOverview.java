@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment;
 import com.bitflaker.lucidsourcekit.R;
 
 public class MainOverview extends Fragment {
+    private TextView totalEntries, totalLucidEntries, totalGoalsReached, streak;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_main_overview, container, false);
@@ -22,17 +24,23 @@ public class MainOverview extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setData();
         fillStats();
-        // TODO: blue background on nearest mountain / app background is too blue -> make less blue
+    }
+
+    private void setData() {
+        totalEntries = getView().findViewById(R.id.txt_total_journal_entries);
+        totalLucidEntries = getView().findViewById(R.id.txt_lucid_journal_entries);
+        totalGoalsReached = getView().findViewById(R.id.txt_total_goals_reached);
+        streak = getView().findViewById(R.id.txt_days_streak);
     }
 
     private void fillStats() {
-        // TODO: fill with real stats
-        ((TextView) getView().findViewById(R.id.txt_total_journal_entries)).setText(Html.fromHtml("<span><big><big>45</big></big></span><br /><small><small><br /></small></small><span><strong>" + getContext().getResources().getString(R.string.total_journal_entries) + "</strong></span>", Html.FROM_HTML_MODE_COMPACT));
-        ((TextView) getView().findViewById(R.id.txt_lucid_journal_entries)).setText(Html.fromHtml("<span><big><big>3</big></big></span><br /><small><small><br /></small></small><span><strong>" + getContext().getResources().getString(R.string.lucid_journal_entries) + "</strong></span>", Html.FROM_HTML_MODE_COMPACT));
-        ((TextView) getView().findViewById(R.id.txt_last_journal_entry)).setText(Html.fromHtml("<span><big><big>34</big></big><br /><small><small><br /></small></small></span><span><strong>" + getContext().getResources().getString(R.string.goals_reached_in_total) + "</strong></span>", Html.FROM_HTML_MODE_COMPACT));
-        ((TextView) getView().findViewById(R.id.txt_app_open_streak)).setText(Html.fromHtml("<span><big><big>28</big></big></span><br /><small><small><br /></small></small><span><strong>" + getContext().getResources().getString(R.string.days_opening_streak) + "</strong></span>", Html.FROM_HTML_MODE_COMPACT));
-
+        // TODO: fill with real data
+        //totalEntries
+        //totalLucidEntries
+        //totalGoalsReached
+        //streak
         ((TextView) getView().findViewById(R.id.txt_alarm1)).setText(Html.fromHtml("<span><big><big><strong>03:12</strong></big></big></span><br /><span>first night timer</span>", Html.FROM_HTML_MODE_COMPACT));
         ((TextView) getView().findViewById(R.id.txt_alarm2)).setText(Html.fromHtml("<span><big><big><strong>06:24</strong></big></big></span><br /><span>last night timer</span>", Html.FROM_HTML_MODE_COMPACT));
     }

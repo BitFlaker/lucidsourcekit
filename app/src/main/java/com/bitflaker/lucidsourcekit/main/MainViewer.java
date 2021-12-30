@@ -7,6 +7,7 @@ import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bitflaker.lucidsourcekit.R;
@@ -32,7 +33,7 @@ public class MainViewer extends AppCompatActivity {
 
     private MainOverview vwOverview;
     private DreamJournal vwLogging;
-    private SetupOpenSource vwPageStats;
+    private Statistics vwPageStats;
     private SetupOpenSource vwPageGoals;
     private SetupOpenSource vwPageEvents;
 
@@ -53,7 +54,7 @@ public class MainViewer extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(tabSelected());
         viewPager2.registerOnPageChangeCallback(changeTab());
         moreOptions.setOnClickListener(e -> {
-            PopupMenu popup = new PopupMenu(MainViewer.this, moreOptions);
+            PopupMenu popup = new PopupMenu(new ContextThemeWrapper(this, Tools.getPopupTheme()), moreOptions);
             popup.getMenuInflater().inflate(R.menu.more_options_popup_menu, popup.getMenu());
             popup.setOnMenuItemClickListener(item -> {
                 String itemTitle = item.getTitle().toString();
@@ -101,7 +102,7 @@ public class MainViewer extends AppCompatActivity {
         vpAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
         vwOverview = new MainOverview();
         vwLogging = new DreamJournal();
-        vwPageStats = new SetupOpenSource();
+        vwPageStats = new Statistics();
         vwPageGoals = new SetupOpenSource();
         vwPageEvents = new SetupOpenSource();
     }

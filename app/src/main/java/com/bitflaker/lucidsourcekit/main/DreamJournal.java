@@ -37,7 +37,6 @@ public class DreamJournal extends Fragment {
     private FloatingActionButton fabAdd, fabText, fabForms, fabAudio;
     private Animation fabOpen, fabClose, rotateForward, rotateBackward;
     private boolean isOpen = false;
-    private DatabaseWrapper dbWrapper;
     private RecyclerViewAdapter recyclerViewAdapter;
     private ActivityResultLauncher<Intent> createEntryActivityResultLauncher;
     public ActivityResultLauncher<Intent> viewEntryActivityResultLauncher;
@@ -50,6 +49,140 @@ public class DreamJournal extends Fragment {
         setupCreateResultLauncher();
         setupViewResultLauncher();
         return inflater.inflate(R.layout.fragment_dream_journal, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        DatabaseWrapper dbWrapper = new DatabaseWrapper(getContext());
+        DreamJournalEntriesList entries = dbWrapper.getJournalEntries();
+
+        setData(entries);
+        setBasics();
+        setupFAB();
+        setupSortButton();
+        setupFilterButton();
+        setupResetFilterButton();
+        checkForEntries();
+    }
+
+    private void setBasics() {
+        noEntryFound.setText(Html.fromHtml("<span><big><big><strong>Uhh...</strong></big></big><br />" + getContext().getResources().getString(R.string.empty_dream_journal) + "</span>", Html.FROM_HTML_MODE_COMPACT));
+        recyclerView.setAdapter(recyclerViewAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    private void setupResetFilterButton() {
+        resetFilterEntries.setOnClickListener(e -> {
+            resetFilterEntries.setVisibility(View.GONE);
+            recyclerViewAdapter.resetFilters();
+            checkForEntries();
+        });
+    }
+
+    private void setupFilterButton() {
+        filterEntries.setOnClickListener(e -> {
+            FilterDialog fd = new FilterDialog(getActivity(), Tools.getUniqueOnly(recyclerViewAdapter.getAllTags()), recyclerViewAdapter.getCurrentFilter());
+            fd.setOnClickPositiveButton(g -> {
+                AppliedFilter af = fd.getFilters();
+                if(!AppliedFilter.isEmptyFilter(af)){
+                    recyclerViewAdapter.filter(af);
+                    resetFilterEntries.setVisibility(View.VISIBLE);
+                }
+                else if (resetFilterEntries.getVisibility() == View.VISIBLE){
+                    resetFilterEntries.setVisibility(View.GONE);
+                    recyclerViewAdapter.resetFilters();
+                }
+                checkForEntries();
+                fd.dismiss();
+            });
+            fd.show();
+        });
+    }
+
+    private void setupSortButton() {
+        sortEntries.setOnClickListener(e -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), Tools.getThemeDialog());
+            builder.setTitle("Sort entries by");
+            String[] sortOrder = {"timestamp - newest first", "timestamp - oldest first", "title - A to Z", "title - Z to A", "description - A to Z", "description - Z to A"};
+            builder.setSingleChoiceItems(sortOrder, sortBy, (dialog, which) -> {
+                sortBy = which;
+                recyclerViewAdapter.sortEntries(sortBy);
+                dialog.dismiss();
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        });
+    }
+
+    private void setupFAB() {
+        fabAdd.setOnClickListener(view13 -> animateFab());
+        fabText.setOnClickListener(view12 -> showJournalCreator(JournalTypes.Text));
+        fabAudio.setOnClickListener(view1 -> showJournalCreator(JournalTypes.Audio));
+        fabForms.setOnClickListener(view1 -> showJournalCreator(JournalTypes.Forms));
+    }
+
+    private void setData(DreamJournalEntriesList entries) {
+        recyclerViewAdapter = new RecyclerViewAdapter(this, getContext(), entries);
+        fabAdd = getView().findViewById(R.id.btn_add_journal_entry);
+        fabText = getView().findViewById(R.id.fab_text);
+        fabAudio = getView().findViewById(R.id.fab_audio);
+        fabForms = getView().findViewById(R.id.fab_forms);
+        sortEntries = getView().findViewById(R.id.btn_sort);
+        filterEntries = getView().findViewById(R.id.btn_filter);
+        resetFilterEntries = getView().findViewById(R.id.btn_filter_off);
+        fabOpen = AnimationUtils.loadAnimation(getContext(), R.anim.add_open);
+        fabClose = AnimationUtils.loadAnimation(getContext(),R.anim.add_close);
+        rotateForward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_forward);
+        rotateBackward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_backward);
+        noEntryFound = getView().findViewById(R.id.txt_no_entries);
+        recyclerView = getView().findViewById(R.id.recycler_view);
+    }
+
+    private void checkForEntries() {
+        if (recyclerViewAdapter.getItemCount() == 0) {
+            noEntryFound.setVisibility(View.VISIBLE);
+        }
+        else if (noEntryFound.getVisibility() == View.VISIBLE){
+            noEntryFound.setVisibility(View.GONE);
+        }
+    }
+
+    private void showJournalCreator(JournalTypes forms) {
+        animateFab();
+        Intent intent = new Intent(getContext(), AddTextEntry.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("type", forms.ordinal());
+        intent.putExtra("availableTags", Tools.getUniqueOnly(recyclerViewAdapter.getAllTags()));
+        createEntryActivityResultLauncher.launch(intent);
+    }
+
+    private void animateFab(){
+        if (isOpen){
+            fabAdd.startAnimation(rotateForward);
+            fabText.startAnimation(fabClose);
+            fabAudio.startAnimation(fabClose);
+            fabForms.startAnimation(fabClose);
+            fabText.setClickable(false);
+            fabAudio.setClickable(false);
+            fabForms.setClickable(false);
+            isOpen=false;
+        }
+        else {
+            fabAdd.startAnimation(rotateBackward);
+            fabText.startAnimation(fabOpen);
+            fabAudio.startAnimation(fabOpen);
+            fabForms.startAnimation(fabOpen);
+            fabText.setClickable(true);
+            fabAudio.setClickable(true);
+            fabForms.setClickable(true);
+            isOpen=true;
+        }
+    }
+
+    public void pageChanged() {
+        isOpen = false;
     }
 
     private void setupViewResultLauncher() {
@@ -110,127 +243,5 @@ public class DreamJournal extends Fragment {
                         recyclerViewAdapter.notifyItemRangeChanged(0, recyclerViewAdapter.getItemCount());
                     }
                 });
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        noEntryFound = getView().findViewById(R.id.txt_no_entries);
-        noEntryFound.setText(Html.fromHtml("<span><big><big><strong>Uhh...</strong></big></big><br />" + getContext().getResources().getString(R.string.empty_dream_journal) + "</span>", Html.FROM_HTML_MODE_COMPACT));
-
-        recyclerView = getView().findViewById(R.id.recycler_view);
-        dbWrapper = new DatabaseWrapper(getContext());
-
-        DreamJournalEntriesList entries = dbWrapper.getJournalEntries();
-
-        recyclerViewAdapter = new RecyclerViewAdapter(this, getContext(), entries);
-        fabAdd = getView().findViewById(R.id.btn_add_journal_entry);
-        fabText = getView().findViewById(R.id.fab_text);
-        fabAudio = getView().findViewById(R.id.fab_audio);
-        fabForms = getView().findViewById(R.id.fab_forms);
-        sortEntries = getView().findViewById(R.id.btn_sort);
-        filterEntries = getView().findViewById(R.id.btn_filter);
-        resetFilterEntries = getView().findViewById(R.id.btn_filter_off);
-        fabOpen = AnimationUtils.loadAnimation(getContext(), R.anim.add_open);
-        fabClose = AnimationUtils.loadAnimation(getContext(),R.anim.add_close);
-        rotateForward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_forward);
-        rotateBackward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_backward);
-
-        recyclerView.setAdapter(recyclerViewAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        fabAdd.setOnClickListener(view13 -> animateFab());
-        fabText.setOnClickListener(view12 -> {
-            showJournalCreator(JournalTypes.Text);
-        });
-        fabAudio.setOnClickListener(view1 -> {
-            showJournalCreator(JournalTypes.Audio);
-        });
-        fabForms.setOnClickListener(view1 -> {
-            showJournalCreator(JournalTypes.Forms);
-        });
-
-        sortEntries.setOnClickListener(e -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.ThemedDialog);
-            builder.setTitle("Sort entries by");
-            String[] sortOrder = {"timestamp - newest first", "timestamp - oldest first", "title - A to Z", "title - Z to A", "description - A to Z", "description - Z to A"};
-            builder.setSingleChoiceItems(sortOrder, sortBy, (dialog, which) -> {
-                sortBy = which;
-                recyclerViewAdapter.sortEntries(sortBy);
-                dialog.dismiss();
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        });
-
-        filterEntries.setOnClickListener(e -> {
-            FilterDialog fd = new FilterDialog(getActivity(), Tools.getUniqueOnly(recyclerViewAdapter.getAllTags()), recyclerViewAdapter.getCurrentFilter());
-            fd.setOnClickPositiveButton(g -> {
-                AppliedFilter af = fd.getFilters();
-                if(!AppliedFilter.isEmptyFilter(af)){
-                    recyclerViewAdapter.filter(af);
-                    resetFilterEntries.setVisibility(View.VISIBLE);
-                }
-                else if (resetFilterEntries.getVisibility() == View.VISIBLE){
-                    resetFilterEntries.setVisibility(View.GONE);
-                    recyclerViewAdapter.resetFilters();
-                }
-                checkForEntries();
-                fd.dismiss();
-            });
-            fd.show();
-        });
-
-        resetFilterEntries.setOnClickListener(e -> {
-            resetFilterEntries.setVisibility(View.GONE);
-            recyclerViewAdapter.resetFilters();
-            checkForEntries();
-        });
-
-        checkForEntries();
-    }
-
-    private void checkForEntries() {
-        if (recyclerViewAdapter.getItemCount() == 0) {
-            noEntryFound.setVisibility(View.VISIBLE);
-        }
-        else if (noEntryFound.getVisibility() == View.VISIBLE){
-            noEntryFound.setVisibility(View.GONE);
-        }
-    }
-
-    private void showJournalCreator(JournalTypes forms) {
-        animateFab();
-        Intent intent = new Intent(getContext(), AddTextEntry.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("type", forms.ordinal());
-        createEntryActivityResultLauncher.launch(intent);
-    }
-
-    private void animateFab(){
-        if (isOpen){
-            fabAdd.startAnimation(rotateForward);
-            fabText.startAnimation(fabClose);
-            fabAudio.startAnimation(fabClose);
-            fabForms.startAnimation(fabClose);
-            fabText.setClickable(false);
-            fabAudio.setClickable(false);
-            fabForms.setClickable(false);
-            isOpen=false;
-        }
-        else {
-            fabAdd.startAnimation(rotateBackward);
-            fabText.startAnimation(fabOpen);
-            fabAudio.startAnimation(fabOpen);
-            fabForms.startAnimation(fabOpen);
-            fabText.setClickable(true);
-            fabAudio.setClickable(true);
-            fabForms.setClickable(true);
-            isOpen=true;
-        }
-    }
-
-    public void pageChanged() {
-        isOpen = false;
     }
 }

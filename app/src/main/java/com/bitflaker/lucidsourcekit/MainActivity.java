@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Tools.setThemeColors(R.style.Theme_LucidSourceKit_LCDark);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dbWrapper = new DatabaseWrapper(this);
@@ -173,11 +174,13 @@ public class MainActivity extends AppCompatActivity {
         MaterialButton btn_pin9 = (MaterialButton)findViewById(R.id.btn_pin9);
         MaterialButton[] pinButtons = { btn_pin0, btn_pin1, btn_pin2, btn_pin3, btn_pin4, btn_pin5, btn_pin6, btn_pin7, btn_pin8, btn_pin9};
         MaterialButton btn_delete = (MaterialButton)findViewById(R.id.btn_delete);
+        TextView txtEnteredPin = (TextView)findViewById(R.id.txt_enteredPin);
+        txtEnteredPin.setTextColor(getResources().getColor(R.color.white, getTheme()));
 
         for (MaterialButton pinButton : pinButtons) {
+            pinButton.setTextColor(getResources().getColor(R.color.white, getTheme()));
             pinButton.setOnClickListener(e -> {
                 pinButton.startAnimation(buttonClick);
-                TextView txtEnteredPin = (TextView)findViewById(R.id.txt_enteredPin);
                 txtEnteredPin.setText(txtEnteredPin.getText() + "\u2022");
                 enteredPin += pinButton.getText();
 
@@ -219,11 +222,11 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+        btn_delete.setTextColor(getResources().getColor(R.color.white, getTheme()));
         btn_delete.setOnClickListener(e -> {
             btn_delete.startAnimation(buttonClick);
             if(enteredPin.length() > 0) {
                 enteredPin = enteredPin.substring(0, enteredPin.length() - 1);
-                TextView txtEnteredPin = (TextView)findViewById(R.id.txt_enteredPin);
                 StringBuilder pinText = new StringBuilder();
                 for(int i = 0; i < enteredPin.length(); i++) { pinText.append("\u2022"); }
                 txtEnteredPin.setText(pinText.toString());

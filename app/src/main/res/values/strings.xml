@@ -92,6 +92,11 @@
     <string name="entry_delete_header">Delete journal entry</string>
     <string name="entry_delete_message">Are you sure you want to delete this journal entry?</string>
     <string name="recurring">Recurring</string>
+    <string name="total_journal_entries_description">This number indicates the amount of entries you have made in your dream journal. The more you have, the better they can be analyzed in your statistics.</string>
+    <string name="lucid_journal_entries_description">This number indicates the amount of lucid dreams you have recorded in your dream journal. The more you practice, the higher the chance of getting lucid will become.</string>
+    <string name="app_opening_streak_description">This number indicates on how many consecutive days you have opened this app at least once.</string>
+    <string name="goals_reached">goals have been reached</string>
+    <string name="goals_reached_description">This number indicates how many goals you have reached in total. These goals guide you at becoming more conscious throughout the day and therefore improving your awareness.</string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>

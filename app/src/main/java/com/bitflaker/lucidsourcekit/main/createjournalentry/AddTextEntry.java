@@ -9,13 +9,14 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -91,8 +92,10 @@ public class AddTextEntry extends AppCompatActivity {
     private EditText entryTitle;
     private boolean isInEditingMode = false;
     private int entryId = -1;
-    private EditText tagsEnter;
+    private AutoCompleteTextView tagsEnter;
     private FlexboxLayout tagsToAddContainer;
+
+    private String[] availableTags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +125,8 @@ public class AddTextEntry extends AppCompatActivity {
         recordedAudios = new ArrayList<>();
         tagsEnter = findViewById(R.id.txt_tags_enter);
         tagsToAddContainer = findViewById(R.id.flx_tags_to_add);
+        Intent data = getIntent();
+        availableTags = data.getStringArrayExtra("availableTags");
 
         setupTimePicker();
         setupDatePicker();
@@ -129,7 +134,6 @@ public class AddTextEntry extends AppCompatActivity {
         setupTagsPopup();
         setupSliders();
         setupAddEntryButton();
-        Intent data = getIntent();
 
         currentType = JournalTypes.values()[data.getIntExtra("type", -1)];
         data.getIntExtra("type", -1);
@@ -220,7 +224,7 @@ public class AddTextEntry extends AppCompatActivity {
             if(isVitalDataFilledIn(title, description)) {
                 if(((FlexboxLayout) findViewById(R.id.flx_tags)).getChildCount() == 0){
                     String finalDescription = description;
-                    new AlertDialog.Builder(AddTextEntry.this).setTitle(getResources().getString(R.string.no_tags_heading)).setMessage(getResources().getString(R.string.no_tags_message))
+                    new AlertDialog.Builder(AddTextEntry.this, Tools.getThemeDialog()).setTitle(getResources().getString(R.string.no_tags_heading)).setMessage(getResources().getString(R.string.no_tags_message))
                             .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                                 storeEntry(title, finalDescription);
                             })
@@ -306,16 +310,27 @@ public class AddTextEntry extends AppCompatActivity {
 
     // TODO change to AutocompleteEditText and set Data
     private void setupTagsPopup() {
+        tagsEnter.setAdapter(new ArrayAdapter<>(AddTextEntry.this, android.R.layout.simple_list_item_1, availableTags));
         tagsEnter.setOnEditorActionListener((textView, i, keyEvent) -> {
             String enteredTag = tagsEnter.getText().toString();
             if(i == IME_ACTION_DONE && !getCurrentTagsToAdd().contains(enteredTag) && enteredTag.length() > 0){
-                Chip tag = generateTagChip(tagsEnter.getText().toString());
-                tag.setOnClickListener(e -> tagsToAddContainer.removeView(tag));
-                tagsToAddContainer.addView(tag);
-                tagsEnter.setText("");
+                addTagFilterEntry(enteredTag);
             }
             return true;
         });
+        tagsEnter.setOnItemClickListener((adapterView, view, i, l) -> {
+            String enteredTag = tagsEnter.getText().toString();
+            if(!getCurrentTagsToAdd().contains(enteredTag)){
+                addTagFilterEntry(enteredTag);
+            }
+        });
+    }
+
+    private void addTagFilterEntry(String enteredTag) {
+        Chip tag = generateTagChip(enteredTag);
+        tag.setOnClickListener(e -> tagsToAddContainer.removeView(tag));
+        tagsToAddContainer.addView(tag);
+        tagsEnter.setText("");
     }
 
     private List<String> getCurrentTagsToAdd() {
@@ -333,8 +348,8 @@ public class AddTextEntry extends AppCompatActivity {
         lparams.leftMargin = Tools.dpToPx(AddTextEntry.this, 3);
         lparams.rightMargin = Tools.dpToPx(AddTextEntry.this, 3);
         tag.setLayoutParams(lparams);
-        tag.setChipBackgroundColor(Tools.getAttrColor(R.attr.thirdColor, getTheme()));
-        tag.setTextColor(getResources().getColor(R.color.white, getTheme()));
+        tag.setChipBackgroundColor(Tools.getAttrColorStateList(R.attr.secondColor, getTheme()));
+        tag.setTextColor(Tools.getAttrColorStateList(R.attr.bright_text_color, getTheme()));
         tag.setCloseIconTint(ColorStateList.valueOf(getResources().getColor(R.color.white, getTheme())));
         tag.setCheckedIconVisible(false);
         tag.setCloseIconVisible(true);
@@ -400,7 +415,7 @@ public class AddTextEntry extends AppCompatActivity {
     }
 
     private void setIconActive(ImageView img) {
-        img.setImageTintList(Tools.getAttrColor(R.attr.lightSelection, AddTextEntry.this.getTheme()));
+        img.setImageTintList(Tools.getAttrColorStateList(R.attr.lightSelection, AddTextEntry.this.getTheme()));
         android.view.ViewGroup.LayoutParams lparam = img.getLayoutParams();
         lparam.height = Tools.dpToPx(AddTextEntry.this, 30);
         img.setLayoutParams(lparam);
@@ -408,7 +423,7 @@ public class AddTextEntry extends AppCompatActivity {
 
     private void disableAllHighlighted(ImageView[] imageViews) {
         for (ImageView img : imageViews) {
-            img.setImageTintList(Tools.getAttrColor(R.attr.iconColor, AddTextEntry.this.getTheme()));
+            img.setImageTintList(Tools.getAttrColorStateList(R.attr.iconColor, AddTextEntry.this.getTheme()));
             android.view.ViewGroup.LayoutParams lparam = img.getLayoutParams();
             lparam.height = Tools.dpToPx(AddTextEntry.this, 20);
             img.setLayoutParams(lparam);
@@ -562,10 +577,11 @@ public class AddTextEntry extends AppCompatActivity {
         }
 
         EditText tagEnter = ((EditText) findViewById(R.id.txt_tags_enter));
-        if(tagEnter.getText().length() > 0){
-            tagContainer.addView(generateTagView(tagEnter.getText().toString()));
-            tagEnter.setText("");
+        String enteredTag = tagEnter.getText().toString();
+        if(tagEnter.getText().length() > 0 && !getCurrentTagsToAdd().contains(enteredTag)){
+            tagContainer.addView(generateTagView(enteredTag));
         }
+        tagEnter.setText("");
 
         InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(AddTextEntry.INPUT_METHOD_SERVICE);
         if(getCurrentFocus() != null){
@@ -579,14 +595,14 @@ public class AddTextEntry extends AppCompatActivity {
     private View generateTagView(String text) {
         TextView tag = new TextView(this);
         tag.setText(text);
-        tag.setTextColor(Color.parseColor("#ffffff"));
+        tag.setTextColor(Tools.getAttrColorStateList(R.attr.bright_text_color, getTheme()));
         int horizontal = Tools.dpToPx(this, 12);
         int vertical = Tools.dpToPx(this, 8);
         int smallMargin = Tools.dpToPx(this, 3);
         tag.setPadding(horizontal,vertical,horizontal,vertical);
         tag.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         tag.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_border, getTheme()));
-        tag.setBackgroundTintList(Tools.getAttrColor(R.attr.secondColor, getTheme()));
+        tag.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.secondColor, getTheme()));
         LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         llParams.setMargins(smallMargin, smallMargin, smallMargin, smallMargin);
         tag.setLayoutParams(llParams);

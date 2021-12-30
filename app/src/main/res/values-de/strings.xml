@@ -93,6 +93,11 @@
     <string name="entry_delete_header">Tagebucheintrag löschen</string>
     <string name="entry_delete_message">Soll dieser Tagebucheintrag wirklich endgültig gelöscht werden?</string>
     <string name="recurring">Wiederkehrend</string>
+    <string name="goals_reached">Ziele erreicht</string>
+    <string name="total_journal_entries_description">Diese Zahl gibt die Anzahl an Einträgen im Traumtagebuch an. Je mehr es sind, desto besser können diese in den Statistiken analysiert werden.</string>
+    <string name="lucid_journal_entries_description">Diese Zahl gibt die Anzahl an Klarträumen an, welche im Traumtagebuch aufgezeichnet wurden. Je mehr du übst, desto höher wird die Wahrscheinlichkeit einen Klartraum zu erleben.</string>
+    <string name="app_opening_streak_description">Diese Zahl gibt die Anzahl an aufeinanderfolgenden Tagen an, an denen die App mindestens einmal geöffnet wurde.</string>
+    <string name="goals_reached_description">Diese Zahl gibt die Anzahl an bisher erreichten Zielen an. Diese Ziele unterstützen dich dabei, den ganzen Tag über bewusster und aufmerksamer zu sein.</string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>

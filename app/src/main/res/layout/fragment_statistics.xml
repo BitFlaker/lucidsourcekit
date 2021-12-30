@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".main.Statistics">
+
+    <TextView
+        android:id="@+id/txt_stats_heading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="10dp"
+        android:text="Statistics"
+        android:textColor="?attr/bright_text_color"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/txt_stats_heading"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/rounded_border"
+                android:backgroundTint="?attr/secondColor"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="amount of lucid dreams"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ProgressBar
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
+                        android:indeterminateOnly="false"
+                        android:progress="20"
+                        android:progressDrawable="@drawable/circle_chart" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="5dp"
+                            android:text="lucid dream"
+                            app:drawableLeftCompat="@drawable/ic_round_square_24"
+                            app:drawableTint="?attr/highlight_success" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="5dp"
+                            android:text="normal dream"
+                            app:drawableLeftCompat="@drawable/ic_round_square_24"
+                            app:drawableTint="?attr/activeTabIcon" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/rounded_border"
+                android:backgroundTint="?attr/secondColor"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="averages"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="average dream mood"
+                        android:textAlignment="center"
+                        android:textColor="?attr/bright_text_color"
+                        android:textSize="14sp"
+                        android:textStyle="italic"
+                        app:drawableTopCompat="@drawable/ic_baseline_sentiment_very_satisfied_24" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="average dream clarity"
+                        android:textAlignment="center"
+                        android:textColor="?attr/bright_text_color"
+                        android:textSize="14sp"
+                        android:textStyle="italic"
+                        app:drawableTopCompat="@drawable/ic_baseline_brightness_5_24" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="average sleep quality"
+                        android:textAlignment="center"
+                        android:textColor="?attr/bright_text_color"
+                        android:textSize="14sp"
+                        android:textStyle="italic"
+                        app:drawableTopCompat="@drawable/ic_baseline_star_half_24" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="0.8\u+00Aaverage dream per night"
+                    android:textAlignment="center"
+                    android:textColor="?attr/bright_text_color"
+                    android:textSize="14sp"
+                    android:textStyle="italic" />
+            </LinearLayout>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chp_grp_time_span"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                app:singleSelection="true"
+                app:selectionRequired="true"
+                app:checkedChip="@+id/chp_last_7_days">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chp_last_7_days"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="last 7 days"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chp_last_30_days"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="last 30 days"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chp_all_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All time"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"/>
+            </com.google.android.material.chip.ChipGroup>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/rounded_border"
+                android:backgroundTint="?attr/secondColor"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="average dream moods"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/ll_avg_moods"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

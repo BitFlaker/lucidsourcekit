@@ -2,7 +2,6 @@ package com.bitflaker.lucidsourcekit.main;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -21,6 +20,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.widget.TextViewCompat;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.general.DatabaseWrapper;
@@ -46,7 +47,7 @@ public class ViewJournalEntry extends AppCompatActivity {
     private FlexboxLayout tagsContainer;
     private LinearLayout dreamTypesContainer, dreamContent;
     private String selectedDate, selectedTime, titleContent, descriptionContent, qualityContent, clarityContent, moodContent;
-    private String[] dreamTypes, tags, recordedAudios;
+    private String[] dreamTypes, tags, recordedAudios, availableTags;
     private ImageButton currentPlayingImageButton, editEntry, deleteEntry;
     private MediaPlayer mPlayer;
     private ActivityResultLauncher<Intent> editEntryActivityResultLauncher;
@@ -96,6 +97,7 @@ public class ViewJournalEntry extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("mode", "EDIT");
             intent.putExtra("type", journalType.ordinal());
+            intent.putExtra("availableTags", availableTags);
             intent.putExtra("entryId", entryId);
             intent.putExtra("date", selectedDate);
             intent.putExtra("time", selectedTime);
@@ -109,19 +111,17 @@ public class ViewJournalEntry extends AppCompatActivity {
             intent.putExtra("recordings", recordedAudios);
             editEntryActivityResultLauncher.launch(intent);
         });
-        deleteEntry.setOnClickListener(e -> {
-            new AlertDialog.Builder(ViewJournalEntry.this).setTitle(getResources().getString(R.string.entry_delete_header)).setMessage(getResources().getString(R.string.entry_delete_message))
-                    .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-                        dbWrapper.deleteEntry(entryId);
-                        Intent data = new Intent();
-                        data.putExtra("action", "DELETE");
-                        data.putExtra("position", position);
-                        setResult(RESULT_OK, data);
-                        finish();
-                    })
-                    .setNegativeButton(getResources().getString(R.string.no), null)
-                    .show();
-        });
+        deleteEntry.setOnClickListener(e -> new AlertDialog.Builder(ViewJournalEntry.this, Tools.getThemeDialog()).setTitle(getResources().getString(R.string.entry_delete_header)).setMessage(getResources().getString(R.string.entry_delete_message))
+                .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
+                    dbWrapper.deleteEntry(entryId);
+                    Intent data = new Intent();
+                    data.putExtra("action", "DELETE");
+                    data.putExtra("position", position);
+                    setResult(RESULT_OK, data);
+                    finish();
+                })
+                .setNegativeButton(getResources().getString(R.string.no), null)
+                .show());
     }
 
     private void setData() {
@@ -133,7 +133,7 @@ public class ViewJournalEntry extends AppCompatActivity {
             description.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             description.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
             description.setText(descriptionContent);
-            description.setTextColor(getResources().getColor(R.color.darker_white_2x, getTheme()));
+            description.setTextColor(Tools.getAttrColorStateList(R.attr.darker_text_color, getTheme()));
             dreamContent.addView(description);
         }
         else {
@@ -144,13 +144,14 @@ public class ViewJournalEntry extends AppCompatActivity {
         for (String tag : tags) {
             TextView tagView = new TextView(ViewJournalEntry.this);
             tagView.setText(tag);
-            tagView.setTextColor(Color.parseColor("#ffffff"));
+            tagView.setTextColor(Tools.getAttrColorStateList(R.attr.bright_text_color, getTheme()));
             int dpLarger = Tools.dpToPx(ViewJournalEntry.this, 8);
             int dpSmaller = Tools.dpToPx(ViewJournalEntry.this, 4);
             int dpSmall = Tools.dpToPx(ViewJournalEntry.this, 2);
             tagView.setPadding(dpLarger, dpSmaller, dpLarger, dpSmaller);
             tagView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
-            tagView.setBackground(ViewJournalEntry.this.getResources().getDrawable(R.drawable.rounded_spinner, getTheme()));
+            tagView.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_spinner, getTheme()));
+            tagView.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.secondColor, getTheme()));
             LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             llParams.setMargins(dpSmall, dpSmall, dpSmall, dpSmall);
             tagView.setLayoutParams(llParams);
@@ -196,26 +197,26 @@ public class ViewJournalEntry extends AppCompatActivity {
     }
 
     private void setDreamMoodRating(int icon, DreamMoods moodEnum) {
-        mood.setImageDrawable(getResources().getDrawable(icon, getTheme()));
+        mood.setImageDrawable(ResourcesCompat.getDrawable(getResources(), icon, getTheme()));
         prgMood.setProgress(moodEnum.ordinal());
     }
 
     private void setDreamClarityRating(int icon, DreamClarity clarityEnum) {
-        clarity.setImageDrawable(getResources().getDrawable(icon, getTheme()));
+        clarity.setImageDrawable(ResourcesCompat.getDrawable(getResources(), icon, getTheme()));
         prgClarity.setProgress(clarityEnum.ordinal());
     }
 
     private void setSleepQualityRating(int icon, SleepQuality qualityEnum) {
-        quality.setImageDrawable(getResources().getDrawable(icon, getTheme()));
+        quality.setImageDrawable(ResourcesCompat.getDrawable(getResources(), icon, getTheme()));
         prgQuality.setProgress(qualityEnum.ordinal());
     }
 
     private View generateText(int icon, int text) {
         TextView type = new TextView(ViewJournalEntry.this);
-        type.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(icon, getTheme()), null, null, null);
+        type.setCompoundDrawablesWithIntrinsicBounds(ResourcesCompat.getDrawable(getResources(), icon, getTheme()), null, null, null);
         type.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         type.setText(text);
-        type.setTextColor(getResources().getColor(R.color.darker_white_2x, getTheme()));
+        type.setTextColor(Tools.getAttrColorStateList(R.attr.darker_text_color, getTheme()));
         type.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
         type.setCompoundDrawablePadding(Tools.dpToPx(ViewJournalEntry.this, 5));
         type.setGravity(Gravity.CENTER_VERTICAL);
@@ -224,11 +225,11 @@ public class ViewJournalEntry extends AppCompatActivity {
 
     private View generateTextHighlight(int icon, int text) {
         TextView type = new TextView(ViewJournalEntry.this);
-        type.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(icon, getTheme()), null, null, null);
-        type.setCompoundDrawableTintList(Tools.getAttrColor(R.attr.activePageDot, getTheme()));
+        type.setCompoundDrawablesWithIntrinsicBounds(ResourcesCompat.getDrawable(getResources(), icon, getTheme()), null, null, null);
+        TextViewCompat.setCompoundDrawableTintList(type, Tools.getAttrColorStateList(R.attr.activePageDot, getTheme()));
         type.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         type.setText(text);
-        type.setTextColor(getResources().getColor(R.color.darker_white_2x, getTheme()));
+        type.setTextColor(Tools.getAttrColorStateList(R.attr.darker_text_color, getTheme()));
         type.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
         type.setCompoundDrawablePadding(Tools.dpToPx(ViewJournalEntry.this, 5));
         type.setGravity(Gravity.CENTER_VERTICAL);
@@ -241,8 +242,8 @@ public class ViewJournalEntry extends AppCompatActivity {
         llparams.setMargins(0, Tools.dpToPx(ViewJournalEntry.this, 5), 0, Tools.dpToPx(ViewJournalEntry.this, 5));
         llContainer.setLayoutParams(llparams);
         llContainer.setOrientation(LinearLayout.HORIZONTAL);
-        llContainer.setBackground(getResources().getDrawable(R.drawable.rounded_border, getTheme()));
-        llContainer.setBackgroundTintList(Tools.getAttrColor(R.attr.secondColor, getTheme()));
+        llContainer.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_border, getTheme()));
+        llContainer.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.secondColor, getTheme()));
         int dp15 = Tools.dpToPx(ViewJournalEntry.this, 5);
         llContainer.setPadding(dp15, dp15, dp15, dp15);
 
@@ -252,7 +253,7 @@ public class ViewJournalEntry extends AppCompatActivity {
         lparams.leftMargin = Tools.dpToPx(ViewJournalEntry.this, 5);
         playPause.setLayoutParams(lparams);
         playPause.setImageResource(R.drawable.ic_baseline_play_arrow_24);
-        playPause.setBackgroundTintList(Tools.getAttrColor(R.attr.transparent, getTheme()));
+        playPause.setBackgroundTintList(Tools.getAttrColorStateList(android.R.color.transparent, getTheme()));
         playPause.setOnClickListener(e -> {
             if(mPlayer != null && mPlayer.isPlaying() && currentPlayingImageButton == playPause) {
                 playPause.setImageResource(R.drawable.ic_baseline_play_arrow_24);
@@ -351,6 +352,7 @@ public class ViewJournalEntry extends AppCompatActivity {
         position = data.getIntExtra("position", -1);
         entryId = data.getIntExtra("entryId", -1);
         selectedDate = data.getStringExtra("date");
+        availableTags = data.getStringArrayExtra("availableTags");
         selectedTime = data.getStringExtra("time");
         titleContent = data.getStringExtra("title");
         descriptionContent = data.getStringExtra("description");

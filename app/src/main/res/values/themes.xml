@@ -1,34 +1,43 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.LucidSourceKit" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
+<resources>
+    <style name="Theme.LucidSourceKit.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/creamy_blue</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <!--<item name="android:statusBarColor">@android:color/transparent</item>-->
-        <!-- Customize your theme here. -->
+        <item name="android:textColor">?attr/bright_text_color</item>
+        <item name="priorityColor">@color/white</item>
         <item name="iconColor">@color/darker_white</item>
+        <item name="bright_text_color">@color/black</item>
+        <item name="darker_text_color">@color/gray</item>
         <item name="button_primary">@color/dark_purple_blue</item>
         <item name="pin_background">@color/dark_purple_blue_transparent</item>
-        <item name="inactivePageDot">@color/dark_blue</item>
-        <item name="activePageDot">@color/lighter_blue</item>
-        <item name="activeTabIcon">@color/lighter_blue</item>
-        <item name="inactiveTabIcon">@color/lighter_blue</item>
-
-        <item name="secondColor">@color/dark_blue_lighter</item>
-        <item name="thirdColor">@color/dark_blue_glow</item>
-        <item name="transparent">@color/transparent</item>
-        <item name="main_background_color">@color/mountain_dark_blue</item>
-        <item name="highlight_error">@color/red</item>
+        <item name="inactivePageDot">@color/clay_white</item>
+        <item name="activePageDot">?attr/colorPrimary</item>
+        <item name="activeTabIcon">@color/creamy_blue</item>
+        <item name="inactiveTabIcon">@color/darker_gray_white</item>
+        <item name="secondColor">@color/gray_white</item>
+        <item name="main_background_color">@color/white</item>
+        <item name="background_stand_out">@color/clay_gray_white</item>
+        <item name="highlight_error">@color/lighter_red</item>
+        <item name="highlight_success">@color/darker_green</item>
         <item name="lightSelection">@color/clay_white</item>
+        <item name="main_overview_graphic">@drawable/deep_night_mountains_light</item>
     </style>
 
-    <style name="ThemedDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
-        <item name="android:background">?attr/main_background_color</item>
+    <style name="ThemedDialog.Light" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">?attr/background_stand_out</item>
+        <item name="android:textColor">?attr/bright_text_color</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="PopupMenu.Light" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:textColor">?attr/bright_text_color</item>
+        <item name="android:itemBackground">?attr/main_background_color</item>
     </style>
 </resources>

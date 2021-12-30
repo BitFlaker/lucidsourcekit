@@ -4,79 +4,93 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#08111C"
+    android:background="?attr/main_background_color"
     tools:context=".setup.SetupViewer">
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_above="@id/ll_nav_bottom"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewpager"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/ll_nav_bottom"
+        android:orientation="horizontal">
+        <View
+            android:layout_width="0dp"
             android:layout_weight="1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="10dp"
+            android:background="@drawable/edge"
+            android:backgroundTint="?attr/background_stand_out" />
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="10dp"
+            android:background="@drawable/edge"
+            android:backgroundTint="?attr/background_stand_out"
+            android:scaleX="-1"/>
+    </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/ll_nav_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rectangle"
+        android:layout_alignParentBottom="true"
+        android:backgroundTint="?attr/background_stand_out">
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tablayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#08111C"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tabIconTint="@color/tab_color_selection"
-                app:tabIndicatorAnimationMode="elastic"
-                app:tabIndicatorColor="?attr/colorPrimary"
-                app:tabIndicatorGravity="top"
-                app:tabIndicatorHeight="1dp">
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tablayout"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/transparent"
+            app:tabIconTint="@color/tab_color_selection"
+            app:tabIndicatorAnimationMode="elastic"
+            app:tabIndicatorColor="?attr/colorPrimary"
+            app:tabIndicatorGravity="top"
+            app:tabIndicatorHeight="0dp"
+            app:tabRippleColor="@null">
 
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/ti_overview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/ic_baseline_view_list_24" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/ti_logging"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/ic_baseline_sticky_note_2_24" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/ti_stats"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/ic_baseline_query_stats_24" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/ti_goals"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/ic_baseline_bookmark_added_24" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/ti_events"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/ic_baseline_bedtime_24" />
-            </com.google.android.material.tabs.TabLayout>
-            <ImageButton
-                android:id="@+id/btn_more_options"
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/ti_overview"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_baseline_more_vert_24"
-                android:backgroundTint="#08111c"/>
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_round_dashboard_24" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/ti_logging"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_round_book_24" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/ti_stats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_round_insert_chart_24" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/ti_goals"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_baseline_bookmark_added_24" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/ti_events"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_baseline_bedtime_24" />
+        </com.google.android.material.tabs.TabLayout>
+
+        <ImageButton
+            android:id="@+id/btn_more_options"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_baseline_more_vert_24"
+            android:backgroundTint="?attr/background_stand_out"/>
     </LinearLayout>
 </RelativeLayout>

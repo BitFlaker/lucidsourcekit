@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Recordings"
-        android:textColor="@color/darker_white_2x"
+        android:textColor="?attr/bright_text_color"
         android:textStyle=""
         android:textSize="14sp"
         android:layout_marginStart="0dp"
@@ -33,9 +33,9 @@
         android:background="@drawable/rounded_spinner"
         android:layout_marginTop="10dp"
         android:text="@string/add_audio"
-        android:textColor="@color/white"
+        android:textColor="?attr/bright_text_color"
         android:layout_gravity="center"
         app:backgroundTint="?attr/secondColor"
         app:icon="@drawable/ic_baseline_mic_24"
-        app:iconTint="@color/white"/>
+        app:iconTint="?attr/bright_text_color"/>
 </LinearLayout>

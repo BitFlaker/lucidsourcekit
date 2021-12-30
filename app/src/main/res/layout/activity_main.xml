@@ -34,7 +34,7 @@
             android:hint="@string/login_password_hint"
             android:background="@drawable/rounded_edit_text"
             android:drawableStart="@drawable/ic_baseline_lock_24"
-            android:textColor="@color/white"
+            android:textColor="?attr/bright_text_color"
             android:textColorHint="#6F9E9BB1"
             android:drawablePadding="10dp"
             android:layout_above="@id/btn_unlock"
@@ -55,7 +55,7 @@
             android:layout_marginBottom="80dp"
             android:background="@drawable/rounded_button_primary"
             android:text="@string/login_password_unlock_button"
-            android:textColor="@color/white"
+            android:textColor="?attr/bright_text_color"
             app:backgroundTint="#5D41DD" />
 
         <!-- PIN login -->
@@ -74,7 +74,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textColor="@color/white"
+                android:textColor="?attr/bright_text_color"
                 android:textSize="70sp"
                 android:textAlignment="center">
 
@@ -94,7 +94,7 @@
                     android:layout_weight="1"
                     android:layout_marginStart="2dp"
                     android:layout_marginEnd="2dp"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="28sp"
                     android:background="@drawable/round_pin_button"
                     app:backgroundTint="?attr/pin_background"/>
@@ -109,7 +109,7 @@
                     android:layout_marginEnd="2dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="28sp"
                     android:background="@drawable/round_pin_button"
                     app:backgroundTint="?attr/pin_background"/>
@@ -124,7 +124,7 @@
                     android:layout_marginEnd="2dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="28sp"
                     android:background="@drawable/round_pin_button"
                     app:backgroundTint="?attr/pin_background"/>
@@ -145,7 +145,7 @@
                     android:layout_marginEnd="2dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="28sp"
                     android:background="@drawable/round_pin_button"
                     app:backgroundTint="?attr/pin_background"/>
@@ -160,7 +160,7 @@
                     android:layout_marginEnd="2dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="28sp"
                     android:background="@drawable/round_pin_button"
                     app:backgroundTint="?attr/pin_background"/>
@@ -175,7 +175,7 @@
                     android:layout_marginEnd="2dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="28sp"
                     android:background="@drawable/round_pin_button"
                     app:backgroundTint="?attr/pin_background"/>
@@ -196,7 +196,7 @@
                     android:layout_marginEnd="2dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="28sp"
                     android:background="@drawable/round_pin_button"
                     app:backgroundTint="?attr/pin_background"/>
@@ -211,7 +211,7 @@
                     android:layout_marginEnd="2dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="28sp"
                     android:background="@drawable/round_pin_button"
                     app:backgroundTint="?attr/pin_background"/>
@@ -226,7 +226,7 @@
                     android:layout_marginEnd="2dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="28sp"
                     android:background="@drawable/round_pin_button"
                     app:backgroundTint="?attr/pin_background"/>
@@ -261,7 +261,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/round_pin_button"
                     android:text="0"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="28sp"
                     app:backgroundTint="?attr/pin_background" />
 
@@ -276,7 +276,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/round_pin_button"
                     android:text="\u232B"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/bright_text_color"
                     android:textSize="28sp"
                     app:backgroundTint="?attr/pin_background" />
             </LinearLayout>
