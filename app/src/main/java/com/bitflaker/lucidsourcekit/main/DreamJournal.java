@@ -37,7 +37,7 @@ public class DreamJournal extends Fragment {
     private FloatingActionButton fabAdd, fabText, fabForms, fabAudio;
     private Animation fabOpen, fabClose, rotateForward, rotateBackward;
     private boolean isOpen = false;
-    private RecyclerViewAdapter recyclerViewAdapter;
+    private RecyclerViewAdapterDreamJournal recyclerViewAdapterDreamJournal;
     private ActivityResultLauncher<Intent> createEntryActivityResultLauncher;
     public ActivityResultLauncher<Intent> viewEntryActivityResultLauncher;
     private ImageButton sortEntries, filterEntries, resetFilterEntries;
@@ -69,30 +69,30 @@ public class DreamJournal extends Fragment {
 
     private void setBasics() {
         noEntryFound.setText(Html.fromHtml("<span><big><big><strong>Uhh...</strong></big></big><br />" + getContext().getResources().getString(R.string.empty_dream_journal) + "</span>", Html.FROM_HTML_MODE_COMPACT));
-        recyclerView.setAdapter(recyclerViewAdapter);
+        recyclerView.setAdapter(recyclerViewAdapterDreamJournal);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     private void setupResetFilterButton() {
         resetFilterEntries.setOnClickListener(e -> {
             resetFilterEntries.setVisibility(View.GONE);
-            recyclerViewAdapter.resetFilters();
+            recyclerViewAdapterDreamJournal.resetFilters();
             checkForEntries();
         });
     }
 
     private void setupFilterButton() {
         filterEntries.setOnClickListener(e -> {
-            FilterDialog fd = new FilterDialog(getActivity(), Tools.getUniqueOnly(recyclerViewAdapter.getAllTags()), recyclerViewAdapter.getCurrentFilter());
+            FilterDialog fd = new FilterDialog(getActivity(), Tools.getUniqueOnly(recyclerViewAdapterDreamJournal.getAllTags()), recyclerViewAdapterDreamJournal.getCurrentFilter());
             fd.setOnClickPositiveButton(g -> {
                 AppliedFilter af = fd.getFilters();
                 if(!AppliedFilter.isEmptyFilter(af)){
-                    recyclerViewAdapter.filter(af);
+                    recyclerViewAdapterDreamJournal.filter(af);
                     resetFilterEntries.setVisibility(View.VISIBLE);
                 }
                 else if (resetFilterEntries.getVisibility() == View.VISIBLE){
                     resetFilterEntries.setVisibility(View.GONE);
-                    recyclerViewAdapter.resetFilters();
+                    recyclerViewAdapterDreamJournal.resetFilters();
                 }
                 checkForEntries();
                 fd.dismiss();
@@ -108,7 +108,7 @@ public class DreamJournal extends Fragment {
             String[] sortOrder = {"timestamp - newest first", "timestamp - oldest first", "title - A to Z", "title - Z to A", "description - A to Z", "description - Z to A"};
             builder.setSingleChoiceItems(sortOrder, sortBy, (dialog, which) -> {
                 sortBy = which;
-                recyclerViewAdapter.sortEntries(sortBy);
+                recyclerViewAdapterDreamJournal.sortEntries(sortBy);
                 dialog.dismiss();
             });
             AlertDialog dialog = builder.create();
@@ -124,7 +124,7 @@ public class DreamJournal extends Fragment {
     }
 
     private void setData(DreamJournalEntriesList entries) {
-        recyclerViewAdapter = new RecyclerViewAdapter(this, getContext(), entries);
+        recyclerViewAdapterDreamJournal = new RecyclerViewAdapterDreamJournal(this, getContext(), entries);
         fabAdd = getView().findViewById(R.id.btn_add_journal_entry);
         fabText = getView().findViewById(R.id.fab_text);
         fabAudio = getView().findViewById(R.id.fab_audio);
@@ -141,7 +141,7 @@ public class DreamJournal extends Fragment {
     }
 
     private void checkForEntries() {
-        if (recyclerViewAdapter.getItemCount() == 0) {
+        if (recyclerViewAdapterDreamJournal.getItemCount() == 0) {
             noEntryFound.setVisibility(View.VISIBLE);
         }
         else if (noEntryFound.getVisibility() == View.VISIBLE){
@@ -154,7 +154,7 @@ public class DreamJournal extends Fragment {
         Intent intent = new Intent(getContext(), AddTextEntry.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("type", forms.ordinal());
-        intent.putExtra("availableTags", Tools.getUniqueOnly(recyclerViewAdapter.getAllTags()));
+        intent.putExtra("availableTags", Tools.getUniqueOnly(recyclerViewAdapterDreamJournal.getAllTags()));
         createEntryActivityResultLauncher.launch(intent);
     }
 
@@ -205,15 +205,15 @@ public class DreamJournal extends Fragment {
                                 String[] tags = data.getStringArrayExtra("tags");
                                 String[] recordedAudios = data.getStringArrayExtra("recordings");
                                 StoredJournalEntries entry = new StoredJournalEntries(-1, selectedDate, selectedTime, title, description, quality, clarity, mood);
-                                recyclerViewAdapter.changeEntryAt(position, entry, tags, dreamTypes, recordedAudios);
-                                recyclerViewAdapter.notifyItemChanged(position);
+                                recyclerViewAdapterDreamJournal.changeEntryAt(position, entry, tags, dreamTypes, recordedAudios);
+                                recyclerViewAdapterDreamJournal.notifyItemChanged(position);
                                 recyclerView.scrollToPosition(position);
                             }
                             else if (action.equals("DELETE")) {
                                 int position = data.getIntExtra("position", -1);
-                                recyclerViewAdapter.removeEntryAt(position);
-                                recyclerViewAdapter.notifyItemRemoved(position);
-                                recyclerViewAdapter.notifyItemRangeChanged(position, recyclerViewAdapter.getItemCount());
+                                recyclerViewAdapterDreamJournal.removeEntryAt(position);
+                                recyclerViewAdapterDreamJournal.notifyItemRemoved(position);
+                                recyclerViewAdapterDreamJournal.notifyItemRangeChanged(position, recyclerViewAdapterDreamJournal.getItemCount());
                             }
                         }
                     }
@@ -237,10 +237,10 @@ public class DreamJournal extends Fragment {
                         String[] tags = data.getStringArrayExtra("tags");
                         String[] recordedAudios = data.getStringArrayExtra("recordings");
                         StoredJournalEntries entry = new StoredJournalEntries(entryId, selectedDate, selectedTime, title, description, quality, clarity, mood);
-                        recyclerViewAdapter.addEntry(entry, tags, dreamTypes, recordedAudios);
-                        recyclerViewAdapter.notifyItemInserted(0);
+                        recyclerViewAdapterDreamJournal.addEntry(entry, tags, dreamTypes, recordedAudios);
+                        recyclerViewAdapterDreamJournal.notifyItemInserted(0);
                         recyclerView.scrollToPosition(0);
-                        recyclerViewAdapter.notifyItemRangeChanged(0, recyclerViewAdapter.getItemCount());
+                        recyclerViewAdapterDreamJournal.notifyItemRangeChanged(0, recyclerViewAdapterDreamJournal.getItemCount());
                     }
                 });
     }

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:layout_marginRight="10dp">
 
         <TextView
@@ -48,7 +48,7 @@
             android:layout_gravity="center_vertical"
             android:background="?attr/backgroundColor"
             android:src="@drawable/ic_baseline_filter_alt_off_24"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

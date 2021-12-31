@@ -104,7 +104,10 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -124,47 +127,50 @@
 
                         <TextView
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:text="average dream mood"
                             android:textAlignment="center"
                             android:textColor="?attr/primaryTextColor"
                             android:textSize="14sp"
                             android:textStyle="italic"
-                            app:drawableTopCompat="@drawable/ic_baseline_sentiment_very_satisfied_24" />
+                            android:drawablePadding="10dp"
+                            app:drawableBottomCompat="@drawable/ic_baseline_sentiment_very_satisfied_24" />
 
                         <TextView
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:text="average dream clarity"
                             android:textAlignment="center"
                             android:textColor="?attr/primaryTextColor"
                             android:textSize="14sp"
                             android:textStyle="italic"
-                            app:drawableTopCompat="@drawable/ic_baseline_brightness_5_24" />
+                            android:drawablePadding="10dp"
+                            app:drawableBottomCompat="@drawable/ic_baseline_brightness_5_24" />
 
                         <TextView
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:text="average sleep quality"
                             android:textAlignment="center"
                             android:textColor="?attr/primaryTextColor"
                             android:textSize="14sp"
                             android:textStyle="italic"
-                            app:drawableTopCompat="@drawable/ic_baseline_star_half_24" />
-                    </LinearLayout>
+                            android:drawablePadding="10dp"
+                            app:drawableBottomCompat="@drawable/ic_baseline_star_half_24" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="0.8\u+00Aaverage dream per night"
-                        android:textAlignment="center"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="14sp"
-                        android:textStyle="italic" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="average dream per night\u+00A0.8"
+                            android:textAlignment="center"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="14sp"
+                            android:textStyle="italic"/>
+                    </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

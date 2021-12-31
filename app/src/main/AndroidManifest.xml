@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LucidSourceKit.Dark">
         <activity
+            android:name=".main.EditGoals"
+            android:exported="false" />
+        <activity
             android:name=".main.ViewJournalEntry"
             android:configChanges="orientation|screenSize"
             android:exported="false" />

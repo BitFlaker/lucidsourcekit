@@ -38,6 +38,8 @@
         <item name="main_background_color">@color/black</item>
         <item name="background_stand_out">@color/dark_gray</item>
         <item name="colorError">@color/lighter_red</item>
+        <item name="colorWarning">@color/lighter_orange</item>
+        <item name="colorSuccess">@color/lighter_green</item>
         <item name="highlight_success">@color/darker_green</item>
         <item name="lightSelection">@color/clay_white</item>
         <item name="main_overview_graphic">@drawable/deep_night_mountains_amoled_dark</item>
@@ -62,6 +64,8 @@
         <item name="slightElevated">@color/white_5p</item>
         <item name="colorPrimaryTranslucent">@color/prim_30p</item>
         <item name="colorError">@color/lighter_red</item>
+        <item name="colorWarning">@color/lighter_orange</item>
+        <item name="colorSuccess">@color/lighter_green</item>
         <item name="main_overview_graphic">@drawable/deep_night_mountains_dark</item>
     </style>
 
@@ -71,6 +75,8 @@
     </style>
 
     <style name="ThemedDialog.Dark" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="colorPrimary">@color/blue_500</item>
+        <item name="slightElevated">@color/white_40p</item>
         <item name="android:background">@color/background_paper</item>
         <item name="android:textColor">?attr/primaryTextColor</item>
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
@@ -84,7 +90,6 @@
     <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/blue_500</item>
     </style>
-
 
 
 

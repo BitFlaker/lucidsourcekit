@@ -37,6 +37,8 @@
     <color name="transparent">#00000000</color>
     <color name="red">#C80707</color>
     <color name="lighter_red">#C32C2C</color>
+    <color name="lighter_orange">#C37F2C</color>
+    <color name="lighter_green">#35B158</color>
     <color name="darker_green">#43DD6F</color>
     <color name="scratched_blue">#142740</color>
     <color name="lit_scratched_blue">#23334b</color>
@@ -50,6 +52,7 @@
     <color name="background">#121212</color>
     <color name="background_paper">#1d1d1d</color>
     <color name="white_70p">#B3FFFFFF</color>
+    <color name="white_40p">#66FFFFFF</color>
     <color name="white_5p">#0DFFFFFF</color>
     <color name="prim_30p">#0D2196F3</color>
 </resources>

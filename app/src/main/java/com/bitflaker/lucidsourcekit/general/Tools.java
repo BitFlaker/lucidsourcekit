@@ -26,26 +26,22 @@ public class Tools {
     private static int THEME_POPUP;
 
     public static void setThemeColors(int theme){
-        switch(theme){
-            case R.style.Theme_LucidSourceKit_Light:
-                THEME_DIALOG = R.style.ThemedDialog_Light;
-                THEME_POPUP = R.style.PopupMenu_Light;
-                break;
-            case R.style.Theme_LucidSourceKit_LCDark:
-                THEME_DIALOG = R.style.ThemedDialog_LCDark;
-                THEME_POPUP = R.style.PopupMenu_LCDark;
-                break;
-            case R.style.Theme_LucidSourceKit_Amoled_Dark:
-                THEME_DIALOG = R.style.ThemedDialog_Amoled_Dark;
-                THEME_POPUP = R.style.PopupMenu_LCDark;
-                break;
-            case R.style.Theme_LucidSourceKit_Dark:
-                THEME_DIALOG = R.style.ThemedDialog_Dark;
-                THEME_POPUP = R.style.PopupMenu_Dark;
-                break;
+        if(theme == R.style.Theme_LucidSourceKit_Light) {
+            THEME_DIALOG = R.style.ThemedDialog_Light;
+            THEME_POPUP = R.style.PopupMenu_Light;
         }
-        THEME_DIALOG = R.style.ThemedDialog_Dark;
-        THEME_POPUP = R.style.PopupMenu_Dark;
+        else if(theme == R.style.Theme_LucidSourceKit_LCDark) { // Todo should be removed
+            THEME_DIALOG = R.style.ThemedDialog_LCDark;
+            THEME_POPUP = R.style.PopupMenu_LCDark;
+        }
+        else if(theme == R.style.Theme_LucidSourceKit_Amoled_Dark) {
+            THEME_DIALOG = R.style.ThemedDialog_Amoled_Dark;
+            THEME_POPUP = R.style.PopupMenu_LCDark;
+        }
+        else if(theme == R.style.Theme_LucidSourceKit_Dark) {
+            THEME_DIALOG = R.style.ThemedDialog_Dark;
+            THEME_POPUP = R.style.PopupMenu_Dark;
+        }
     }
 
     public static int getThemeDialog(){

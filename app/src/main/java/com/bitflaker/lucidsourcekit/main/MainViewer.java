@@ -34,7 +34,7 @@ public class MainViewer extends AppCompatActivity {
     private MainOverview vwOverview;
     private DreamJournal vwLogging;
     private Statistics vwPageStats;
-    private SetupOpenSource vwPageGoals;
+    private Goals vwPageGoals;
     private SetupOpenSource vwPageEvents;
 
     @Override
@@ -103,7 +103,7 @@ public class MainViewer extends AppCompatActivity {
         vwOverview = new MainOverview();
         vwLogging = new DreamJournal();
         vwPageStats = new Statistics();
-        vwPageGoals = new SetupOpenSource();
+        vwPageGoals = new Goals();
         vwPageEvents = new SetupOpenSource();
     }
 }

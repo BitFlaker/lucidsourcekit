@@ -82,11 +82,11 @@
         android:layout_marginTop="80dp"
         android:layout_marginRight="70dp"
         android:layout_marginBottom="175dp"
-        android:text="@string/setup_consent_checkbox"
-        android:textColor="?attr/primaryTextColor"
         android:background="@drawable/rounded_spinner"
+        android:button="@android:color/transparent"
         android:drawableLeft="@drawable/ic_baseline_check_box_outline_blank_24"
         android:drawablePadding="10dp"
-        android:button="@android:color/transparent"
-        android:paddingLeft="15dp" />
+        android:paddingLeft="15dp"
+        android:text="@string/setup_consent_checkbox"
+        android:textColor="?attr/primaryTextColor" />
 </RelativeLayout>

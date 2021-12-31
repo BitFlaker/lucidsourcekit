@@ -22,4 +22,6 @@
     <attr name="secondaryTextColor" format="reference"/>
     <attr name="slightElevated" format="reference"/>
     <attr name="colorPrimaryTranslucent" format="reference"/>
+    <attr name="colorSuccess" format="reference"/>
+    <attr name="colorWarning" format="reference"/>
 </resources>

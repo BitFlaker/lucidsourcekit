@@ -259,4 +259,18 @@ public class DreamJournalEntriesList {
         }
         return true;
     }
+
+    public int getLucidDreamsCount() {
+        int count = 0;
+        for (DreamJournalEntry entry : entries) {
+            if(Arrays.asList(entry.getTypes()).contains(DreamTypes.Lucid.getId())) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int getTotalDreamsCount() {
+        return entries.size();
+    }
 }

@@ -32,22 +32,20 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MainViewHolder> {
+public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<RecyclerViewAdapterDreamJournal.MainViewHolder> {
     private Context context;
     private DreamJournal journalList;
     private DreamJournalEntriesList entries;
     private DreamJournalEntriesList filteredEntries;
-    private int skippedPositions;
     private int currentSort;
     private AppliedFilter currentFilter;
 
-    public RecyclerViewAdapter(DreamJournal journalList, Context context, DreamJournalEntriesList entries) {
+    public RecyclerViewAdapterDreamJournal(DreamJournal journalList, Context context, DreamJournalEntriesList entries) {
         this.journalList = journalList;
         this.context = context;
         this.entries = entries;
         filteredEntries = null;
         currentFilter = null;
-        skippedPositions = 0;
     }
 
     public void addEntry(StoredJournalEntries entry, String[] tags, String[] types, String[] audioLocations) {
@@ -222,6 +220,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         int size = Tools.dpToPx(context, 20);
         icon.setLayoutParams(new LinearLayout.LayoutParams(size, size));
         return icon;
+    }
+
+    public int getLucidDreamsCount() {
+        return entries.getLucidDreamsCount();
+    }
+
+    public int getTotalDreamsCount() {
+        return entries.getTotalDreamsCount();
     }
 
     public DreamJournalEntriesList getEntries() {

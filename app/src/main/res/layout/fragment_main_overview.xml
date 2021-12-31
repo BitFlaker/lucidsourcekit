@@ -75,7 +75,7 @@
                         android:paddingEnd="10dp"
                         android:paddingBottom="5dp"
                         android:text="@string/reality_check_reminder"
-                        android:textColor="?attr/secondaryTextColor"
+                        android:textColor="?attr/primaryTextColor"
                         app:drawableStartCompat="@drawable/ic_baseline_check_24" />
                 </com.google.android.material.card.MaterialCardView>
 
@@ -98,7 +98,7 @@
                         android:paddingEnd="10dp"
                         android:paddingBottom="5dp"
                         android:text="permanent notification"
-                        android:textColor="?attr/secondaryTextColor"
+                        android:textColor="?attr/primaryTextColor"
                         app:drawableStartCompat="@drawable/ic_baseline_cross_24"/>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -121,7 +121,7 @@
                         android:paddingEnd="10dp"
                         android:paddingBottom="5dp"
                         android:text="lockscreen journal writer"
-                        android:textColor="?attr/secondaryTextColor"
+                        android:textColor="?attr/primaryTextColor"
                         app:drawableStartCompat="@drawable/ic_baseline_cross_24"/>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -145,7 +145,7 @@
                         android:paddingEnd="10dp"
                         android:paddingBottom="5dp"
                         android:text="task reminder"
-                        android:textColor="?attr/secondaryTextColor"
+                        android:textColor="?attr/primaryTextColor"
                         app:drawableStartCompat="@drawable/ic_baseline_cross_24"/>
                 </com.google.android.material.card.MaterialCardView>
             </GridLayout>
@@ -197,7 +197,7 @@
                         android:layout_weight="1"
                         android:includeFontPadding="false"
                         android:text="03:12\u000Afirst night timer"
-                        android:textColor="?attr/secondaryTextColor"
+                        android:textColor="?attr/primaryTextColor"
                         app:drawableRightCompat="@drawable/ic_round_mode_edit_24" />
 
                     <TextView
@@ -211,7 +211,7 @@
                         android:layout_weight="1"
                         android:includeFontPadding="false"
                         android:text="03:12\u000Afirst night timer"
-                        android:textColor="?attr/secondaryTextColor"
+                        android:textColor="?attr/primaryTextColor"
                         app:drawableEndCompat="@drawable/ic_round_mode_edit_24" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

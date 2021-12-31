@@ -63,10 +63,10 @@ public class Statistics extends Fragment {
         Drawable[] qualityIcons = new Drawable[] { iconQuality1, iconQuality2, iconQuality3, iconQuality4 };
 
         lucidPercentage.setData(20, 80, Tools.dpToPx(getContext(), 15), Tools.dpToPx(getContext(), 1.25));
-        generateRodChart(7, 7f, avgMoodsContainer, moodIcons, "25\nDec");
-        generateRodChart(7, 7f, avgClaritiesContainer, clarityIcons, "25\nDec");
-        generateRodChart(7, 7f, avgQualitiesContainer, qualityIcons, "25\nDec");
-        generateRodChart(7, 7f, goalsContainer, null, "25\nDec");
+        generateRodChart(7, Tools.dpToPx(getContext(), 3f), avgMoodsContainer, moodIcons, "25\nDec");
+        generateRodChart(7, Tools.dpToPx(getContext(), 3f), avgClaritiesContainer, clarityIcons, "25\nDec");
+        generateRodChart(7, Tools.dpToPx(getContext(), 3f), avgQualitiesContainer, qualityIcons, "25\nDec");
+        generateRodChart(7, Tools.dpToPx(getContext(), 3f), goalsContainer, null, "25\nDec");
 
         chartTimeSpan.setOnCheckedChangeListener((chipGroup, i) -> {
             avgMoodsContainer.removeAllViews();
@@ -75,22 +75,22 @@ public class Statistics extends Fragment {
             goalsContainer.removeAllViews();
             switch (i){
                 case R.id.chp_last_7_days:
-                    generateRodChart(7, 7f, avgMoodsContainer, moodIcons, "25\nDec");
-                    generateRodChart(7, 7f, avgClaritiesContainer, clarityIcons, "25\nDec");
-                    generateRodChart(7, 7f, avgQualitiesContainer, qualityIcons, "25\nDec");
-                    generateRodChart(7, 7f, goalsContainer, null, "25\nDec");
+                    generateRodChart(7, Tools.dpToPx(getContext(), 3f), avgMoodsContainer, moodIcons, "25\nDec");
+                    generateRodChart(7, Tools.dpToPx(getContext(), 3f), avgClaritiesContainer, clarityIcons, "25\nDec");
+                    generateRodChart(7, Tools.dpToPx(getContext(), 3f), avgQualitiesContainer, qualityIcons, "25\nDec");
+                    generateRodChart(7, Tools.dpToPx(getContext(), 3f), goalsContainer, null, "25\nDec");
                     break;
                 case R.id.chp_last_30_days:
-                    generateRodChart(30, 7f, avgMoodsContainer, moodIcons, null);
-                    generateRodChart(30, 7f, avgClaritiesContainer, clarityIcons, null);
-                    generateRodChart(30, 7f, avgQualitiesContainer, qualityIcons, null);
-                    generateRodChart(30, 7f, goalsContainer, null, null);
+                    generateRodChart(30, Tools.dpToPx(getContext(), 3f), avgMoodsContainer, moodIcons, null);
+                    generateRodChart(30, Tools.dpToPx(getContext(), 3f), avgClaritiesContainer, clarityIcons, null);
+                    generateRodChart(30, Tools.dpToPx(getContext(), 3f), avgQualitiesContainer, qualityIcons, null);
+                    generateRodChart(30, Tools.dpToPx(getContext(), 3f), goalsContainer, null, null);
                     break;
                 case R.id.chp_all_time:
-                    generateRodChart(5000, 4f, avgMoodsContainer, moodIcons, null);
-                    generateRodChart(5000, 4f, avgClaritiesContainer, clarityIcons, null);
-                    generateRodChart(5000, 4f, avgQualitiesContainer, qualityIcons, null);
-                    generateRodChart(5000, 4f, goalsContainer, null, null);
+                    generateRodChart(5000, Tools.dpToPx(getContext(), 1.5f), avgMoodsContainer, moodIcons, null);
+                    generateRodChart(5000, Tools.dpToPx(getContext(), 1.5f), avgClaritiesContainer, clarityIcons, null);
+                    generateRodChart(5000, Tools.dpToPx(getContext(), 1.5f), avgQualitiesContainer, qualityIcons, null);
+                    generateRodChart(5000, Tools.dpToPx(getContext(), 1.5f), goalsContainer, null, null);
                     break;
             }
         });
