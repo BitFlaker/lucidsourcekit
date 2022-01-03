@@ -55,7 +55,7 @@
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/teal_300</item>
         <item name="colorSecondaryVariant">@color/teal_var</item>
-        <item name="colorOnSecondary">@color/background_paper</item>
+        <item name="colorOnSecondary">@color/white</item>
         <item name="backgroundColor">@color/background</item>
 
         <item name="secondaryTextColor">@color/white_70p</item>

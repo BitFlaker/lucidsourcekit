@@ -601,7 +601,7 @@ public class AddTextEntry extends AppCompatActivity {
         int smallMargin = Tools.dpToPx(this, 3);
         tag.setPadding(horizontal,vertical,horizontal,vertical);
         tag.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-        tag.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_border, getTheme()));
+        tag.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_spinner, getTheme()));
         tag.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getTheme()));
         LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         llParams.setMargins(smallMargin, smallMargin, smallMargin, smallMargin);

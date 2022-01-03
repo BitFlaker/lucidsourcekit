@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="15dp"
         android:layout_marginRight="10dp"
         android:text="Edit goals"
         android:textColor="?attr/primaryTextColor"
@@ -26,4 +26,150 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_below="@+id/txt_edit_goals_heading"/>
+
+    <ImageButton
+        android:id="@+id/btn_goals_edit_tapped_outside"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/rl_edit_goals"
+        android:background="@drawable/rectangle"
+        android:backgroundTint="#df000000"
+        android:contentDescription="@string/close_popup"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/img_goals_edit_background_unfocus"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btn_goals_edit_tapped_outside"
+        android:background="@drawable/rectangle"
+        android:backgroundTint="#df000000"
+        android:visibility="gone"
+        tools:ignore="ContentDescription" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_add_goal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|end"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_spinner"
+        android:backgroundTint="?attr/colorPrimary"
+        android:src="@drawable/ic_round_add_24"
+        app:borderWidth="0dp"
+        app:tint="?attr/colorOnPrimary" />
+
+    <!-- TODO dialog is too dark -> should be same color as elevated card -->
+    <RelativeLayout
+        android:id="@+id/rl_edit_goals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/top_rounded_rectangle"
+        android:backgroundTint="?attr/backgroundColor"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/txt_goal_edit_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:drawablePadding="8dp"
+            android:text="Edit / Add goal"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="22sp"/>
+
+        <EditText
+            android:id="@+id/txt_goal_text_enter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_goal_edit_add"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/rounded_border"
+            android:backgroundTint="?attr/slightElevated"
+            android:hint="enter goal name"
+            android:inputType="text"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            android:textColor="?attr/primaryTextColor"
+            android:textColorHint="?attr/secondaryTextColor"
+            android:textSize="18sp" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chp_grp_goal_difficulty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_goal_text_enter"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            app:checkedChip="@+id/chp_diff_easy"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chp_diff_easy"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Easy" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chp_diff_moderate"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Moderate" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chp_diff_hard"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hard" />
+        </com.google.android.material.chip.ChipGroup>
+
+        <LinearLayout
+            android:layout_below="@+id/chp_grp_goal_difficulty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_remove_goal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="remove goal"
+                app:backgroundTint="?attr/colorError"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="7dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_store_goal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="save goal"
+                app:backgroundTint="?attr/colorPrimary"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="7dp"/>
+        </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

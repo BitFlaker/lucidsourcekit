@@ -242,7 +242,7 @@ public class ViewJournalEntry extends AppCompatActivity {
         llparams.setMargins(0, Tools.dpToPx(ViewJournalEntry.this, 5), 0, Tools.dpToPx(ViewJournalEntry.this, 5));
         llContainer.setLayoutParams(llparams);
         llContainer.setOrientation(LinearLayout.HORIZONTAL);
-        llContainer.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_border, getTheme()));
+        llContainer.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_spinner, getTheme()));
         llContainer.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getTheme()));
         int dp15 = Tools.dpToPx(ViewJournalEntry.this, 5);
         llContainer.setPadding(dp15, dp15, dp15, dp15);

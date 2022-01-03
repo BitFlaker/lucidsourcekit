@@ -13,13 +13,14 @@
         android:layout_above="@id/ll_nav_bottom"
         android:layout_marginBottom="-2dp"/>
 
+    <!--
     <View
         android:id="@+id/shadow"
         android:layout_width="fill_parent"
         android:layout_height="2.3dp"
         android:layout_above="@+id/ll_nav_bottom"
         android:background="@drawable/shadow">
-    </View>
+    </View>-->
 
     <LinearLayout
         android:id="@+id/ll_nav_bottom"

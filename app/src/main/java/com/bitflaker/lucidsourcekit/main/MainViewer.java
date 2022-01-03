@@ -12,7 +12,6 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.general.Tools;
-import com.bitflaker.lucidsourcekit.setup.SetupOpenSource;
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.google.android.material.tabs.TabLayout;
@@ -27,7 +26,7 @@ public class MainViewer extends AppCompatActivity {
     private final String pageLogging = "";
     private final String pageStats = "";
     private final String pageGoals = "";
-    private final String pageEvents = "";
+    private final String pageBinauralBeats = "";
 
     private ViewPagerAdapter vpAdapter;
 
@@ -35,7 +34,7 @@ public class MainViewer extends AppCompatActivity {
     private DreamJournal vwLogging;
     private Statistics vwPageStats;
     private Goals vwPageGoals;
-    private SetupOpenSource vwPageEvents;
+    private BinauralBeatsView vwPageBinauralBeats;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +47,7 @@ public class MainViewer extends AppCompatActivity {
         vpAdapter.addFragment(vwLogging, pageLogging);
         vpAdapter.addFragment(vwPageStats, pageStats);
         vpAdapter.addFragment(vwPageGoals, pageGoals);
-        vpAdapter.addFragment(vwPageEvents, pageEvents);
+        vpAdapter.addFragment(vwPageBinauralBeats, pageBinauralBeats);
         viewPager2.setAdapter(vpAdapter);
 
         tabLayout.addOnTabSelectedListener(tabSelected());
@@ -104,6 +103,6 @@ public class MainViewer extends AppCompatActivity {
         vwLogging = new DreamJournal();
         vwPageStats = new Statistics();
         vwPageGoals = new Goals();
-        vwPageEvents = new SetupOpenSource();
+        vwPageBinauralBeats = new BinauralBeatsView();
     }
 }

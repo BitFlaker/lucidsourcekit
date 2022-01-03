@@ -7,6 +7,7 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Shader;
+import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.annotation.ColorInt;
@@ -22,16 +23,25 @@ public class LineGraph extends View {
     private final Paint dataPainter = new Paint();
     private final Paint axisLinePaint = new Paint();
     private final Paint dataLinePaint = new Paint();
-    private final List<float[]> polygonPos;
-    private final float[] topLeft;
-    private final float[] topRight;
-    private final float[] bottomRight;
-    private final float[] bottomLeft;
+    private List<float[]> polygonPos;
+    private float[] topLeft;
+    private float[] topRight;
+    private float[] bottomRight;
+    private float[] bottomLeft;
     private float xMax;
     private float yMax;
 
     public LineGraph(Context context){
         super(context);
+        setup();
+    }
+
+    public LineGraph(Context context, AttributeSet attributeSet){
+        super(context, attributeSet);
+        setup();
+    }
+
+    private void setup() {
         dataPainter.setColor(Color.BLUE);
         axisLinePaint.setColor(Color.GRAY);
         dataLinePaint.setColor(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()));
@@ -71,9 +81,9 @@ public class LineGraph extends View {
                 topRight[0] = nextEndX;
                 topRight[1] = nextEndY;
                 bottomRight[0] = nextEndX;
-                bottomRight[1] = 5/yMax*getHeight();
+                bottomRight[1] = getHeight();
                 bottomLeft[0] = realX;
-                bottomLeft[1] = 5/yMax*getHeight();
+                bottomLeft[1] = getHeight();
 
                 polygonPos.clear();
                 polygonPos.add(topLeft);
@@ -96,7 +106,7 @@ public class LineGraph extends View {
         if (points.size() < 2) { return; }
         Paint polyPaint = new Paint();
         polyPaint.setColor(color);
-        polyPaint.setShader(new LinearGradient(0, 0, 0, getHeight(), manipulateAlpha(color, 0.35f), Color.TRANSPARENT, Shader.TileMode.MIRROR));
+        polyPaint.setShader(new LinearGradient(0, 0, 0, getHeight(), manipulateAlpha(color, 0.15f), Color.TRANSPARENT, Shader.TileMode.MIRROR));
         polyPaint.setStyle(Paint.Style.FILL);
         Path p = new Path();
         p.moveTo(points.get(0)[0], points.get(0)[1]);

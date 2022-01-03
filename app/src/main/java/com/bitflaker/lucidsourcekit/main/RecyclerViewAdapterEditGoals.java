@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.general.Tools;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
 
-public class RecyclerViewAdapterEditGoals extends RecyclerView.Adapter<RecyclerViewAdapterEditGoals.MainViewHolder> {
+public class RecyclerViewAdapterEditGoals extends RecyclerView.Adapter<RecyclerViewAdapterEditGoals.MainViewHolderGoals> {
+    private OnEntryClicked mListener;
     private Context context;
     private List<Goal> goals;
 
@@ -25,14 +27,14 @@ public class RecyclerViewAdapterEditGoals extends RecyclerView.Adapter<RecyclerV
 
     @NonNull
     @Override
-    public MainViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MainViewHolderGoals onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.journal_entry, parent, false);
-        return new MainViewHolder(view);
+        View view = inflater.inflate(R.layout.goal_entry, parent, false);
+        return new MainViewHolderGoals(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MainViewHolderGoals holder, int position) {
         holder.goalText.setText(goals.get(position).getName());
         holder.difficulty.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_baseline_priority_high_24, context.getTheme()), null, null, null);
         switch (goals.get(position).getDifficulty()){
@@ -46,6 +48,11 @@ public class RecyclerViewAdapterEditGoals extends RecyclerView.Adapter<RecyclerV
                 holder.difficulty.setCompoundDrawableTintList(Tools.getAttrColorStateList(R.attr.colorError, context.getTheme()));
                 break;
         }
+        holder.card.setOnClickListener(e -> {
+            if(mListener != null) {
+                mListener.onEvent(goals.get(position), position);
+            }
+        });
     }
 
     @Override
@@ -53,13 +60,23 @@ public class RecyclerViewAdapterEditGoals extends RecyclerView.Adapter<RecyclerV
         return goals.size();
     }
 
-    public class MainViewHolder extends RecyclerView.ViewHolder{
+    public class MainViewHolderGoals extends RecyclerView.ViewHolder {
         TextView goalText, difficulty;
+        MaterialCardView card;
 
-        public MainViewHolder(@NonNull View itemView) {
+        public MainViewHolderGoals(@NonNull View itemView) {
             super(itemView);
             goalText = itemView.findViewById(R.id.txt_goal_text);
             difficulty = itemView.findViewById(R.id.txt_goal_difficulty);
+            card = itemView.findViewById(R.id.crd_goal_card);
         }
+    }
+
+    public interface OnEntryClicked {
+        void onEvent(Goal goal, int position);
+    }
+
+    public void setOnEntryClickedListener(OnEntryClicked eventListener) {
+        mListener = eventListener;
     }
 }

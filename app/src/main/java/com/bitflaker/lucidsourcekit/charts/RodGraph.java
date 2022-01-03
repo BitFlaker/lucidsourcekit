@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -31,6 +32,15 @@ public class RodGraph extends View {
 
     public RodGraph(Context context){
         super(context);
+        setup();
+    }
+
+    public RodGraph(Context context, AttributeSet attributeSet){
+        super(context, attributeSet);
+        setup();
+    }
+
+    private void setup() {
         axisLinePaint.setColor(Color.GRAY);
         dataLinePaintBackground.setColor(Tools.getAttrColor(R.attr.backgroundColor, getContext().getTheme()));
         dataLinePaintBackground.setStrokeCap(Paint.Cap.ROUND);

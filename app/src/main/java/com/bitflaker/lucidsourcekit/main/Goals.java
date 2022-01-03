@@ -1,5 +1,6 @@
 package com.bitflaker.lucidsourcekit.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +15,14 @@ import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.charts.DataValue;
 import com.bitflaker.lucidsourcekit.charts.RodGraph;
 import com.bitflaker.lucidsourcekit.general.Tools;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Goals extends Fragment {
     private LinearLayout difficultyChartContainer;
+    private FloatingActionButton floatingEdit;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -31,8 +34,11 @@ public class Goals extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         difficultyChartContainer = getView().findViewById(R.id.ll_difficulty);
-        getView().findViewById(R.id.btn_add_journal_entry).setOnClickListener(e -> {
+        floatingEdit = getView().findViewById(R.id.btn_add_journal_entry);
 
+        floatingEdit.setOnClickListener(e -> {
+            Intent intent = new Intent(getContext(), EditGoals.class);
+            startActivity(intent);
         });
 
         RodGraph rg = new RodGraph(getContext());

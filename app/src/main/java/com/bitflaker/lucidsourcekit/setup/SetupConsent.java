@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,17 +26,14 @@ public class SetupConsent extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         CheckBox chkConsent = ((CheckBox)getView().findViewById(R.id.chk_accept_risk));
-        chkConsent.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
-                    chkConsent.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_check_box_24, 0, 0, 0);
-                    if(mListener != null && !lastCheckState){ mListener.onEvent(true); lastCheckState = true; }
-                    return;
-                }
-                chkConsent.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_check_box_outline_blank_24, 0, 0, 0);
-                if(mListener != null && lastCheckState) { mListener.onEvent(false); lastCheckState = false;}
+        chkConsent.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(b){
+                chkConsent.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_check_box_24, 0, 0, 0);
+                if(mListener != null && !lastCheckState){ mListener.onEvent(true); lastCheckState = true; }
+                return;
             }
+            chkConsent.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_check_box_outline_blank_24, 0, 0, 0);
+            if(mListener != null && lastCheckState) { mListener.onEvent(false); lastCheckState = false;}
         });
     }
 

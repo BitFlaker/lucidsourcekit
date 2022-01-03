@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".main.BinauralBeatsView">
+
+    <TextView
+        android:id="@+id/txt_binaural_beats_heading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="15dp"
+        android:text="Binaural Beats"
+        android:textColor="?attr/primaryTextColor"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/txt_binaural_beats_heading"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="15dp"
+            app:cardCornerRadius="30dp"
+            app:cardElevation="1dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_alignBottom="@+id/ll_track_details"
+                    android:layout_alignParentTop="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/binaural_playing_background" />
+
+                <LinearLayout
+                    android:id="@+id/ll_track_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txt_current_track"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="8dp"
+                        android:text="current track"
+                        android:textAlignment="center"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="15sp"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/txt_curr_track_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Quick nap lucidity"
+                        android:textAlignment="center"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txt_curr_track_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="40dp"
+                        android:text="great for supporting the induction of lucid dreams during a quick nap. It slowly slides you to a relaxing state and stays there for some time, until it slowly exits again."
+                        android:textAlignment="center"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="15sp"
+                        android:visibility="visible" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="30dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0:45" />
+
+                        <com.google.android.material.progressindicator.LinearProgressIndicator
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="15dp"
+                            android:layout_weight="1"
+                            android:progress="20" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="3:57" />
+                    </LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcv_list_binaural_beats"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_add_background_noise"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Add background noise"
+                    android:background="@drawable/rounded_spinner"
+                    app:backgroundTint="?attr/slightElevated"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                    android:drawableLeft="@drawable/ic_round_add_24"
+                    android:layout_gravity="center_horizontal"/>
+            </LinearLayout>
+        </ScrollView>
+        <LinearLayout
+            android:id="@+id/ll_track_controls_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <!-- TODO on active change icon to repeat on -->
+            <ImageButton
+                android:id="@+id/btn_loop_track"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:scaleType="centerCrop"
+                android:backgroundTint="?attr/backgroundColor"
+                android:src="@drawable/ic_baseline_repeat_24" />
+
+            <ImageButton
+                android:id="@+id/btn_prev_track"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:scaleType="centerCrop"
+                android:backgroundTint="?attr/backgroundColor"
+                android:src="@drawable/ic_baseline_skip_previous_24" />
+
+            <ImageButton
+                android:id="@+id/btn_play_track"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:scaleType="centerCrop"
+                android:backgroundTint="?attr/backgroundColor"
+                android:src="@drawable/ic_baseline_play_arrow_24" />
+
+            <ImageButton
+                android:id="@+id/btn_next_track"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:scaleType="centerCrop"
+                android:backgroundTint="?attr/backgroundColor"
+                android:src="@drawable/ic_baseline_skip_next_24" />
+
+            <ImageButton
+                android:id="@+id/btn_auto_stop"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:scaleType="centerCrop"
+                android:backgroundTint="?attr/backgroundColor"
+                android:src="@drawable/ic_baseline_playlist_add_24" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="15dp"
+            android:textColor="?attr/secondaryTextColor"
+            android:text="To get the best experience from binaural beats, use headphones with a relatively good quality."
+            android:drawablePadding="15dp"
+            android:drawableLeft="@drawable/ic_outline_info_24"/>
+    </LinearLayout>
+</RelativeLayout>
