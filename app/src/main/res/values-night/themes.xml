@@ -57,11 +57,13 @@
         <item name="colorSecondaryVariant">@color/teal_var</item>
         <item name="colorOnSecondary">@color/white</item>
         <item name="backgroundColor">@color/background</item>
+        <item name="android:windowBackground">@color/background</item>
 
         <item name="secondaryTextColor">@color/white_70p</item>
         <item name="primaryTextColor">@color/white</item>
 
         <item name="slightElevated">@color/white_5p</item>
+        <item name="slightElevated2x">@color/white_6p</item>
         <item name="colorPrimaryTranslucent">@color/prim_30p</item>
         <item name="colorError">@color/lighter_red</item>
         <item name="colorWarning">@color/lighter_orange</item>

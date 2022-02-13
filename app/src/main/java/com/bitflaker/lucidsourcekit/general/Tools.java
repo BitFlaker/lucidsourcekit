@@ -94,6 +94,10 @@ public class Tools {
         return (int)(dp * context.getResources().getDisplayMetrics().density);
     }
 
+    public static int spToPx(Context context, float sp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.getResources().getDisplayMetrics());
+    }
+
     public static int pxToDp(Context context, double px) {
         return (int)(px / context.getResources().getDisplayMetrics().density);
     }

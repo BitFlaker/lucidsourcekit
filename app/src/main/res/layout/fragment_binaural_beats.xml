@@ -33,8 +33,8 @@
             android:layout_marginTop="15dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="15dp"
-            app:cardCornerRadius="30dp"
-            app:cardElevation="1dp">
+            app:cardCornerRadius="@dimen/cardRadius"
+            app:cardElevation="@dimen/cardElevationRegular">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -53,18 +53,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/txt_current_track"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginTop="8dp"
-                        android:text="current track"
-                        android:textAlignment="center"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="15sp"
-                        android:visibility="visible" />
 
                     <TextView
                         android:id="@+id/txt_curr_track_name"
@@ -139,23 +127,37 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_add_background_noise"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="20dp"
-                    android:text="Add background noise"
                     android:background="@drawable/rounded_spinner"
-                    app:backgroundTint="?attr/slightElevated"
-                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                     android:drawableLeft="@drawable/ic_round_add_24"
-                    android:layout_gravity="center_horizontal"/>
+                    android:text="Add background noise"
+                    app:backgroundTint="?attr/slightElevated" />
             </LinearLayout>
         </ScrollView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:drawableLeft="@drawable/ic_outline_info_24"
+            android:drawablePadding="15dp"
+            android:gravity="start"
+            android:text="To get the best experience from binaural beats, use headphones with a relatively good quality."
+            android:textColor="?attr/secondaryTextColor"
+            android:visibility="gone" />
+
         <LinearLayout
             android:id="@+id/ll_track_controls_bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="10dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -164,53 +166,41 @@
                 android:id="@+id/btn_loop_track"
                 android:layout_width="54dp"
                 android:layout_height="54dp"
-                android:scaleType="centerCrop"
                 android:backgroundTint="?attr/backgroundColor"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_baseline_repeat_24" />
 
             <ImageButton
                 android:id="@+id/btn_prev_track"
                 android:layout_width="54dp"
                 android:layout_height="54dp"
-                android:scaleType="centerCrop"
                 android:backgroundTint="?attr/backgroundColor"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_baseline_skip_previous_24" />
 
             <ImageButton
                 android:id="@+id/btn_play_track"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:scaleType="centerCrop"
                 android:backgroundTint="?attr/backgroundColor"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_baseline_play_arrow_24" />
 
             <ImageButton
                 android:id="@+id/btn_next_track"
                 android:layout_width="54dp"
                 android:layout_height="54dp"
-                android:scaleType="centerCrop"
                 android:backgroundTint="?attr/backgroundColor"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_baseline_skip_next_24" />
 
             <ImageButton
                 android:id="@+id/btn_auto_stop"
                 android:layout_width="54dp"
                 android:layout_height="54dp"
-                android:scaleType="centerCrop"
                 android:backgroundTint="?attr/backgroundColor"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_baseline_playlist_add_24" />
         </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="15dp"
-            android:textColor="?attr/secondaryTextColor"
-            android:text="To get the best experience from binaural beats, use headphones with a relatively good quality."
-            android:drawablePadding="15dp"
-            android:drawableLeft="@drawable/ic_outline_info_24"/>
     </LinearLayout>
 </RelativeLayout>

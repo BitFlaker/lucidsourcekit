@@ -39,37 +39,37 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_below="@+id/txt_goals_heading">
+        android:layout_below="@+id/txt_goals_heading"
+        android:layout_marginTop="15dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="15dp"
             android:paddingLeft="20dp"
+            android:paddingTop="15dp"
             android:paddingRight="20dp"
             android:paddingBottom="20dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardElevation="1dp"
-                app:cardCornerRadius="30dp">
+                app:cardCornerRadius="@dimen/cardRadius"
+                app:cardElevation="@dimen/cardElevationRegular">
 
                 <LinearLayout
                     android:id="@+id/ll_difficulty"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_margin="20dp">
+                    android:layout_margin="20dp"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="30dp"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:text="toady's goals difficulty ratings"/>
+                        android:text="toady's goals difficulty ratings"
+                        android:textColor="?attr/secondaryTextColor" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -81,32 +81,32 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="Goal 1"
-                            android:textColor="?attr/primaryTextColor"
                             android:textAlignment="center"
-                            android:layout_weight="1"
-                            app:drawableTopCompat="@drawable/ic_baseline_priority_high_24"
-                            app:drawableTint="?attr/colorSuccess" />
+                            android:textColor="?attr/primaryTextColor"
+                            app:drawableTint="?attr/colorSuccess"
+                            app:drawableTopCompat="@drawable/ic_baseline_priority_high_24" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="Goal 2"
-                            android:textColor="?attr/primaryTextColor"
                             android:textAlignment="center"
-                            android:layout_weight="1"
-                            app:drawableTopCompat="@drawable/ic_baseline_priority_high_24"
-                            app:drawableTint="?attr/colorWarning" />
+                            android:textColor="?attr/primaryTextColor"
+                            app:drawableTint="?attr/colorWarning"
+                            app:drawableTopCompat="@drawable/ic_baseline_priority_high_24" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="Goal 3"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textAlignment="center"
                             android:layout_weight="1"
-                            app:drawableTopCompat="@drawable/ic_baseline_priority_high_24"
-                            app:drawableTint="?attr/colorError" />
+                            android:text="Goal 3"
+                            android:textAlignment="center"
+                            android:textColor="?attr/primaryTextColor"
+                            app:drawableTint="?attr/colorError"
+                            app:drawableTopCompat="@drawable/ic_baseline_priority_high_24" />
                     </LinearLayout>
 
                     <TextView
@@ -114,9 +114,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
-                        android:textColor="?attr/primaryTextColor"
+                        android:text="this makes a total difficulty of 2.5/3"
                         android:textAlignment="center"
-                        android:text="this makes a total difficulty of 2.5/3"/>
+                        android:textColor="?attr/primaryTextColor" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -124,59 +124,59 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                app:cardElevation="1dp"
-                app:cardCornerRadius="30dp">
+                app:cardCornerRadius="@dimen/cardRadius"
+                app:cardElevation="@dimen/cardElevationRegular">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_margin="20dp">
+                    android:layout_margin="20dp"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:text="toady's goals"/>
+                        android:text="toady's goals"
+                        android:textColor="?attr/secondaryTextColor" />
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="I see a yellow car"
                         android:button="@drawable/checkbox_button"
                         android:drawableLeft="@android:color/transparent"
-                        android:drawablePadding="15dp"/>
+                        android:drawablePadding="15dp"
+                        android:text="I see a yellow car" />
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="I turn off a light"
                         android:button="@drawable/checkbox_button"
                         android:drawableLeft="@android:color/transparent"
-                        android:drawablePadding="15dp"/>
+                        android:drawablePadding="15dp"
+                        android:text="I turn off a light" />
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="I feel tired"
                         android:button="@drawable/checkbox_button"
                         android:drawableLeft="@android:color/transparent"
-                        android:drawablePadding="15dp"/>
+                        android:drawablePadding="15dp"
+                        android:text="I feel tired" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_reshuffle_goals"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="15dp"
-                android:text="reshuffle"
                 android:background="@drawable/rounded_spinner"
-                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:text="reshuffle"
                 app:backgroundTint="?attr/slightElevated"
-                app:icon="@drawable/ic_baseline_shuffle_24"/>
+                app:icon="@drawable/ic_baseline_shuffle_24" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

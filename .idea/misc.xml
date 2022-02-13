@@ -62,6 +62,8 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/checkbox_off.xml" value="0.3728205128205128" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/checkbox_on.xml" value="0.3728205128205128" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/circle_chart.xml" value="0.33" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/empty_divider.xml" value="0.35555555555555557" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/ic_baseline_brightness_5_24.xml" value="0.22291666666666668" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/ic_baseline_check_24.xml" value="0.3728205128205128" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/ic_baseline_check_white_24.xml" value="0.3728205128205128" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/ic_baseline_lock_24.xml" value="0.26979166666666665" />
@@ -77,7 +79,7 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/rounded_border.xml" value="0.3728205128205128" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/rounded_spinner.xml" value="0.2375" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/shadow.xml" value="0.3351851851851852" />
-        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/shadowed_background.xml" value="0.3351851851851852" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/shadowed_background.xml" value="1.0" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/slight_rounded_box.xml" value="0.2755208333333333" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/small_circle.xml" value="0.3574074074074074" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/toggle_button.xml" value="0.3728205128205128" />
@@ -90,13 +92,13 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_edit_goals.xml" value="0.25" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_get_started.xml" value="0.328804347826087" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_main.xml" value="0.25885416666666666" />
-        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_main_viewer.xml" value="0.5" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_main_viewer.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_setup_viewer.xml" value="0.3484375" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_view_journal_entry.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/binaural_entry.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/dialog_filter.xml" value="0.25" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/filter_dialog.xml" value="0.28396739130434784" />
-        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_binaural_beats.xml" value="0.2" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_binaural_beats.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_dream_audio_story.xml" value="0.626984126984127" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_dream_forms_story.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_dream_journal.xml" value="0.25" />
@@ -110,7 +112,7 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_statistics.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/goal_entry.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/icon_spinner_row.xml" value="0.3120471014492754" />
-        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/journal_entry.xml" value="0.20466321243523317" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/journal_entry.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/menu/add_open.xml" value="0.2359375" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/menu/more_options_popup_menu.xml" value="0.25885416666666666" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.21875" />

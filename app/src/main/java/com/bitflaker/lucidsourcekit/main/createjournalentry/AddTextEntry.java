@@ -348,7 +348,7 @@ public class AddTextEntry extends AppCompatActivity {
         lparams.leftMargin = Tools.dpToPx(AddTextEntry.this, 3);
         lparams.rightMargin = Tools.dpToPx(AddTextEntry.this, 3);
         tag.setLayoutParams(lparams);
-        tag.setChipBackgroundColor(Tools.getAttrColorStateList(R.attr.slightElevated, getTheme()));
+        tag.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated2x, getTheme()));
         tag.setTextColor(Tools.getAttrColorStateList(R.attr.primaryTextColor, getTheme()));
         tag.setCloseIconTint(ColorStateList.valueOf(getResources().getColor(R.color.white, getTheme())));
         tag.setCheckedIconVisible(false);

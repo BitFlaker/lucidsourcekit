@@ -49,10 +49,11 @@
     <color name="blue_var">#467EAC</color>
     <color name="teal_300">#4db6ac</color>
     <color name="teal_var">#357F78</color>
-    <color name="background">#121212</color>
-    <color name="background_paper">#1d1d1d</color>
+    <color name="background">#222222</color>
+    <color name="background_paper">#2C2C2C</color>
     <color name="white_70p">#B3FFFFFF</color>
     <color name="white_40p">#66FFFFFF</color>
-    <color name="white_5p">#0DFFFFFF</color>
+    <color name="white_5p">#12FFFFFF</color>
+    <color name="white_6p">#1AFFFFFF</color>
     <color name="prim_30p">#0D2196F3</color>
 </resources>
