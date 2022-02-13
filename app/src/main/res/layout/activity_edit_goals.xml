@@ -107,7 +107,6 @@
             android:paddingRight="10dp"
             android:paddingBottom="5dp"
             android:textColor="?attr/primaryTextColor"
-            android:textColorHint="?attr/secondaryTextColor"
             android:textSize="18sp" />
 
         <com.google.android.material.chip.ChipGroup

@@ -10,11 +10,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Recordings"
-        android:textColor="?attr/primaryTextColor"
+        android:textColor="?attr/secondaryTextColor"
         android:textStyle=""
         android:textSize="14sp"
-        android:layout_marginStart="0dp"
-        android:layout_gravity="center"
+        android:layout_marginStart="5dp"
+        android:layout_gravity="start"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_dream_editor" />
 
@@ -33,7 +33,7 @@
         android:layout_marginTop="10dp"
         android:text="@string/add_audio"
         android:textColor="?attr/primaryTextColor"
-        android:layout_gravity="center"
+        android:layout_gravity="start"
         android:background="@drawable/rounded_spinner"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         app:backgroundTint="?attr/slightElevated"

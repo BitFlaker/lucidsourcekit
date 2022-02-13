@@ -90,6 +90,10 @@ public class Tools {
         activity.getWindow().setStatusBarColor(Color.TRANSPARENT);
     }
 
+    public static void colorStatusBar(Activity activity, int color, Resources.Theme theme) {
+        activity.getWindow().setStatusBarColor(getAttrColor(color, theme));
+    }
+
     public static int dpToPx(Context context, double dp) {
         return (int)(dp * context.getResources().getDisplayMetrics().density);
     }

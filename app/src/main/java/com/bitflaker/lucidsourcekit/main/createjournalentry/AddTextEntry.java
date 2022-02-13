@@ -101,6 +101,7 @@ public class AddTextEntry extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_text_entry);
+        Tools.colorStatusBar(this, R.attr.colorPrimary, getTheme());    // a bit sketchy but translucent statusbar breaks autocompleteTextView focus zoom
 
         dateButton = findViewById(R.id.btn_date);
         timeButton = findViewById(R.id.btn_time);
@@ -542,11 +543,7 @@ public class AddTextEntry extends AppCompatActivity {
     }
 
     private void showTagEditor() {
-        int newChildCount = tagsToAddContainer.getChildCount();
-        for (int i = 0; i < newChildCount; i++){
-            tagsToAddContainer.removeView(tagsToAddContainer.getChildAt(0));
-        }
-
+        tagsToAddContainer.removeAllViews();
         int childCount = tagContainer.getChildCount();
         for (int i = 0; i < childCount; i++){
             if(tagContainer.getChildAt(i) instanceof TextView){
@@ -563,23 +560,19 @@ public class AddTextEntry extends AppCompatActivity {
     }
 
     private void hideTagEditor() {
-        int childCount = tagContainer.getChildCount();
-        for (int i = 0; i < childCount; i++){
-            tagContainer.removeView(tagContainer.getChildAt(0));
-        }
-
+        tagContainer.removeViews(0, tagContainer.getChildCount() - 1);
         int newChildCount = tagsToAddContainer.getChildCount();
         for (int i = 0; i < newChildCount; i++){
             if(tagsToAddContainer.getChildAt(i) instanceof Chip){
                 Chip chip = (Chip)tagsToAddContainer.getChildAt(i);
-                tagContainer.addView(generateTagView(chip.getText().toString()));
+                tagContainer.addView(generateTagView(chip.getText().toString()), tagContainer.getChildCount() - 1);
             }
         }
 
         EditText tagEnter = ((EditText) findViewById(R.id.txt_tags_enter));
         String enteredTag = tagEnter.getText().toString();
         if(tagEnter.getText().length() > 0 && !getCurrentTagsToAdd().contains(enteredTag)){
-            tagContainer.addView(generateTagView(enteredTag));
+            tagContainer.addView(generateTagView(enteredTag), tagContainer.getChildCount() - 1);
         }
         tagEnter.setText("");
 

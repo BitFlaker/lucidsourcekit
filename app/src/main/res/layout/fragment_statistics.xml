@@ -36,6 +36,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="20dp"
+                android:backgroundTint="?attr/slightElevated"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="@dimen/cardElevationRegular">
 
@@ -50,9 +51,9 @@
                         android:layout_height="wrap_content"
                         android:text="amount of lucid dreams"
                         android:textAlignment="center"
+                        android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/primaryTextColor" />
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -78,18 +79,18 @@
                                 android:layout_height="wrap_content"
                                 android:drawablePadding="5dp"
                                 android:text="lucid dream"
+                                android:textColor="?attr/primaryTextColor"
                                 app:drawableLeftCompat="@drawable/ic_round_square_24"
-                                app:drawableTint="?attr/colorSecondary"
-                                android:textColor="?attr/primaryTextColor" />
+                                app:drawableTint="?attr/colorSecondary" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:drawablePadding="5dp"
                                 android:text="normal dream"
+                                android:textColor="?attr/primaryTextColor"
                                 app:drawableLeftCompat="@drawable/ic_round_square_24"
-                                app:drawableTint="?attr/colorPrimary"
-                                android:textColor="?attr/primaryTextColor" />
+                                app:drawableTint="?attr/colorPrimary" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -101,6 +102,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="20dp"
+                android:backgroundTint="?attr/slightElevated"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="@dimen/cardElevationRegular">
 
@@ -119,16 +121,16 @@
                         android:layout_marginBottom="15dp"
                         android:text="averages"
                         android:textAlignment="center"
+                        android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/primaryTextColor" />
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:divider="@drawable/empty_divider"
                         android:gravity="top"
                         android:orientation="vertical"
-                        android:divider="@drawable/empty_divider"
                         android:showDividers="middle">
 
                         <TextView
@@ -197,6 +199,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="20dp"
+                android:backgroundTint="?attr/slightElevated"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="@dimen/cardElevationRegular">
 
@@ -215,9 +218,9 @@
                         android:layout_marginBottom="10dp"
                         android:text="longest streak"
                         android:textAlignment="center"
+                        android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/primaryTextColor"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -234,8 +237,8 @@
                         android:layout_marginBottom="10dp"
                         android:text="235"
                         android:textAlignment="center"
-                        android:textSize="32sp"
-                        android:textColor="?attr/primaryTextColor" />
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="32sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -273,9 +276,9 @@
                     android:id="@+id/chp_last_7_days"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
-                    android:textAlignment="center"
                     android:layout_height="wrap_content"
-                    android:text="last 7 days" />
+                    android:text="last 7 days"
+                    android:textAlignment="center" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chp_last_30_days"
@@ -298,6 +301,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="20dp"
+                android:backgroundTint="?attr/slightElevated"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="@dimen/cardElevationRegular">
 
@@ -316,9 +320,9 @@
                         android:layout_marginBottom="10dp"
                         android:text="average dream moods"
                         android:textAlignment="center"
+                        android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/primaryTextColor"/>
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:id="@+id/ll_avg_moods"
@@ -334,6 +338,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="20dp"
+                android:backgroundTint="?attr/slightElevated"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="@dimen/cardElevationRegular">
 
@@ -352,9 +357,9 @@
                         android:layout_marginBottom="10dp"
                         android:text="average dream clarities"
                         android:textAlignment="center"
+                        android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/primaryTextColor"/>
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:id="@+id/ll_avg_clarities"
@@ -370,6 +375,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="20dp"
+                android:backgroundTint="?attr/slightElevated"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="@dimen/cardElevationRegular">
 
@@ -388,9 +394,9 @@
                         android:layout_marginBottom="10dp"
                         android:text="average sleep quality"
                         android:textAlignment="center"
+                        android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/primaryTextColor" />
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:id="@+id/ll_avg_sleep_quality"
@@ -406,6 +412,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="20dp"
+                android:backgroundTint="?attr/slightElevated"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="@dimen/cardElevationRegular">
 
@@ -424,9 +431,9 @@
                         android:layout_marginBottom="10dp"
                         android:text="goals reached"
                         android:textAlignment="center"
+                        android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/primaryTextColor"/>
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:id="@+id/ll_goals_reached"
@@ -442,6 +449,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="20dp"
+                android:backgroundTint="?attr/slightElevated"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="@dimen/cardElevationRegular">
 
@@ -460,9 +468,9 @@
                         android:layout_marginBottom="10dp"
                         android:text="most frequently used tags"
                         android:textAlignment="center"
+                        android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/primaryTextColor" />
+                        android:textStyle="bold" />
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:id="@+id/ll_most_used_tags"

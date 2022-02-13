@@ -5,10 +5,6 @@
     android:padding="10dp">
 
     <solid android:color="#1D2633" />
-    <corners
-        android:bottomRightRadius="30dp"
-        android:bottomLeftRadius="30dp"
-        android:topLeftRadius="30dp"
-        android:topRightRadius="30dp" />
+    <corners android:radius="@dimen/cardRadius" />
     <stroke android:width="0px" android:color="#00000000" />
 </shape>
