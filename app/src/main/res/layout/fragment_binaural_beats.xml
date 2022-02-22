@@ -26,118 +26,85 @@
         android:layout_marginTop="10dp"
         android:orientation="vertical">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="15dp"
-            app:cardCornerRadius="@dimen/cardRadius"
-            app:cardElevation="@dimen/cardElevationRegular">
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:flexDirection="column"
+            app:justifyContent="space_evenly">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="280dp"
+                android:layout_height="230dp"
+                app:cardElevation="@dimen/cardElevationRegular"
+                app:cardCornerRadius="@dimen/cardRadius"
+                app:cardBackgroundColor="?attr/slightElevated"
+                app:layout_alignSelf="center">
 
-                <ImageView
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_alignBottom="@+id/ll_track_details"
-                    android:layout_alignParentTop="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/binaural_playing_background" />
+                    android:layout_height="match_parent">
 
-                <LinearLayout
-                    android:id="@+id/ll_track_details"
+                    <!-- TODO improve look of this square -->
+
+                    <com.bitflaker.lucidsourcekit.charts.LineGraph
+                        android:id="@+id/lg_binaural_time_progress"
+                        android:layout_width="250dp"
+                        android:layout_height="100dp"
+                        android:layout_centerInParent="true"/>
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:id="@+id/ll_track_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp">
+
+                <TextView
+                    android:id="@+id/txt_curr_track_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:text="Quick nap lucidity"
+                    android:textAlignment="center"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/txt_curr_track_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:text="Quick nap lucidity"
-                        android:textAlignment="center"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/txt_curr_track_description"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="40dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginRight="40dp"
-                        android:text="great for supporting the induction of lucid dreams during a quick nap. It slowly slides you to a relaxing state and stays there for some time, until it slowly exits again."
-                        android:textAlignment="center"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="15sp"
-                        android:visibility="visible" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginBottom="30dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0:45" />
-
-                        <com.google.android.material.progressindicator.LinearProgressIndicator
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginRight="15dp"
-                            android:layout_weight="1"
-                            android:progress="20" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="3:57" />
-                    </LinearLayout>
-                </LinearLayout>
-            </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
+                <TextView
+                    android:id="@+id/txt_curr_track_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Great for supporting the induction of lucid dreams during a quick nap."
+                    android:textAlignment="center"
+                    android:textColor="?attr/secondaryTextColor"
+                    android:textSize="15sp"
+                    android:visibility="visible" />
+            </LinearLayout>
+        </com.google.android.flexbox.FlexboxLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcv_list_binaural_beats"
             android:layout_width="match_parent"
-            android:layout_height="0dp" />
-
-        <ScrollView
-            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="0" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_add_background_noise"
-                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/rounded_spinner"
-                    android:drawableLeft="@drawable/ic_round_add_24"
-                    android:text="Add background noise"
-                    app:backgroundTint="?attr/slightElevated" />
-            </LinearLayout>
-        </ScrollView>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_add_background_noise_floating"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/rounded_spinner"
+            android:text="Manage background sounds"
+            android:visibility="gone"
+            app:backgroundTint="?attr/slightElevated" />
 
         <TextView
             android:layout_width="match_parent"
@@ -153,54 +120,125 @@
             android:visibility="gone" />
 
         <LinearLayout
-            android:id="@+id/ll_track_controls_bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="30dp"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-            <!-- TODO on active change icon to repeat on -->
-            <ImageButton
-                android:id="@+id/btn_loop_track"
-                android:layout_width="54dp"
-                android:layout_height="54dp"
-                android:backgroundTint="?attr/backgroundColor"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_baseline_repeat_24" />
+            <com.google.android.material.slider.Slider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:value="16"
+                android:valueTo="100"
+                app:thumbColor="@color/blue_500"
+                app:trackHeight="3dp"
+                app:labelBehavior="gone"
+                app:haloColor="@android:color/transparent"/>
 
-            <ImageButton
-                android:id="@+id/btn_prev_track"
-                android:layout_width="54dp"
-                android:layout_height="54dp"
-                android:backgroundTint="?attr/backgroundColor"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_baseline_skip_previous_24" />
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="13dp"
+                android:layout_marginRight="13dp"
+                app:justifyContent="space_between"
+                android:layout_marginTop="-12dp">
 
-            <ImageButton
-                android:id="@+id/btn_play_track"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:backgroundTint="?attr/backgroundColor"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_baseline_play_arrow_24" />
+                <TextView
+                    android:id="@+id/txt_elapsed_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0:45" />
 
-            <ImageButton
-                android:id="@+id/btn_next_track"
-                android:layout_width="54dp"
-                android:layout_height="54dp"
-                android:backgroundTint="?attr/backgroundColor"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_baseline_skip_next_24" />
+                <TextView
+                    android:id="@+id/txt_total_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3:57"
+                    android:textColor="?attr/secondaryTextColor" />
+            </com.google.android.flexbox.FlexboxLayout>
+        </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/btn_auto_stop"
-                android:layout_width="54dp"
-                android:layout_height="54dp"
-                android:backgroundTint="?attr/backgroundColor"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_baseline_playlist_add_24" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/secondaryTextColor"
+                android:layout_gravity="center"
+                android:layout_marginBottom="15dp"
+                android:text="0:45 / 26:18"/>
+
+            <LinearLayout
+                android:id="@+id/ll_track_controls_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="35dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <!-- TODO get icon for background noise selector -->
+                <ImageButton
+                    android:id="@+id/btn_add_background_noise"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:backgroundTint="@android:color/transparent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_baseline_air_24"
+                    android:padding="12dp"
+                    app:tint="?attr/primaryTextColor" />
+
+                <!-- TODO on active change icon to repeat on -->
+                <ImageButton
+                    android:id="@+id/btn_loop_track"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:backgroundTint="@android:color/transparent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_baseline_repeat_24"
+                    android:padding="12dp"
+                    app:tint="?attr/primaryTextColor" />
+
+                <ImageButton
+                    android:id="@+id/btn_play_track"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/rounded_spinner"
+                    android:backgroundTint="?attr/colorSecondary"
+                    android:padding="10dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_baseline_play_arrow_24"
+                    app:tint="?attr/primaryTextColor" />
+
+                <!-- TODO get icon for auto-stop feature -->
+                <ImageButton
+                    android:id="@+id/btn_auto_stop"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:backgroundTint="@android:color/transparent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_baseline_playlist_add_24"
+                    android:padding="12dp"
+                    app:tint="?attr/primaryTextColor" />
+
+                <ImageButton
+                    android:id="@+id/btn_display_all_beats"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:backgroundTint="@android:color/transparent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_baseline_queue_music_24"
+                    android:padding="12dp"
+                    app:tint="?attr/primaryTextColor" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

@@ -38,7 +38,7 @@ public class RecyclerViewAdapterBinauralBeatsSelector extends RecyclerView.Adapt
         holder.binauralTitle.setText(binauralBeats.get(position).getTitle());
         holder.binauralDescription.setText(binauralBeats.get(position).getDescription());
 
-        holder.dataGraph.setData(binauralBeats.get(position).getDataPoints(), 40, 1f);
+        holder.dataGraph.setData(binauralBeats.get(position).getDataPoints(), 3, 3f, false);
 
         holder.card.setOnClickListener(e -> {
             if(mListener != null) {

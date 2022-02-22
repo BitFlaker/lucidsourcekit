@@ -30,6 +30,14 @@ public class LineGraph extends View {
     private float[] bottomLeft;
     private float xMax;
     private float yMax;
+    private boolean drawGradient;
+    private float[] positions = null;
+    private int[] colors = {
+            Color.rgb(54, 153, 234), // beta = awake
+            Color.rgb(87, 97, 224), // alpha = relaxed
+            Color.rgb(121, 74, 209), // theta = dreams
+            Color.rgb(108, 45, 142) // delta = deep sleep
+    };
 
     public LineGraph(Context context){
         super(context);
@@ -55,10 +63,11 @@ public class LineGraph extends View {
         bottomLeft = new float[2];
     }
 
-    public void setData(List<DataPoint> data, float maxValue, float lineWidth) {
+    public void setData(List<DataPoint> data, float maxValue, float lineWidth, boolean drawGradient) {
         yMax = maxValue;
         xMax = data.size();
         this.data = data;
+        this.drawGradient = drawGradient;
         dataLinePaint.setStrokeWidth(Tools.dpToPx(getContext(), lineWidth));
         invalidate();
     }
@@ -67,14 +76,23 @@ public class LineGraph extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        int i = 0;
-        for (DataPoint dataPoint : data) {
-            float realX = i / xMax * getWidth();
-            float realY = (yMax - dataPoint.val) / yMax * getHeight();
+        dataLinePaint.setShader(new LinearGradient(0f, 0f, 0f, getHeight(), colors, positions, Shader.TileMode.MIRROR));
+
+        for (int i = 0; i < data.size(); i++) {
+            float realX = i / xMax * getWidth()+dataLinePaint.getStrokeWidth()/2.0f;
+            float realY = (yMax - data.get(i).getValue()) / yMax * (getHeight() - dataLinePaint.getStrokeWidth()*1.5f) + dataLinePaint.getStrokeWidth();
             if(i < data.size() - 1) {
                 DataPoint nextPoint = data.get(i + 1);
-                float nextEndX = (i+1) / xMax * getWidth();
-                float nextEndY = (yMax - nextPoint.val) / yMax * getHeight();
+                int incr = 0;
+                float val = nextPoint.getValue();
+                while(Float.isNaN(nextPoint.getValue())){
+                    incr++;
+                    nextPoint = data.get(i + 1 + incr);
+                    val = nextPoint.getValue();
+                }
+                i += incr;
+                float nextEndX = (i+1) / xMax * getWidth()+dataLinePaint.getStrokeWidth()/2.0f;
+                float nextEndY = (yMax - val) / yMax * (getHeight() - dataLinePaint.getStrokeWidth()*1.5f) + dataLinePaint.getStrokeWidth();
 
                 topLeft[0] = realX;
                 topLeft[1] = realY;
@@ -90,12 +108,13 @@ public class LineGraph extends View {
                 polygonPos.add(topRight);
                 polygonPos.add(bottomRight);
                 polygonPos.add(bottomLeft);
-                drawPoly(canvas, Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), polygonPos);
+                if(drawGradient) {
+                    drawPoly(canvas, Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), polygonPos);
+                }
 
                 canvas.drawLine(realX, realY, nextEndX, nextEndY, dataLinePaint);
             }
             //canvas.drawCircle(realX, realY, 10f, dataPainter);
-            i++;
         }
         // Axis
         //canvas.drawLine(0f, 0f, 0f, getHeight(), axisLinePaint);
