@@ -50,9 +50,10 @@ public class LineGraph extends View {
         dataPainter.setColor(Color.BLUE);
         axisLinePaint.setColor(Color.GRAY);
         axisLinePaint.setStrokeWidth(Tools.dpToPx(getContext(), 3));
-        dataLinePaint.setColor(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()));
         progressPainter.setColor(Color.rgb(186, 28, 54));
         progressPainter.setStrokeWidth(Tools.dpToPx(getContext(), 2));
+        progressPainter.setStrokeCap(Paint.Cap.ROUND);
+        dataLinePaint.setColor(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()));
         dataLinePaint.setStrokeCap(Paint.Cap.ROUND);
         dataLinePaint.setAntiAlias(true);
         polygonPos = new ArrayList<>();
@@ -105,27 +106,27 @@ public class LineGraph extends View {
 
         if(progress > -1){
             float realX = (float)progress / xMax * getWidth();
-            float realY = (yMax - (float)data.getFrequencyAtDuration(progress)) / yMax * (getHeight() - dataLinePaint.getStrokeWidth()*1.5f) + dataLinePaint.getStrokeWidth();
+            float realY = (yMax - (float)data.getFrequencyAtDuration(progress)) / yMax * (getHeight() - dataLinePaint.getStrokeWidth()*1.5f) + dataLinePaint.getStrokeWidth() + progressPainter.getStrokeWidth() / 2.0f;
             canvas.drawLine(realX, realY, realX, getHeight(), progressPainter);
         }
 
         for (int i = 0; i < data.size(); i++) {
             FrequencyData current = data.get(i);
-            float realX = (data.getDurationUntil(i)) / xMax * getWidth() + dataLinePaint.getStrokeWidth()/2.0f;
+            float realX = (data.getDurationUntil(i)) / xMax * (getWidth() - dataLinePaint.getStrokeWidth()/2.0f) + dataLinePaint.getStrokeWidth()/2.0f;
             float realY = (yMax - current.getFrequency()) / yMax * (getHeight() - dataLinePaint.getStrokeWidth()*1.5f) + dataLinePaint.getStrokeWidth();
-            float nextEndX = (data.getDurationUntilAfter(i)) / xMax * getWidth() + dataLinePaint.getStrokeWidth()/2.0f;
+            float nextEndX = (data.getDurationUntilAfter(i)) / xMax * (getWidth() - dataLinePaint.getStrokeWidth()/2.0f);
             float nextEndY = realY;
             if(!Float.isNaN(current.getFrequencyTo())) {
                 nextEndY = (yMax - current.getFrequencyTo()) / yMax * (getHeight() - dataLinePaint.getStrokeWidth()*1.5f) + dataLinePaint.getStrokeWidth();
             }
 
-            topLeft[0] = realX;
+            topLeft[0] = realX - dataLinePaint.getStrokeWidth()/4.0f;
             topLeft[1] = realY;
-            topRight[0] = nextEndX;
+            topRight[0] = nextEndX + dataLinePaint.getStrokeWidth()/4.0f;
             topRight[1] = nextEndY;
-            bottomRight[0] = nextEndX;
+            bottomRight[0] = nextEndX + dataLinePaint.getStrokeWidth()/4.0f;
             bottomRight[1] = getHeight();
-            bottomLeft[0] = realX;
+            bottomLeft[0] = realX - dataLinePaint.getStrokeWidth()/4.0f;
             bottomLeft[1] = getHeight();
 
             polygonPos.clear();
@@ -133,6 +134,7 @@ public class LineGraph extends View {
             polygonPos.add(topRight);
             polygonPos.add(bottomRight);
             polygonPos.add(bottomLeft);
+
             if(drawGradient) {
                 drawPoly(canvas, Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), polygonPos);
             }
@@ -145,7 +147,8 @@ public class LineGraph extends View {
         if (points.size() < 2) { return; }
         Paint polyPaint = new Paint();
         polyPaint.setColor(color);
-        polyPaint.setShader(new LinearGradient(0, 0, 0, getHeight(), manipulateAlpha(color, 0.15f), Color.TRANSPARENT, Shader.TileMode.MIRROR));
+        polyPaint.setShader(new LinearGradient(0f, 0f, 0f, getHeight(), manipulateAlphaArray(colors, 0.3f), positions, Shader.TileMode.MIRROR));
+        //polyPaint.setShader(new LinearGradient(0, 0, getWidth(), getHeight(), manipulateAlpha(color, 0.95f), Color.TRANSPARENT, Shader.TileMode.MIRROR));
         polyPaint.setStyle(Paint.Style.FILL);
         Path p = new Path();
         p.moveTo(points.get(0)[0], points.get(0)[1]);
@@ -156,6 +159,14 @@ public class LineGraph extends View {
         }
         p.lineTo(points.get(0)[0], points.get(0)[1]);
         canvas.drawPath(p, polyPaint);
+    }
+
+    public static int[] manipulateAlphaArray(int[] colors, float factor){
+        int[] newColors = new int[colors.length];
+        for (int i = 0; i < colors.length; i++) {
+            newColors[i] = manipulateAlpha(colors[i], factor);
+        }
+        return newColors;
     }
 
     @ColorInt

@@ -1,6 +1,7 @@
 package com.bitflaker.lucidsourcekit.main;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,8 @@ public class RecyclerViewAdapterBinauralBeatsSelector extends RecyclerView.Adapt
         holder.binauralTitle.setText(binauralBeats.get(position).getTitle());
         holder.binauralDescription.setText(binauralBeats.get(position).getDescription());
 
-        holder.dataGraph.setData(binauralBeats.get(position).getFrequencyList(), 3, 3f, false, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
+        holder.dataGraph.setData(binauralBeats.get(position).getFrequencyList(), 32, 3f, false, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
+        holder.dataGraph.changeProgressIndicator(Color.TRANSPARENT, 0);
 
         holder.card.setOnClickListener(e -> {
             if(mListener != null) {

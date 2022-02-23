@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/txt_auto_stop_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:drawablePadding="8dp"
+        android:gravity="center_horizontal"
+        android:text="Auto-Stop beats"
+        android:textColor="?attr/primaryTextColor"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/txt_auto_stop_duration_subheading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/txt_auto_stop_duration"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:drawablePadding="8dp"
+        android:gravity="center_horizontal"
+        android:text="Choose how long you want to play the binaural beats until they should automatically stop"
+        android:textColor="?attr/secondaryTextColor"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:id="@+id/ll_auto_stop_time_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_below="@id/txt_auto_stop_duration_subheading">
+
+        <NumberPicker
+            android:id="@+id/np_hours_auto_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:text=":"/>
+
+        <NumberPicker
+            android:id="@+id/np_minutes_auto_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:text=":"/>
+
+        <NumberPicker
+            android:id="@+id/np_seconds_auto_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_apply_auto_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_auto_stop_time_container"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/rounded_button_primary"
+        android:text="APPLY" />
+</RelativeLayout>

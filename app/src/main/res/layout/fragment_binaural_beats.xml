@@ -27,7 +27,7 @@
         android:orientation="vertical">
 
         <com.google.android.flexbox.FlexboxLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             app:flexDirection="column"
@@ -35,15 +35,45 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="280dp"
-                android:layout_height="230dp"
+                android:layout_height="215dp"
                 app:cardElevation="@dimen/cardElevationRegular"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardBackgroundColor="?attr/slightElevated"
                 app:layout_alignSelf="center">
 
+                <!-- TODO add icon/text indicating, there is no beat selected -->
+
                 <RelativeLayout
+                    android:id="@+id/rl_no_binaural_beat_selected"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:visibility="visible">
+
+                    <ImageView
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="80dp"
+                        android:layout_alignParentBottom="true"
+                        android:src="@drawable/frequency_symbol"
+                        app:tint="?attr/secondaryTextColor" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="40dp"
+                        android:text="No Binaural Beat selected"
+                        android:textAlignment="center"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="16sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_playing_binaural_beat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -55,8 +85,6 @@
                         android:drawableTint="?attr/primaryTextColor"
                         android:gravity="center_vertical"
                         android:text="Frequency" />
-
-                    <!-- TODO improve look of this square -->
 
                     <com.bitflaker.lucidsourcekit.charts.LineGraph
                         android:id="@+id/lg_binaural_time_progress"
@@ -70,9 +98,8 @@
                         android:layout_alignParentBottom="true"
                         android:layout_marginStart="5dp"
                         android:layout_marginEnd="5dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="13dp"
                         android:orientation="horizontal"
-                        android:visibility="visible"
                         app:justifyContent="space_around">
 
                         <TextView
@@ -127,7 +154,7 @@
                     android:id="@+id/txt_curr_track_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Quick nap lucidity"
+                    android:text=""
                     android:textAlignment="center"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="20sp"
@@ -138,19 +165,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="Great for supporting the induction of lucid dreams during a quick nap."
+                    android:text=""
                     android:textAlignment="center"
                     android:textColor="?attr/secondaryTextColor"
-                    android:textSize="15sp"
-                    android:visibility="visible" />
+                    android:textSize="15sp" />
             </LinearLayout>
         </com.google.android.flexbox.FlexboxLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcv_list_binaural_beats"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_add_background_noise_floating"
@@ -165,7 +185,7 @@
             android:visibility="gone"
             app:backgroundTint="?attr/slightElevated" />
 
-        <TextView
+        <!--<TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -175,50 +195,7 @@
             android:drawablePadding="15dp"
             android:gravity="start"
             android:text="To get the best experience from binaural beats, use headphones with a relatively good quality."
-            android:textColor="?attr/secondaryTextColor"
-            android:visibility="gone" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="30dp"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <com.google.android.material.slider.Slider
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:value="16"
-                android:valueTo="100"
-                app:thumbColor="@color/blue_500"
-                app:trackHeight="3dp"
-                app:labelBehavior="gone"
-                app:haloColor="@android:color/transparent"/>
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="13dp"
-                android:layout_marginRight="13dp"
-                app:justifyContent="space_between"
-                android:layout_marginTop="-12dp">
-
-                <TextView
-                    android:id="@+id/txt_elapsed_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0:45" />
-
-                <TextView
-                    android:id="@+id/txt_total_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="3:57"
-                    android:textColor="?attr/secondaryTextColor" />
-            </com.google.android.flexbox.FlexboxLayout>
-        </LinearLayout>
+            android:textColor="?attr/secondaryTextColor" />-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -242,7 +219,6 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <!-- TODO get icon for background noise selector -->
                 <ImageButton
                     android:id="@+id/btn_add_background_noise"
                     android:layout_width="48dp"
@@ -253,7 +229,6 @@
                     android:padding="12dp"
                     app:tint="?attr/primaryTextColor" />
 
-                <!-- TODO on active change icon to repeat on -->
                 <ImageButton
                     android:id="@+id/btn_loop_track"
                     android:layout_width="48dp"
@@ -277,14 +252,13 @@
                     android:src="@drawable/ic_baseline_play_arrow_24"
                     app:tint="?attr/primaryTextColor" />
 
-                <!-- TODO get icon for auto-stop feature -->
                 <ImageButton
                     android:id="@+id/btn_auto_stop"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:backgroundTint="@android:color/transparent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_baseline_playlist_add_24"
+                    android:src="@drawable/ic_outline_timer_24"
                     android:padding="12dp"
                     app:tint="?attr/primaryTextColor" />
 

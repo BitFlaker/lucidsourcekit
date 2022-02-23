@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/crd_binaural_selection_card"
+        android:id="@+id/crd_background_noise_manager_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:cardCornerRadius="@dimen/cardRadius"
@@ -27,12 +27,12 @@
             android:layout_margin="10dp"
             android:orientation="horizontal">
 
-            <com.bitflaker.lucidsourcekit.charts.LineGraph
-                android:id="@+id/lg_binaural_gradient"
-                android:layout_width="120dp"
-                android:layout_height="80dp"
+            <ImageView
+                android:id="@+id/img_noise_icon"
+                android:layout_width="55dp"
+                android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="15dp"/>
+                android:layout_marginEnd="5dp"/>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -42,31 +42,24 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/txt_binaural_title"
+                    android:id="@+id/txt_background_noise_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
                     android:text="sample title"
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:textColor="?attr/primaryTextColor"/>
 
-                <TextView
-                    android:id="@+id/txt_binaural_description"
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sld_volume_background_noise"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="this is a sample description of this sample title in the sample binaural beat selection."
-                    android:textSize="14sp"
-                    android:textColor="?attr/secondaryTextColor"/>
+                    android:value="10"
+                    android:valueTo="100"
+                    app:labelBehavior="gone"
+                    app:haloColor="@android:color/transparent"/>
             </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:textColor="?attr/secondaryTextColor"
-                android:layout_gravity="center_vertical"
-                android:textSize="12sp"
-                android:text="28:36"/>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -70,6 +70,7 @@
         <item name="colorWarning">@color/lighter_orange</item>
         <item name="colorSuccess">@color/lighter_green</item>
         <item name="main_overview_graphic">@drawable/deep_night_mountains_dark</item>
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDialog.Dark</item>
     </style>
 
     <style name="PopupMenu.Dark" parent="Widget.AppCompat.PopupMenu">
@@ -92,6 +93,24 @@
 
     <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/blue_500</item>
+    </style>
+
+    <!-- Bottom Sheet styles -->
+
+    <style name="BottomSheetDialog.Dark" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="colorPrimary">@color/blue_500</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:backgroundTint">@color/background</item>
+        <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
+    </style>
+
+    <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
+    </style>
+
+    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">18dp</item>
     </style>
 
 
