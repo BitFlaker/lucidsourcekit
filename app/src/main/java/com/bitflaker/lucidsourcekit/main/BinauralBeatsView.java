@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.charts.DataPoint;
+import com.bitflaker.lucidsourcekit.charts.Brainwaves;
+import com.bitflaker.lucidsourcekit.charts.FrequencyData;
+import com.bitflaker.lucidsourcekit.charts.FrequencyList;
 import com.bitflaker.lucidsourcekit.charts.LineGraph;
 
 import java.util.ArrayList;
@@ -35,32 +37,36 @@ public class BinauralBeatsView extends Fragment {
         progressLineGraph = getView().findViewById(R.id.lg_binaural_time_progress);
 
         List<BinauralBeat> beats = new ArrayList<>();
-        List<DataPoint> points = new ArrayList<>();
-        points.add(new DataPoint(3));
-        points.add(new DataPoint(3));
-        points.add(new DataPoint(1));
-        points.add(new DataPoint(0));
-        points.add(new DataPoint(0));
-        points.add(new DataPoint(1));
-        points.add(new DataPoint(1));
-        points.add(new DataPoint(1));
-        points.add(new DataPoint(3));
-        beats.add(new BinauralBeat("samplesad ", "sample description with some length to it", "NULL", points));
-        beats.add(new BinauralBeat("sampleasd ", "sample description with some length to it", "NULL", points));
-        beats.add(new BinauralBeat("sample asdas d", "sample description with some length to it", "NULL", points));
-        beats.add(new BinauralBeat("sampleasd  sdasd as", "sample description with some length to it", "NULL", points));
-        beats.add(new BinauralBeat("sample", "sample description wiasdk.fjh asildfghasildjfhglaisjdhfl asdghflias ghdlfghasldj bhfl ajshdflj ahsdlfjgh asljkdfghlkjasdh fj ghalsdjfg lasjdgfl jasgdf jkasdgfl iuagsdlf jkgabsldiuf gasljdfghlaui eghfaöihu öuioasehf ölausehf asuilöh fliuawehf ksjahdf liuaseghfkljashefliu ghasth some length to it", "NULL", points));
-        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", points));
-        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", points));
-        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", points));
-        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", points));
-        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", points));
-        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", points));
-        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", points));
-        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", points));
-        beats.add(new BinauralBeat("samplea asd asd as", "sample description with some length to it", "NULL", points));
-        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", points));
-        beats.add(new BinauralBeat("sample dd d d  d d dd", "sample description with some length to it", "NULL", points));
+        // TODO auto set values for progress of beats
+        FrequencyList freqs = new FrequencyList();
+        freqs.add(new FrequencyData(32, 3));
+        freqs.add(new FrequencyData(32, 13, 20));
+        freqs.add(new FrequencyData(13, 10));
+        freqs.add(new FrequencyData(13, 8, 20));
+        freqs.add(new FrequencyData(8, 10));
+        freqs.add(new FrequencyData(8, 4, 35));
+        freqs.add(new FrequencyData(4, 25));
+        freqs.add(new FrequencyData(4, 0.5f, 5));
+        freqs.add(new FrequencyData(0.5f, 5));
+        freqs.add(new FrequencyData(0.5f, 8, 5));
+        freqs.add(new FrequencyData(8, 5));
+        freqs.add(new FrequencyData(8, 32, 35));
+        beats.add(new BinauralBeat("samplesad ", "sample description with some length to it", "NULL", freqs));
+        beats.add(new BinauralBeat("sampleasd ", "sample description with some length to it", "NULL", freqs));
+        beats.add(new BinauralBeat("sample asdas d", "sample description with some length to it", "NULL", freqs));
+        beats.add(new BinauralBeat("sampleasd  sdasd as", "sample description with some length to it", "NULL", freqs));
+        beats.add(new BinauralBeat("sample", "sample description wiasdk.fjh asildfghasildjfhglaisjdhfl asdghflias ghdlfghasldj bhfl ajshdflj ahsdlfjgh asljkdfghlkjasdh fj ghalsdjfg lasjdgfl jasgdf jkasdgfl iuagsdlf jkgabsldiuf gasljdfghlaui eghfaöihu öuioasehf ölausehf asuilöh fliuawehf ksjahdf liuaseghfkljashefliu ghasth some length to it", "NULL", freqs));
+        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
+        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
+        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
+        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
+        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
+        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
+        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
+        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
+        beats.add(new BinauralBeat("samplea asd asd as", "sample description with some length to it", "NULL", freqs));
+        beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
+        beats.add(new BinauralBeat("sample dd d d  d d dd", "sample description with some length to it", "NULL", freqs));
         RecyclerViewAdapterBinauralBeatsSelector rvabbs = new RecyclerViewAdapterBinauralBeatsSelector(getContext(), beats);
         rvabbs.setOnEntryClickedListener((binauralBeat, position) -> {
             System.out.println(binauralBeat.getTitle());
@@ -68,43 +74,18 @@ public class BinauralBeatsView extends Fragment {
         binauralBeatsSelector.setAdapter(rvabbs);
         binauralBeatsSelector.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        progressLineGraph.setData(freqs, 32, 4f, false, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
 
-        // TODO auto set values for progress of beats
-        List<DataPoint> previewPoints = new ArrayList<>();
-        previewPoints.add(new DataPoint(3));
-        previewPoints.add(new DataPoint(3));
-        previewPoints.add(DataPoint.SkipDataPoint());
-        previewPoints.add(DataPoint.SkipDataPoint());
-        previewPoints.add(DataPoint.SkipDataPoint());
-        previewPoints.add(DataPoint.SkipDataPoint());
-        previewPoints.add(DataPoint.SkipDataPoint());
-        previewPoints.add(DataPoint.SkipDataPoint());
-        previewPoints.add(DataPoint.SkipDataPoint());
-        previewPoints.add(new DataPoint(0));
-        previewPoints.add(new DataPoint(0));
-        previewPoints.add(new DataPoint(0));
-        previewPoints.add(DataPoint.SkipDataPoint());
-        previewPoints.add(DataPoint.SkipDataPoint());
-        previewPoints.add(new DataPoint(1));
-        previewPoints.add(new DataPoint(1));
-        previewPoints.add(new DataPoint(1));
-        previewPoints.add(new DataPoint(1));
-        previewPoints.add(new DataPoint(1));
-        previewPoints.add(new DataPoint(1));
-        previewPoints.add(new DataPoint(1));
-        previewPoints.add(new DataPoint(1));
-        previewPoints.add(new DataPoint(1));
-        previewPoints.add(new DataPoint(1));
-        previewPoints.add(DataPoint.SkipDataPoint());
-        previewPoints.add(DataPoint.SkipDataPoint());
-        previewPoints.add(new DataPoint(2));
-        previewPoints.add(new DataPoint(2));
-        previewPoints.add(DataPoint.SkipDataPoint());
-        previewPoints.add(DataPoint.SkipDataPoint());
-        previewPoints.add(new DataPoint(3));
-        previewPoints.add(new DataPoint(3));
-        previewPoints.add(new DataPoint(3));
-        BinauralBeat progress = new BinauralBeat("samplesad ", "sample description with some length to it", "NULL", previewPoints);
-        progressLineGraph.setData(progress.getDataPoints(), 3, 4f, false);
+        Thread newThread = new Thread(() -> {
+            for (int i = 0; i < freqs.getDuration(); i++){
+                progressLineGraph.updateProgress(i);
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        newThread.start();
     }
 }

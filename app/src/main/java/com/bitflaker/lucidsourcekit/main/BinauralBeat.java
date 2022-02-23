@@ -1,18 +1,16 @@
 package com.bitflaker.lucidsourcekit.main;
 
-import com.bitflaker.lucidsourcekit.charts.DataPoint;
-
-import java.util.List;
+import com.bitflaker.lucidsourcekit.charts.FrequencyList;
 
 public class BinauralBeat {
     private final String title, description, location;
-    private final List<DataPoint> dataValues;
+    private final FrequencyList frequencies;
 
-    public BinauralBeat(String title, String description, String location, List<DataPoint> dataPoints) {
+    public BinauralBeat(String title, String description, String location, FrequencyList frequencies) {
         this.title = title;
         this.description = description;
         this.location = location;
-        this.dataValues = dataPoints;
+        this.frequencies = frequencies;
     }
 
     public String getTitle() {
@@ -27,7 +25,7 @@ public class BinauralBeat {
         return location;
     }
 
-    public List<DataPoint> getDataPoints() {
-        return dataValues;
+    public FrequencyList getFrequencyList() {
+        return frequencies;
     }
 }

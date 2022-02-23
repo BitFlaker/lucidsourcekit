@@ -45,6 +45,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="13dp"
+                        android:layout_marginTop="10dp"
+                        android:drawableStart="@drawable/frequency_symbol"
+                        android:drawablePadding="8dp"
+                        android:drawableTint="?attr/primaryTextColor"
+                        android:gravity="center_vertical"
+                        android:text="Frequency" />
+
                     <!-- TODO improve look of this square -->
 
                     <com.bitflaker.lucidsourcekit.charts.LineGraph
@@ -52,6 +63,54 @@
                         android:layout_width="250dp"
                         android:layout_height="100dp"
                         android:layout_centerInParent="true"/>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal"
+                        android:visibility="visible"
+                        app:justifyContent="space_around">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/small_square"
+                            android:drawableTint="#3b90e8"
+                            android:gravity="center_vertical"
+                            android:text="beta"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/small_square"
+                            android:drawableTint="#5a5fdf"
+                            android:gravity="center_vertical"
+                            android:text="alpha"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/small_square"
+                            android:drawableTint="#7949cf"
+                            android:gravity="center_vertical"
+                            android:text="theta"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/small_square"
+                            android:drawableTint="#74329f"
+                            android:gravity="center_vertical"
+                            android:text="delta"
+                            android:textSize="12sp" />
+                    </com.google.android.flexbox.FlexboxLayout>
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
 

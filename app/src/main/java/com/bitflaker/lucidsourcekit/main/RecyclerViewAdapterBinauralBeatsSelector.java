@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.charts.Brainwaves;
 import com.bitflaker.lucidsourcekit.charts.LineGraph;
 import com.google.android.material.card.MaterialCardView;
 
@@ -38,7 +39,7 @@ public class RecyclerViewAdapterBinauralBeatsSelector extends RecyclerView.Adapt
         holder.binauralTitle.setText(binauralBeats.get(position).getTitle());
         holder.binauralDescription.setText(binauralBeats.get(position).getDescription());
 
-        holder.dataGraph.setData(binauralBeats.get(position).getDataPoints(), 3, 3f, false);
+        holder.dataGraph.setData(binauralBeats.get(position).getFrequencyList(), 3, 3f, false, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
 
         holder.card.setOnClickListener(e -> {
             if(mListener != null) {
