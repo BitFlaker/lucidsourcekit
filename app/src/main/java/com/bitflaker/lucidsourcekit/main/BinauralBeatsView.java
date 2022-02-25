@@ -25,7 +25,9 @@ import com.bitflaker.lucidsourcekit.charts.Brainwaves;
 import com.bitflaker.lucidsourcekit.charts.FrequencyData;
 import com.bitflaker.lucidsourcekit.charts.FrequencyList;
 import com.bitflaker.lucidsourcekit.charts.LineGraph;
+import com.bitflaker.lucidsourcekit.charts.TextLegend;
 import com.bitflaker.lucidsourcekit.general.Tools;
+import com.bitflaker.lucidsourcekit.main.binauralbeats.BinauralBeatsPlayer;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 
@@ -45,6 +47,7 @@ public class BinauralBeatsView extends Fragment {
     private RelativeLayout noBeatSelected, beatSelected;
     private TextView currentTrackName, currentTrackDescription;
     private boolean playing = false;
+    private TextLegend binauralLegend;
 
     // TODO really repeat beats
     // TODO really start and pause beats
@@ -71,6 +74,7 @@ public class BinauralBeatsView extends Fragment {
         currentTrackName = getView().findViewById(R.id.txt_curr_track_name);
         currentTrackDescription = getView().findViewById(R.id.txt_curr_track_description);
         playTrack = getView().findViewById(R.id.btn_play_track);
+        binauralLegend = getView().findViewById(R.id.tl_binaural_legend);
 
         repeatBeat = false;
         autoStopTime = null;
@@ -97,22 +101,22 @@ public class BinauralBeatsView extends Fragment {
             RecyclerView rcv = bottomSheetDialog.findViewById(R.id.rcv_list_binaural_beats);
 
             List<BinauralBeat> beats = new ArrayList<>();
-            beats.add(new BinauralBeat("Quick Nap Lucidity ", "Great for supporting the induction of lucid dreams during a quick nap.", "NULL", freqs));
-            beats.add(new BinauralBeat("sampleasd ", "sample description with some length to it", "NULL", freqs));
-            beats.add(new BinauralBeat("sample asdas d", "sample description with some length to it", "NULL", freqs));
-            beats.add(new BinauralBeat("sampleasd  sdasd as", "sample description with some length to it", "NULL", freqs));
-            beats.add(new BinauralBeat("sample", "sample description wiasdk.fjh asildfghasildjfhglaisjdhfl asdghflias ghdlfghasldj bhfl ajshdflj ahsdlfjgh asljkdfghlkjasdh fj ghalsdjfg lasjdgfl jasgdf jkasdgfl iuagsdlf jkgabsldiuf gasljdfghlaui eghfaöihu öuioasehf ölausehf asuilöh fliuawehf ksjahdf liuaseghfkljashefliu ghasth some length to it", "NULL", freqs));
-            beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
-            beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
-            beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
-            beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
-            beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
-            beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
-            beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
-            beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
-            beats.add(new BinauralBeat("samplea asd asd as", "sample description with some length to it", "NULL", freqs));
-            beats.add(new BinauralBeat("sample", "sample description with some length to it", "NULL", freqs));
-            beats.add(new BinauralBeat("sample dd d d  d d dd", "sample description with some length to it", "NULL", freqs));
+            beats.add(new BinauralBeat("Quick Nap Lucidity ", "Great for supporting the induction of lucid dreams during a quick nap.", 455, "NULL", freqs));
+            beats.add(new BinauralBeat("sampleasd ", "sample description with some length to it", 853, "NULL", freqs));
+            beats.add(new BinauralBeat("sample asdas d", "sample description with some length to it", 234.5f, "NULL", freqs));
+            beats.add(new BinauralBeat("sampleasd  sdasd as", "sample description with some length to it", 455, "NULL", freqs));
+            beats.add(new BinauralBeat("sample", "sample description wiasdk.fjh asildfghasildjfhglaisjdhfl asdgghflias sdf sd fklsdfklsdfsdf s has some length to it", 1633.75f, "NULL", freqs));
+            beats.add(new BinauralBeat("sample", "sample description with some length to it", 455, "NULL", freqs));
+            beats.add(new BinauralBeat("sample", "sample description with some length to it", 345, "NULL", freqs));
+            beats.add(new BinauralBeat("sample", "sample description with some length to it", 455, "NULL", freqs));
+            beats.add(new BinauralBeat("sample", "sample description with some length to it", 1845, "NULL", freqs));
+            beats.add(new BinauralBeat("sample", "sample description with some length to it", 455, "NULL", freqs));
+            beats.add(new BinauralBeat("sample", "sample description with some length to it", 455, "NULL", freqs));
+            beats.add(new BinauralBeat("sample", "sample description with some length to it", 153.67f, "NULL", freqs));
+            beats.add(new BinauralBeat("sample", "sample description with some length to it", 455, "NULL", freqs));
+            beats.add(new BinauralBeat("samplea asd asd as", "sample description with some length to it", 685, "NULL", freqs));
+            beats.add(new BinauralBeat("sample", "sample description with some length to it", 455, "NULL", freqs));
+            beats.add(new BinauralBeat("sample dd d d  d d dd", "sample description with some length to it", 455, "NULL", freqs));
             RecyclerViewAdapterBinauralBeatsSelector rvabbs = new RecyclerViewAdapterBinauralBeatsSelector(getContext(), beats);
             rvabbs.setOnEntryClickedListener((binauralBeat, position) -> {
                 bottomSheetDialog.hide();
@@ -206,6 +210,8 @@ public class BinauralBeatsView extends Fragment {
 
         playing = false;
         playTrack.setOnClickListener(e -> {
+            BinauralBeatsPlayer binbeatPlayer = new BinauralBeatsPlayer(new BinauralBeat("Quick Nap Lucidity ", "Great for supporting the induction of lucid dreams during a quick nap.", 644, "NULL", freqs));
+            binbeatPlayer.play();
             // TODO start pause beats and remove playing variable
             playing = !playing;
             if(!playing){
@@ -216,7 +222,13 @@ public class BinauralBeatsView extends Fragment {
             }
         });
 
-        progressLineGraph.setData(freqs, 32, 4f, false, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
+        progressLineGraph.setBottomLineSpacing(20);
+        progressLineGraph.setData(freqs, 32, 4f, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
+        progressLineGraph.setDrawGradient(true);
+        progressLineGraph.setGradientOpacity(0.15f);
+
+        String[] labels = new String[] { "beta", "alpha", "theta", "delta" };
+        binauralLegend.setData(labels, Brainwaves.getStageColors(), Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()), 12);
 
         Thread newThread = new Thread(() -> {
             for (int i = 0; i < freqs.getDuration(); i++){

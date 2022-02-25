@@ -9,13 +9,10 @@
         android:id="@+id/crd_binaural_selection_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:backgroundTint="@android:color/transparent"
         app:cardCornerRadius="@dimen/cardRadius"
-        app:cardElevation="@dimen/cardElevationRegular"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="6dp"
-        android:backgroundTint="?attr/slightElevated"
+        app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,6 +54,15 @@
                     android:text="this is a sample description of this sample title in the sample binaural beat selection."
                     android:textSize="14sp"
                     android:textColor="?attr/secondaryTextColor"/>
+
+                <TextView
+                    android:id="@+id/txt_binaural_beats_base_frequency"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="635Hz"
+                    android:drawableStart="@drawable/frequency_symbol"
+                    android:drawablePadding="5dp"/>
             </LinearLayout>
 
             <TextView

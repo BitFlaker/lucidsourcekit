@@ -49,6 +49,7 @@ public class MainViewer extends AppCompatActivity {
         vpAdapter.addFragment(vwPageGoals, pageGoals);
         vpAdapter.addFragment(vwPageBinauralBeats, pageBinauralBeats);
         viewPager2.setAdapter(vpAdapter);
+        viewPager2.setOffscreenPageLimit(6);
 
         tabLayout.addOnTabSelectedListener(tabSelected());
         viewPager2.registerOnPageChangeCallback(changeTab());

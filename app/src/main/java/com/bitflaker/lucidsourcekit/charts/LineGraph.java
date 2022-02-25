@@ -16,6 +16,7 @@ import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.general.Tools;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class LineGraph extends View {
@@ -33,8 +34,12 @@ public class LineGraph extends View {
     private float yMax;
     private boolean drawGradient;
     private float[] positions;
+    private float[] positionsBuffer;
     private int[] colors;
     private double progress;
+    private float bottomLineSpacing;
+    private float gradientOpacity;
+    private boolean scalePositions;
 
     public LineGraph(Context context){
         super(context);
@@ -61,17 +66,15 @@ public class LineGraph extends View {
         topRight = new float[2];
         bottomRight = new float[2];
         bottomLeft = new float[2];
+        scalePositions = false;
     }
 
-    public void setData(FrequencyList data, float maxValue, float lineWidth, boolean drawGradient, int[] colors, double[] stages) {
+    public void setData(FrequencyList data, float maxValue, float lineWidth, int[] colors, double[] stages) {
         yMax = maxValue;
         xMax = data.getDuration();
         progress = -1;
-        // TODO remove test data
-        progress = xMax/3.0f;
         this.colors = colors;
         this.data = data;
-        this.drawGradient = drawGradient;
         dataLinePaint.setStrokeWidth(Tools.dpToPx(getContext(), lineWidth));
         invalidate();
 
@@ -81,10 +84,12 @@ public class LineGraph extends View {
             values.add((float)((stages[i] - stages[i+1])/maxValue) + values.get(i));
         }
         positions = new float[values.size()];
+        positionsBuffer = new float[values.size()];
         int i = 0;
         for (Float f : values) {
             positions[i++] = (f != null ? f : Float.NaN);
         }
+        scalePositions = true;
     }
 
     public void updateProgress(double progress){
@@ -102,31 +107,44 @@ public class LineGraph extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        dataLinePaint.setShader(new LinearGradient(0f, 0f, 0f, getHeight(), colors, positions, Shader.TileMode.MIRROR));
-
-        if(progress > -1){
-            float realX = (float)progress / xMax * getWidth();
-            float realY = (yMax - (float)data.getFrequencyAtDuration(progress)) / yMax * (getHeight() - dataLinePaint.getStrokeWidth()*1.5f) + dataLinePaint.getStrokeWidth() + progressPainter.getStrokeWidth() / 2.0f;
-            canvas.drawLine(realX, realY, realX, getHeight(), progressPainter);
+        if(scalePositions){
+            float ratio = 1-bottomLineSpacing/getHeight();
+            for (int i = 0; i < positions.length; i++){
+                if(i == 0){
+                    positionsBuffer[i] = positions[i] * ratio;
+                }
+                else {
+                    positionsBuffer[i] = positionsBuffer[i-1] + (positions[i]-positions[i-1]) * ratio;
+                }
+            }
+            positions = Arrays.copyOf(positionsBuffer, positionsBuffer.length);
+            scalePositions = false;
         }
+
+        dataLinePaint.setShader(new LinearGradient(0f, 0f, 0f, getHeight(), colors, positionsBuffer, Shader.TileMode.MIRROR));
+
+        float radiusMargin = dataLinePaint.getStrokeWidth()/2.0f;
+        float drawAreaHeight = getHeight() - dataLinePaint.getStrokeWidth() * 1.5f - bottomLineSpacing;
+        float drawAreaWidth = getWidth() - radiusMargin;
+        boolean drewProgress = false;
 
         for (int i = 0; i < data.size(); i++) {
             FrequencyData current = data.get(i);
-            float realX = (data.getDurationUntil(i)) / xMax * (getWidth() - dataLinePaint.getStrokeWidth()/2.0f) + dataLinePaint.getStrokeWidth()/2.0f;
-            float realY = (yMax - current.getFrequency()) / yMax * (getHeight() - dataLinePaint.getStrokeWidth()*1.5f) + dataLinePaint.getStrokeWidth();
-            float nextEndX = (data.getDurationUntilAfter(i)) / xMax * (getWidth() - dataLinePaint.getStrokeWidth()/2.0f);
+            float realX = data.getDurationUntil(i) / xMax * drawAreaWidth + radiusMargin;
+            float realY = (yMax - current.getFrequency()) / yMax * drawAreaHeight + dataLinePaint.getStrokeWidth();
+            float nextEndX = data.getDurationUntilAfter(i) / xMax * drawAreaWidth;
             float nextEndY = realY;
             if(!Float.isNaN(current.getFrequencyTo())) {
-                nextEndY = (yMax - current.getFrequencyTo()) / yMax * (getHeight() - dataLinePaint.getStrokeWidth()*1.5f) + dataLinePaint.getStrokeWidth();
+                nextEndY = (yMax - current.getFrequencyTo()) / yMax * drawAreaHeight + dataLinePaint.getStrokeWidth();
             }
 
-            topLeft[0] = realX - dataLinePaint.getStrokeWidth()/4.0f;
+            topLeft[0] = realX - radiusMargin/2.0f;
             topLeft[1] = realY;
-            topRight[0] = nextEndX + dataLinePaint.getStrokeWidth()/4.0f;
+            topRight[0] = nextEndX + radiusMargin/2.0f;
             topRight[1] = nextEndY;
-            bottomRight[0] = nextEndX + dataLinePaint.getStrokeWidth()/4.0f;
+            bottomRight[0] = nextEndX + radiusMargin/2.0f;
             bottomRight[1] = getHeight();
-            bottomLeft[0] = realX - dataLinePaint.getStrokeWidth()/4.0f;
+            bottomLeft[0] = realX - radiusMargin/2.0f;
             bottomLeft[1] = getHeight();
 
             polygonPos.clear();
@@ -139,16 +157,44 @@ public class LineGraph extends View {
                 drawPoly(canvas, Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), polygonPos);
             }
 
+            float realXProgress = (float)progress / xMax * getWidth();
+            if(progress > -1 && !drewProgress && realXProgress >= topLeft[0] && realXProgress <= topRight[0]){
+                float realYProgress = (yMax - (float)data.getFrequencyAtDuration(progress)) / yMax * (getHeight() - dataLinePaint.getStrokeWidth()*1.5f - bottomLineSpacing) + dataLinePaint.getStrokeWidth() + radiusMargin;
+                canvas.drawLine(realXProgress, realYProgress, realXProgress, getHeight(), progressPainter);
+                drewProgress = true;
+            }
+
             canvas.drawLine(realX, realY, nextEndX, nextEndY, dataLinePaint);
         }
+    }
+
+    public void setBottomLineSpacing(float bottomLineSpacing) {
+        this.bottomLineSpacing = Tools.dpToPx(getContext(), bottomLineSpacing);
+        scalePositions = true;
+        invalidate();
+    }
+
+    public boolean isDrawingGradient() {
+        return drawGradient;
+    }
+
+    public void setDrawGradient(boolean drawGradient) {
+        this.drawGradient = drawGradient;
+    }
+
+    public float getGradientOpacity() {
+        return gradientOpacity;
+    }
+
+    public void setGradientOpacity(float gradientOpacity) {
+        this.gradientOpacity = gradientOpacity;
     }
 
     private void drawPoly(Canvas canvas, int color, List<float[]> points) {
         if (points.size() < 2) { return; }
         Paint polyPaint = new Paint();
         polyPaint.setColor(color);
-        polyPaint.setShader(new LinearGradient(0f, 0f, 0f, getHeight(), manipulateAlphaArray(colors, 0.3f), positions, Shader.TileMode.MIRROR));
-        //polyPaint.setShader(new LinearGradient(0, 0, getWidth(), getHeight(), manipulateAlpha(color, 0.95f), Color.TRANSPARENT, Shader.TileMode.MIRROR));
+        polyPaint.setShader(new LinearGradient(0f, 0f, 0f, getHeight(), manipulateAlphaArray(colors, gradientOpacity), positionsBuffer, Shader.TileMode.MIRROR));
         polyPaint.setStyle(Paint.Style.FILL);
         Path p = new Path();
         p.moveTo(points.get(0)[0], points.get(0)[1]);

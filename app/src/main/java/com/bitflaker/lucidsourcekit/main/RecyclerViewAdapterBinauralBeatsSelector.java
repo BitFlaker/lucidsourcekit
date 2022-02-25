@@ -39,8 +39,9 @@ public class RecyclerViewAdapterBinauralBeatsSelector extends RecyclerView.Adapt
     public void onBindViewHolder(@NonNull MainViewHolderBinauralBeats holder, int position) {
         holder.binauralTitle.setText(binauralBeats.get(position).getTitle());
         holder.binauralDescription.setText(binauralBeats.get(position).getDescription());
+        holder.baseFrequency.setText(binauralBeats.get(position).getBaseFrequencyString());
 
-        holder.dataGraph.setData(binauralBeats.get(position).getFrequencyList(), 32, 3f, false, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
+        holder.dataGraph.setData(binauralBeats.get(position).getFrequencyList(), 32, 3f, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
         holder.dataGraph.changeProgressIndicator(Color.TRANSPARENT, 0);
 
         holder.card.setOnClickListener(e -> {
@@ -56,7 +57,7 @@ public class RecyclerViewAdapterBinauralBeatsSelector extends RecyclerView.Adapt
     }
 
     public class MainViewHolderBinauralBeats extends RecyclerView.ViewHolder {
-        TextView binauralTitle, binauralDescription;
+        TextView binauralTitle, binauralDescription, baseFrequency;
         MaterialCardView card;
         LineGraph dataGraph;
 
@@ -66,6 +67,7 @@ public class RecyclerViewAdapterBinauralBeatsSelector extends RecyclerView.Adapt
             binauralDescription = itemView.findViewById(R.id.txt_binaural_description);
             card = itemView.findViewById(R.id.crd_binaural_selection_card);
             dataGraph = itemView.findViewById(R.id.lg_binaural_gradient);
+            baseFrequency = itemView.findViewById(R.id.txt_binaural_beats_base_frequency);
         }
     }
 

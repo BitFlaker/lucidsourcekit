@@ -52,9 +52,9 @@
                     <ImageView
                         android:layout_width="100dp"
                         android:layout_height="100dp"
+                        android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
                         android:layout_marginBottom="80dp"
-                        android:layout_alignParentBottom="true"
                         android:src="@drawable/frequency_symbol"
                         app:tint="?attr/secondaryTextColor" />
 
@@ -88,56 +88,15 @@
 
                     <com.bitflaker.lucidsourcekit.charts.LineGraph
                         android:id="@+id/lg_binaural_time_progress"
-                        android:layout_width="250dp"
-                        android:layout_height="100dp"
-                        android:layout_centerInParent="true"/>
-
-                    <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginBottom="13dp"
-                        android:orientation="horizontal"
-                        app:justifyContent="space_around">
+                        android:layout_height="140dp"
+                        android:layout_above="@id/tl_binaural_legend"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/small_square"
-                            android:drawableTint="#3b90e8"
-                            android:gravity="center_vertical"
-                            android:text="beta"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/small_square"
-                            android:drawableTint="#5a5fdf"
-                            android:gravity="center_vertical"
-                            android:text="alpha"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/small_square"
-                            android:drawableTint="#7949cf"
-                            android:gravity="center_vertical"
-                            android:text="theta"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/small_square"
-                            android:drawableTint="#74329f"
-                            android:gravity="center_vertical"
-                            android:text="delta"
-                            android:textSize="12sp" />
-                    </com.google.android.flexbox.FlexboxLayout>
+                    <com.bitflaker.lucidsourcekit.charts.TextLegend
+                        android:id="@+id/tl_binaural_legend"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_alignParentBottom="true"/>
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -201,6 +160,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/secondaryTextColor"
+                android:layout_gravity="center"
+                android:layout_marginBottom="3dp"
+                android:text="12.31 Hz"/>
 
             <TextView
                 android:layout_width="wrap_content"
