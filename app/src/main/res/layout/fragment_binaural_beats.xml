@@ -162,20 +162,35 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/txt_current_binaural_frequency"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="?attr/secondaryTextColor"
                 android:layout_gravity="center"
                 android:layout_marginBottom="3dp"
-                android:text="12.31 Hz"/>
+                android:text="0,00 Hz"/>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="?attr/secondaryTextColor"
-                android:layout_gravity="center"
+                android:orientation="horizontal"
                 android:layout_marginBottom="15dp"
-                android:text="0:45 / 26:18"/>
+                android:layout_gravity="center">
+
+                <TextView
+                    android:id="@+id/txt_binaural_beats_timeline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="?attr/primaryTextColor"
+                    android:text="--:--"/>
+
+                <TextView
+                    android:id="@+id/txt_binaural_beats_total_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="?attr/secondaryTextColor"
+                    android:text=" / --:--"/>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_track_controls_bottom"

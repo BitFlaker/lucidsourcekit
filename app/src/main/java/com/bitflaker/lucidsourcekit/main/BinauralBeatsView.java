@@ -38,14 +38,13 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 public class BinauralBeatsView extends Fragment {
-    private RecyclerView binauralBeatsSelector;
     private LineGraph progressLineGraph;
     private ImageButton displayAllBeats, backgroundNoises, repeatButton, autoStopButton, playTrack;
     private List<BackgroundNoise> noises;
     private boolean repeatBeat;
     private Date autoStopTime;
     private RelativeLayout noBeatSelected, beatSelected;
-    private TextView currentTrackName, currentTrackDescription;
+    private TextView currentTrackName, currentTrackDescription, binauralTimeline, binauralTimeTotal, binauralFrequency;
     private TextLegend binauralLegend;
     private BinauralBeatsPlayer binBeatPlayer;
 
@@ -75,6 +74,9 @@ public class BinauralBeatsView extends Fragment {
         currentTrackDescription = getView().findViewById(R.id.txt_curr_track_description);
         playTrack = getView().findViewById(R.id.btn_play_track);
         binauralLegend = getView().findViewById(R.id.tl_binaural_legend);
+        binauralTimeline = getView().findViewById(R.id.txt_binaural_beats_timeline);
+        binauralTimeTotal = getView().findViewById(R.id.txt_binaural_beats_total_time);
+        binauralFrequency = getView().findViewById(R.id.txt_current_binaural_frequency);
 
         repeatBeat = false;
         autoStopTime = null;
@@ -125,8 +127,20 @@ public class BinauralBeatsView extends Fragment {
                 beatSelected.setVisibility(VISIBLE);
                 currentTrackName.setText(binauralBeat.getTitle());
                 currentTrackDescription.setText(binauralBeat.getDescription());
+                binauralTimeTotal.setText(String.format(" / %s", getTimeStringFromSeconds((int) binauralBeat.getFrequencyList().getDuration())));
+                binauralTimeline.setText(getTimeStringFromSeconds(0));
+                binauralFrequency.setText("0,00 Hz");
                 binBeatPlayer = new BinauralBeatsPlayer(binauralBeat);
-                binBeatPlayer.setOnTrackProgressListener(((currentBinauralBeat, progress) -> progressLineGraph.updateProgress(progress)));
+                binBeatPlayer.setOnTrackProgressListener(((currentBinauralBeat, progress) -> {
+                    progressLineGraph.updateProgress(progress);
+                    getActivity().runOnUiThread(() -> {
+                        binauralTimeline.setText(getTimeStringFromSeconds(progress));
+                        binauralFrequency.setText(String.format("%.2f Hz", currentBinauralBeat.getFrequencyList().getFrequencyAtDuration(progress)));
+                    });
+                }));
+                binBeatPlayer.setOnTrackFinishedListener(currentBinauralBeat -> {
+                    playTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
+                });
             });
             rcv.setAdapter(rvabbs);
             rcv.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -246,6 +260,14 @@ public class BinauralBeatsView extends Fragment {
             }
         });
         newThread2.start();
+    }
+
+    private String getTimeStringFromSeconds(int totalSeconds) {
+        int hours = totalSeconds / 3600;
+        int minutes = (totalSeconds % 3600) / 60;
+        int seconds = totalSeconds % 60;
+        System.out.println(totalSeconds);
+        return (hours > 0 ? String.format("%02d:", hours) : "") + String.format("%02d:%02d", minutes, seconds);
     }
 
     private void generateNoises() {

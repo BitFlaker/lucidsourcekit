@@ -17,6 +17,7 @@ public class BinauralBeatsPlayer {
     private final BinauralBeat binauralBeat;
     private final int sampleRate = 44100;
     private OnTrackProgress mProgressListener;
+    private OnTrackFinished mFinishedListener;
     private boolean playing;
     private Thread leftEarTrackThread;
     private Thread rightEarTrackThread;
@@ -56,6 +57,14 @@ public class BinauralBeatsPlayer {
         leftEarTrackThread.start();
         rightEarTrackThread = new Thread(() -> playAndBufferBeats(rightEarAudioTrack, SpeakerSide.RIGHT));
         rightEarTrackThread.start();
+    }
+
+    public void stop() {
+        leftEarAudioTrack.pause();
+        rightEarAudioTrack.pause();
+        leftEarAudioTrack.flush();
+        rightEarAudioTrack.flush();
+        playing = false;
     }
 
     public boolean isPlaying() {
@@ -98,27 +107,25 @@ public class BinauralBeatsPlayer {
         byte[] newC = Arrays.copyOfRange(pcm, wroteCount, pcm.length);
         int wrote = track.write(newC, 0, newC.length, AudioTrack.WRITE_BLOCKING);
         if(speakerSide == SpeakerSide.LEFT) {
-            System.out.println("1) Packet " + stoppedAtPacket + " finished with ratio " + (wrote+wroteCount)/(double)pcm.length);
             if(!isPlaying()){
-                System.out.println("STOPPED at packet: " + stoppedAtPacket);
                 wroteCount += wrote;
                 return;
             }
-            else { wroteCount = 0; }
+            wroteCount = 0;
         }
         for (int i = stoppedAtPacket+1; i < binauralBeat.getFrequencyList().size(); i++){
             samples = generateNextTone(speakerSide, i);
             pcm = convertToPCM(samples.length, samples);
             wrote = track.write(pcm, 0, pcm.length, AudioTrack.WRITE_BLOCKING);
-            if(speakerSide == SpeakerSide.LEFT) {
-                System.out.println("2) Packet " + i + " finished with ratio " + wrote/(double)pcm.length);
-                if(!isPlaying()) {
-                    stoppedAtPacket = i;
-                    wroteCount = wrote;
-                    System.out.println("STOPPED at packet: " + stoppedAtPacket);
-                    break;
-                }
+            if(!isPlaying() && speakerSide == SpeakerSide.LEFT) {
+                stoppedAtPacket = i;
+                wroteCount = wrote;
+                break;
             }
+        }
+        if(isPlaying() && speakerSide == SpeakerSide.LEFT) {
+            if(mFinishedListener != null) { mFinishedListener.onEvent(binauralBeat); }
+            stop();
         }
     }
 
@@ -164,5 +171,13 @@ public class BinauralBeatsPlayer {
 
     public void setOnTrackProgressListener(OnTrackProgress eventListener) {
         mProgressListener = eventListener;
+    }
+
+    public interface OnTrackFinished {
+        void onEvent(BinauralBeat binauralBeat);
+    }
+
+    public void setOnTrackFinishedListener(OnTrackFinished eventListener) {
+        mFinishedListener = eventListener;
     }
 }
