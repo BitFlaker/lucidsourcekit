@@ -46,8 +46,8 @@ public class BinauralBeatsView extends Fragment {
     private Date autoStopTime;
     private RelativeLayout noBeatSelected, beatSelected;
     private TextView currentTrackName, currentTrackDescription;
-    private boolean playing = false;
     private TextLegend binauralLegend;
+    private BinauralBeatsPlayer binBeatPlayer;
 
     // TODO really repeat beats
     // TODO really start and pause beats
@@ -82,7 +82,7 @@ public class BinauralBeatsView extends Fragment {
         generateNoises();
 
         FrequencyList freqs = new FrequencyList();
-        freqs.add(new FrequencyData(32, 3));
+        freqs.add(new FrequencyData(32, 5));
         freqs.add(new FrequencyData(32, 13, 20));
         freqs.add(new FrequencyData(13, 10));
         freqs.add(new FrequencyData(13, 8, 20));
@@ -125,9 +125,8 @@ public class BinauralBeatsView extends Fragment {
                 beatSelected.setVisibility(VISIBLE);
                 currentTrackName.setText(binauralBeat.getTitle());
                 currentTrackDescription.setText(binauralBeat.getDescription());
-                // TODO start pause beats and remove playing variable
-                playing = true;
-                playTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_pause_24));
+                binBeatPlayer = new BinauralBeatsPlayer(binauralBeat);
+                binBeatPlayer.setOnTrackProgressListener(((currentBinauralBeat, progress) -> progressLineGraph.updateProgress(progress)));
             });
             rcv.setAdapter(rvabbs);
             rcv.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -208,17 +207,19 @@ public class BinauralBeatsView extends Fragment {
             }
         });
 
-        playing = false;
         playTrack.setOnClickListener(e -> {
-            BinauralBeatsPlayer binbeatPlayer = new BinauralBeatsPlayer(new BinauralBeat("Quick Nap Lucidity ", "Great for supporting the induction of lucid dreams during a quick nap.", 644, "NULL", freqs));
-            binbeatPlayer.play();
-            // TODO start pause beats and remove playing variable
-            playing = !playing;
-            if(!playing){
-                playTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
+            if(binBeatPlayer != null){
+                if(!binBeatPlayer.isPlaying()){
+                    playTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_pause_24));
+                    binBeatPlayer.play();
+                }
+                else {
+                    playTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
+                    binBeatPlayer.pause();
+                }
             }
             else {
-                playTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_pause_24));
+                Toast.makeText(getContext(), "no binaural beat selected", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -230,17 +231,21 @@ public class BinauralBeatsView extends Fragment {
         String[] labels = new String[] { "beta", "alpha", "theta", "delta" };
         binauralLegend.setData(labels, Brainwaves.getStageColors(), Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()), 12);
 
-        Thread newThread = new Thread(() -> {
+        Thread newThread2 = new Thread(() -> {
             for (int i = 0; i < freqs.getDuration(); i++){
-                progressLineGraph.updateProgress(i);
+                final Runtime runtime = Runtime.getRuntime();
+                final long usedMemInMB=(runtime.totalMemory() - runtime.freeMemory()) / 1048576L;
+                final long maxHeapSizeInMB=runtime.maxMemory() / 1048576L;
+                final long availHeapSizeInMB = maxHeapSizeInMB - usedMemInMB;
+                //System.out.println(String.format("Resource-Usage: [%d] [%d] [%d]", usedMemInMB, maxHeapSizeInMB, availHeapSizeInMB));
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(1500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         });
-        newThread.start();
+        newThread2.start();
     }
 
     private void generateNoises() {
