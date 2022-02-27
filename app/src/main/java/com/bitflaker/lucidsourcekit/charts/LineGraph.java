@@ -124,28 +124,36 @@ public class LineGraph extends View {
         dataLinePaint.setShader(new LinearGradient(0f, 0f, 0f, getHeight(), colors, positionsBuffer, Shader.TileMode.MIRROR));
 
         float radiusMargin = dataLinePaint.getStrokeWidth()/2.0f;
-        float drawAreaHeight = getHeight() - dataLinePaint.getStrokeWidth() * 1.5f - bottomLineSpacing;
-        float drawAreaWidth = getWidth() - radiusMargin;
+        float drawAreaHeight = getHeight() - dataLinePaint.getStrokeWidth() - bottomLineSpacing;
+        float drawAreaWidth = getWidth() - dataLinePaint.getStrokeWidth();
         boolean drewProgress = false;
 
         for (int i = 0; i < data.size(); i++) {
             FrequencyData current = data.get(i);
             float realX = data.getDurationUntil(i) / xMax * drawAreaWidth + radiusMargin;
-            float realY = (yMax - current.getFrequency()) / yMax * drawAreaHeight + dataLinePaint.getStrokeWidth();
-            float nextEndX = data.getDurationUntilAfter(i) / xMax * drawAreaWidth;
+            float realY = (yMax - current.getFrequency()) / yMax * drawAreaHeight + radiusMargin;
+            float nextEndX = data.getDurationUntilAfter(i) / xMax * drawAreaWidth + radiusMargin;
             float nextEndY = realY;
             if(!Float.isNaN(current.getFrequencyTo())) {
-                nextEndY = (yMax - current.getFrequencyTo()) / yMax * drawAreaHeight + dataLinePaint.getStrokeWidth();
+                nextEndY = (yMax - current.getFrequencyTo()) / yMax * drawAreaHeight + radiusMargin;
             }
 
-            topLeft[0] = realX - radiusMargin/2.0f;
+            topLeft[0] = realX;
             topLeft[1] = realY;
-            topRight[0] = nextEndX + radiusMargin/2.0f;
+            topRight[0] = nextEndX;
             topRight[1] = nextEndY;
-            bottomRight[0] = nextEndX + radiusMargin/2.0f;
+            bottomRight[0] = topRight[0];
             bottomRight[1] = getHeight();
-            bottomLeft[0] = realX - radiusMargin/2.0f;
-            bottomLeft[1] = getHeight();
+            bottomLeft[0] = topLeft[0];
+            bottomLeft[1] = bottomRight[1];
+            if(i == 0){
+                topLeft[0] -= radiusMargin;
+                bottomLeft[0] = topLeft[0];
+            }
+            else if (i == data.size()-1){
+                topRight[0] += radiusMargin;
+                bottomRight[0] = topRight[0];
+            }
 
             polygonPos.clear();
             polygonPos.add(topLeft);
@@ -157,13 +165,12 @@ public class LineGraph extends View {
                 drawPoly(canvas, Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), polygonPos);
             }
 
-            float realXProgress = (float)progress / xMax * getWidth();
+            float realXProgress = (float)progress / xMax * (getWidth()-radiusMargin);
             if(progress > -1 && !drewProgress && realXProgress >= topLeft[0] && realXProgress <= topRight[0]){
-                float realYProgress = (yMax - (float)data.getFrequencyAtDuration(progress)) / yMax * (getHeight() - dataLinePaint.getStrokeWidth()*1.5f - bottomLineSpacing) + dataLinePaint.getStrokeWidth() + radiusMargin;
+                float realYProgress = (yMax - (float)data.getFrequencyAtDuration(progress)) / yMax * drawAreaHeight + radiusMargin + progressPainter.getStrokeWidth()/4.0f;
                 canvas.drawLine(realXProgress, realYProgress, realXProgress, getHeight(), progressPainter);
                 drewProgress = true;
             }
-
             canvas.drawLine(realX, realY, nextEndX, nextEndY, dataLinePaint);
         }
     }

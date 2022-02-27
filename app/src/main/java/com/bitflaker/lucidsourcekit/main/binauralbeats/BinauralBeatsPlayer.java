@@ -49,6 +49,7 @@ public class BinauralBeatsPlayer {
         playing = false;
         leftEarAudioTrack.pause();
         rightEarAudioTrack.pause();
+        System.gc();
     }
 
     public void resume() {
@@ -113,6 +114,9 @@ public class BinauralBeatsPlayer {
             }
             wroteCount = 0;
         }
+        else if(speakerSide == SpeakerSide.RIGHT && !isPlaying()){
+            return;
+        }
         for (int i = stoppedAtPacket+1; i < binauralBeat.getFrequencyList().size(); i++){
             samples = generateNextTone(speakerSide, i);
             pcm = convertToPCM(samples.length, samples);
@@ -120,6 +124,9 @@ public class BinauralBeatsPlayer {
             if(!isPlaying() && speakerSide == SpeakerSide.LEFT) {
                 stoppedAtPacket = i;
                 wroteCount = wrote;
+                break;
+            }
+            else if(!isPlaying() && speakerSide == SpeakerSide.RIGHT) {
                 break;
             }
         }

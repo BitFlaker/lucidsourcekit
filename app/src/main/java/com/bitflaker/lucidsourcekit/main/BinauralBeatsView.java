@@ -84,15 +84,16 @@ public class BinauralBeatsView extends Fragment {
         generateNoises();
 
         FrequencyList freqs = new FrequencyList();
-        freqs.add(new FrequencyData(32, 5));
-        freqs.add(new FrequencyData(32, 13, 20));
+        freqs.add(new FrequencyData(32, 20));
+        freqs.add(new FrequencyData(32, 15, 30));
+        freqs.add(new FrequencyData(15, 13, 12));
         freqs.add(new FrequencyData(13, 10));
         freqs.add(new FrequencyData(13, 8, 20));
         freqs.add(new FrequencyData(8, 10));
         freqs.add(new FrequencyData(8, 4, 35));
         freqs.add(new FrequencyData(4, 25));
         freqs.add(new FrequencyData(4, 0.5f, 5));
-        freqs.add(new FrequencyData(0.5f, 5));
+        freqs.add(new FrequencyData(0.5f, 100));
         freqs.add(new FrequencyData(0.5f, 8, 5));
         freqs.add(new FrequencyData(8, 5));
         freqs.add(new FrequencyData(8, 32, 35));
@@ -251,7 +252,7 @@ public class BinauralBeatsView extends Fragment {
                 final long usedMemInMB=(runtime.totalMemory() - runtime.freeMemory()) / 1048576L;
                 final long maxHeapSizeInMB=runtime.maxMemory() / 1048576L;
                 final long availHeapSizeInMB = maxHeapSizeInMB - usedMemInMB;
-                //System.out.println(String.format("Resource-Usage: [%d] [%d] [%d]", usedMemInMB, maxHeapSizeInMB, availHeapSizeInMB));
+                System.out.println(String.format("Resource-Usage: [%d] [%d] [%d]", usedMemInMB, maxHeapSizeInMB, availHeapSizeInMB));
                 try {
                     Thread.sleep(1500);
                 } catch (InterruptedException e) {
@@ -266,7 +267,6 @@ public class BinauralBeatsView extends Fragment {
         int hours = totalSeconds / 3600;
         int minutes = (totalSeconds % 3600) / 60;
         int seconds = totalSeconds % 60;
-        System.out.println(totalSeconds);
         return (hours > 0 ? String.format("%02d:", hours) : "") + String.format("%02d:%02d", minutes, seconds);
     }
 

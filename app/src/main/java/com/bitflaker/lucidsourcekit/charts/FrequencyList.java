@@ -5,13 +5,29 @@ import java.util.List;
 
 public class FrequencyList {
     private List<FrequencyData> frequencyData;
+    private final int maxDuration = 10;
 
     public FrequencyList(){
         frequencyData = new ArrayList<>();
     }
 
-    public void add(FrequencyData data){
-        frequencyData.add(data);
+    public void add(FrequencyData data) {
+        if(data.getDuration() <= maxDuration){
+            frequencyData.add(data);
+        }
+        else {
+            float from = data.getFrequency();
+            float to = Float.isNaN(data.getFrequencyTo()) ? from : data.getFrequencyTo();
+            float diff = to - from;
+            int count = (int)Math.ceil(data.getDuration() / (float) maxDuration);
+            float step = diff / count;
+            float durInc = data.getDuration() / (float) count;
+            float currFreq = data.getFrequency();
+            for (int i = 0; i < count; i++) {
+                frequencyData.add(new FrequencyData(currFreq, currFreq + step, durInc));
+                currFreq += step;
+            }
+        }
     }
 
     public void remove(int i){
