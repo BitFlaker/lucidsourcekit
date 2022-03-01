@@ -5,7 +5,7 @@ import java.util.List;
 
 public class FrequencyList {
     private List<FrequencyData> frequencyData;
-    private final int maxDuration = 10;
+    private final int maxDuration = 2000;
 
     public FrequencyList(){
         frequencyData = new ArrayList<>();

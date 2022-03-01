@@ -4,12 +4,17 @@
 
 ## Introduction
 
-**LucidSourceKit** is an all-you-need toolkit for lucid dreaming, dream analyzing and more. Currently the following features are implemented:
-* Protecting the app using **PIN, password or biometrics**.
-* Getting an **overview** of settings, stats, alarms and more.
+**LucidSourceKit** is an all-you-need toolkit for lucid dreaming, storing and rating dreams as well as for getting statistics. The main focus lies on providing a safe and secure environment for storing dreams and offering a lot of useful tools. **Privacy** and an ad-free experience are some of the primary goals.<br/><br/>
+Currently the following features are implemented:
+* Protecting the app using **pin, password or biometrics**.
+* Getting an **overview** of settings, alarms, general information and more.
 * **Changing the language** on the fly.
-* Creating **dream journal entries** with **recordings, plain text or a dream journal form**.
+* Creating **dream journal entries** with **recordings, plain text or by filling out a form**.
 * **Categorizing** and **rating** dream journal entries.
+* **Sorting and filtering** entries in the dream journal.
+* Looking out for tasks or objects during the day to complete **goals**.
+* Playing **binaural beats** with additional background sounds and an optional **auto-playback-stopping feature**.
+* Many more features in the future...
 
 ## Supported languages
 

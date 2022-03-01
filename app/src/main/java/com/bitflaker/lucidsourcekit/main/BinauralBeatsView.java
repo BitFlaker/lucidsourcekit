@@ -84,19 +84,27 @@ public class BinauralBeatsView extends Fragment {
         generateNoises();
 
         FrequencyList freqs = new FrequencyList();
-        freqs.add(new FrequencyData(32, 20));
-        freqs.add(new FrequencyData(32, 15, 30));
-        freqs.add(new FrequencyData(15, 13, 12));
-        freqs.add(new FrequencyData(13, 10));
-        freqs.add(new FrequencyData(13, 8, 20));
-        freqs.add(new FrequencyData(8, 10));
-        freqs.add(new FrequencyData(8, 4, 35));
-        freqs.add(new FrequencyData(4, 25));
-        freqs.add(new FrequencyData(4, 0.5f, 5));
-        freqs.add(new FrequencyData(0.5f, 100));
-        freqs.add(new FrequencyData(0.5f, 8, 5));
-        freqs.add(new FrequencyData(8, 5));
-        freqs.add(new FrequencyData(8, 32, 35));
+        //freqs.add(new FrequencyData(32, 20));
+        //freqs.add(new FrequencyData(32, 15, 30));
+        //freqs.add(new FrequencyData(15, 13, 12));
+        //freqs.add(new FrequencyData(13, 10));
+        //freqs.add(new FrequencyData(13, 8, 20));
+        //freqs.add(new FrequencyData(8, 10));
+        freqs.add(new FrequencyData(30, 4, 5));
+        freqs.add(new FrequencyData(5, 5));         // 4 & 5 = no crack ???
+        freqs.add(new FrequencyData(4, 2, 5));      // jump = no crack ???
+        freqs.add(new FrequencyData(1, 5));
+        freqs.add(new FrequencyData(1, 3, 5));      // jump = no crack ???
+        freqs.add(new FrequencyData(4, 32, 35));
+
+        /*
+        freqs.add(new FrequencyData(30, 4, 5));
+        freqs.add(new FrequencyData(4, 5));
+        freqs.add(new FrequencyData(4, 1, 5));      // crack ???
+        freqs.add(new FrequencyData(1, 5));
+        freqs.add(new FrequencyData(1, 4, 5));      // crack ???
+        freqs.add(new FrequencyData(4, 32, 35));
+        */
 
         displayAllBeats.setOnClickListener(e -> {
             final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialog_Dark);
@@ -105,7 +113,7 @@ public class BinauralBeatsView extends Fragment {
 
             List<BinauralBeat> beats = new ArrayList<>();
             beats.add(new BinauralBeat("Quick Nap Lucidity ", "Great for supporting the induction of lucid dreams during a quick nap.", 455, "NULL", freqs));
-            beats.add(new BinauralBeat("sampleasd ", "sample description with some length to it", 853, "NULL", freqs));
+            beats.add(new BinauralBeat("sampleasd ", "sample description with some length to it", 800, "NULL", freqs));
             beats.add(new BinauralBeat("sample asdas d", "sample description with some length to it", 234.5f, "NULL", freqs));
             beats.add(new BinauralBeat("sampleasd  sdasd as", "sample description with some length to it", 455, "NULL", freqs));
             beats.add(new BinauralBeat("sample", "sample description wiasdk.fjh asildfghasildjfhglaisjdhfl asdgghflias sdf sd fklsdfklsdfsdf s has some length to it", 1633.75f, "NULL", freqs));
@@ -252,7 +260,7 @@ public class BinauralBeatsView extends Fragment {
                 final long usedMemInMB=(runtime.totalMemory() - runtime.freeMemory()) / 1048576L;
                 final long maxHeapSizeInMB=runtime.maxMemory() / 1048576L;
                 final long availHeapSizeInMB = maxHeapSizeInMB - usedMemInMB;
-                System.out.println(String.format("Resource-Usage: [%d] [%d] [%d]", usedMemInMB, maxHeapSizeInMB, availHeapSizeInMB));
+                //System.out.println(String.format("Resource-Usage: [%d] [%d] [%d]", usedMemInMB, maxHeapSizeInMB, availHeapSizeInMB));
                 try {
                     Thread.sleep(1500);
                 } catch (InterruptedException e) {
