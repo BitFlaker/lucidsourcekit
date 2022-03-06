@@ -7,71 +7,50 @@ import android.media.AudioTrack;
 import androidx.annotation.NonNull;
 
 import com.bitflaker.lucidsourcekit.charts.FrequencyData;
+import com.bitflaker.lucidsourcekit.general.AudioBufferPosition;
+import com.bitflaker.lucidsourcekit.general.FastSineTable;
 import com.bitflaker.lucidsourcekit.main.BinauralBeat;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Arrays;
 
 public class BinauralBeatsPlayer {
-    private AudioTrack leftEarAudioTrack;
-    private final AudioTrack rightEarAudioTrack;
+    private AudioTrack binauralAudioTrack;
     private final BinauralBeat binauralBeat;
     private final int sampleRate = 44100;
     private OnTrackProgress mProgressListener;
     private OnTrackFinished mFinishedListener;
     private boolean playing;
-    private Thread leftEarTrackThread;
-    private Thread rightEarTrackThread;
-    private final int stoppedAtPacket = 0;
-    private final int wroteCount = 0;
-    //private final int maxSampleCount = 22459328/6;
-    private final int maxSampleCount = 500000;
-    private int samplesLeft = 0;
-    private int samplesWritten = 0;
+    private Thread trackThread;
 
     public BinauralBeatsPlayer(BinauralBeat binauralBeat) {
         this.binauralBeat = binauralBeat;
-        leftEarAudioTrack = null;
-        rightEarAudioTrack = null;
+        binauralAudioTrack = null;
         playing = false;
     }
 
     public void play() {
         if(isInitialized() && !isPlaying()){ resume(); return; }
-
-        leftEarAudioTrack = generateNewAudioTrack();
-        leftEarTrackThread = new Thread(() -> playAndBufferBeats(leftEarAudioTrack, SpeakerSide.LEFT));
-        leftEarTrackThread.start();
-
-        /*
-        rightEarAudioTrack = generateNewAudioTrack();
-        rightEarTrackThread = new Thread(() -> playAndBufferBeats(rightEarAudioTrack, SpeakerSide.RIGHT));
-        rightEarTrackThread.start();
-
-         */
-
+        binauralAudioTrack = generateNewAudioTrack();
+        trackThread = new Thread(() -> playAndBufferBeats(binauralAudioTrack));
+        trackThread.start();
         playing = true;
     }
 
     public void pause() {
         playing = false;
-        leftEarAudioTrack.pause();
-        rightEarAudioTrack.pause();
+        binauralAudioTrack.pause();
         System.gc();
     }
 
     public void resume() {
         playing = true;
-        leftEarTrackThread = new Thread(() -> playAndBufferBeats(leftEarAudioTrack, SpeakerSide.LEFT));
-        leftEarTrackThread.start();
-        rightEarTrackThread = new Thread(() -> playAndBufferBeats(rightEarAudioTrack, SpeakerSide.RIGHT));
-        rightEarTrackThread.start();
+        trackThread = new Thread(() -> playAndBufferBeats(binauralAudioTrack));
+        trackThread.start();
     }
 
     public void stop() {
-        leftEarAudioTrack.pause();
-        rightEarAudioTrack.pause();
-        leftEarAudioTrack.flush();
-        rightEarAudioTrack.flush();
+        binauralAudioTrack.pause();
+        binauralAudioTrack.flush();
         playing = false;
     }
 
@@ -80,206 +59,60 @@ public class BinauralBeatsPlayer {
     }
 
     public boolean isInitialized() {
-        return leftEarAudioTrack != null && rightEarAudioTrack != null;
+        return binauralAudioTrack != null;
     }
 
     @NonNull
     private AudioTrack generateNewAudioTrack() {
-        //int channelConfig = AudioFormat.CHANNEL_OUT_STEREO;
-        int channelConfig = AudioFormat.CHANNEL_OUT_MONO;
+        int channelConfig = AudioFormat.CHANNEL_OUT_STEREO;
         int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
         int bufferSize = AudioTrack.getMinBufferSize(sampleRate, channelConfig, audioFormat);
         return new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate, channelConfig, audioFormat, bufferSize, AudioTrack.MODE_STREAM);
     }
 
-    private byte[] genTone(double startFreq, double endFreq, int dur) {
-        int totalSamples = dur * sampleRate;
-        samplesLeft = totalSamples - samplesWritten;
-        int numSamples = Math.min(samplesLeft, maxSampleCount);
-        samplesLeft -= numSamples;
-        System.out.println(totalSamples + " | " + samplesLeft + " | " + samplesWritten + " | " + numSamples);
-        double[] sample = new double[numSamples];
-        double currentFreq, numerator;
-        for (int i = samplesWritten; i < numSamples+samplesWritten; ++i) {
-            numerator = (double) i / (double) totalSamples;
-            currentFreq = startFreq + ((numerator * (endFreq - startFreq))/2.0);
-            sample[i-samplesWritten] = Math.sin(2 * Math.PI * i / (sampleRate / currentFreq));
+    private void playAndBufferBeats(AudioTrack track) {
+        android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_AUDIO);
+        if(mProgressListener != null) {
+            mProgressListener.onEvent(binauralBeat, (int) (track.getPlaybackHeadPosition() / (double) sampleRate));
         }
-        samplesWritten += numSamples;
-        if(samplesLeft == 0) { samplesWritten = 0; }
-        return convertToPCM(numSamples, sample);
-    }
+        track.setPositionNotificationPeriod(sampleRate);    // getting an update every second
+        track.setPlaybackPositionUpdateListener(new AudioTrack.OnPlaybackPositionUpdateListener() {
+            @Override
+            public void onMarkerReached(AudioTrack audioTrack) {}
 
-    private void playAndBufferBeats(AudioTrack track, SpeakerSide speakerSide) {
-        if(speakerSide == SpeakerSide.LEFT){
-            if(mProgressListener != null) {
-                mProgressListener.onEvent(binauralBeat, (int) (track.getPlaybackHeadPosition() / (double) sampleRate));
-            }
-            track.setPositionNotificationPeriod(sampleRate);    // getting an update every second
-            track.setPlaybackPositionUpdateListener(new AudioTrack.OnPlaybackPositionUpdateListener() {
-                @Override
-                public void onMarkerReached(AudioTrack audioTrack) {}
-
-                @Override
-                public void onPeriodicNotification(AudioTrack audioTrack) {
-                    if(mProgressListener != null){
-                        mProgressListener.onEvent(binauralBeat, (int)(track.getPlaybackHeadPosition()/(double)sampleRate));
-                    }
-                }
-            });
-        }
-        //byte[] trackDataRise = genTone(440, 1000, 3);
-        //byte[] trackDataFall = genTone(1000, 440, 3);
-        /*
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-        try {
-            outputStream.write(trackDataRise);
-            outputStream.write(trackDataFall);
-            outputStream.write(trackDataRise);
-            outputStream.write(trackDataFall);
-            outputStream.write(trackDataRise);
-            outputStream.write(trackDataFall);
-            outputStream.write(trackDataRise);
-            outputStream.write(trackDataFall);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        byte[] trackDataFinal = outputStream.toByteArray();
-         */
-
-        //byte[] trackDataFinal = generateSineWavefreqOLD(1000, 440, 3);
-        track.play();
-        NextBytesGenerator nbg = null;
-        byte[] trackData;
-        for (int i = 0; i < binauralBeat.getFrequencyList().size(); i++) {
-            // TODO preload next
-            long start = System.nanoTime();
-            if(nbg == null){
-                // calc by hand
-                FrequencyData data = binauralBeat.getFrequencyList().get(i);
-                float baseFreq = binauralBeat.getBaseFrequency();
-                trackData = genTone(data.getFrequency() + baseFreq, (Float.isNaN(data.getFrequencyTo()) ? data.getFrequency() : data.getFrequencyTo()) + baseFreq, (int)data.getDuration());
-            }
-            else {
-                trackData = nbg.getValue();
-                samplesWritten = nbg.getSamplesWritten();
-                samplesLeft = nbg.getSamplesLeft();
-                if(trackData == null){
-                    break;
+            @Override
+            public void onPeriodicNotification(AudioTrack audioTrack) {
+                if(mProgressListener != null){
+                    mProgressListener.onEvent(binauralBeat, (int)(track.getPlaybackHeadPosition()/(double)sampleRate));
                 }
             }
-            if(samplesLeft > 0){
-                nbg = new NextBytesGenerator(sampleRate, binauralBeat, i, samplesWritten, samplesLeft, maxSampleCount);
+        });
+        // TODO calculate only once
+        FastSineTable fst = new FastSineTable(sampleRate);
+        short[] buffer = new short[50000];
+        float[] normalSineWave = new float[buffer.length];
+        AudioBufferPosition nextStartAt = new AudioBufferPosition();
+        nextStartAt = NextBufferGenerator.generateSamples(binauralBeat, sampleRate, fst, buffer, normalSineWave, nextStartAt);
+        boolean wasInFinal = false;
+        while(!nextStartAt.isFinished() && !wasInFinal || nextStartAt.isFinished() && !wasInFinal) {
+            if(nextStartAt.isFinished()){
+                wasInFinal = true;
             }
-            else {
-                nbg = new NextBytesGenerator(sampleRate, binauralBeat, i+1, samplesWritten, samplesLeft, maxSampleCount);
-            }
+            NextBufferGenerator nbg = new NextBufferGenerator(sampleRate, binauralBeat, fst, buffer.length, nextStartAt);
             Thread t = new Thread(nbg);
             t.start();
-            System.out.println("TIME CONSUMED: " + (TimeUnit.MILLISECONDS.convert(System.nanoTime() - start, TimeUnit.NANOSECONDS)));
-            track.write(trackData, 0, trackData.length);
-            if(samplesLeft > 0){ i--; }
-        }
-        /*track.write(trackDataFall, 0, trackDataFall.length);
-        track.write(trackDataRise, 0, trackDataRise.length);
-        track.write(trackDataFall, 0, trackDataFall.length);
-        track.write(trackDataRise, 0, trackDataRise.length);
-        track.write(trackDataFall, 0, trackDataFall.length);
-        track.write(trackDataRise, 0, trackDataRise.length);
-        track.write(trackDataFall, 0, trackDataFall.length);
-
-         */
-        /*track.play();
-        NextBytesGenerator nbg;
-        if(speakerSide == SpeakerSide.LEFT){ nbg = new NextBytesGenerator(sampleRate, binauralBeat, stoppedAtPacket, NextBytesGenerator.SpeakerSide.LEFT, leftEarAudioTrack); }
-        else { nbg = new NextBytesGenerator(sampleRate, binauralBeat, stoppedAtPacket, NextBytesGenerator.SpeakerSide.RIGHT, rightEarAudioTrack); }
-        Thread t = new Thread(nbg);
-        t.start();
-         */
-        /*
-        double[] samples = generateNextTone(speakerSide, stoppedAtPacket);
-        byte[] pcm = convertToPCM(samples.length, samples);
-        byte[] newC = Arrays.copyOfRange(pcm, wroteCount, pcm.length);
-        int wrote = track.write(newC, 0, newC.length, AudioTrack.WRITE_BLOCKING);
-        if(speakerSide == SpeakerSide.LEFT) {
-            if(!isPlaying()){
-                wroteCount += wrote;
-                return;
+            track.play();
+            track.write(buffer, 0, buffer.length);
+            while(!nbg.isFinished()){
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            wroteCount = 0;
+            buffer = nbg.getBuffer();
+            nextStartAt = nbg.getCurrentNextStartAfter();
         }
-        else if(speakerSide == SpeakerSide.RIGHT && !isPlaying()) {
-            return;
-        }
-        for (int i = stoppedAtPacket+1; i < binauralBeat.getFrequencyList().size(); i++) {
-            // TODO use pre-generated lines instead of following lines
-            //samples = generateNextTone(speakerSide, i);
-            //pcm = convertToPCM(samples.length, samples);
-            // TODO hit up next generation
-            pcm = nbg.getValue();
-            if(speakerSide == SpeakerSide.LEFT){
-                nbg = new NextBytesGenerator(sampleRate, binauralBeat, i+1, NextBytesGenerator.SpeakerSide.LEFT, leftEarAudioTrack);
-            }
-            else {
-                nbg = new NextBytesGenerator(sampleRate, binauralBeat, i+1, NextBytesGenerator.SpeakerSide.RIGHT, rightEarAudioTrack);
-            }
-            t = new Thread(nbg);
-            t.start();
-            try {
-                t.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            wrote = track.write(pcm, 0, pcm.length, AudioTrack.WRITE_BLOCKING);
-            if(!isPlaying() && speakerSide == SpeakerSide.LEFT) {
-                stoppedAtPacket = i;
-                wroteCount = wrote;
-                break;
-            }
-            else if(!isPlaying() && speakerSide == SpeakerSide.RIGHT) {
-                break;
-            }
-        }
-        if(isPlaying() && speakerSide == SpeakerSide.LEFT) {
-            if(mFinishedListener != null) { mFinishedListener.onEvent(binauralBeat); }
-            stop();
-        }
-         */
-    }
-
-    private double[] generateNextTone(SpeakerSide speakerSide, int j) {
-        FrequencyData current = binauralBeat.getFrequencyList().get(j);
-        int freqSide = speakerSide == SpeakerSide.LEFT ? -1 : 1;
-        float freqFrom = current.getFrequency() - (binauralBeat.getBaseFrequency()/2.0f*freqSide);
-        float freqTo = current.getFrequencyTo() - (binauralBeat.getBaseFrequency()/2.0f*freqSide);
-        if(Float.isNaN(freqTo)) { freqTo = freqFrom; }
-        int numSamples = (int)(current.getDuration() * sampleRate * 2);
-        double[] samples = new double[numSamples];
-        double currentFreq, numerator;
-        for (int i = 0; i < numSamples; i+=2) {
-            numerator = (i/2.0) / (numSamples/2.0);
-            currentFreq = freqFrom + (numerator * (freqTo - freqFrom))/2.0;
-            double sampleVal = Math.sin(2 * Math.PI * (i/2.0) / (sampleRate / currentFreq));
-            samples[i] = speakerSide == SpeakerSide.LEFT ? sampleVal : 0;
-            samples[i+1] = speakerSide == SpeakerSide.LEFT ? 0 : sampleVal;
-        }
-        return samples;
-    }
-
-    private byte[] convertToPCM(int numSamples, double[] sample) {
-        int idx = 0;
-        byte[] generatedSnd = new byte[2 * numSamples];
-        for (final double dVal : sample) {
-            final short val = (short) ((dVal * 32767));
-            generatedSnd[idx++] = (byte) (val & 0x00ff);
-            generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
-        }
-        return generatedSnd;
-    }
-
-    private enum SpeakerSide {
-        LEFT,
-        RIGHT
     }
 
     public interface OnTrackProgress {
@@ -299,88 +132,107 @@ public class BinauralBeatsPlayer {
     }
 }
 
-class NextBytesGenerator implements Runnable {
-    private volatile byte[] value;
-    private final int sampleRate;
+class NextBufferGenerator implements Runnable {
     private final BinauralBeat binauralBeat;
-
-    private int samplesWritten;
-    private int samplesLeft;
-    private final int maxSampleCount;
-    private final int genNum;
+    private final int sampleRate;
     private boolean finished;
+    private float[] normalSineWave;
+    private short[] buffer;
+    private FastSineTable fst;
+    private AudioBufferPosition nextStartAfter;
+    private AudioBufferPosition currentNextStartAfter;
+    private static long MAX_SAMPLE_COUNT = 50000;
 
-    public NextBytesGenerator(int sampleRate, BinauralBeat binauralBeat, int genNum, int samplesWritten, int samplesLeft, int maxSampleCount) {
+    public NextBufferGenerator(int sampleRate, BinauralBeat binauralBeat, FastSineTable fst, int bufferSize, AudioBufferPosition nextStartAfter) {
         this.sampleRate = sampleRate;
         this.binauralBeat = binauralBeat;
-        this.samplesWritten = samplesWritten;
-        this.samplesLeft = samplesLeft;
-        this.maxSampleCount = maxSampleCount;
+        this.fst = fst;
+        this.buffer = new short[bufferSize];
+        this.normalSineWave = new float[bufferSize];
+        this.nextStartAfter = nextStartAfter;
         this.finished = false;
-        this.genNum = genNum;
     }
 
     @Override
     public void run() {
-        if(binauralBeat.getFrequencyList().size() == genNum){
-            value = null;
-            finished = true;
-            return;
-        }
-        FrequencyData data = binauralBeat.getFrequencyList().get(genNum);
-        int baseFreq = (int)binauralBeat.getBaseFrequency();
-        System.out.println((data.getFrequency() + baseFreq) + " | " + ((Float.isNaN(data.getFrequencyTo()) ? data.getFrequency() : data.getFrequencyTo()) + baseFreq));
-        value = genTone(data.getFrequency() + baseFreq, (Float.isNaN(data.getFrequencyTo()) ? data.getFrequency() : data.getFrequencyTo()) + baseFreq, (int)data.getDuration());
+        currentNextStartAfter = generateSamples(binauralBeat, sampleRate, fst, buffer, normalSineWave, nextStartAfter);
         finished = true;
     }
 
+    public static AudioBufferPosition generateSamples(BinauralBeat binauralBeat, int sampleRate, FastSineTable fst, short[] buffer, float[] normalSineWave, AudioBufferPosition startAt) {
+        AudioBufferPosition startingAfter = startAt;
+        AudioBufferPosition abp = new AudioBufferPosition();
+        Arrays.fill(normalSineWave, 0);
 
-    private byte[] genTone(double startFreq, double endFreq, int dur) {
-        int totalSamples = dur * sampleRate;
-        samplesLeft = totalSamples - samplesWritten;
-        int numSamples = Math.min(samplesLeft, maxSampleCount);
-        samplesLeft -= numSamples;
-        double[] sample = new double[numSamples];
-        double currentFreq, numerator;
-        for (int i = samplesWritten; i < numSamples+samplesWritten; ++i) {
-            numerator = (double) i / (double) totalSamples;
-            currentFreq = startFreq + ((numerator * (endFreq - startFreq))/2.0);
-            sample[i-samplesWritten] = Math.sin(2 * Math.PI * i / (sampleRate / currentFreq));
-        }
-        samplesWritten += numSamples;
-        if(samplesLeft == 0) { samplesWritten = 0; }
-        return convertToPCM(numSamples, sample);
-    }
+        boolean reachedCount = false;
+        int counter = 0;
+        int twoPi = fst.getSize();
 
-    private byte[] convertToPCM(int numSamples, double[] sample) {
-        int idx = 0;
-        byte[] generatedSnd = new byte[2 * numSamples];
-        for (final double dVal : sample) {
-            final short val = (short) ((dVal * 32767));
-            generatedSnd[idx++] = (byte) (val & 0x00ff);
-            generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
+        for (int j = startAt.getIndex(); j < binauralBeat.getFrequencyList().size(); j++) {
+            FrequencyData fd = binauralBeat.getFrequencyList().get(j);
+            float base_freq = binauralBeat.getBaseFrequency();
+            long angle1 = startingAfter.getAngle1();
+            long angle2 = startingAfter.getAngle2();
+
+            int conditionVal = (int)(fd.getDuration()*sampleRate*2);
+            for (int i = startingAfter.getBufferPosition(); i < conditionVal; i+=2) {
+                normalSineWave[i + counter - startingAfter.getBufferPosition()] = fst.sineByDeg(angle1);
+                normalSineWave[i + 1 + counter - startingAfter.getBufferPosition()] = fst.sineByDeg(angle2);
+                float from = fd.getFrequency();
+                float to = Float.isNaN(fd.getFrequencyTo()) ? from : fd.getFrequencyTo();
+                float ratio = (to - from) / (fd.getDuration() * sampleRate);
+                float freq = from + ratio * (i/2.0f);
+                angle1 += (int) (twoPi * (base_freq + freq) / sampleRate);
+                angle2 += (int) (twoPi * (base_freq) / sampleRate);
+                angle1 %= twoPi;
+                angle2 %= twoPi;
+                if(i + counter + 2 - startingAfter.getBufferPosition() == MAX_SAMPLE_COUNT) {
+                    if(i + counter + 2 == conditionVal) {
+                        abp.setIndex(j+1);
+                        abp.setBufferPosition(0);
+                        abp.setAngle1(0);
+                        abp.setAngle2(0);
+                    }
+                    else {
+                        abp.setIndex(j);
+                        abp.setBufferPosition(i+2);
+                        abp.setAngle1(angle1);
+                        abp.setAngle2(angle2);
+                    }
+                    reachedCount = true;
+                    break;
+                }
+            }
+            if(reachedCount){ break; }
+            counter += conditionVal - startingAfter.getBufferPosition();
+            startingAfter.setAngle1(0);
+            startingAfter.setAngle2(0);
+            startingAfter.setBufferPosition(0);
         }
-        return generatedSnd;
+        if(!reachedCount){ abp.setFinished(true); }
+
+        for (int i = 0; i < buffer.length; i += 2) {
+            float volume = 0.05f;
+            buffer[i] = (short) (volume * normalSineWave[i] * Short.MAX_VALUE);
+            buffer[i+1] = (short) (volume * normalSineWave[i + 1] * Short.MAX_VALUE);
+        }
+
+        /*if(binauralBeat.getFrequencyList().size() == abp.getIndex() && (int)(binauralBeat.getFrequencyList().get(binauralBeat.getFrequencyList().size()-1).getDuration()*sampleRate*2) == abp.getBufferPosition()) {
+            abp.setFinished(true);
+        }*/
+
+        return abp;
     }
 
     public boolean isFinished() {
         return finished;
     }
 
-    public byte[] getValue() {
-        return value;
+    public short[] getBuffer() {
+        return buffer;
     }
 
-    public int getSamplesWritten() {
-        return samplesWritten;
-    }
-
-    public int getSamplesLeft() {
-        return samplesLeft;
-    }
-
-    public enum SpeakerSide {
-        LEFT,
-        RIGHT
+    public AudioBufferPosition getCurrentNextStartAfter() {
+        return currentNextStartAfter;
     }
 }
