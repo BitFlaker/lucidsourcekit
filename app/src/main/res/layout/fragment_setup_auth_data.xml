@@ -118,8 +118,7 @@
                 android:layout_weight="1"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="28sp"
-                android:background="@drawable/round_pin_button"
-                app:backgroundTint="?attr/pin_background"/>
+                android:background="@drawable/round_pin_button"/>
 
             <com.google.android.material.button.MaterialButton
                 android:layout_width="wrap_content"
@@ -129,8 +128,7 @@
                 android:layout_weight="1"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="28sp"
-                android:background="@drawable/round_pin_button"
-                app:backgroundTint="?attr/pin_background"/>
+                android:background="@drawable/round_pin_button"/>
 
             <com.google.android.material.button.MaterialButton
                 android:layout_width="wrap_content"
@@ -140,8 +138,7 @@
                 android:layout_weight="1"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="28sp"
-                android:background="@drawable/round_pin_button"
-                app:backgroundTint="?attr/pin_background"/>
+                android:background="@drawable/round_pin_button"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -157,8 +154,7 @@
                 android:layout_weight="1"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="28sp"
-                android:background="@drawable/round_pin_button"
-                app:backgroundTint="?attr/pin_background"/>
+                android:background="@drawable/round_pin_button"/>
 
             <com.google.android.material.button.MaterialButton
                 android:layout_width="wrap_content"
@@ -168,8 +164,7 @@
                 android:layout_weight="1"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="28sp"
-                android:background="@drawable/round_pin_button"
-                app:backgroundTint="?attr/pin_background"/>
+                android:background="@drawable/round_pin_button"/>
 
             <com.google.android.material.button.MaterialButton
                 android:layout_width="wrap_content"
@@ -179,8 +174,7 @@
                 android:layout_weight="1"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="28sp"
-                android:background="@drawable/round_pin_button"
-                app:backgroundTint="?attr/pin_background"/>
+                android:background="@drawable/round_pin_button"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -196,8 +190,7 @@
                 android:layout_weight="1"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="28sp"
-                android:background="@drawable/round_pin_button"
-                app:backgroundTint="?attr/pin_background"/>
+                android:background="@drawable/round_pin_button"/>
 
             <com.google.android.material.button.MaterialButton
                 android:layout_width="wrap_content"
@@ -207,8 +200,7 @@
                 android:layout_weight="1"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="28sp"
-                android:background="@drawable/round_pin_button"
-                app:backgroundTint="?attr/pin_background"/>
+                android:background="@drawable/round_pin_button"/>
 
             <com.google.android.material.button.MaterialButton
                 android:layout_width="wrap_content"
@@ -218,8 +210,7 @@
                 android:layout_weight="1"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="28sp"
-                android:background="@drawable/round_pin_button"
-                app:backgroundTint="?attr/pin_background"/>
+                android:background="@drawable/round_pin_button"/>
         </LinearLayout>
 
         <LinearLayout
@@ -244,8 +235,7 @@
                 android:background="@drawable/round_pin_button"
                 android:text="0"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="28sp"
-                app:backgroundTint="?attr/pin_background" />
+                android:textSize="28sp"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_setup_delete"
@@ -255,8 +245,7 @@
                 android:background="@drawable/round_pin_button"
                 android:text="\u232B"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="28sp"
-                app:backgroundTint="?attr/pin_background" />
+                android:textSize="28sp"/>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

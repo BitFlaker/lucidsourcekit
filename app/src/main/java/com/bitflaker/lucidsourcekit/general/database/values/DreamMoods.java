@@ -3,7 +3,7 @@ package com.bitflaker.lucidsourcekit.general.database.values;
 public enum DreamMoods {
     Terrible("TRB"),
     Poor("POR"),
-    Ok("OKM"),
+    Ok("OKY"),
     Great("GRT"),
     Outstanding("OSD"),
     None("");

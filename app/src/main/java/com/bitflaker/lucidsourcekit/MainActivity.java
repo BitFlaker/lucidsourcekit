@@ -1,7 +1,9 @@
 package com.bitflaker.lucidsourcekit;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -15,10 +17,9 @@ import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
+import com.bitflaker.lucidsourcekit.database.JournalDatabase;
 import com.bitflaker.lucidsourcekit.general.Crypt;
-import com.bitflaker.lucidsourcekit.general.DatabaseWrapper;
 import com.bitflaker.lucidsourcekit.general.Tools;
-import com.bitflaker.lucidsourcekit.general.database.StoredSettings;
 import com.bitflaker.lucidsourcekit.main.MainViewer;
 import com.bitflaker.lucidsourcekit.setup.SetupViewer;
 import com.google.android.material.button.MaterialButton;
@@ -33,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
     private AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.5F);
     private String enteredPin = "";
-    private DatabaseWrapper dbWrapper;
     private String storedHash = "";
     private byte[] storedSalt;
 
@@ -53,38 +53,46 @@ public class MainActivity extends AppCompatActivity {
         Tools.setThemeColors(R.style.Theme_LucidSourceKit_Dark);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        dbWrapper = new DatabaseWrapper(this);
-        Tools.loadLanguage(this);
-        Tools.makeStatusBarTransparent(this);
+        Tools.loadLanguage(MainActivity.this);
+        Tools.makeStatusBarTransparent(MainActivity.this);
+
+        /*
+        JournalDatabase db = JournalDatabase.getInstance(MainActivity.this);
+        System.out.println("==== start of reading database ====");
+
+        List<SleepQuality> sqs = db.sleepQualityDao().getAll();
+        for (SleepQuality sq : sqs) {
+            System.out.println(sq.qualityId + " | " + sq.description);
+        }
+
+        System.out.println("==== end  of reading database ====");
+         */
 
         // TODO: set language of controls
-
-        // List<StoredJournalEntries> entries = dbWrapper.getJournalEntries();
 
         String path = getFilesDir().getAbsolutePath() + "/.app_setup_done";
         File file = new File(path);
         if(file.exists()) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-            StoredSettings authType = dbWrapper.getProperty("auth_type");
-
-            switch (authType.getValue()) {
+            switch (preferences.getString("auth_type", "")) {
                 case "password":
                     setupPasswordAuthentication();
-                    if(dbWrapper.getProperty("auth_use_biometrics").getValue().equals("true")) {
+                    if(preferences.getString("auth_use_biometrics", "").equals("true")) {
                         setupBiometricAuthentication();     // TODO: should be callable again if cancelled
                     }
-                    storedHash = dbWrapper.getProperty("auth_hash").getValue();
-                    storedSalt = Base64.decode(dbWrapper.getProperty("auth_salt").getValue(), Base64.DEFAULT);
+                    storedHash = preferences.getString("auth_hash", "");
+                    storedSalt = Base64.decode(preferences.getString("auth_salt", ""), Base64.DEFAULT);
                     break;
                 case "pin":
                     setupPinAuthentication();
-                    if(dbWrapper.getProperty("auth_use_biometrics").getValue().equals("true")) {
+                    if(preferences.getString("auth_use_biometrics", "").equals("true")) {
                         setupBiometricAuthentication();     // TODO: should be callable again if cancelled
                     }
-                    storedHash = dbWrapper.getProperty("auth_cipher").getValue();
-                    storedSalt = Base64.decode(dbWrapper.getProperty("auth_key").getValue(), Base64.DEFAULT);
+                    storedHash = preferences.getString("auth_cipher", "");
+                    storedSalt = Base64.decode(preferences.getString("auth_key", ""), Base64.DEFAULT);
                     break;
-                case "none":
+                default:
                     Intent intent = new Intent(MainActivity.this, MainViewer.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);

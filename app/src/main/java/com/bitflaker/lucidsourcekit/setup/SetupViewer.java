@@ -1,8 +1,10 @@
 package com.bitflaker.lucidsourcekit.setup;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,7 +19,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.general.AuthTypes;
 import com.bitflaker.lucidsourcekit.general.Crypt;
-import com.bitflaker.lucidsourcekit.general.DatabaseWrapper;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.tabs.TabLayout;
@@ -100,7 +101,8 @@ public class SetupViewer extends AppCompatActivity {
             if (tabLayout.getSelectedTabPosition() + 1 < vpAdapter.getItemCount()) {
                 tabLayout.selectTab(tabLayout.getTabAt(tabLayout.getSelectedTabPosition() + 1));
             } else if (tabLayout.getSelectedTabPosition() + 1 == pageCount) {
-                DatabaseWrapper dbWrapper = new DatabaseWrapper(SetupViewer.this);
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = preferences.edit();
                 switch (selectedAuthType) {
                     case Password:
                         if (setAuthData.getPassword().length() == 0) {
@@ -109,10 +111,11 @@ public class SetupViewer extends AppCompatActivity {
                             try {
                                 byte[] salt = Crypt.generateSalt();
                                 String pwHash = Crypt.encryptString(setAuthData.getPassword(), salt);
-                                dbWrapper.setProperty("auth_type", "password");
-                                dbWrapper.setProperty("auth_hash", pwHash);
-                                dbWrapper.setProperty("auth_salt", Base64.encodeToString(salt, Base64.NO_WRAP));
-                                dbWrapper.setProperty("auth_use_biometrics", setPrivacy.getUseBiometrics() ? "true" : "false");
+                                editor.putString("auth_type", "password");
+                                editor.putString("auth_hash", pwHash);
+                                editor.putString("auth_salt", Base64.encodeToString(salt, Base64.NO_WRAP));
+                                editor.putString("auth_use_biometrics", setPrivacy.getUseBiometrics() ? "true" : "false");
+                                editor.apply();
                                 startGetStarted();
                             } catch (Exception ex) {
                                 ex.printStackTrace();
@@ -126,10 +129,11 @@ public class SetupViewer extends AppCompatActivity {
                             try {
                                 byte[] secretKey = Crypt.generateSecretKey();
                                 String pinCipher = Crypt.encryptStringBlowfish(setAuthData.getPin(), secretKey);
-                                dbWrapper.setProperty("auth_type", "pin");
-                                dbWrapper.setProperty("auth_cipher", pinCipher);
-                                dbWrapper.setProperty("auth_key", Base64.encodeToString(secretKey, Base64.NO_WRAP));
-                                dbWrapper.setProperty("auth_use_biometrics", setPrivacy.getUseBiometrics() ? "true" : "false");
+                                editor.putString("auth_type", "pin");
+                                editor.putString("auth_cipher", pinCipher);
+                                editor.putString("auth_key", Base64.encodeToString(secretKey, Base64.NO_WRAP));
+                                editor.putString("auth_use_biometrics", setPrivacy.getUseBiometrics() ? "true" : "false");
+                                editor.apply();
                                 startGetStarted();
                             } catch (Exception ex) {
                                 ex.printStackTrace();
@@ -137,7 +141,8 @@ public class SetupViewer extends AppCompatActivity {
                         }
                         break;
                     case None:
-                        dbWrapper.setProperty("auth_type", "none");
+                        editor.putString("auth_type", "none");
+                        editor.apply();
                         startGetStarted();
                         break;
                 }
