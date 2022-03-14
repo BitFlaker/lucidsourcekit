@@ -10,14 +10,17 @@ import com.bitflaker.lucidsourcekit.database.entities.DreamMood;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
+
 @Dao
 public interface DreamMoodDao {
     @Query("SELECT * FROM DreamMood")
-    List<DreamMood> getAll();
+    Single<List<DreamMood>> getAll();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(DreamMood... dreamMoods);
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    Completable insertAll(DreamMood... dreamMoods);
 
     @Delete
-    void delete(DreamMood dreamMood);
+    Completable delete(DreamMood dreamMood);
 }

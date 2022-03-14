@@ -34,4 +34,13 @@ public class JournalEntry {
     public String qualityId;
     public String clarityId;
     public String moodId;
+
+    public JournalEntry(long timeStamp, String title, String description, String qualityId, String clarityId, String moodId) {
+        this.timeStamp = timeStamp;
+        this.title = title;
+        this.description = description;
+        this.qualityId = qualityId;
+        this.clarityId = clarityId;
+        this.moodId = moodId;
+    }
 }

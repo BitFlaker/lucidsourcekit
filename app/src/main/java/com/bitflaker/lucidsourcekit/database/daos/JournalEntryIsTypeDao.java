@@ -9,14 +9,23 @@ import com.bitflaker.lucidsourcekit.database.entities.JournalEntryHasType;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
+
 @Dao
 public interface JournalEntryIsTypeDao {
     @Query("SELECT * FROM JournalEntryHasType WHERE entryId = :entryId")
-    List<JournalEntryHasType> getAllFromEntryId(int entryId);
+    Single<List<JournalEntryHasType>> getAllFromEntryId(int entryId);
 
     @Insert
-    void insertAll(JournalEntryHasType... journalEntryHasTypes);
+    Completable insertAll(JournalEntryHasType... journalEntryHasTypes);
+
+    @Insert
+    Completable insertAll(List<JournalEntryHasType> journalEntryHasTypes);
 
     @Delete
-    void delete(JournalEntryHasType journalEntryHasType);
+    Completable delete(JournalEntryHasType journalEntryHasType);
+
+    @Query("DELETE FROM JournalEntryHasType WHERE entryId = :entryId")
+    Completable deleteAll(int entryId);
 }

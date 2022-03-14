@@ -19,10 +19,11 @@ public class DreamType {
 
     public static DreamType[] populateData(){
         return new DreamType[]{
-                new DreamType("TRB", "Terrible"),
-                new DreamType("POR", "Poor"),
-                new DreamType("GRT", "Great"),
-                new DreamType("OSD", "Outstanding"),
+                new DreamType("NTM", "Nightmare"),
+                new DreamType("SPL", "SleepParalysis"),
+                new DreamType("FAW", "FalseAwakening"),
+                new DreamType("LCD", "Lucid"),
+                new DreamType("REC", "Recurring"),
                 new DreamType("", "None")
         };
     }

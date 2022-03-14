@@ -19,6 +19,11 @@ public class AudioLocation {
     @PrimaryKey(autoGenerate = true)
     public int audioId;
 
-    public String audioPath;
     public int entryId;
+    public String audioPath;
+
+    public AudioLocation(int entryId, String audioPath) {
+        this.entryId = entryId;
+        this.audioPath = audioPath;
+    }
 }

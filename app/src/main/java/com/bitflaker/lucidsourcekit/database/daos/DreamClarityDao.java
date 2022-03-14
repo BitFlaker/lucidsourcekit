@@ -10,14 +10,17 @@ import com.bitflaker.lucidsourcekit.database.entities.DreamClarity;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
+
 @Dao
 public interface DreamClarityDao {
     @Query("SELECT * FROM DreamClarity")
-    List<DreamClarity> getAll();
+    Single<List<DreamClarity>> getAll();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(DreamClarity... dreamClarities);
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    Completable insertAll(DreamClarity... dreamClarities);
 
     @Delete
-    void delete(DreamClarity dreamClarity);
+    Completable delete(DreamClarity dreamClarity);
 }

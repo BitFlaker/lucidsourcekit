@@ -19,8 +19,12 @@ import androidx.room.Index;
         indices = { @Index("entryId"), @Index("typeId") }
 )
 public class JournalEntryHasType {
-    @NonNull
     public int entryId;
     @NonNull
     public String typeId;
+
+    public JournalEntryHasType(int entryId, @NonNull String typeId) {
+        this.entryId = entryId;
+        this.typeId = typeId;
+    }
 }

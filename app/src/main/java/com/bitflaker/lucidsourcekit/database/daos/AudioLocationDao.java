@@ -9,14 +9,20 @@ import com.bitflaker.lucidsourcekit.database.entities.AudioLocation;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
+
 @Dao
 public interface AudioLocationDao {
-    @Query("SELECT * FROM AudioLocation")
-    List<AudioLocation> getAll();
+    @Query("SELECT * FROM AudioLocation WHERE entryId = :entryId")
+    Single<List<AudioLocation>> getAllFromEntryId(int entryId);
+
+    //@Insert
+    //Single<Long> insertAll(AudioLocation... audioLocations);
 
     @Insert
-    void insertAll(AudioLocation... audioLocations);
+    Single<List<Long>> insertAll(List<AudioLocation> audioLocations);
 
     @Delete
-    void delete(AudioLocation audioLocation);
+    Completable delete(AudioLocation audioLocation);
 }

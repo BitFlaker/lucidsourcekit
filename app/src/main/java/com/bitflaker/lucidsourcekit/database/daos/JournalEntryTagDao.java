@@ -9,14 +9,20 @@ import com.bitflaker.lucidsourcekit.database.entities.JournalEntryTag;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
+
 @Dao
 public interface JournalEntryTagDao {
     @Query("SELECT * FROM JournalEntryTag")
-    List<JournalEntryTag> getAll();
+    Single<List<JournalEntryTag>> getAll();
 
     @Insert
-    void insertAll(JournalEntryTag... tags);
+    Single<List<Long>> insertAll(JournalEntryTag... tags);
+
+    @Insert
+    Single<List<Long>> insertAll(List<JournalEntryTag> journalEntryTags);
 
     @Delete
-    void delete(JournalEntryTag tag);
+    Completable delete(JournalEntryTag tag);
 }

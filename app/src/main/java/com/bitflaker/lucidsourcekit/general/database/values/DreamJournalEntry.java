@@ -1,15 +1,20 @@
 package com.bitflaker.lucidsourcekit.general.database.values;
 
-import com.bitflaker.lucidsourcekit.general.database.StoredJournalEntries;
+import com.bitflaker.lucidsourcekit.database.entities.AssignedTags;
+import com.bitflaker.lucidsourcekit.database.entities.AudioLocation;
+import com.bitflaker.lucidsourcekit.database.entities.JournalEntry;
+import com.bitflaker.lucidsourcekit.database.entities.JournalEntryHasType;
+
+import java.util.List;
 
 public class DreamJournalEntry {
-    private final StoredJournalEntries entry;
-    private final String[] tags;
-    private final String[] types;
-    private final String[] audioLocations;
+    private final JournalEntry entry;
+    private final List<AssignedTags> tags;
+    private final List<JournalEntryHasType> types;
+    private final List<AudioLocation> audioLocations;
     private boolean visibleWithFilter;
 
-    public DreamJournalEntry(StoredJournalEntries entry, String[] tags, String[] types, String[] audioLocations){
+    public DreamJournalEntry(JournalEntry entry, List<AssignedTags> tags, List<JournalEntryHasType> types, List<AudioLocation> audioLocations){
         this.entry = entry;
         this.tags = tags;
         this.types = types;
@@ -17,19 +22,19 @@ public class DreamJournalEntry {
         visibleWithFilter = true;
     }
 
-    public StoredJournalEntries getEntry() {
+    public JournalEntry getEntry() {
         return entry;
     }
 
-    public String[] getTags() {
+    public List<AssignedTags> getTags() {
         return tags;
     }
 
-    public String[] getTypes() {
+    public List<JournalEntryHasType> getTypes() {
         return types;
     }
 
-    public String[] getAudioLocations() {
+    public List<AudioLocation> getAudioLocations() {
         return audioLocations;
     }
 

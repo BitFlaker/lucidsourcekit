@@ -16,10 +16,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.database.JournalDatabase;
+import com.bitflaker.lucidsourcekit.database.entities.AssignedTags;
+import com.bitflaker.lucidsourcekit.database.entities.AudioLocation;
+import com.bitflaker.lucidsourcekit.database.entities.JournalEntry;
+import com.bitflaker.lucidsourcekit.database.entities.JournalEntryHasType;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.SortOrders;
 import com.bitflaker.lucidsourcekit.general.Tools;
-import com.bitflaker.lucidsourcekit.general.database.StoredJournalEntries;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntriesList;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntry;
@@ -28,7 +32,10 @@ import com.bitflaker.lucidsourcekit.general.database.values.DreamTypes;
 import com.bitflaker.lucidsourcekit.general.database.values.SleepQuality;
 import com.google.android.flexbox.FlexboxLayout;
 
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,16 +46,18 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     private DreamJournalEntriesList filteredEntries;
     private int currentSort;
     private AppliedFilter currentFilter;
+    private JournalDatabase db;
 
     public RecyclerViewAdapterDreamJournal(DreamJournal journalList, Context context, DreamJournalEntriesList entries) {
         this.journalList = journalList;
         this.context = context;
         this.entries = entries;
+        db = JournalDatabase.getInstance(context);
         filteredEntries = null;
         currentFilter = null;
     }
 
-    public void addEntry(StoredJournalEntries entry, String[] tags, String[] types, String[] audioLocations) {
+    public void addEntry(JournalEntry entry, List<AssignedTags> tags, List<JournalEntryHasType> types, List<AudioLocation> audioLocations) {
         DreamJournalEntry entryToAdd = new DreamJournalEntry(entry, tags, types, audioLocations);
         entries.addFirst(entryToAdd);
         if (filteredEntries != null && DreamJournalEntriesList.entryCompliesWithFilter(entryToAdd, currentFilter)) {
@@ -57,7 +66,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         sortEntries(currentSort);
     }
 
-    public void changeEntryAt(int position, StoredJournalEntries entry, String[] tags, String[] types, String[] audioLocations) {
+    public void changeEntryAt(int position, JournalEntry entry, List<AssignedTags> tags, List<JournalEntryHasType> types, List<AudioLocation> audioLocations) {
         if(filteredEntries == null){
             entries.changeAt(position, entry, tags, types, audioLocations);
         }
@@ -93,11 +102,14 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         if(filteredEntries != null){ current = filteredEntries; }
         else { current = entries; }
 
-        holder.dateTime.setText(MessageFormat.format("{0} {1} {2}", current.getDates()[position], context.getResources().getString(R.string.journal_time_at), current.getTimes()[position]));
+        Calendar cldr = current.getTimestamps()[position];
+        DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        holder.dateTime.setText(MessageFormat.format("{0} {1} {2}", dateFormat.format(cldr.getTime()), context.getResources().getString(R.string.journal_time_at), timeFormat.format(cldr.getTime())));
         holder.title.setText(current.getTitles()[position]);
         if(current.getDescriptions()[position] == null){
             holder.description.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_mic_24, 0, 0, 0);
-            int audioCount = current.getAudioLocations().get(position).length;
+            int audioCount = current.getAudioLocations().get(position).size();
             holder.description.setText(audioCount == 1 ? "1 " + context.getResources().getString(R.string.recording_single) : audioCount + " " + context.getResources().getString(R.string.recording_multiple));
             ConstraintLayout.LayoutParams lparamsDesc = (ConstraintLayout.LayoutParams) holder.description.getLayoutParams();
             int slightMargin = Tools.dpToPx(context, 10);
@@ -129,9 +141,9 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             holder.tags.removeViewAt(0);
         }
 
-        for (int i = 0; i < current.getTags().get(position).length; i++){
+        for (int i = 0; i < current.getTags().get(position).size(); i++){
             TextView tag = new TextView(context);
-            tag.setText(current.getTags().get(position)[i]);
+            tag.setText(current.getTags().get(position).get(i).description);
             tag.setTextColor(Tools.getAttrColorStateList(R.attr.primaryTextColor, context.getTheme()));
             int dpLarger = Tools.dpToPx(context, 8);
             int dpSmaller = Tools.dpToPx(context, 4);
@@ -146,8 +158,8 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             holder.tags.addView(tag);
         }
 
-        for (int i = 0; i < current.getTypes().get(position).length; i++) {
-            switch (Objects.requireNonNull(DreamTypes.getEnum(current.getTypes().get(position)[i]))) {
+        for (int i = 0; i < current.getTypes().get(position).size(); i++) {
+            switch (Objects.requireNonNull(DreamTypes.getEnum(current.getTypes().get(position).get(i).typeId))) {
                 case Lucid:
                     holder.titleIcons.addView(generateIconHighlight(R.drawable.ic_baseline_deblur_24));
                     break;
@@ -184,22 +196,43 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         }
 
         holder.entry.setOnClickListener(e -> {
+            // TODO start loading animation
             Intent intent = new Intent(context, ViewJournalEntry.class);
-            intent.putExtra("position", position);
-            intent.putExtra("type", current.getDescriptions()[position] == null ? JournalTypes.Audio.ordinal() : JournalTypes.Text.ordinal());
-            intent.putExtra("availableTags", Tools.getUniqueOnly(getAllTags()));
-            intent.putExtra("entryId", current.getEntryIds()[position]);
-            intent.putExtra("date", current.getDates()[position]);
-            intent.putExtra("time", current.getTimes()[position]);
-            intent.putExtra("title", current.getTitles()[position]);
-            intent.putExtra("description", current.getDescriptions()[position]);
-            intent.putExtra("quality", current.getSleepQualities()[position]);
-            intent.putExtra("clarity", current.getDreamClarities()[position]);
-            intent.putExtra("mood", current.getDreamMoods()[position]);
-            intent.putExtra("dreamTypes", current.getTypes().get(position));
-            intent.putExtra("tags", current.getTags().get(position));
-            intent.putExtra("recordings", current.getAudioLocations().get(position));
-            journalList.viewEntryActivityResultLauncher.launch(intent);
+
+            String[] types = new String[current.getTypes().get(position).size()];
+            for (int i = 0; i < current.getTypes().get(position).size(); i++) {
+                types[i] = current.getTypes().get(position).get(i).typeId;
+            }
+            String[] tags = new String[current.getTags().get(position).size()];
+            for (int i = 0; i < current.getTags().get(position).size(); i++) {
+                tags[i] = current.getTags().get(position).get(i).description;
+            }
+            String[] recs = new String[current.getAudioLocations().get(position).size()];
+            for (int i = 0; i < current.getAudioLocations().get(position).size(); i++) {
+                recs[i] = current.getAudioLocations().get(position).get(i).audioPath;
+            }
+
+            db.journalEntryTagDao().getAll().subscribe((journalEntryTags, throwable) -> {
+                String[] availableTags = new String[journalEntryTags.size()];
+                for (int i = 0; i < journalEntryTags.size(); i++) {
+                    availableTags[i] = journalEntryTags.get(i).description;
+                }
+
+                intent.putExtra("position", position);
+                intent.putExtra("type", current.getDescriptions()[position] == null ? JournalTypes.Audio.ordinal() : JournalTypes.Text.ordinal());
+                intent.putExtra("availableTags", availableTags);
+                intent.putExtra("entryId", current.getEntryIds()[position]);
+                intent.putExtra("timestamp", current.getTimestamps()[position]);
+                intent.putExtra("title", current.getTitles()[position]);
+                intent.putExtra("description", current.getDescriptions()[position]);
+                intent.putExtra("quality", current.getSleepQualities()[position]);
+                intent.putExtra("clarity", current.getDreamClarities()[position]);
+                intent.putExtra("mood", current.getDreamMoods()[position]);
+                intent.putExtra("dreamTypes", types);
+                intent.putExtra("tags", tags);
+                intent.putExtra("recordings", recs);
+                journalList.viewEntryActivityResultLauncher.launch(intent);
+            });
         });
     }
 
@@ -306,7 +339,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         return currentFilter;
     }
 
-    public List<String[]> getAllTags() {
+    public List<List<AssignedTags>> getAllTags() {
         return entries.getTags();
     }
 

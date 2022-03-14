@@ -5,18 +5,25 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
+import com.bitflaker.lucidsourcekit.database.entities.AssignedTags;
 import com.bitflaker.lucidsourcekit.database.entities.JournalEntryHasTag;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
+
 @Dao
 public interface JournalEntryHasTagDao {
-    @Query("SELECT * FROM JournalEntryHasTag WHERE entryId = :entryId")
-    List<JournalEntryHasTag> getAllFromEntryId(int entryId);
+    @Query("SELECT JournalEntryTag.description FROM JournalEntryHasTag LEFT JOIN JournalEntryTag ON JournalEntryTag.tagId = JournalEntryHasTag.tagId WHERE entryId = :entryId")
+    Single<List<AssignedTags>> getAllFromEntryId(int entryId);
 
     @Insert
-    void insertAll(JournalEntryHasTag... journalEntryHasTags);
+    Completable insertAll(JournalEntryHasTag... journalEntryHasTags);
 
     @Delete
-    void delete(JournalEntryHasTag journalEntryHasTag);
+    Completable delete(JournalEntryHasTag journalEntryHasTag);
+
+    @Query("DELETE FROM JournalEntryHasTag WHERE entryId = :entryId")
+    Completable deleteAll(int entryId);
 }

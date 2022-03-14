@@ -22,11 +22,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.general.DatabaseWrapper;
+import com.bitflaker.lucidsourcekit.database.JournalDatabase;
+import com.bitflaker.lucidsourcekit.database.entities.JournalEntry;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.database.StoredJournalEntries;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntriesList;
+import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntry;
 import com.bitflaker.lucidsourcekit.main.createjournalentry.AddTextEntry;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -42,6 +44,7 @@ public class DreamJournal extends Fragment {
     public ActivityResultLauncher<Intent> viewEntryActivityResultLauncher;
     private ImageButton sortEntries, filterEntries, resetFilterEntries;
     private int sortBy = 0;
+    private JournalDatabase db;
 
     @Nullable
     @Override
@@ -55,16 +58,30 @@ public class DreamJournal extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        DatabaseWrapper dbWrapper = new DatabaseWrapper(getContext());
-        DreamJournalEntriesList entries = dbWrapper.getJournalEntries();
+        db = JournalDatabase.getInstance(getContext());
 
-        setData(entries);
-        setBasics();
-        setupFAB();
-        setupSortButton();
-        setupFilterButton();
-        setupResetFilterButton();
-        checkForEntries();
+        db.journalEntryDao().getAll().subscribe((journalEntries, throwable) -> {
+            // TODO gather all data in a more efficient way!
+            DreamJournalEntriesList djel = new DreamJournalEntriesList();
+            for (JournalEntry entry : journalEntries) {
+                db.journalEntryHasTagDao().getAllFromEntryId(entry.entryId).subscribe((assignedTags, throwable1) -> {
+                    db.journalEntryIsTypeDao().getAllFromEntryId(entry.entryId).subscribe((journalEntryHasTypes, throwable2) -> {
+                        db.audioLocationDao().getAllFromEntryId(entry.entryId).subscribe((audioLocations, throwable3) -> {
+                            DreamJournalEntry djEntry = new DreamJournalEntry(entry, assignedTags, journalEntryHasTypes, audioLocations);
+                            djel.add(djEntry);
+                        });
+                    });
+                });
+            }
+
+            setData(djel);
+            setBasics();
+            setupFAB();
+            setupSortButton();
+            setupFilterButton();
+            setupResetFilterButton();
+            checkForEntries();
+        });
     }
 
     private void setBasics() {
@@ -83,21 +100,30 @@ public class DreamJournal extends Fragment {
 
     private void setupFilterButton() {
         filterEntries.setOnClickListener(e -> {
-            FilterDialog fd = new FilterDialog(getActivity(), Tools.getUniqueOnly(recyclerViewAdapterDreamJournal.getAllTags()), recyclerViewAdapterDreamJournal.getCurrentFilter());
-            fd.setOnClickPositiveButton(g -> {
-                AppliedFilter af = fd.getFilters();
-                if(!AppliedFilter.isEmptyFilter(af)){
-                    recyclerViewAdapterDreamJournal.filter(af);
-                    resetFilterEntries.setVisibility(View.VISIBLE);
+            // TODO start loading animation
+            animateFab();
+            db.journalEntryTagDao().getAll().subscribe((journalEntryTags, throwable) -> {
+                String[] availableTags = new String[journalEntryTags.size()];
+                for (int i = 0; i < journalEntryTags.size(); i++) {
+                    availableTags[i] = journalEntryTags.get(i).description;
                 }
-                else if (resetFilterEntries.getVisibility() == View.VISIBLE){
-                    resetFilterEntries.setVisibility(View.GONE);
-                    recyclerViewAdapterDreamJournal.resetFilters();
-                }
-                checkForEntries();
-                fd.dismiss();
+
+                FilterDialog fd = new FilterDialog(getActivity(), availableTags, recyclerViewAdapterDreamJournal.getCurrentFilter());
+                fd.setOnClickPositiveButton(g -> {
+                    AppliedFilter af = fd.getFilters();
+                    if(!AppliedFilter.isEmptyFilter(af)){
+                        recyclerViewAdapterDreamJournal.filter(af);
+                        resetFilterEntries.setVisibility(View.VISIBLE);
+                    }
+                    else if (resetFilterEntries.getVisibility() == View.VISIBLE){
+                        resetFilterEntries.setVisibility(View.GONE);
+                        recyclerViewAdapterDreamJournal.resetFilters();
+                    }
+                    checkForEntries();
+                    fd.dismiss();
+                });
+                fd.show();
             });
-            fd.show();
         });
     }
 
@@ -150,12 +176,21 @@ public class DreamJournal extends Fragment {
     }
 
     private void showJournalCreator(JournalTypes forms) {
+        // TODO migrate available tags from extra to load in journal entry creator!
+        // TODO start loading animation
         animateFab();
-        Intent intent = new Intent(getContext(), AddTextEntry.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("type", forms.ordinal());
-        intent.putExtra("availableTags", Tools.getUniqueOnly(recyclerViewAdapterDreamJournal.getAllTags()));
-        createEntryActivityResultLauncher.launch(intent);
+        db.journalEntryTagDao().getAll().subscribe((journalEntryTags, throwable) -> {
+            String[] availableTags = new String[journalEntryTags.size()];
+            for (int i = 0; i < journalEntryTags.size(); i++) {
+                availableTags[i] = journalEntryTags.get(i).description;
+            }
+
+            Intent intent = new Intent(getContext(), AddTextEntry.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("type", forms.ordinal());
+            intent.putExtra("availableTags", availableTags);
+            createEntryActivityResultLauncher.launch(intent);
+        });
     }
 
     private void animateFab(){
@@ -190,6 +225,9 @@ public class DreamJournal extends Fragment {
                 new ActivityResultContracts.StartActivityForResult(), result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent data = result.getData();
+
+                        // TODO make entry changeable again
+
                         if(data.hasExtra("action")) {
                             String action = data.getStringExtra("action");
                             if(action.equals("EDIT")) {
@@ -205,7 +243,7 @@ public class DreamJournal extends Fragment {
                                 String[] tags = data.getStringArrayExtra("tags");
                                 String[] recordedAudios = data.getStringArrayExtra("recordings");
                                 StoredJournalEntries entry = new StoredJournalEntries(-1, selectedDate, selectedTime, title, description, quality, clarity, mood);
-                                recyclerViewAdapterDreamJournal.changeEntryAt(position, entry, tags, dreamTypes, recordedAudios);
+                                //recyclerViewAdapterDreamJournal.changeEntryAt(position, entry, tags, dreamTypes, recordedAudios);
                                 recyclerViewAdapterDreamJournal.notifyItemChanged(position);
                                 recyclerView.scrollToPosition(position);
                             }
@@ -225,6 +263,9 @@ public class DreamJournal extends Fragment {
                 new ActivityResultContracts.StartActivityForResult(), result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent data = result.getData();
+
+                        //TODO: make refreshing work again
+
                         int entryId = data.getIntExtra("entryId", -1);
                         String selectedDate = data.getStringExtra("date");
                         String selectedTime = data.getStringExtra("time");
@@ -237,7 +278,7 @@ public class DreamJournal extends Fragment {
                         String[] tags = data.getStringArrayExtra("tags");
                         String[] recordedAudios = data.getStringArrayExtra("recordings");
                         StoredJournalEntries entry = new StoredJournalEntries(entryId, selectedDate, selectedTime, title, description, quality, clarity, mood);
-                        recyclerViewAdapterDreamJournal.addEntry(entry, tags, dreamTypes, recordedAudios);
+                        //recyclerViewAdapterDreamJournal.addEntry(entry, tags, dreamTypes, recordedAudios);
                         recyclerViewAdapterDreamJournal.notifyItemInserted(0);
                         recyclerView.scrollToPosition(0);
                         recyclerViewAdapterDreamJournal.notifyItemRangeChanged(0, recyclerViewAdapterDreamJournal.getItemCount());

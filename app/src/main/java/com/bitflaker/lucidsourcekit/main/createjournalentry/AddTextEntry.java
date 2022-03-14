@@ -33,7 +33,12 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.general.DatabaseWrapper;
+import com.bitflaker.lucidsourcekit.database.JournalDatabase;
+import com.bitflaker.lucidsourcekit.database.entities.AudioLocation;
+import com.bitflaker.lucidsourcekit.database.entities.JournalEntry;
+import com.bitflaker.lucidsourcekit.database.entities.JournalEntryHasTag;
+import com.bitflaker.lucidsourcekit.database.entities.JournalEntryHasType;
+import com.bitflaker.lucidsourcekit.database.entities.JournalEntryTag;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
@@ -52,10 +57,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 public class AddTextEntry extends AppCompatActivity {
-
     private MaterialButton dateButton, timeButton;
     private ImageButton addTag;
     private DatePickerDialog dpd;
@@ -81,9 +87,8 @@ public class AddTextEntry extends AppCompatActivity {
     private FormsJournalEditorFrag formsFrag;
     private TextJournalEditorFrag textFrag;
 
-    private DatabaseWrapper dbWrapper;
-    private String selectedDate;
-    private String selectedTime;
+    private JournalDatabase db;
+    private Calendar timestampCalendar;
     private JournalTypes currentType;
 
     private boolean storedByUser = false;
@@ -128,6 +133,7 @@ public class AddTextEntry extends AppCompatActivity {
         tagsToAddContainer = findViewById(R.id.flx_tags_to_add);
         Intent data = getIntent();
         availableTags = data.getStringArrayExtra("availableTags");
+        timestampCalendar = new GregorianCalendar(TimeZone.getDefault());
 
         setupTimePicker();
         setupDatePicker();
@@ -165,12 +171,11 @@ public class AddTextEntry extends AppCompatActivity {
 
             entryId = data.getIntExtra("entryId", -1);
 
-            selectedDate = data.getStringExtra("date");
-            String[] splitDate = selectedDate.split("\\.");
-            dateButton.setText(dateFormat.format(new Date(Integer.parseInt(splitDate[2]), Integer.parseInt(splitDate[1])-1, Integer.parseInt(splitDate[0]))));
-
-            selectedTime = data.getStringExtra("time");
-            timeButton.setText(selectedTime);
+            long timestampMillis = data.getLongExtra("timestamp", 0);
+            timestampCalendar.setTimeInMillis(timestampMillis);
+            dateButton.setText(dateFormat.format(timestampCalendar.getTime()));
+            SimpleDateFormat time = new SimpleDateFormat("HH:mm");
+            timeButton.setText(time.format(timestampCalendar.getTime()));
 
             entryTitle.setText(data.getStringExtra("title"));
             if(currentType == JournalTypes.Text) {
@@ -210,7 +215,7 @@ public class AddTextEntry extends AppCompatActivity {
 
     private void setupAddEntryButton() {
         addEntry.setOnClickListener(e -> {
-            dbWrapper = new DatabaseWrapper(this);
+            db = JournalDatabase.getInstance(this);
             String title = entryTitle.getText().toString();
             String description = null;
             switch (currentType) {
@@ -243,52 +248,72 @@ public class AddTextEntry extends AppCompatActivity {
     }
 
     private void storeEntry(String title, String description) {
+        // TODO start loading animation
         String quality = SleepQuality.values()[((int) qualitySlider.getValue())].getId();
         String clarity = DreamClarity.values()[((int) claritySlider.getValue())].getId();
         String mood = DreamMoods.values()[((int) moodSlider.getValue())].getId();
 
         if(entryId != -1) {
-            dbWrapper.clearRelationsForEntry(entryId);
+            db.journalEntryHasTagDao().deleteAll(entryId);
+            db.journalEntryIsTypeDao().deleteAll(entryId);
         }
 
-        int id = dbWrapper.addJournalEntry(entryId, selectedDate, selectedTime, title, description, quality, clarity, mood);
-
-        List<String> dreamTypes = new ArrayList<>();
-        if(nightmare.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.Nightmare.getId()); dreamTypes.add(DreamTypes.Nightmare.getId()); }
-        if(paralysis.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.SleepParalysis.getId()); dreamTypes.add(DreamTypes.SleepParalysis.getId()); }
-        if(falseAwakening.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.FalseAwakening.getId()); dreamTypes.add(DreamTypes.FalseAwakening.getId()); }
-        if(lucid.isChecked()) { dbWrapper.addDreamTypeToEntry(id, DreamTypes.Lucid.getId()); dreamTypes.add(DreamTypes.Lucid.getId()); }
-
-        List<String> tags = new ArrayList<>();
-        int childCount = tagContainer.getChildCount();
-        for (int i = 0; i < childCount; i++){
-            if(tagContainer.getChildAt(i) instanceof TextView){
-                TextView storedTag = (TextView) tagContainer.getChildAt(i);
-                String tag = storedTag.getText().toString();
-                tags.add(tag);
-                dbWrapper.addDreamTagToEntry(id, tag);
+        db.journalEntryDao().insert(new JournalEntry(timestampCalendar.getTimeInMillis(), title, description, quality, clarity, mood)).subscribe((insertedIds, throwable) -> {
+            int currentEntryId = insertedIds.intValue();
+            List<String> dreamTypes = new ArrayList<>();
+            if(nightmare.isChecked()) { dreamTypes.add(DreamTypes.Nightmare.getId()); }
+            if(paralysis.isChecked()) { dreamTypes.add(DreamTypes.SleepParalysis.getId()); }
+            if(falseAwakening.isChecked()) { dreamTypes.add(DreamTypes.FalseAwakening.getId()); }
+            if(lucid.isChecked()) { dreamTypes.add(DreamTypes.Lucid.getId()); }
+            List<JournalEntryHasType> journalEntryHasTypes = new ArrayList<>();
+            for (String type : dreamTypes) {
+                journalEntryHasTypes.add(new JournalEntryHasType(currentEntryId, type));
             }
-        }
-
-        for (int i = 0; i < recordedAudios.size(); i++){
-            dbWrapper.addDreamAudioRecording(id, recordedAudios.get(i));
-        }
-
-        Intent data = new Intent();
-        data.putExtra("entryId", id);
-        data.putExtra("date", selectedDate);
-        data.putExtra("time", selectedTime);
-        data.putExtra("title", title);
-        data.putExtra("description", description);
-        data.putExtra("quality", quality);
-        data.putExtra("clarity", clarity);
-        data.putExtra("mood", mood);
-        data.putExtra("dreamTypes", dreamTypes.toArray(new String[0]));
-        data.putExtra("tags", tags.toArray(new String[0]));
-        data.putExtra("recordings", recordedAudios.toArray(new String[0]));
-        setResult(RESULT_OK, data);
-        storedByUser = true;
-        finish();
+            db.journalEntryIsTypeDao().insertAll(journalEntryHasTypes).subscribe(() -> {
+                List<String> tags = new ArrayList<>();
+                int childCount = tagContainer.getChildCount();
+                for (int i = 0; i < childCount; i++){
+                    if(tagContainer.getChildAt(i) instanceof TextView){
+                        TextView storedTag = (TextView) tagContainer.getChildAt(i);
+                        String tag = storedTag.getText().toString();
+                        tags.add(tag);
+                    }
+                }
+                List<JournalEntryTag> journalEntryTags = new ArrayList<>();
+                for (String tag : tags) {
+                    journalEntryTags.add(new JournalEntryTag(tag));
+                }
+                db.journalEntryTagDao().insertAll(journalEntryTags).subscribe((insertedTagIds, throwable1) -> {
+                    List<JournalEntryHasTag> journalEntryHasTags = new ArrayList<>();
+                    for (Long insertedTagId : insertedTagIds) {
+                        journalEntryHasTags.add(new JournalEntryHasTag(currentEntryId, insertedTagId.intValue()));
+                    }
+                    db.journalEntryTagDao().insertAll(journalEntryTags).subscribe((integers, throwable2) -> {
+                        List<AudioLocation> audioLocations = new ArrayList<>();
+                        for (String location : recordedAudios){
+                            audioLocations.add(new AudioLocation(currentEntryId, location));
+                        }
+                        db.audioLocationDao().insertAll(audioLocations).subscribe((integers1, throwable3) -> {
+                            // TODO hide loading animation
+                            Intent data = new Intent();
+                            data.putExtra("entryId", currentEntryId);
+                            data.putExtra("timestamp", timestampCalendar.getTimeInMillis());
+                            data.putExtra("title", title);
+                            data.putExtra("description", description);
+                            data.putExtra("quality", quality);
+                            data.putExtra("clarity", clarity);
+                            data.putExtra("mood", mood);
+                            data.putExtra("dreamTypes", dreamTypes.toArray(new String[0]));
+                            data.putExtra("tags", tags.toArray(new String[0]));
+                            data.putExtra("recordings", recordedAudios.toArray(new String[0]));
+                            setResult(RESULT_OK, data);
+                            storedByUser = true;
+                            finish();
+                        });
+                    });
+                });
+            });
+        });
     }
 
     private boolean isVitalDataFilledIn(String title, String description) {
@@ -502,25 +527,26 @@ public class AddTextEntry extends AppCompatActivity {
     private void setupTimePicker() {
         Date date = Calendar.getInstance().getTime();
         tpd = new TimePickerDialog(AddTextEntry.this, (timePicker, hourOfDay, minute) -> {
+            timestampCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            timestampCalendar.set(Calendar.MINUTE, minute);
             timeButton.setText(String.format("%02d:%02d", hourOfDay, minute));
-            selectedTime = String.format("%02d:%02d", hourOfDay, minute);
         }, date.getHours(), date.getMinutes(), true);
+        timestampCalendar.set(Calendar.HOUR_OF_DAY, date.getHours());
+        timestampCalendar.set(Calendar.MINUTE, date.getMinutes());
         timeButton.setText(String.format("%02d:%02d", date.getHours(), date.getMinutes()));
-        selectedTime = String.format("%02d:%02d", date.getHours(), date.getMinutes());
         timeButton.setOnClickListener(e -> tpd.show());
     }
 
     private void setupDatePicker() {
         dpd = new DatePickerDialog(AddTextEntry.this);
         dateFormat = android.text.format.DateFormat.getDateFormat(getApplicationContext());
-        SimpleDateFormat storeDateFormatter = new SimpleDateFormat("dd.MM.yyyy");
         Date currDate = java.util.Calendar.getInstance().getTime();
         dateButton.setText(dateFormat.format(currDate));
-        selectedDate = storeDateFormatter.format(currDate);
+        timestampCalendar.set(currDate.getYear(), currDate.getMonth(), currDate.getDay());
         dateButton.setOnClickListener(e -> dpd.show());
-        dpd.setOnDateSetListener((datePicker, year, month, dayOfMonth) -> {
-            dateButton.setText(dateFormat.format(new Date(year, month, dayOfMonth)));
-            selectedDate = String.format("%02d.%02d.%04d", dayOfMonth, month+1, year);
+        dpd.setOnDateSetListener((datePicker, year, monthOfYear, dayOfMonth) -> {
+            timestampCalendar.set(year, monthOfYear, dayOfMonth);
+            dateButton.setText(dateFormat.format(new Date(year, monthOfYear, dayOfMonth)));
         });
     }
 

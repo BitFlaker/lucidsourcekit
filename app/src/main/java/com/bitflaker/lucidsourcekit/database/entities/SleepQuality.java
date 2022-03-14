@@ -17,7 +17,7 @@ public class SleepQuality {
         this.description = description;
     }
 
-    public static SleepQuality[] populateData(){
+    public static SleepQuality[] populateData() {
         return new SleepQuality[]{
                 new SleepQuality("TRB", "Terrible"),
                 new SleepQuality("POR", "Poor"),

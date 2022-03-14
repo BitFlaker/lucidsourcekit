@@ -27,7 +27,7 @@ import com.bitflaker.lucidsourcekit.database.entities.SleepQuality;
 
 @Database(entities = {JournalEntryTag.class, DreamType.class, SleepQuality.class,
         DreamMood.class, DreamClarity.class, AudioLocation.class, JournalEntry.class,
-        JournalEntryHasTag.class, JournalEntryHasType.class}, version = 2, exportSchema = false)
+        JournalEntryHasTag.class, JournalEntryHasType.class}, version = 4, exportSchema = false)
 public abstract class JournalDatabase extends RoomDatabase {
     public abstract JournalEntryTagDao journalEntryTagDao();
     public abstract DreamTypeDao dreamTypeDao();
@@ -36,8 +36,8 @@ public abstract class JournalDatabase extends RoomDatabase {
     public abstract DreamClarityDao dreamClarityDao();
     public abstract AudioLocationDao audioLocationDao();
     public abstract JournalEntryDao journalEntryDao();
-    public abstract JournalEntryHasTagDao hasTagDao();
-    public abstract JournalEntryIsTypeDao isTypeDao();
+    public abstract JournalEntryHasTagDao journalEntryHasTagDao();
+    public abstract JournalEntryIsTypeDao journalEntryIsTypeDao();
 
     private static volatile JournalDatabase instance;
 
@@ -55,7 +55,7 @@ public abstract class JournalDatabase extends RoomDatabase {
 
     private static JournalDatabase create(final Context context) {
         // .allowMainThreadQueries()
-        return Room.databaseBuilder(context, JournalDatabase.class, "journalDatabase.db").fallbackToDestructiveMigrationFrom(1).build();
+        return Room.databaseBuilder(context, JournalDatabase.class, "journalDatabase.db").allowMainThreadQueries().fallbackToDestructiveMigrationFrom(3).build();
     }
 
     private static void populateStaticTables(JournalDatabase instance) {

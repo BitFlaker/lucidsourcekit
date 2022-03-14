@@ -10,14 +10,17 @@ import com.bitflaker.lucidsourcekit.database.entities.DreamType;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
+
 @Dao
 public interface DreamTypeDao {
     @Query("SELECT * FROM DreamType")
-    List<DreamType> getAll();
+    Single<List<DreamType>> getAll();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(DreamType... types);
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    Completable insertAll(DreamType... types);
 
     @Delete
-    void delete(DreamType type);
+    Completable delete(DreamType type);
 }

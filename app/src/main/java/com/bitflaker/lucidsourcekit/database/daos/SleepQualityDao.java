@@ -10,14 +10,17 @@ import com.bitflaker.lucidsourcekit.database.entities.SleepQuality;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
+
 @Dao
 public interface SleepQualityDao {
     @Query("SELECT * FROM SleepQuality")
-    List<SleepQuality> getAll();
+    Single<List<SleepQuality>> getAll();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(SleepQuality... sleepQualities);
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    Completable insertAll(SleepQuality... sleepQualities);
 
     @Delete
-    void delete(SleepQuality sleepQuality);
+    Completable delete(SleepQuality sleepQuality);
 }

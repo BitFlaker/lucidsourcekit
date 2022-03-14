@@ -1,6 +1,5 @@
 package com.bitflaker.lucidsourcekit.database.entities;
 
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
@@ -19,10 +18,12 @@ import androidx.room.Index;
         indices = { @Index("entryId"), @Index("tagId") }
 )
 public class JournalEntryHasTag {
-    @NonNull
     public int entryId;
-    @NonNull
     public int tagId;
-}
 
+    public JournalEntryHasTag(int entryId, int tagId) {
+        this.entryId = entryId;
+        this.tagId = tagId;
+    }
+}
 

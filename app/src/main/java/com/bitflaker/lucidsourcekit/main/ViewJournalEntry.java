@@ -24,7 +24,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.widget.TextViewCompat;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.general.DatabaseWrapper;
+import com.bitflaker.lucidsourcekit.database.JournalDatabase;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
@@ -53,7 +53,7 @@ public class ViewJournalEntry extends AppCompatActivity {
     private ActivityResultLauncher<Intent> editEntryActivityResultLauncher;
     private JournalTypes journalType;
     private int position, entryId;
-    private DatabaseWrapper dbWrapper;
+    private JournalDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +84,7 @@ public class ViewJournalEntry extends AppCompatActivity {
         editEntry = findViewById(R.id.btn_edit_entry);
         deleteEntry = findViewById(R.id.btn_delete_entry);
         mPlayer = new MediaPlayer();
-        dbWrapper = new DatabaseWrapper(ViewJournalEntry.this);
+        db = JournalDatabase.getInstance(this);
 
         getData();
         setData();
@@ -113,12 +113,16 @@ public class ViewJournalEntry extends AppCompatActivity {
         });
         deleteEntry.setOnClickListener(e -> new AlertDialog.Builder(ViewJournalEntry.this, Tools.getThemeDialog()).setTitle(getResources().getString(R.string.entry_delete_header)).setMessage(getResources().getString(R.string.entry_delete_message))
                 .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-                    dbWrapper.deleteEntry(entryId);
-                    Intent data = new Intent();
-                    data.putExtra("action", "DELETE");
-                    data.putExtra("position", position);
-                    setResult(RESULT_OK, data);
-                    finish();
+                    db.journalEntryDao().getEntryById(entryId).subscribe(journalEntry -> {
+                        // TODO display loading screen
+                        db.journalEntryDao().delete(journalEntry).subscribe(() -> {
+                            Intent data = new Intent();
+                            data.putExtra("action", "DELETE");
+                            data.putExtra("position", position);
+                            setResult(RESULT_OK, data);
+                            finish();
+                        });
+                    });
                 })
                 .setNegativeButton(getResources().getString(R.string.no), null)
                 .show());

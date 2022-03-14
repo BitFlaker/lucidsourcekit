@@ -101,7 +101,7 @@ public class DatabaseWrapper extends SQLiteOpenHelper {
             String qual = cursor.getString(cursor.getColumnIndexOrThrow(StoredJournalEntries.QUALITY_ID));
             String clar = cursor.getString(cursor.getColumnIndexOrThrow(StoredJournalEntries.CLARITY_ID));
             String mood = cursor.getString(cursor.getColumnIndexOrThrow(StoredJournalEntries.MOOD_ID));
-            entries.add(new StoredJournalEntries(id, date, time, title, desc, qual, clar, mood), getAssignedTags(id), getAssignedAudioLocations(id), getAssignedTypes(id));
+            //entries.add(new StoredJournalEntries(id, date, time, title, desc, qual, clar, mood), getAssignedTags(id), getAssignedAudioLocations(id), getAssignedTypes(id));
         }
         cursor.close();
         return entries;

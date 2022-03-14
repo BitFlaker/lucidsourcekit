@@ -17,7 +17,6 @@ import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
-import com.bitflaker.lucidsourcekit.database.JournalDatabase;
 import com.bitflaker.lucidsourcekit.general.Crypt;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.main.MainViewer;
