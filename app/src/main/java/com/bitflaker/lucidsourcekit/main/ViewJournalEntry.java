@@ -35,18 +35,22 @@ import com.bitflaker.lucidsourcekit.main.createjournalentry.AddTextEntry;
 import com.google.android.flexbox.FlexboxLayout;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Objects;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class ViewJournalEntry extends AppCompatActivity {
 
-    private TextView title, timestamp, description;
+    private TextView title, txt_timestamp, description;
     private ImageView mood, clarity, quality;
     private ProgressBar prgMood, prgClarity, prgQuality;
     private FlexboxLayout tagsContainer;
     private LinearLayout dreamTypesContainer, dreamContent;
-    private String selectedDate, selectedTime, titleContent, descriptionContent, qualityContent, clarityContent, moodContent;
+    private String titleContent, descriptionContent, qualityContent, clarityContent, moodContent;
     private String[] dreamTypes, tags, recordedAudios, availableTags;
     private ImageButton currentPlayingImageButton, editEntry, deleteEntry;
     private MediaPlayer mPlayer;
@@ -54,6 +58,9 @@ public class ViewJournalEntry extends AppCompatActivity {
     private JournalTypes journalType;
     private int position, entryId;
     private JournalDatabase db;
+    private long timestamp;
+    private Calendar cldr;
+    private DateFormat dateFormat, timeFormat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +78,7 @@ public class ViewJournalEntry extends AppCompatActivity {
         setContentView(R.layout.activity_view_journal_entry);
 
         title = findViewById(R.id.txt_entry_title);
-        timestamp = findViewById(R.id.txt_entry_time);
+        txt_timestamp = findViewById(R.id.txt_entry_time);
         mood = findViewById(R.id.img_entry_mood);
         clarity = findViewById(R.id.img_entry_clarity);
         quality = findViewById(R.id.img_entry_quality);
@@ -85,6 +92,9 @@ public class ViewJournalEntry extends AppCompatActivity {
         deleteEntry = findViewById(R.id.btn_delete_entry);
         mPlayer = new MediaPlayer();
         db = JournalDatabase.getInstance(this);
+        cldr = new GregorianCalendar(TimeZone.getDefault());
+        dateFormat = android.text.format.DateFormat.getDateFormat(this);
+        timeFormat = android.text.format.DateFormat.getTimeFormat(this);
 
         getData();
         setData();
@@ -99,8 +109,7 @@ public class ViewJournalEntry extends AppCompatActivity {
             intent.putExtra("type", journalType.ordinal());
             intent.putExtra("availableTags", availableTags);
             intent.putExtra("entryId", entryId);
-            intent.putExtra("date", selectedDate);
-            intent.putExtra("time", selectedTime);
+            intent.putExtra("timestamp", timestamp);
             intent.putExtra("title", titleContent);
             intent.putExtra("description", descriptionContent);
             intent.putExtra("quality", qualityContent);
@@ -129,7 +138,8 @@ public class ViewJournalEntry extends AppCompatActivity {
     }
 
     private void setData() {
-        timestamp.setText(MessageFormat.format("{0} {1} {2}", selectedDate, getResources().getString(R.string.journal_time_at), selectedTime));
+        cldr.setTimeInMillis(timestamp);
+        txt_timestamp.setText(MessageFormat.format("{0} {1} {2}", dateFormat.format(cldr.getTime()), getResources().getString(R.string.journal_time_at), timeFormat.format(cldr.getTime())));
         title.setText(titleContent);
         if(descriptionContent != null) {
             description = new TextView(ViewJournalEntry.this);
@@ -355,9 +365,8 @@ public class ViewJournalEntry extends AppCompatActivity {
         journalType = JournalTypes.values()[data.getIntExtra("type", -1)];
         position = data.getIntExtra("position", -1);
         entryId = data.getIntExtra("entryId", -1);
-        selectedDate = data.getStringExtra("date");
         availableTags = data.getStringArrayExtra("availableTags");
-        selectedTime = data.getStringExtra("time");
+        timestamp = data.getLongExtra("timestamp", 0);
         titleContent = data.getStringExtra("title");
         descriptionContent = data.getStringExtra("description");
         qualityContent = data.getStringExtra("quality");

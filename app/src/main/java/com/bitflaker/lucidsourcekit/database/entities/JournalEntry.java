@@ -43,4 +43,8 @@ public class JournalEntry {
         this.clarityId = clarityId;
         this.moodId = moodId;
     }
+
+    public void setEntryId(int entryId) {
+        this.entryId = entryId;
+    }
 }

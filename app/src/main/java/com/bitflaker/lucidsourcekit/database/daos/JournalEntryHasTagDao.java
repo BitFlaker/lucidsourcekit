@@ -19,7 +19,7 @@ public interface JournalEntryHasTagDao {
     Single<List<AssignedTags>> getAllFromEntryId(int entryId);
 
     @Insert
-    Completable insertAll(JournalEntryHasTag... journalEntryHasTags);
+    Single<List<Long>> insertAll(List<JournalEntryHasTag> journalEntryHasTags);
 
     @Delete
     Completable delete(JournalEntryHasTag journalEntryHasTag);

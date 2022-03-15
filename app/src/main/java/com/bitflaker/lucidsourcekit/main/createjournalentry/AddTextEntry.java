@@ -53,7 +53,6 @@ import com.google.android.material.slider.Slider;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -174,7 +173,7 @@ public class AddTextEntry extends AppCompatActivity {
             long timestampMillis = data.getLongExtra("timestamp", 0);
             timestampCalendar.setTimeInMillis(timestampMillis);
             dateButton.setText(dateFormat.format(timestampCalendar.getTime()));
-            SimpleDateFormat time = new SimpleDateFormat("HH:mm");
+            DateFormat time = android.text.format.DateFormat.getTimeFormat(this);
             timeButton.setText(time.format(timestampCalendar.getTime()));
 
             entryTitle.setText(data.getStringExtra("title"));
@@ -198,7 +197,7 @@ public class AddTextEntry extends AppCompatActivity {
 
             String[] editTags = data.getStringArrayExtra("tags");
             for (String editTag : editTags) {
-                tagContainer.addView(generateTagView(editTag));
+                tagContainer.addView(generateTagView(editTag), tagContainer.getChildCount() - 1);
             }
 
             if(currentType == JournalTypes.Audio) {
@@ -252,13 +251,15 @@ public class AddTextEntry extends AppCompatActivity {
         String quality = SleepQuality.values()[((int) qualitySlider.getValue())].getId();
         String clarity = DreamClarity.values()[((int) claritySlider.getValue())].getId();
         String mood = DreamMoods.values()[((int) moodSlider.getValue())].getId();
+        JournalEntry entry = new JournalEntry(timestampCalendar.getTimeInMillis(), title, description, quality, clarity, mood);
 
         if(entryId != -1) {
+            entry.setEntryId(entryId);
             db.journalEntryHasTagDao().deleteAll(entryId);
             db.journalEntryIsTypeDao().deleteAll(entryId);
         }
 
-        db.journalEntryDao().insert(new JournalEntry(timestampCalendar.getTimeInMillis(), title, description, quality, clarity, mood)).subscribe((insertedIds, throwable) -> {
+        db.journalEntryDao().insert(entry).subscribe((insertedIds, throwable) -> {
             int currentEntryId = insertedIds.intValue();
             List<String> dreamTypes = new ArrayList<>();
             if(nightmare.isChecked()) { dreamTypes.add(DreamTypes.Nightmare.getId()); }
@@ -279,36 +280,38 @@ public class AddTextEntry extends AppCompatActivity {
                         tags.add(tag);
                     }
                 }
-                List<JournalEntryTag> journalEntryTags = new ArrayList<>();
+                List<JournalEntryTag> journalEntryTagsToInsert = new ArrayList<>();
                 for (String tag : tags) {
-                    journalEntryTags.add(new JournalEntryTag(tag));
+                    journalEntryTagsToInsert.add(new JournalEntryTag(tag));
                 }
-                db.journalEntryTagDao().insertAll(journalEntryTags).subscribe((insertedTagIds, throwable1) -> {
-                    List<JournalEntryHasTag> journalEntryHasTags = new ArrayList<>();
-                    for (Long insertedTagId : insertedTagIds) {
-                        journalEntryHasTags.add(new JournalEntryHasTag(currentEntryId, insertedTagId.intValue()));
-                    }
-                    db.journalEntryTagDao().insertAll(journalEntryTags).subscribe((integers, throwable2) -> {
-                        List<AudioLocation> audioLocations = new ArrayList<>();
-                        for (String location : recordedAudios){
-                            audioLocations.add(new AudioLocation(currentEntryId, location));
+                db.journalEntryTagDao().insertAll(journalEntryTagsToInsert).subscribe((insertedTagIds, throwable1) -> {
+                    db.journalEntryTagDao().getIdsByDescription(tags).subscribe((journalEntryTags, throwable2) -> {
+                        List<JournalEntryHasTag> journalEntryHasTags = new ArrayList<>();
+                        for (int i = 0; i < journalEntryTags.size(); i++) {
+                            journalEntryHasTags.add(new JournalEntryHasTag(currentEntryId, journalEntryTags.get(i).tagId));
                         }
-                        db.audioLocationDao().insertAll(audioLocations).subscribe((integers1, throwable3) -> {
-                            // TODO hide loading animation
-                            Intent data = new Intent();
-                            data.putExtra("entryId", currentEntryId);
-                            data.putExtra("timestamp", timestampCalendar.getTimeInMillis());
-                            data.putExtra("title", title);
-                            data.putExtra("description", description);
-                            data.putExtra("quality", quality);
-                            data.putExtra("clarity", clarity);
-                            data.putExtra("mood", mood);
-                            data.putExtra("dreamTypes", dreamTypes.toArray(new String[0]));
-                            data.putExtra("tags", tags.toArray(new String[0]));
-                            data.putExtra("recordings", recordedAudios.toArray(new String[0]));
-                            setResult(RESULT_OK, data);
-                            storedByUser = true;
-                            finish();
+                        db.journalEntryHasTagDao().insertAll(journalEntryHasTags).subscribe((integers, throwable3) -> {
+                            List<AudioLocation> audioLocations = new ArrayList<>();
+                            for (String location : recordedAudios){
+                                audioLocations.add(new AudioLocation(currentEntryId, location));
+                            }
+                            db.audioLocationDao().insertAll(audioLocations).subscribe((integers1, throwable4) -> {
+                                // TODO hide loading animation
+                                Intent data = new Intent();
+                                data.putExtra("entryId", currentEntryId);
+                                data.putExtra("timestamp", timestampCalendar.getTimeInMillis());
+                                data.putExtra("title", title);
+                                data.putExtra("description", description);
+                                data.putExtra("quality", quality);
+                                data.putExtra("clarity", clarity);
+                                data.putExtra("mood", mood);
+                                data.putExtra("dreamTypes", dreamTypes.toArray(new String[0]));
+                                data.putExtra("tags", tags.toArray(new String[0]));
+                                data.putExtra("recordings", recordedAudios.toArray(new String[0]));
+                                setResult(RESULT_OK, data);
+                                storedByUser = true;
+                                finish();
+                            });
                         });
                     });
                 });

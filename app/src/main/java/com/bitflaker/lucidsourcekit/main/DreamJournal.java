@@ -1,8 +1,10 @@
 package com.bitflaker.lucidsourcekit.main;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +62,8 @@ public class DreamJournal extends Fragment {
 
         db = JournalDatabase.getInstance(getContext());
 
-        db.journalEntryDao().getAll().subscribe((journalEntries, throwable) -> {
+        Context context = getContext();
+        db.journalEntryDao().getAll().subscribe(journalEntries -> {
             // TODO gather all data in a more efficient way!
             DreamJournalEntriesList djel = new DreamJournalEntriesList();
             for (JournalEntry entry : journalEntries) {
@@ -74,13 +77,17 @@ public class DreamJournal extends Fragment {
                 });
             }
 
-            setData(djel);
-            setBasics();
-            setupFAB();
-            setupSortButton();
-            setupFilterButton();
-            setupResetFilterButton();
-            checkForEntries();
+            Handler mainHandler = new Handler(context.getMainLooper());
+            Runnable myRunnable = () -> {
+                setData(djel);
+                setBasics();
+                setupFAB();
+                setupSortButton();
+                setupFilterButton();
+                setupResetFilterButton();
+                checkForEntries();
+            };
+            mainHandler.post(myRunnable);
         });
     }
 
@@ -101,7 +108,6 @@ public class DreamJournal extends Fragment {
     private void setupFilterButton() {
         filterEntries.setOnClickListener(e -> {
             // TODO start loading animation
-            animateFab();
             db.journalEntryTagDao().getAll().subscribe((journalEntryTags, throwable) -> {
                 String[] availableTags = new String[journalEntryTags.size()];
                 for (int i = 0; i < journalEntryTags.size(); i++) {
@@ -266,6 +272,7 @@ public class DreamJournal extends Fragment {
 
                         //TODO: make refreshing work again
 
+                        /*
                         int entryId = data.getIntExtra("entryId", -1);
                         String selectedDate = data.getStringExtra("date");
                         String selectedTime = data.getStringExtra("time");
@@ -277,11 +284,12 @@ public class DreamJournal extends Fragment {
                         String[] dreamTypes = data.getStringArrayExtra("dreamTypes");
                         String[] tags = data.getStringArrayExtra("tags");
                         String[] recordedAudios = data.getStringArrayExtra("recordings");
-                        StoredJournalEntries entry = new StoredJournalEntries(entryId, selectedDate, selectedTime, title, description, quality, clarity, mood);
-                        //recyclerViewAdapterDreamJournal.addEntry(entry, tags, dreamTypes, recordedAudios);
+                        JournalEntry entry = new JournalEntry(entryId, selectedDate, selectedTime, title, description, quality, clarity, mood);
+                        recyclerViewAdapterDreamJournal.addEntry(entry, tags, dreamTypes, recordedAudios);
                         recyclerViewAdapterDreamJournal.notifyItemInserted(0);
                         recyclerView.scrollToPosition(0);
                         recyclerViewAdapterDreamJournal.notifyItemRangeChanged(0, recyclerViewAdapterDreamJournal.getItemCount());
+                         */
                     }
                 });
     }

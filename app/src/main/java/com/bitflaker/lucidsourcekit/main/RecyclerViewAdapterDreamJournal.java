@@ -34,7 +34,6 @@ import com.google.android.flexbox.FlexboxLayout;
 
 import java.text.DateFormat;
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -104,7 +103,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
 
         Calendar cldr = current.getTimestamps()[position];
         DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
         holder.dateTime.setText(MessageFormat.format("{0} {1} {2}", dateFormat.format(cldr.getTime()), context.getResources().getString(R.string.journal_time_at), timeFormat.format(cldr.getTime())));
         holder.title.setText(current.getTitles()[position]);
         if(current.getDescriptions()[position] == null){
@@ -199,17 +198,20 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             // TODO start loading animation
             Intent intent = new Intent(context, ViewJournalEntry.class);
 
-            String[] types = new String[current.getTypes().get(position).size()];
-            for (int i = 0; i < current.getTypes().get(position).size(); i++) {
-                types[i] = current.getTypes().get(position).get(i).typeId;
+            List<List<JournalEntryHasType>> typesList = current.getTypes();
+            String[] types = new String[typesList.get(position).size()];
+            for (int i = 0; i < typesList.get(position).size(); i++) {
+                types[i] = typesList.get(position).get(i).typeId;
             }
-            String[] tags = new String[current.getTags().get(position).size()];
-            for (int i = 0; i < current.getTags().get(position).size(); i++) {
-                tags[i] = current.getTags().get(position).get(i).description;
+            List<List<AssignedTags>> tagsList = current.getTags();
+            String[] tags = new String[tagsList.get(position).size()];
+            for (int i = 0; i < tagsList.get(position).size(); i++) {
+                tags[i] = tagsList.get(position).get(i).description;
             }
-            String[] recs = new String[current.getAudioLocations().get(position).size()];
-            for (int i = 0; i < current.getAudioLocations().get(position).size(); i++) {
-                recs[i] = current.getAudioLocations().get(position).get(i).audioPath;
+            List<List<AudioLocation>> audioLocationsList = current.getAudioLocations();
+            String[] recs = new String[audioLocationsList.get(position).size()];
+            for (int i = 0; i < audioLocationsList.get(position).size(); i++) {
+                recs[i] = audioLocationsList.get(position).get(i).audioPath;
             }
 
             db.journalEntryTagDao().getAll().subscribe((journalEntryTags, throwable) -> {
@@ -222,7 +224,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
                 intent.putExtra("type", current.getDescriptions()[position] == null ? JournalTypes.Audio.ordinal() : JournalTypes.Text.ordinal());
                 intent.putExtra("availableTags", availableTags);
                 intent.putExtra("entryId", current.getEntryIds()[position]);
-                intent.putExtra("timestamp", current.getTimestamps()[position]);
+                intent.putExtra("timestamp", current.getTimestamps()[position].getTimeInMillis());
                 intent.putExtra("title", current.getTitles()[position]);
                 intent.putExtra("description", current.getDescriptions()[position]);
                 intent.putExtra("quality", current.getSleepQualities()[position]);

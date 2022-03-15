@@ -12,12 +12,13 @@ import com.bitflaker.lucidsourcekit.database.entities.JournalEntry;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao
 public interface JournalEntryDao {
     @Query("SELECT * FROM JournalEntry")
-    Single<List<JournalEntry>> getAll();
+    Flowable<List<JournalEntry>> getAll();
 
     @Query("SELECT * FROM JournalEntry WHERE entryId = :id")
     Single<JournalEntry> getEntryById(int id);

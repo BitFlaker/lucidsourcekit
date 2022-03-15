@@ -17,9 +17,15 @@ import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
+import com.bitflaker.lucidsourcekit.database.JournalDatabase;
+import com.bitflaker.lucidsourcekit.database.entities.DreamClarity;
+import com.bitflaker.lucidsourcekit.database.entities.DreamMood;
+import com.bitflaker.lucidsourcekit.database.entities.DreamType;
+import com.bitflaker.lucidsourcekit.database.entities.SleepQuality;
 import com.bitflaker.lucidsourcekit.general.Crypt;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.main.MainViewer;
+import com.bitflaker.lucidsourcekit.setup.SetupGetStarted;
 import com.bitflaker.lucidsourcekit.setup.SetupViewer;
 import com.google.android.material.button.MaterialButton;
 
@@ -54,6 +60,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Tools.loadLanguage(MainActivity.this);
         Tools.makeStatusBarTransparent(MainActivity.this);
+
+        // TODO: only insert when necessary and add loading
+        // TODO: add loading indicator
+        JournalDatabase db = JournalDatabase.getInstance(MainActivity.this);
+        db.dreamTypeDao().insertAll(DreamType.populateData()).subscribe(() -> {
+            db.dreamMoodDao().insertAll(DreamMood.populateData()).subscribe(() -> {
+                db.dreamClarityDao().insertAll(DreamClarity.populateData()).subscribe(() -> {
+                    db.sleepQualityDao().insertAll(SleepQuality.populateData()).subscribe(() -> {
+                        // TODO: hide loading indicator
+                    });
+                });
+            });
+        });
 
         /*
         JournalDatabase db = JournalDatabase.getInstance(MainActivity.this);

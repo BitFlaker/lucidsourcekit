@@ -1,5 +1,7 @@
 package com.bitflaker.lucidsourcekit.database.daos;
 
+import static androidx.room.OnConflictStrategy.IGNORE;
+
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -17,10 +19,13 @@ public interface JournalEntryTagDao {
     @Query("SELECT * FROM JournalEntryTag")
     Single<List<JournalEntryTag>> getAll();
 
+    @Query("SELECT * FROM JournalEntryTag WHERE description IN (:descriptions)")
+    Single<List<JournalEntryTag>> getIdsByDescription(List<String> descriptions);
+
     @Insert
     Single<List<Long>> insertAll(JournalEntryTag... tags);
 
-    @Insert
+    @Insert(onConflict = IGNORE)
     Single<List<Long>> insertAll(List<JournalEntryTag> journalEntryTags);
 
     @Delete
