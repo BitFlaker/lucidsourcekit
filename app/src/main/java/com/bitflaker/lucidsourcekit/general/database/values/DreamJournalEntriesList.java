@@ -211,7 +211,7 @@ public class DreamJournalEntriesList {
 
     private static boolean passesDreamTypeFilter(AppliedFilter filter, DreamJournalEntry entry) {
         for (int i = 0; i < filter.getFilterDreamTypes().length; i++) {
-            if(!Arrays.asList(entry.getTypes()).contains(DreamTypes.values()[i].getId()) && filter.getFilterDreamTypes()[i]){
+            if(!entry.getTypeStrings().contains(DreamTypes.values()[i].getId()) && filter.getFilterDreamTypes()[i]){
                 return false;
             }
         }
@@ -221,7 +221,7 @@ public class DreamJournalEntriesList {
     private static boolean passesTagsFilter(AppliedFilter filter, DreamJournalEntry entry) {
         if(filter.getFilterTagsList().size() > 0) {
             for (String mustHaveTag : filter.getFilterTagsList()) {
-                if(!Arrays.asList(entry.getTags()).contains(mustHaveTag)){
+                if(!entry.getTagStrings().contains(mustHaveTag)){
                     return false;
                 }
             }

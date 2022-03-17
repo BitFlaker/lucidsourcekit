@@ -5,6 +5,7 @@ import com.bitflaker.lucidsourcekit.database.entities.AudioLocation;
 import com.bitflaker.lucidsourcekit.database.entities.JournalEntry;
 import com.bitflaker.lucidsourcekit.database.entities.JournalEntryHasType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DreamJournalEntry {
@@ -30,8 +31,24 @@ public class DreamJournalEntry {
         return tags;
     }
 
+    public List<String> getTagStrings() {
+        List<String> tagStrings = new ArrayList<>();
+        for (AssignedTags tag : this.tags) {
+            tagStrings.add(tag.description);
+        }
+        return tagStrings;
+    }
+
     public List<JournalEntryHasType> getTypes() {
         return types;
+    }
+
+    public List<String> getTypeStrings() {
+        List<String> typeStrings = new ArrayList<>();
+        for (JournalEntryHasType type : types) {
+            typeStrings.add(type.typeId);
+        }
+        return typeStrings;
     }
 
     public List<AudioLocation> getAudioLocations() {
