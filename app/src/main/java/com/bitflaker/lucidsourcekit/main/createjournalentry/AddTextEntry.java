@@ -101,6 +101,8 @@ public class AddTextEntry extends AppCompatActivity {
 
     private String[] availableTags;
 
+    // TODO wrong date on default date selection => 3/2/22 instead of 3/15/22
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -298,6 +300,7 @@ public class AddTextEntry extends AppCompatActivity {
                             db.audioLocationDao().insertAll(audioLocations).subscribe((integers1, throwable4) -> {
                                 // TODO hide loading animation
                                 Intent data = new Intent();
+                                /*
                                 data.putExtra("entryId", currentEntryId);
                                 data.putExtra("timestamp", timestampCalendar.getTimeInMillis());
                                 data.putExtra("title", title);
@@ -308,6 +311,7 @@ public class AddTextEntry extends AppCompatActivity {
                                 data.putExtra("dreamTypes", dreamTypes.toArray(new String[0]));
                                 data.putExtra("tags", tags.toArray(new String[0]));
                                 data.putExtra("recordings", recordedAudios.toArray(new String[0]));
+                                 */
                                 setResult(RESULT_OK, data);
                                 storedByUser = true;
                                 finish();
@@ -534,8 +538,9 @@ public class AddTextEntry extends AppCompatActivity {
             timestampCalendar.set(Calendar.MINUTE, minute);
             timeButton.setText(String.format("%02d:%02d", hourOfDay, minute));
         }, date.getHours(), date.getMinutes(), true);
-        timestampCalendar.set(Calendar.HOUR_OF_DAY, date.getHours());
-        timestampCalendar.set(Calendar.MINUTE, date.getMinutes());
+        //timestampCalendar.set(Calendar.HOUR_OF_DAY, date.getHours());
+        //timestampCalendar.set(Calendar.MINUTE, date.getMinutes());
+        timestampCalendar.setTime(Calendar.getInstance().getTime());
         timeButton.setText(String.format("%02d:%02d", date.getHours(), date.getMinutes()));
         timeButton.setOnClickListener(e -> tpd.show());
     }
@@ -545,7 +550,7 @@ public class AddTextEntry extends AppCompatActivity {
         dateFormat = android.text.format.DateFormat.getDateFormat(getApplicationContext());
         Date currDate = java.util.Calendar.getInstance().getTime();
         dateButton.setText(dateFormat.format(currDate));
-        timestampCalendar.set(currDate.getYear(), currDate.getMonth(), currDate.getDay());
+        //timestampCalendar.set(currDate.getYear(), currDate.getMonth(), currDate.getDay());
         dateButton.setOnClickListener(e -> dpd.show());
         dpd.setOnDateSetListener((datePicker, year, monthOfYear, dayOfMonth) -> {
             timestampCalendar.set(year, monthOfYear, dayOfMonth);

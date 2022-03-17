@@ -69,7 +69,7 @@
         <item name="colorError">@color/lighter_red</item>
         <item name="colorWarning">@color/lighter_orange</item>
         <item name="colorSuccess">@color/lighter_green</item>
-        <item name="main_overview_graphic">@drawable/deep_night_mountains_dark</item>
+        <item name="main_overview_graphic">@drawable/deep_night_mountains_new_dark</item>
         <item name="bottomSheetDialogTheme">@style/BottomSheetDialog.Dark</item>
     </style>
 

@@ -17,7 +17,7 @@ import io.reactivex.rxjava3.core.Single;
 
 @Dao
 public interface JournalEntryDao {
-    @Query("SELECT * FROM JournalEntry")
+    @Query("SELECT * FROM JournalEntry ORDER BY timeStamp DESC")
     Flowable<List<JournalEntry>> getAll();
 
     @Query("SELECT * FROM JournalEntry WHERE entryId = :id")

@@ -25,7 +25,6 @@ import com.bitflaker.lucidsourcekit.database.entities.SleepQuality;
 import com.bitflaker.lucidsourcekit.general.Crypt;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.main.MainViewer;
-import com.bitflaker.lucidsourcekit.setup.SetupGetStarted;
 import com.bitflaker.lucidsourcekit.setup.SetupViewer;
 import com.google.android.material.button.MaterialButton;
 
@@ -60,6 +59,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Tools.loadLanguage(MainActivity.this);
         Tools.makeStatusBarTransparent(MainActivity.this);
+
+        /*
+        String filename = getFilesDir().getAbsolutePath() + "/Recordings";
+        File directory = new File(filename);
+        File[] files = directory.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            System.out.println(files[i].getName());
+        }
+         */
 
         // TODO: only insert when necessary and add loading
         // TODO: add loading indicator

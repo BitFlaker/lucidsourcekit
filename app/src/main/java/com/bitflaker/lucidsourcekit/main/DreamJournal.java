@@ -41,12 +41,14 @@ public class DreamJournal extends Fragment {
     private FloatingActionButton fabAdd, fabText, fabForms, fabAudio;
     private Animation fabOpen, fabClose, rotateForward, rotateBackward;
     private boolean isOpen = false;
-    private RecyclerViewAdapterDreamJournal recyclerViewAdapterDreamJournal;
+    private RecyclerViewAdapterDreamJournal recyclerViewAdapterDreamJournal = null;
     private ActivityResultLauncher<Intent> createEntryActivityResultLauncher;
     public ActivityResultLauncher<Intent> viewEntryActivityResultLauncher;
     private ImageButton sortEntries, filterEntries, resetFilterEntries;
     private int sortBy = 0;
     private JournalDatabase db;
+
+    // TODO: new audio entry added => displaying 0 audio files and does not display them, but when reloaded, it shows correct values
 
     @Nullable
     @Override
@@ -79,12 +81,15 @@ public class DreamJournal extends Fragment {
 
             Handler mainHandler = new Handler(context.getMainLooper());
             Runnable myRunnable = () -> {
-                setData(djel);
-                setBasics();
-                setupFAB();
-                setupSortButton();
-                setupFilterButton();
-                setupResetFilterButton();
+                if(setData(djel)) {
+                    setBasics();
+                    setupFAB();
+                    setupSortButton();
+                    setupFilterButton();
+                    setupResetFilterButton();
+                }
+                // TODO: get changed element and make precise notify and not just reload the whole dataset
+                recyclerViewAdapterDreamJournal.notifyDataSetChanged();
                 checkForEntries();
             };
             mainHandler.post(myRunnable);
@@ -155,21 +160,29 @@ public class DreamJournal extends Fragment {
         fabForms.setOnClickListener(view1 -> showJournalCreator(JournalTypes.Forms));
     }
 
-    private void setData(DreamJournalEntriesList entries) {
-        recyclerViewAdapterDreamJournal = new RecyclerViewAdapterDreamJournal(this, getContext(), entries);
-        fabAdd = getView().findViewById(R.id.btn_add_journal_entry);
-        fabText = getView().findViewById(R.id.fab_text);
-        fabAudio = getView().findViewById(R.id.fab_audio);
-        fabForms = getView().findViewById(R.id.fab_forms);
-        sortEntries = getView().findViewById(R.id.btn_sort);
-        filterEntries = getView().findViewById(R.id.btn_filter);
-        resetFilterEntries = getView().findViewById(R.id.btn_filter_off);
-        fabOpen = AnimationUtils.loadAnimation(getContext(), R.anim.add_open);
-        fabClose = AnimationUtils.loadAnimation(getContext(),R.anim.add_close);
-        rotateForward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_forward);
-        rotateBackward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_backward);
-        noEntryFound = getView().findViewById(R.id.txt_no_entries);
-        recyclerView = getView().findViewById(R.id.recycler_view);
+    private boolean setData(DreamJournalEntriesList entries) {
+        boolean isFirstInit = false;
+        if(recyclerViewAdapterDreamJournal == null){
+            isFirstInit = true;
+            fabAdd = getView().findViewById(R.id.btn_add_journal_entry);
+            fabText = getView().findViewById(R.id.fab_text);
+            fabAudio = getView().findViewById(R.id.fab_audio);
+            fabForms = getView().findViewById(R.id.fab_forms);
+            sortEntries = getView().findViewById(R.id.btn_sort);
+            filterEntries = getView().findViewById(R.id.btn_filter);
+            resetFilterEntries = getView().findViewById(R.id.btn_filter_off);
+            fabOpen = AnimationUtils.loadAnimation(getContext(), R.anim.add_open);
+            fabClose = AnimationUtils.loadAnimation(getContext(),R.anim.add_close);
+            rotateForward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_forward);
+            rotateBackward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_backward);
+            noEntryFound = getView().findViewById(R.id.txt_no_entries);
+            recyclerView = getView().findViewById(R.id.recycler_view);
+            recyclerViewAdapterDreamJournal = new RecyclerViewAdapterDreamJournal(this, getContext(), entries);
+        }
+        else {
+            recyclerViewAdapterDreamJournal.setEntries(entries);
+        }
+        return isFirstInit;
     }
 
     private void checkForEntries() {
