@@ -12,12 +12,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:text="Statistics"
         android:textColor="?attr/primaryTextColor"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:minHeight="48dp"
+        android:gravity="center_vertical"/>
 
     <ScrollView
         android:layout_width="match_parent"

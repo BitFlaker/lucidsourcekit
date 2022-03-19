@@ -36,6 +36,7 @@ public class Statistics extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        getView().findViewById(R.id.txt_stats_heading).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
         avgMoodsContainer = getView().findViewById(R.id.ll_avg_moods);
         avgClaritiesContainer = getView().findViewById(R.id.ll_avg_clarities);
         avgQualitiesContainer = getView().findViewById(R.id.ll_avg_sleep_quality);

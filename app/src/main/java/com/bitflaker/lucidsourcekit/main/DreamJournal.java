@@ -28,7 +28,6 @@ import com.bitflaker.lucidsourcekit.database.JournalDatabase;
 import com.bitflaker.lucidsourcekit.database.entities.JournalEntry;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
-import com.bitflaker.lucidsourcekit.general.database.StoredJournalEntries;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntriesList;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntry;
 import com.bitflaker.lucidsourcekit.main.createjournalentry.AddTextEntry;
@@ -61,6 +60,7 @@ public class DreamJournal extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getView().findViewById(R.id.ll_header).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
 
         db = JournalDatabase.getInstance(getContext());
 
@@ -261,7 +261,7 @@ public class DreamJournal extends Fragment {
                                 String[] dreamTypes = data.getStringArrayExtra("dreamTypes");
                                 String[] tags = data.getStringArrayExtra("tags");
                                 String[] recordedAudios = data.getStringArrayExtra("recordings");
-                                StoredJournalEntries entry = new StoredJournalEntries(-1, selectedDate, selectedTime, title, description, quality, clarity, mood);
+                                //StoredJournalEntries entry = new StoredJournalEntries(-1, selectedDate, selectedTime, title, description, quality, clarity, mood);
                                 //recyclerViewAdapterDreamJournal.changeEntryAt(position, entry, tags, dreamTypes, recordedAudios);
                                 recyclerViewAdapterDreamJournal.notifyItemChanged(position);
                                 recyclerView.scrollToPosition(position);

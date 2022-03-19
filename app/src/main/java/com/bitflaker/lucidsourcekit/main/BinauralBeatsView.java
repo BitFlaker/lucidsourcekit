@@ -63,6 +63,7 @@ public class BinauralBeatsView extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        getView().findViewById(R.id.txt_binaural_beats_heading).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
         progressLineGraph = getView().findViewById(R.id.lg_binaural_time_progress);
         displayAllBeats = getView().findViewById(R.id.btn_display_all_beats);
         backgroundNoises = getView().findViewById(R.id.btn_add_background_noise);

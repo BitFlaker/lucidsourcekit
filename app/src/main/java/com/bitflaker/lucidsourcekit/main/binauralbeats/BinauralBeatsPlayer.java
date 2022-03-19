@@ -50,8 +50,8 @@ public class BinauralBeatsPlayer {
 
     public void pause() {
         playing = false;
-        binauralAudioTrack.pause();
         trackThread.interrupt();
+        binauralAudioTrack.pause();
         System.gc();
     }
 
@@ -113,8 +113,6 @@ public class BinauralBeatsPlayer {
                 }
             }
         });
-
-
         if(!isPaused){
             if(currentPosition == null){
                 currentPosition = new AudioBufferPosition();

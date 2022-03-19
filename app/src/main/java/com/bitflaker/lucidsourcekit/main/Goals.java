@@ -33,6 +33,7 @@ public class Goals extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        getView().findViewById(R.id.txt_goals_heading).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
         difficultyChartContainer = getView().findViewById(R.id.ll_difficulty);
         floatingEdit = getView().findViewById(R.id.btn_add_journal_entry);
 

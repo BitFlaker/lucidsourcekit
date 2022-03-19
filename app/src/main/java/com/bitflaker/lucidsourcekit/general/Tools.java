@@ -10,6 +10,8 @@ import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
@@ -132,5 +134,21 @@ public class Tools {
             }
         }
         return uniques.toArray(new String[0]);
+    }
+
+    public static RelativeLayout.LayoutParams getRelativeLayoutParamsTopStatusbar(Context context) {
+        RelativeLayout.LayoutParams lParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lParams.setMargins(dpToPx(context, 15), getStatusBarHeight(context), dpToPx(context, 10), 0);
+        return lParams;
+    }
+
+    public static int getStatusBarHeight(Context context) {
+        // TODO: maybe find a better way of getting this data
+        int result = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }
