@@ -1,7 +1,7 @@
 package com.bitflaker.lucidsourcekit.main.binauralbeats;
 
+import android.media.AudioAttributes;
 import android.media.AudioFormat;
-import android.media.AudioManager;
 import android.media.AudioTrack;
 
 import androidx.annotation.NonNull;
@@ -12,6 +12,7 @@ import com.bitflaker.lucidsourcekit.general.FastSineTable;
 import com.bitflaker.lucidsourcekit.main.BinauralBeat;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BinauralBeatsPlayer {
     private AudioTrack binauralAudioTrack;
@@ -21,6 +22,17 @@ public class BinauralBeatsPlayer {
     private OnTrackFinished mFinishedListener;
     private boolean playing;
     private Thread trackThread;
+
+    private int playerWrittenCount = 0;
+    private AudioBufferPosition currentPosition = null;
+    private FastSineTable fst = new FastSineTable(sampleRate);
+    private short[] buffer = new short[NextBufferGenerator.MAX_SAMPLE_COUNT];
+    private float[] normalSineWave = new float[buffer.length];
+    private boolean isPaused = false;
+    NextBufferGenerator nbg = null;
+    Thread nextBufferGenThread = null;
+
+    // TODO: when changing beat => stop previous one !
 
     public BinauralBeatsPlayer(BinauralBeat binauralBeat) {
         this.binauralBeat = binauralBeat;
@@ -39,6 +51,7 @@ public class BinauralBeatsPlayer {
     public void pause() {
         playing = false;
         binauralAudioTrack.pause();
+        trackThread.interrupt();
         System.gc();
     }
 
@@ -67,7 +80,20 @@ public class BinauralBeatsPlayer {
         int channelConfig = AudioFormat.CHANNEL_OUT_STEREO;
         int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
         int bufferSize = AudioTrack.getMinBufferSize(sampleRate, channelConfig, audioFormat);
-        return new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate, channelConfig, audioFormat, bufferSize, AudioTrack.MODE_STREAM);
+        //return new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate, channelConfig, audioFormat, bufferSize, AudioTrack.MODE_STREAM);
+        return new AudioTrack.Builder()
+                .setAudioAttributes(new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build())
+                .setAudioFormat(new AudioFormat.Builder()
+                        .setEncoding(audioFormat)
+                        .setSampleRate(sampleRate)
+                        .setChannelMask(channelConfig)
+                        .build())
+                .setBufferSizeInBytes(bufferSize)
+                .setTransferMode(AudioTrack.MODE_STREAM)
+                .build();
     }
 
     private void playAndBufferBeats(AudioTrack track) {
@@ -87,32 +113,57 @@ public class BinauralBeatsPlayer {
                 }
             }
         });
-        // TODO calculate only once
-        FastSineTable fst = new FastSineTable(sampleRate);
-        short[] buffer = new short[50000];
-        float[] normalSineWave = new float[buffer.length];
-        AudioBufferPosition nextStartAt = new AudioBufferPosition();
-        nextStartAt = NextBufferGenerator.generateSamples(binauralBeat, sampleRate, fst, buffer, normalSineWave, nextStartAt);
+
+
+        if(!isPaused){
+            if(currentPosition == null){
+                currentPosition = new AudioBufferPosition();
+            }
+            currentPosition = NextBufferGenerator.generateSamples(binauralBeat, sampleRate, fst, buffer, normalSineWave, currentPosition);
+        }
+        else {
+            isPaused = false;
+        }
         boolean wasInFinal = false;
-        while(!nextStartAt.isFinished() && !wasInFinal || nextStartAt.isFinished() && !wasInFinal) {
-            if(nextStartAt.isFinished()){
+        while(!currentPosition.isFinished() && !wasInFinal || currentPosition.isFinished() && !wasInFinal) {
+            if(currentPosition.isFinished()){
                 wasInFinal = true;
             }
-            NextBufferGenerator nbg = new NextBufferGenerator(sampleRate, binauralBeat, fst, buffer.length, nextStartAt);
-            Thread t = new Thread(nbg);
-            t.start();
-            track.play();
-            track.write(buffer, 0, buffer.length);
-            while(!nbg.isFinished()){
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            nbg = new NextBufferGenerator(sampleRate, binauralBeat, fst, NextBufferGenerator.MAX_SAMPLE_COUNT, currentPosition);
+            nextBufferGenThread = new Thread(nbg);
+            nextBufferGenThread.start();
+            if(playerWrittenCount != 0) {
+                buffer = Arrays.copyOfRange(buffer, playerWrittenCount, buffer.length);
+                playerWrittenCount = 0;
             }
-            buffer = nbg.getBuffer();
-            nextStartAt = nbg.getCurrentNextStartAfter();
+            track.play();
+            playerWrittenCount = track.write(buffer, 0, buffer.length, AudioTrack.WRITE_BLOCKING);
+            if(Thread.interrupted()) {
+                isPaused = true;
+                return;
+            }
+            else {
+                if(playerWrittenCount == buffer.length) {
+                    playerWrittenCount = 0;
+                }
+                while(!nbg.isFinished()){
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                }
+                buffer = nbg.getBuffer();
+                currentPosition = nbg.getCurrentNextStartAfter();
+            }
         }
+        playing = false;
+        playerWrittenCount = 0;
+        buffer = new short[NextBufferGenerator.MAX_SAMPLE_COUNT];
+        normalSineWave = new float[buffer.length];
+        currentPosition = new AudioBufferPosition();
+        binauralAudioTrack = null;
+        mFinishedListener.onEvent(binauralBeat);
     }
 
     public interface OnTrackProgress {
@@ -141,7 +192,8 @@ class NextBufferGenerator implements Runnable {
     private FastSineTable fst;
     private AudioBufferPosition nextStartAfter;
     private AudioBufferPosition currentNextStartAfter;
-    private static long MAX_SAMPLE_COUNT = 50000;
+    public static final int MAX_SAMPLE_COUNT = 50000;
+    private final AtomicBoolean terminateOperation = new AtomicBoolean(false);
 
     public NextBufferGenerator(int sampleRate, BinauralBeat binauralBeat, FastSineTable fst, int bufferSize, AudioBufferPosition nextStartAfter) {
         this.sampleRate = sampleRate;
@@ -157,6 +209,10 @@ class NextBufferGenerator implements Runnable {
     public void run() {
         currentNextStartAfter = generateSamples(binauralBeat, sampleRate, fst, buffer, normalSineWave, nextStartAfter);
         finished = true;
+    }
+
+    public void stop() {
+        terminateOperation.set(true);
     }
 
     public static AudioBufferPosition generateSamples(BinauralBeat binauralBeat, int sampleRate, FastSineTable fst, short[] buffer, float[] normalSineWave, AudioBufferPosition startAt) {
@@ -216,10 +272,6 @@ class NextBufferGenerator implements Runnable {
             buffer[i] = (short) (volume * normalSineWave[i] * Short.MAX_VALUE);
             buffer[i+1] = (short) (volume * normalSineWave[i + 1] * Short.MAX_VALUE);
         }
-
-        /*if(binauralBeat.getFrequencyList().size() == abp.getIndex() && (int)(binauralBeat.getFrequencyList().get(binauralBeat.getFrequencyList().size()-1).getDuration()*sampleRate*2) == abp.getBufferPosition()) {
-            abp.setFinished(true);
-        }*/
 
         return abp;
     }

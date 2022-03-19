@@ -149,6 +149,12 @@ public class BinauralBeatsView extends Fragment {
                     });
                 }));
                 binBeatPlayer.setOnTrackFinishedListener(currentBinauralBeat -> {
+                    progressLineGraph.updateProgress(currentBinauralBeat.getFrequencyList().getDuration());
+                    getActivity().runOnUiThread(() -> {
+                        int finishProgress = (int)currentBinauralBeat.getFrequencyList().getDuration();
+                        binauralTimeline.setText(getTimeStringFromSeconds(finishProgress));
+                        binauralFrequency.setText(String.format("%.2f Hz", currentBinauralBeat.getFrequencyList().getFrequencyAtDuration(finishProgress)));
+                    });
                     playTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
                 });
             });
