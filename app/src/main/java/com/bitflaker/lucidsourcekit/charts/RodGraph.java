@@ -24,7 +24,7 @@ public class RodGraph extends View {
     private final Paint dataLinePaint = new Paint();
     private final Paint dataLinePaintBackground = new Paint();
     private float xMax;
-    private float yMax;
+    private double yMax;
     private float textHeight;
     private int iconSize;
     private Bitmap[] icons;
@@ -68,8 +68,8 @@ public class RodGraph extends View {
         invalidate();
     }
 
-    private float getMaxValueFrom(List<DataValue> data) {
-        int maxVal = 0;
+    private double getMaxValueFrom(List<DataValue> data) {
+        double maxVal = 0;
         for (DataValue dv : data) {
             if(dv.val > maxVal) {
                 maxVal = dv.val;
@@ -108,8 +108,8 @@ public class RodGraph extends View {
             bottomPointWithTextMargin = drawRodBackground(canvas, marginForRodRadius, xPos, bottomPoint);
 
             if(current.val > -1){
-                float progressHeight = (bottomPointWithTextMargin - (bottomPointWithTextMargin / yMax * current.val)) + ((marginForRodRadius / yMax) * current.val);
-                canvas.drawLine(xPos, bottomPointWithTextMargin, xPos, progressHeight, dataLinePaint);
+                double progressHeight = (bottomPointWithTextMargin - (bottomPointWithTextMargin / yMax * current.val)) + ((marginForRodRadius / yMax) * current.val);
+                canvas.drawLine(xPos, bottomPointWithTextMargin, xPos, (float)progressHeight, dataLinePaint);
             }
         }
 
@@ -135,8 +135,8 @@ public class RodGraph extends View {
     private void drawIcons(Canvas canvas, float marginForRodRadius, float bottomPointWithTextMargin) {
         if(icons == null){ return; }
         for (int j = 0; j < icons.length; j++){
-            float yPos = (bottomPointWithTextMargin - (bottomPointWithTextMargin / yMax * j)) + ((marginForRodRadius / yMax) * j) - iconSize / 2f;
-            canvas.drawBitmap(icons[j], 0, yPos, dataLinePaintBackground);
+            double yPos = (bottomPointWithTextMargin - (bottomPointWithTextMargin / yMax * j)) + ((marginForRodRadius / yMax) * j) - iconSize / 2f;
+            canvas.drawBitmap(icons[j], 0, (float)yPos, dataLinePaintBackground);
         }
     }
 

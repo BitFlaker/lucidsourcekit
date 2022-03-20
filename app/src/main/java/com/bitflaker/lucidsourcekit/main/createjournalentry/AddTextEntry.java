@@ -321,7 +321,7 @@ public class AddTextEntry extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        if(!storedByUser){
+        if(!storedByUser && !isInEditingMode){
             for (String recordedAudio : recordedAudios) {
                 File audio = new File(getFilesDir().getAbsolutePath() + recordedAudio);
                 audio.delete();
