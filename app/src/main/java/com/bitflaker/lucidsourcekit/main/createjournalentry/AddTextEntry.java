@@ -300,18 +300,7 @@ public class AddTextEntry extends AppCompatActivity {
                             db.audioLocationDao().insertAll(audioLocations).subscribe((integers1, throwable4) -> {
                                 // TODO hide loading animation
                                 Intent data = new Intent();
-                                /*
                                 data.putExtra("entryId", currentEntryId);
-                                data.putExtra("timestamp", timestampCalendar.getTimeInMillis());
-                                data.putExtra("title", title);
-                                data.putExtra("description", description);
-                                data.putExtra("quality", quality);
-                                data.putExtra("clarity", clarity);
-                                data.putExtra("mood", mood);
-                                data.putExtra("dreamTypes", dreamTypes.toArray(new String[0]));
-                                data.putExtra("tags", tags.toArray(new String[0]));
-                                data.putExtra("recordings", recordedAudios.toArray(new String[0]));
-                                 */
                                 setResult(RESULT_OK, data);
                                 storedByUser = true;
                                 finish();

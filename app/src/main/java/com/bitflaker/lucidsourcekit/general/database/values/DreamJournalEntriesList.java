@@ -1,5 +1,7 @@
 package com.bitflaker.lucidsourcekit.general.database.values;
 
+import android.util.Pair;
+
 import com.bitflaker.lucidsourcekit.database.entities.AssignedTags;
 import com.bitflaker.lucidsourcekit.database.entities.AudioLocation;
 import com.bitflaker.lucidsourcekit.database.entities.JournalEntry;
@@ -270,5 +272,16 @@ public class DreamJournalEntriesList {
 
     public int getTotalDreamsCount() {
         return entries.size();
+    }
+
+    public Pair<Integer, DreamJournalEntry> getEntryById(int entryId) {
+        Integer i = 0;
+        for (DreamJournalEntry dje : entries) {
+            if (dje.getEntry().entryId == entryId) {
+                return new Pair<>(i, dje);
+            }
+            i++;
+        }
+        return null;
     }
 }

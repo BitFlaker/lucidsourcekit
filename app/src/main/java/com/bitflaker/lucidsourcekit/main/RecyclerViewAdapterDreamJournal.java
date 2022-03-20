@@ -3,6 +3,7 @@ package com.bitflaker.lucidsourcekit.main;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.util.Pair;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +47,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     private int currentSort;
     private AppliedFilter currentFilter;
     private JournalDatabase db;
+    private RecyclerView mRecyclerView;
 
     public RecyclerViewAdapterDreamJournal(DreamJournal journalList, Context context, DreamJournalEntriesList entries) {
         this.journalList = journalList;
@@ -275,12 +277,65 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
 
     public void setEntries(DreamJournalEntriesList entries) {
         if(filteredEntries == null) {
+            Pair<Operation, Integer> changes = getChanges(entries);
             this.entries = entries;
+            int index;
+            switch (changes.first){
+                case ADDED:
+                    index = changes.second;
+                    mRecyclerView.scrollToPosition(index);
+                    notifyItemInserted(index);
+                    notifyItemRangeChanged(index, entries.size());
+                    break;
+                case DELETED:
+                    index = changes.second;
+                    notifyItemRemoved(index);
+                    notifyItemRangeChanged(index, entries.size());
+                    break;
+                case CHANGED:
+                    // TODO: when timestamp changed and therefore entry moved in list => old one still there => duplicate entries
+                    // TODO: get index of changed item
+                    notifyDataSetChanged();
+                    break;
+            }
         }
         else {
             this.filteredEntries = entries;
         }
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
+    }
+
+    private Pair<Operation, Integer> getChanges(DreamJournalEntriesList entries) {
+        if(this.entries.size() == entries.size()){
+            // Operation has to either be a changed event or nothing
+            return new Pair<>(Operation.CHANGED, -1);
+        }
+        else if(this.entries.size() < entries.size()) {
+            // TODO: error when added at last position ?
+            for (int i = 0; i < entries.size(); i++) {
+                if(this.entries.size() > i && this.entries.get(i).getEntry().entryId != entries.get(i).getEntry().entryId || this.entries.size() <= i) {
+                    return new Pair<>(Operation.ADDED, i);
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < this.entries.size(); i++) {
+                // TODO: error when last is deleted ?
+                if(entries.size() > i && this.entries.get(i).getEntry().entryId != entries.get(i).getEntry().entryId || entries.size() <= i) {
+                    return new Pair<>(Operation.DELETED, i);
+                }
+            }
+        }
+
+        return new Pair<>(Operation.NONE, -1);
+    }
+
+    public void notifyEntryChanged(int entryId) {
+        Pair<Integer, DreamJournalEntry> dje = entries.getEntryById(entryId);
+        if(dje != null) {
+            int index = dje.first;
+            notifyItemChanged(index);
+        }
     }
 
     @Override
@@ -343,6 +398,19 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
 
     public List<List<AssignedTags>> getAllTags() {
         return entries.getTags();
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mRecyclerView = recyclerView;
+    }
+
+    public enum Operation {
+        ADDED,
+        DELETED,
+        CHANGED,
+        NONE
     }
 
     public class MainViewHolder extends RecyclerView.ViewHolder{

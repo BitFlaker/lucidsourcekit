@@ -41,7 +41,6 @@ public class DreamJournal extends Fragment {
     private Animation fabOpen, fabClose, rotateForward, rotateBackward;
     private boolean isOpen = false;
     private RecyclerViewAdapterDreamJournal recyclerViewAdapterDreamJournal = null;
-    private ActivityResultLauncher<Intent> createEntryActivityResultLauncher;
     public ActivityResultLauncher<Intent> viewEntryActivityResultLauncher;
     private ImageButton sortEntries, filterEntries, resetFilterEntries;
     private int sortBy = 0;
@@ -52,7 +51,6 @@ public class DreamJournal extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        setupCreateResultLauncher();
         setupViewResultLauncher();
         return inflater.inflate(R.layout.fragment_dream_journal, container, false);
     }
@@ -89,7 +87,7 @@ public class DreamJournal extends Fragment {
                     setupResetFilterButton();
                 }
                 // TODO: get changed element and make precise notify and not just reload the whole dataset
-                recyclerViewAdapterDreamJournal.notifyDataSetChanged();
+                //recyclerViewAdapterDreamJournal.notifyDataSetChanged();
                 checkForEntries();
             };
             mainHandler.post(myRunnable);
@@ -208,7 +206,7 @@ public class DreamJournal extends Fragment {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("type", forms.ordinal());
             intent.putExtra("availableTags", availableTags);
-            createEntryActivityResultLauncher.launch(intent);
+            startActivity(intent);
         });
     }
 
@@ -250,59 +248,10 @@ public class DreamJournal extends Fragment {
                         if(data.hasExtra("action")) {
                             String action = data.getStringExtra("action");
                             if(action.equals("EDIT")) {
-                                int position = data.getIntExtra("position", -1);
-                                String selectedDate = data.getStringExtra("date");
-                                String selectedTime = data.getStringExtra("time");
-                                String title = data.getStringExtra("title");
-                                String description = data.getStringExtra("description");
-                                String quality = data.getStringExtra("quality");
-                                String clarity = data.getStringExtra("clarity");
-                                String mood = data.getStringExtra("mood");
-                                String[] dreamTypes = data.getStringArrayExtra("dreamTypes");
-                                String[] tags = data.getStringArrayExtra("tags");
-                                String[] recordedAudios = data.getStringArrayExtra("recordings");
-                                //StoredJournalEntries entry = new StoredJournalEntries(-1, selectedDate, selectedTime, title, description, quality, clarity, mood);
-                                //recyclerViewAdapterDreamJournal.changeEntryAt(position, entry, tags, dreamTypes, recordedAudios);
-                                recyclerViewAdapterDreamJournal.notifyItemChanged(position);
-                                recyclerView.scrollToPosition(position);
-                            }
-                            else if (action.equals("DELETE")) {
-                                int position = data.getIntExtra("position", -1);
-                                recyclerViewAdapterDreamJournal.removeEntryAt(position);
-                                recyclerViewAdapterDreamJournal.notifyItemRemoved(position);
-                                recyclerViewAdapterDreamJournal.notifyItemRangeChanged(position, recyclerViewAdapterDreamJournal.getItemCount());
+                                int entryId = data.getIntExtra("entryId", -1);
+                                //recyclerViewAdapterDreamJournal.notifyEntryChanged(entryId);
                             }
                         }
-                    }
-                });
-    }
-
-    private void setupCreateResultLauncher() {
-        createEntryActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-
-                        //TODO: make refreshing work again
-
-                        /*
-                        int entryId = data.getIntExtra("entryId", -1);
-                        String selectedDate = data.getStringExtra("date");
-                        String selectedTime = data.getStringExtra("time");
-                        String title = data.getStringExtra("title");
-                        String description = data.getStringExtra("description");
-                        String quality = data.getStringExtra("quality");
-                        String clarity = data.getStringExtra("clarity");
-                        String mood = data.getStringExtra("mood");
-                        String[] dreamTypes = data.getStringArrayExtra("dreamTypes");
-                        String[] tags = data.getStringArrayExtra("tags");
-                        String[] recordedAudios = data.getStringArrayExtra("recordings");
-                        JournalEntry entry = new JournalEntry(entryId, selectedDate, selectedTime, title, description, quality, clarity, mood);
-                        recyclerViewAdapterDreamJournal.addEntry(entry, tags, dreamTypes, recordedAudios);
-                        recyclerViewAdapterDreamJournal.notifyItemInserted(0);
-                        recyclerView.scrollToPosition(0);
-                        recyclerViewAdapterDreamJournal.notifyItemRangeChanged(0, recyclerViewAdapterDreamJournal.getItemCount());
-                         */
                     }
                 });
     }

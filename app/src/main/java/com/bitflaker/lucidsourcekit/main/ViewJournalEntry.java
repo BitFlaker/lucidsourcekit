@@ -106,9 +106,9 @@ public class ViewJournalEntry extends AppCompatActivity {
             Intent intent = new Intent(ViewJournalEntry.this, AddTextEntry.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("mode", "EDIT");
+            intent.putExtra("entryId", entryId);
             intent.putExtra("type", journalType.ordinal());
             intent.putExtra("availableTags", availableTags);
-            intent.putExtra("entryId", entryId);
             intent.putExtra("timestamp", timestamp);
             intent.putExtra("title", titleContent);
             intent.putExtra("description", descriptionContent);
@@ -127,7 +127,7 @@ public class ViewJournalEntry extends AppCompatActivity {
                         db.journalEntryDao().delete(journalEntry).subscribe(() -> {
                             Intent data = new Intent();
                             data.putExtra("action", "DELETE");
-                            data.putExtra("position", position);
+                            data.putExtra("entryId", entryId);
                             setResult(RESULT_OK, data);
                             finish();
                         });
