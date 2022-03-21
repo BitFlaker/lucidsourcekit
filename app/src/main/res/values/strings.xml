@@ -97,6 +97,7 @@
     <string name="app_opening_streak_description">This number indicates on how many consecutive days you have opened this app at least once.</string>
     <string name="goals_reached">goals have been reached</string>
     <string name="goals_reached_description">This number indicates how many goals you have reached in total. These goals guide you at becoming more conscious throughout the day and therefore improving your awareness.</string>
+    <string name="total_entries_count"><![CDATA[This data is based on a total of <TOTAL_COUNT> dream journal entries.]]></string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>

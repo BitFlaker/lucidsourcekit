@@ -93,13 +93,14 @@ public class RodGraph extends View {
 
         float marginForRodRadius = 0.0f;
         float bottomPointWithTextMargin = 0.0f;
+        float rodPaddingRight = Tools.dpToPx(getContext(), 10);
 
         for (int i = 0; i < data.size(); i++) {
             DataValue current = data.get(i);
             int minRadMargin = Tools.dpToPx(getContext(), 4);
             int iconPlaceholder = icons != null ? iconSize + Tools.dpToPx(getContext(), 5) : 0;
             marginForRodRadius = Math.max(iconPlaceholder / 2.0f, minRadMargin);
-            float xPos = i / xMax * (getWidth() - iconPlaceholder) + ((getWidth() - iconPlaceholder) / xMax) / 2 + iconPlaceholder;
+            float xPos = i / xMax * (getWidth() - iconPlaceholder - rodPaddingRight) + ((getWidth() - iconPlaceholder - rodPaddingRight) / xMax) / 2 + iconPlaceholder;
             float bottomPoint = getHeight() - marginForRodRadius;
 
             int yText = drawTextIfAvailable(canvas, current, xPos);

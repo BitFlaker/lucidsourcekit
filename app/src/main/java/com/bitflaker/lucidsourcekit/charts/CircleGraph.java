@@ -16,10 +16,10 @@ public class CircleGraph extends View {
     private int val1;
     private int val2;
     private float lineWidth;
-    private float space = 2;
     private final Paint dataLinePaint = new Paint();
     private final Paint dataLinePaint2 = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
     private final Paint dataLinePaintBackgroundEraser = new Paint();
+    private final Paint dataLinePaintSpaceEraser = new Paint();
     private final RectF rf = new RectF();
 
     public CircleGraph(Context context, AttributeSet as){
@@ -31,13 +31,15 @@ public class CircleGraph extends View {
         dataLinePaint2.setAntiAlias(true);
         dataLinePaintBackgroundEraser.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         dataLinePaintBackgroundEraser.setAntiAlias(true);
+        dataLinePaintSpaceEraser.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        dataLinePaintSpaceEraser.setAntiAlias(true);
     }
 
     public void setData(int val1, int val2, float lineWidth, float space) {
         this.val1 = val1;
         this.val2 = val2;
         this.lineWidth = lineWidth;
-        this.space = space;
+        dataLinePaintSpaceEraser.setStrokeWidth(Tools.dpToPx(getContext(), space));
         invalidate();
     }
 
@@ -54,8 +56,15 @@ public class CircleGraph extends View {
 
         rf.set(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
 
-        canvas.drawArc(rf, 270 + space, degVal1 - (2 * space), true, dataLinePaint);
-        canvas.drawArc(rf, 270 + degVal1 + space, 360 - degVal1 - (2 * space), true, dataLinePaint2);
+        canvas.drawArc(rf, 270, degVal1, true, dataLinePaint);
+        canvas.drawArc(rf, 270 + degVal1, 360 - degVal1, true, dataLinePaint2);
+
+        double angle = 270 + degVal1;       // degrees
+        angle = angle * Math.PI / 180.0;    // radians
+        double xVal = centerX + Math.cos(angle) * centerX;
+        double yVal = centerY + Math.sin(angle) * centerY;
+        canvas.drawLine(centerX, centerY, centerX, 0, dataLinePaintSpaceEraser);
+        canvas.drawLine(centerX, centerY, (float)xVal, (float)yVal, dataLinePaintSpaceEraser);
 
         canvas.drawCircle(centerX, centerY, radius - lineWidth, dataLinePaintBackgroundEraser);
     }

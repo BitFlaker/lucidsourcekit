@@ -2,10 +2,12 @@ package com.bitflaker.lucidsourcekit.main;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,10 +33,13 @@ public class Statistics extends Fragment {
     public LinearLayout avgMoodsContainer, avgClaritiesContainer, avgQualitiesContainer, goalsContainer;
     public ChipGroup chartTimeSpan;
     public CircleGraph lucidPercentage;
+    public TextView totalEntriesNotice, currentStreak;
     private JournalDatabase db;
     private List<Double> avgClarities = new ArrayList<>();
     private List<Double> avgMoods = new ArrayList<>();
     private List<Double> avgQualities = new ArrayList<>();
+    private long startTimeSpan = 0;
+    private long endTimeSpan = 0;
     private Drawable[] moodIcons;
     private Drawable[] clarityIcons;
     private Drawable[] qualityIcons;
@@ -56,6 +61,8 @@ public class Statistics extends Fragment {
         goalsContainer = getView().findViewById(R.id.ll_goals_reached);
         chartTimeSpan = getView().findViewById(R.id.chp_grp_time_span);
         lucidPercentage = getView().findViewById(R.id.ccg_lucid_percentage);
+        totalEntriesNotice = getView().findViewById(R.id.txt_total_journal_entries_stat);
+        currentStreak = getView().findViewById(R.id.txt_current_streak);
         db = JournalDatabase.getInstance(getContext());
 
         Drawable iconMood1 = getResources().getDrawable(R.drawable.ic_baseline_sentiment_very_dissatisfied_24, getContext().getTheme());
@@ -77,13 +84,27 @@ public class Statistics extends Fragment {
         Drawable iconQuality4 = getResources().getDrawable(R.drawable.ic_baseline_stars_24, getContext().getTheme());
         qualityIcons = new Drawable[] { iconQuality1, iconQuality2, iconQuality3, iconQuality4 };
 
-        lucidPercentage.setData(20, 80, Tools.dpToPx(getContext(), 15), Tools.dpToPx(getContext(), 1.25));
+        currentStreak.setText(Long.toString(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong("app_open_streak", 0)));
+
+        // TODO: add loading indicators while gathering data
+        // TODO: refresh stats after entry modified/added/deleted
+
         getAveragesForLastNDays(7, 0);
         gatheredNewTimeSpanStats.observe(getActivity(), aBoolean -> {
             if(gatheredNewTimeSpanStats.getValue()) {
                 generateRodChart(avgMoods.size(), Tools.dpToPx(getContext(), 3f), avgMoodsContainer, moodIcons, avgMoods);
                 generateRodChart(avgClarities.size(), Tools.dpToPx(getContext(), 3f), avgClaritiesContainer, clarityIcons, avgClarities);
                 generateRodChart(avgQualities.size(), Tools.dpToPx(getContext(), 3f), avgQualitiesContainer, qualityIcons, avgQualities);
+
+                //Calendar cldr = new GregorianCalendar(TimeZone.getDefault());
+                //cldr.setTime(Calendar.getInstance().getTime());
+                db.journalEntryDao().getLucidEntriesCount(startTimeSpan, endTimeSpan).subscribe((lucidEntriesCount, throwable) -> {
+                    db.journalEntryDao().getEntriesCount(startTimeSpan, endTimeSpan).subscribe((totalEntriesCount, throwable2) -> {
+                        // TODO: maybe display numbers as well?
+                        lucidPercentage.setData(lucidEntriesCount, totalEntriesCount-lucidEntriesCount, Tools.dpToPx(getContext(), 15), Tools.dpToPx(getContext(), 1.25));
+                        totalEntriesNotice.setText(getResources().getString(R.string.total_entries_count).replace("<TOTAL_COUNT>", totalEntriesCount.toString()));
+                    });
+                });
             }
         });
         //generateRodChart(7, Tools.dpToPx(getContext(), 3f), goalsContainer, null);
@@ -97,8 +118,8 @@ public class Statistics extends Fragment {
                 case R.id.chp_last_7_days:
                     getAveragesForLastNDays(7, 0);
                     break;
-                case R.id.chp_last_30_days:
-                    getAveragesForLastNDays(30, 0);
+                case R.id.chp_last_31_days:
+                    getAveragesForLastNDays(31, 0);
                     break;
                 case R.id.chp_all_time:
                     getAveragesForLastNDays(5000, 0);
@@ -124,14 +145,13 @@ public class Statistics extends Fragment {
             if(amount <= 7){
                 label = df.format(cldr.getTime());
             }
-            else if (amount <= 30) {
-                // TODO: guarantee to get label of last day
-                if(j % 4 == 0){
+            else if (amount <= 31) {
+                if(j % 6 == 0) {
                     label = df.format(cldr.getTime());
                 }
             }
             else {
-                // TODO: use 1/7 of total entry count
+                // TODO: use 1/7 of total entry count and guarantee that last day is written and probably do not use rod graph or use averages of days (=> loss of accuracy)
                 if(j % 10 == 0){
                     label = df.format(cldr.getTime());
                 }
@@ -143,11 +163,6 @@ public class Statistics extends Fragment {
     }
 
     private void getAveragesForLastNDays(int amount, int daysBeforeToday) {
-        if(daysBeforeToday == 0) {
-            avgQualities.clear();
-            avgMoods.clear();
-            avgClarities.clear();
-        }
         gatheredNewTimeSpanStats.setValue(false);
         Calendar cldr = new GregorianCalendar(TimeZone.getDefault());
         cldr.setTime(Calendar.getInstance().getTime());
@@ -162,11 +177,18 @@ public class Statistics extends Fragment {
         cldr.set(Calendar.SECOND, 59);
         cldr.set(Calendar.MILLISECOND, 999);
         long endTime = cldr.getTimeInMillis();
+        if(daysBeforeToday == 0) {
+            avgQualities.clear();
+            avgMoods.clear();
+            avgClarities.clear();
+            endTimeSpan = startTime;
+        }
         db.journalEntryDao().getAverageEntryInTimeSpan(startTime, endTime).subscribe((journalEntry, throwable) -> {
             avgQualities.add(journalEntry.getAvgQualities());
             avgMoods.add(journalEntry.getAvgMoods());
             avgClarities.add(journalEntry.getAvgClarities());
             if(daysBeforeToday == amount-1) {
+                startTimeSpan = endTime;
                 gatheredNewTimeSpanStats.setValue(true);
             }
             else {

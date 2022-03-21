@@ -2,12 +2,10 @@ package com.bitflaker.lucidsourcekit;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,7 +32,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,6 +64,39 @@ public class MainActivity extends AppCompatActivity {
         Tools.loadLanguage(MainActivity.this);
         Tools.makeStatusBarTransparent(MainActivity.this);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        Calendar cldrStored = new GregorianCalendar(TimeZone.getDefault());
+        Calendar cldrNow = new GregorianCalendar(TimeZone.getDefault());
+        cldrNow.setTime(Calendar.getInstance().getTime());
+        cldrNow.set(Calendar.HOUR_OF_DAY, 0);
+        cldrNow.set(Calendar.MINUTE, 0);
+        cldrNow.set(Calendar.SECOND, 0);
+        cldrNow.set(Calendar.MILLISECOND, 0);
+
+        long storedTime = preferences.getLong("latest_day_first_open", 0);
+        System.out.println("CURRENT STREAK: " + preferences.getLong("app_open_streak", 0));
+        if(storedTime == 0) {
+            editor.putLong("latest_day_first_open", cldrNow.getTimeInMillis());
+            editor.putLong("app_open_streak", 0);
+            System.out.println("TIME WAS NOT YET SET");
+        }
+        else {
+            // TODO: take daylight saving time and different country times in consideration
+            cldrStored.setTimeInMillis(storedTime);
+            long diff = cldrNow.getTimeInMillis() - cldrStored.getTimeInMillis();
+            long dayLength = TimeUnit.DAYS.toMillis(1);
+            if(diff == dayLength) {
+                editor.putLong("latest_day_first_open", cldrNow.getTimeInMillis());
+                editor.putLong("app_open_streak", preferences.getLong("app_open_streak", 0) + 1);
+            }
+            else if (diff > dayLength || diff < 0) {
+                editor.putLong("latest_day_first_open", cldrNow.getTimeInMillis());
+                editor.putLong("app_open_streak", 0);
+            }
+        }
+        editor.apply();
         /*
         String filename = getFilesDir().getAbsolutePath() + "/Recordings";
         File directory = new File(filename);
@@ -101,8 +136,6 @@ public class MainActivity extends AppCompatActivity {
         String path = getFilesDir().getAbsolutePath() + "/.app_setup_done";
         File file = new File(path);
         if(file.exists()) {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
             switch (preferences.getString("auth_type", "")) {
                 case "password":
                     setupPasswordAuthentication();
