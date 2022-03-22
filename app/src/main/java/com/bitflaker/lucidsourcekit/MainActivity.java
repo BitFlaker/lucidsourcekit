@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         if(storedTime == 0) {
             editor.putLong("latest_day_first_open", cldrNow.getTimeInMillis());
             editor.putLong("app_open_streak", 0);
+            editor.putLong("longest_app_open_streak", 0);
             System.out.println("TIME WAS NOT YET SET");
         }
         else {
@@ -88,8 +89,12 @@ public class MainActivity extends AppCompatActivity {
             long diff = cldrNow.getTimeInMillis() - cldrStored.getTimeInMillis();
             long dayLength = TimeUnit.DAYS.toMillis(1);
             if(diff == dayLength) {
+                long currentAppOpenStreak = preferences.getLong("app_open_streak", 0) + 1;
                 editor.putLong("latest_day_first_open", cldrNow.getTimeInMillis());
-                editor.putLong("app_open_streak", preferences.getLong("app_open_streak", 0) + 1);
+                editor.putLong("app_open_streak", currentAppOpenStreak);
+                if(currentAppOpenStreak > preferences.getLong("longest_app_open_streak", 0)){
+                    editor.putLong("longest_app_open_streak", currentAppOpenStreak);
+                }
             }
             else if (diff > dayLength || diff < 0) {
                 editor.putLong("latest_day_first_open", cldrNow.getTimeInMillis());
@@ -97,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         editor.apply();
+        
         /*
         String filename = getFilesDir().getAbsolutePath() + "/Recordings";
         File directory = new File(filename);

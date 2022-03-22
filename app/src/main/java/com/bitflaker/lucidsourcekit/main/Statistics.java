@@ -17,27 +17,34 @@ import androidx.lifecycle.MutableLiveData;
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.charts.CircleGraph;
 import com.bitflaker.lucidsourcekit.charts.DataValue;
+import com.bitflaker.lucidsourcekit.charts.RangeProgress;
 import com.bitflaker.lucidsourcekit.charts.RodGraph;
 import com.bitflaker.lucidsourcekit.database.JournalDatabase;
+import com.bitflaker.lucidsourcekit.database.entities.TagCount;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.chip.ChipGroup;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
 public class Statistics extends Fragment {
-    public LinearLayout avgMoodsContainer, avgClaritiesContainer, avgQualitiesContainer, goalsContainer;
+    public LinearLayout avgMoodsContainer, avgClaritiesContainer, avgQualitiesContainer, goalsContainer, mostUsedTagsContainer;
     public ChipGroup chartTimeSpan;
     public CircleGraph lucidPercentage;
-    public TextView totalEntriesNotice, currentStreak;
+    public TextView totalEntriesNotice, currentStreak, longestStreak;
+    public RangeProgress rpDreamMood, rpDreamClarity, rpSleepQuality, rpDreamsPerNight;
     private JournalDatabase db;
     private List<Double> avgClarities = new ArrayList<>();
     private List<Double> avgMoods = new ArrayList<>();
     private List<Double> avgQualities = new ArrayList<>();
+    private List<Double> dreamCounts = new ArrayList<>();
     private long startTimeSpan = 0;
     private long endTimeSpan = 0;
     private Drawable[] moodIcons;
@@ -55,6 +62,7 @@ public class Statistics extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         getView().findViewById(R.id.txt_stats_heading).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
+        mostUsedTagsContainer = getView().findViewById(R.id.ll_most_used_tags);
         avgMoodsContainer = getView().findViewById(R.id.ll_avg_moods);
         avgClaritiesContainer = getView().findViewById(R.id.ll_avg_clarities);
         avgQualitiesContainer = getView().findViewById(R.id.ll_avg_sleep_quality);
@@ -63,6 +71,11 @@ public class Statistics extends Fragment {
         lucidPercentage = getView().findViewById(R.id.ccg_lucid_percentage);
         totalEntriesNotice = getView().findViewById(R.id.txt_total_journal_entries_stat);
         currentStreak = getView().findViewById(R.id.txt_current_streak);
+        longestStreak = getView().findViewById(R.id.txt_longest_streak);
+        rpDreamMood = getView().findViewById(R.id.rp_dream_mood);
+        rpDreamClarity = getView().findViewById(R.id.rp_dream_clarity);
+        rpSleepQuality = getView().findViewById(R.id.rp_sleep_quality);
+        rpDreamsPerNight = getView().findViewById(R.id.rp_dreams_per_night);
         db = JournalDatabase.getInstance(getContext());
 
         Drawable iconMood1 = getResources().getDrawable(R.drawable.ic_baseline_sentiment_very_dissatisfied_24, getContext().getTheme());
@@ -85,6 +98,7 @@ public class Statistics extends Fragment {
         qualityIcons = new Drawable[] { iconQuality1, iconQuality2, iconQuality3, iconQuality4 };
 
         currentStreak.setText(Long.toString(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong("app_open_streak", 0)));
+        longestStreak.setText(Long.toString(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong("longest_app_open_streak", 0)));
 
         // TODO: add loading indicators while gathering data
         // TODO: refresh stats after entry modified/added/deleted
@@ -96,6 +110,19 @@ public class Statistics extends Fragment {
                 generateRodChart(avgClarities.size(), Tools.dpToPx(getContext(), 3f), avgClaritiesContainer, clarityIcons, avgClarities);
                 generateRodChart(avgQualities.size(), Tools.dpToPx(getContext(), 3f), avgQualitiesContainer, qualityIcons, avgQualities);
 
+                DecimalFormat df = new DecimalFormat("#.#");
+                df.setRoundingMode(RoundingMode.HALF_UP);
+                float averageMood = calcAverage(avgMoods);
+                float averageClarity = calcAverage(avgClarities);
+                float averageQuality = calcAverage(avgQualities);
+                float averageDreamCount = calcAverage(dreamCounts);
+                // TODO: extract string resources
+                // TODO: check what happens with no entries
+                rpDreamMood.setData(4, averageMood, "DREAM MOOD", moodIcons[Math.round(averageMood)], null);
+                rpDreamClarity.setData(3, averageClarity, "DREAM CLARITY", clarityIcons[Math.round(averageClarity)], null);
+                rpSleepQuality.setData(3, averageQuality, "SLEEP QUALITY", qualityIcons[Math.round(averageQuality)], null);
+                rpDreamsPerNight.setData(Collections.max(dreamCounts).floatValue(), averageDreamCount, "DREAMS PER NIGHT", null, df.format(averageDreamCount));
+
                 //Calendar cldr = new GregorianCalendar(TimeZone.getDefault());
                 //cldr.setTime(Calendar.getInstance().getTime());
                 db.journalEntryDao().getLucidEntriesCount(startTimeSpan, endTimeSpan).subscribe((lucidEntriesCount, throwable) -> {
@@ -104,6 +131,26 @@ public class Statistics extends Fragment {
                         lucidPercentage.setData(lucidEntriesCount, totalEntriesCount-lucidEntriesCount, Tools.dpToPx(getContext(), 15), Tools.dpToPx(getContext(), 1.25));
                         totalEntriesNotice.setText(getResources().getString(R.string.total_entries_count).replace("<TOTAL_COUNT>", totalEntriesCount.toString()));
                     });
+                });
+
+                db.journalEntryHasTagDao().getMostUsedTagsList(10).subscribe((tagCounts, throwable) -> {
+                    // TODO: only make 1 object that draws all of the graphs
+                    mostUsedTagsContainer.removeAllViews();
+                    if(tagCounts.size() > 0){
+                        int maxCount = tagCounts.get(0).getCount();
+                        for (TagCount p : tagCounts) {
+                            RangeProgress rngProg = new RangeProgress(getContext());
+                            LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Tools.dpToPx(getContext(), 25));
+                            int margin = Tools.dpToPx(getContext(), 5);
+                            llParams.setMargins(0, margin, 0, margin);
+                            rngProg.setLayoutParams(llParams);
+                            mostUsedTagsContainer.addView(rngProg);
+                            rngProg.setData(maxCount, p.getCount(), p.getTag(), null, Integer.toString(p.getCount()));
+                        }
+                    }
+                    else {
+                        // TODO: give note that no tags were assigned yet
+                    }
                 });
             }
         });
@@ -126,6 +173,17 @@ public class Statistics extends Fragment {
                     break;
             }
         });
+    }
+
+    private float calcAverage(List<Double> vals) {
+        if(vals.size() == 0){ return 0; }
+        double sum = 0;
+        int i = 0;
+        for (Double d : vals) {
+            sum += d;
+            i++;
+        }
+        return (float)(sum / (double)i);
     }
 
     private void generateRodChart(int amount, float lineWidth, ViewGroup container, Drawable[] icons, List<Double> averageValues) {
@@ -181,12 +239,14 @@ public class Statistics extends Fragment {
             avgQualities.clear();
             avgMoods.clear();
             avgClarities.clear();
+            dreamCounts.clear();
             endTimeSpan = startTime;
         }
-        db.journalEntryDao().getAverageEntryInTimeSpan(startTime, endTime).subscribe((journalEntry, throwable) -> {
-            avgQualities.add(journalEntry.getAvgQualities());
-            avgMoods.add(journalEntry.getAvgMoods());
-            avgClarities.add(journalEntry.getAvgClarities());
+        db.journalEntryDao().getAverageEntryInTimeSpan(startTime, endTime).subscribe((averageEntryValues, throwable) -> {
+            avgQualities.add(averageEntryValues.getAvgQualities());
+            avgMoods.add(averageEntryValues.getAvgMoods());
+            avgClarities.add(averageEntryValues.getAvgClarities());
+            dreamCounts.add(averageEntryValues.getDreamCount());
             if(daysBeforeToday == amount-1) {
                 startTimeSpan = endTime;
                 gatheredNewTimeSpanStats.setValue(true);

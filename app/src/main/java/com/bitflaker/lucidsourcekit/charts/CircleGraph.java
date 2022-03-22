@@ -59,12 +59,14 @@ public class CircleGraph extends View {
         canvas.drawArc(rf, 270, degVal1, true, dataLinePaint);
         canvas.drawArc(rf, 270 + degVal1, 360 - degVal1, true, dataLinePaint2);
 
-        double angle = 270 + degVal1;       // degrees
-        angle = angle * Math.PI / 180.0;    // radians
-        double xVal = centerX + Math.cos(angle) * centerX;
-        double yVal = centerY + Math.sin(angle) * centerY;
-        canvas.drawLine(centerX, centerY, centerX, 0, dataLinePaintSpaceEraser);
-        canvas.drawLine(centerX, centerY, (float)xVal, (float)yVal, dataLinePaintSpaceEraser);
+        if(val1 != 0 && val2 != 0){
+            double angle = 270 + degVal1;       // degrees
+            angle = angle * Math.PI / 180.0;    // radians
+            double xVal = centerX + Math.cos(angle) * centerX;
+            double yVal = centerY + Math.sin(angle) * centerY;
+            canvas.drawLine(centerX, centerY, centerX, 0, dataLinePaintSpaceEraser);
+            canvas.drawLine(centerX, centerY, (float)xVal, (float)yVal, dataLinePaintSpaceEraser);
+        }
 
         canvas.drawCircle(centerX, centerY, radius - lineWidth, dataLinePaintBackgroundEraser);
     }

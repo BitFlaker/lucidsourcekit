@@ -32,7 +32,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -56,7 +55,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:text="current streak"
+                        android:text="streak"
                         android:textAlignment="center"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
@@ -71,17 +70,103 @@
                         android:textColor="?attr/secondaryTextColor"
                         android:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/txt_current_streak"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="235"
-                        android:textAlignment="center"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="32sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="3dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="?attr/slightElevated"
+                    app:cardCornerRadius="@dimen/cardRadius"
+                    app:cardElevation="@dimen/cardElevationRegular">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:text="current streak"
+                            android:textAlignment="center"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="15sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txt_current_streak"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_gravity="center_horizontal"
+                            android:text="235"
+                            android:textAlignment="center"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="32sp"
+                            app:drawableStartCompat="@drawable/big_flame" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="?attr/slightElevated"
+                    app:cardCornerRadius="@dimen/cardRadius"
+                    app:cardElevation="@dimen/cardElevationRegular">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:text="longest streak"
+                            android:textAlignment="center"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="15sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txt_longest_streak"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_gravity="center_horizontal"
+                            android:text="689"
+                            android:textAlignment="center"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="32sp"
+                            app:drawableStartCompat="@drawable/big_flame"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/txt_stats_timespans_heading"
@@ -239,62 +324,25 @@
                         android:orientation="vertical"
                         android:showDividers="middle">
 
-                        <TextView
+                        <com.bitflaker.lucidsourcekit.charts.RangeProgress
+                            android:id="@+id/rp_dream_mood"
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:drawablePadding="10dp"
-                            android:text="dream mood"
-                            android:textAlignment="textStart"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="14sp"
-                            app:drawableEndCompat="@drawable/ic_baseline_sentiment_very_satisfied_24" />
+                            android:layout_height="25dp"/>
 
-                        <TextView
+                        <com.bitflaker.lucidsourcekit.charts.RangeProgress
+                            android:id="@+id/rp_dream_clarity"
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:drawablePadding="10dp"
-                            android:text="dream clarity"
-                            android:textAlignment="textStart"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="14sp"
-                            app:drawableEndCompat="@drawable/ic_baseline_brightness_5_24" />
+                            android:layout_height="25dp"/>
 
-                        <TextView
+                        <com.bitflaker.lucidsourcekit.charts.RangeProgress
+                            android:id="@+id/rp_sleep_quality"
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:drawablePadding="10dp"
-                            android:text="sleep quality"
-                            android:textAlignment="textStart"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="14sp"
-                            app:drawableEndCompat="@drawable/ic_baseline_star_half_24" />
+                            android:layout_height="25dp"/>
 
-                        <LinearLayout
+                        <com.bitflaker.lucidsourcekit.charts.RangeProgress
+                            android:id="@+id/rp_dreams_per_night"
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1">
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:text="dream per night"
-                                android:textAlignment="textStart"
-                                android:textColor="?attr/primaryTextColor"
-                                android:textSize="14sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_marginEnd="2dp"
-                                android:text="0.8"
-                                android:textAlignment="textStart"
-                                android:textColor="?attr/secondaryTextColor"
-                                android:textSize="14sp" />
-                        </LinearLayout>
+                            android:layout_height="25dp"/>
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -476,112 +524,13 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <com.google.android.flexbox.FlexboxLayout
+                    <LinearLayout
                         android:id="@+id/ll_most_used_tags"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:flexWrap="wrap"
-                        app:justifyContent="flex_start">
+                        android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"
-                            android:background="@drawable/rounded_spinner"
-                            android:backgroundTint="?attr/slightElevated"
-                            android:padding="10dp"
-                            android:text="some (5)" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"
-                            android:background="@drawable/rounded_spinner"
-                            android:backgroundTint="?attr/slightElevated"
-                            android:padding="10dp"
-                            android:text="tag (3)" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"
-                            android:background="@drawable/rounded_spinner"
-                            android:backgroundTint="?attr/slightElevated"
-                            android:padding="10dp"
-                            android:text="test (2)" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"
-                            android:background="@drawable/rounded_spinner"
-                            android:backgroundTint="?attr/slightElevated"
-                            android:padding="10dp"
-                            android:text="random (2)" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"
-                            android:background="@drawable/rounded_spinner"
-                            android:backgroundTint="?attr/slightElevated"
-                            android:padding="10dp"
-                            android:text="this (2)" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"
-                            android:background="@drawable/rounded_spinner"
-                            android:backgroundTint="?attr/slightElevated"
-                            android:padding="10dp"
-                            android:text="cannot (2)" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"
-                            android:background="@drawable/rounded_spinner"
-                            android:backgroundTint="?attr/slightElevated"
-                            android:padding="10dp"
-                            android:text="elephant" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"
-                            android:background="@drawable/rounded_spinner"
-                            android:backgroundTint="?attr/slightElevated"
-                            android:padding="10dp"
-                            android:text="turtle" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"
-                            android:background="@drawable/rounded_spinner"
-                            android:backgroundTint="?attr/slightElevated"
-                            android:padding="10dp"
-                            android:text="gorilla" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"
-                            android:background="@drawable/rounded_spinner"
-                            android:backgroundTint="?attr/slightElevated"
-                            android:padding="10dp"
-                            android:text="school" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"
-                            android:background="@drawable/rounded_spinner"
-                            android:backgroundTint="?attr/slightElevated"
-                            android:padding="10dp"
-                            android:text="house" />
-                    </com.google.android.flexbox.FlexboxLayout>
+                    </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
