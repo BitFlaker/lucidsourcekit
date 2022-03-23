@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.charts.DataValue;
+import com.bitflaker.lucidsourcekit.charts.RangeProgress;
 import com.bitflaker.lucidsourcekit.charts.RodGraph;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -23,6 +24,7 @@ import java.util.List;
 public class Goals extends Fragment {
     private LinearLayout difficultyChartContainer;
     private FloatingActionButton floatingEdit;
+    private RangeProgress goalsReachedYesterday;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,7 +37,10 @@ public class Goals extends Fragment {
 
         getView().findViewById(R.id.txt_goals_heading).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
         difficultyChartContainer = getView().findViewById(R.id.ll_difficulty);
+        goalsReachedYesterday = getView().findViewById(R.id.rp_goals_reached_yesterday);
         floatingEdit = getView().findViewById(R.id.btn_add_journal_entry);
+
+        goalsReachedYesterday.setData(3, 1, "GOALS REACHED", null, "1/3");
 
         floatingEdit.setOnClickListener(e -> {
             Intent intent = new Intent(getContext(), EditGoals.class);

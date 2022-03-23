@@ -3,4 +3,5 @@
     <dimen name="cardRadius">15dp</dimen>
     <dimen name="cardRadius_Var2">30dp</dimen>
     <dimen name="cardElevationRegular">2dp</dimen>
+    <dimen name="rounded_ripple_inset">0dp</dimen>
 </resources>

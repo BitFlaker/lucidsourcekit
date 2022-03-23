@@ -47,15 +47,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="20dp"
-            android:paddingTop="15dp"
-            android:paddingRight="20dp"
-            android:paddingBottom="20dp">
+            android:orientation="vertical">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
                 android:backgroundTint="?attr/slightElevated"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="@dimen/cardElevationRegular">
@@ -72,7 +71,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="30dp"
                         android:text="toady's goals difficulty ratings"
-                        android:textColor="?attr/secondaryTextColor" />
+                        android:textColor="?attr/primaryTextColor" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -89,7 +88,7 @@
                             android:textAlignment="center"
                             android:textColor="?attr/primaryTextColor"
                             app:drawableTint="?attr/colorSuccess"
-                            app:drawableTopCompat="@drawable/ic_baseline_priority_high_24" />
+                            app:drawableTopCompat="@drawable/ic_baseline_circle_24" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -99,7 +98,7 @@
                             android:textAlignment="center"
                             android:textColor="?attr/primaryTextColor"
                             app:drawableTint="?attr/colorWarning"
-                            app:drawableTopCompat="@drawable/ic_baseline_priority_high_24" />
+                            app:drawableTopCompat="@drawable/ic_baseline_circle_24" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -109,7 +108,7 @@
                             android:textAlignment="center"
                             android:textColor="?attr/primaryTextColor"
                             app:drawableTint="?attr/colorError"
-                            app:drawableTopCompat="@drawable/ic_baseline_priority_high_24" />
+                            app:drawableTopCompat="@drawable/ic_baseline_circle_24" />
                     </LinearLayout>
 
                     <TextView
@@ -126,7 +125,9 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
                 android:backgroundTint="?attr/slightElevated"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="@dimen/cardElevationRegular">
@@ -134,15 +135,35 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="20dp"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="toady's goals"
-                        android:textColor="?attr/secondaryTextColor" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginTop="-5dp"
+                            android:layout_weight="1"
+                            android:text="toady's goals"
+                            android:textColor="?attr/primaryTextColor" />
+
+                        <ImageButton
+                            android:id="@+id/btn_reshuffle_goals"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/rounded_ripple"
+                            android:src="@drawable/ic_baseline_shuffle_24"
+                            app:backgroundTint="?attr/slightElevated" />
+                    </LinearLayout>
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:layout_width="match_parent"
@@ -170,17 +191,102 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_reshuffle_goals"
-                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-                android:layout_width="wrap_content"
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/rounded_spinner"
-                android:text="reshuffle"
-                app:backgroundTint="?attr/slightElevated"
-                app:icon="@drawable/ic_baseline_shuffle_24" />
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="?attr/slightElevated"
+                app:cardCornerRadius="@dimen/cardRadius"
+                app:cardElevation="@dimen/cardElevationRegular">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Want to improve compared to yesterday?"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="16sp" />
+
+                    <!-- TODO: make adaptive:
+                                if reached no or very few goals:
+                                    advice to be more aware and maybe turn on notification (or reduce count if more than 3 goals) and advice to shuffle again if goals are not good for that day and also to probably edit or add some new ones
+
+                                if reached about all goals:
+                                    advice to increase goal count to challenge you more, raise the average difficulty goal
+
+                                => all with quick access buttons, so you do not have to go to settings
+                                -->
+
+                    <com.bitflaker.lucidsourcekit.charts.RangeProgress
+                        android:id="@+id/rp_goals_reached_yesterday"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginTop="15dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="As you only got 0/3 you might want to ..."
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="?attr/slightElevated"
+                app:cardCornerRadius="@dimen/cardRadius"
+                app:cardElevation="@dimen/cardElevationRegular">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="average difficulty selection goal"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="Your current difficulty level is: 1.35"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="14sp" />
+
+                    <com.google.android.material.slider.Slider
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:value="1.35"
+                        android:valueTo="3" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="This option allows you to specify the average difficulty level the algorithm should target for selecting your daily goals. The value 1 stands for the easiest and the value 3 for the hardest difficulty."
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

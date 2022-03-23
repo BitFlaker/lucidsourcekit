@@ -19,8 +19,8 @@ public interface JournalEntryHasTagDao {
     @Query("SELECT JournalEntryTag.description FROM JournalEntryHasTag LEFT JOIN JournalEntryTag ON JournalEntryTag.tagId = JournalEntryHasTag.tagId WHERE entryId = :entryId")
     Single<List<AssignedTags>> getAllFromEntryId(int entryId);
 
-    @Query("SELECT JournalEntryTag.description as tag, COUNT(JournalEntryHasTag.tagId) as count FROM JournalEntryHasTag LEFT JOIN JournalEntryTag ON JournalEntryHasTag.tagId = JournalEntryTag.tagId GROUP BY JournalEntryHasTag.tagId ORDER BY count DESC LIMIT :limit")
-    Single<List<TagCount>> getMostUsedTagsList(int limit);
+    @Query("SELECT JournalEntryTag.description as tag, COUNT(JournalEntryHasTag.tagId) as count FROM JournalEntryHasTag LEFT JOIN JournalEntryTag ON JournalEntryHasTag.tagId = JournalEntryTag.tagId LEFT JOIN JournalEntry ON JournalEntryHasTag.entryId = JournalEntry.entryId WHERE JournalEntry.timeStamp BETWEEN :startTimestamp AND :endTimestamp GROUP BY JournalEntryHasTag.tagId ORDER BY count DESC LIMIT :limit")
+    Single<List<TagCount>> getMostUsedTagsList(long startTimestamp, long endTimestamp, int limit);
 
     @Insert
     Single<List<Long>> insertAll(List<JournalEntryHasTag> journalEntryHasTags);

@@ -3,6 +3,7 @@ package com.bitflaker.lucidsourcekit.main;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,7 @@ public class Statistics extends Fragment {
     private Drawable[] clarityIcons;
     private Drawable[] qualityIcons;
     private MutableLiveData<Boolean> gatheredNewTimeSpanStats = new MutableLiveData<>(false);
+    private int selectedDaysCount = 7;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -103,7 +105,7 @@ public class Statistics extends Fragment {
         // TODO: add loading indicators while gathering data
         // TODO: refresh stats after entry modified/added/deleted
 
-        getAveragesForLastNDays(7, 0);
+        getAveragesForLastNDays(selectedDaysCount, 0);
         gatheredNewTimeSpanStats.observe(getActivity(), aBoolean -> {
             if(gatheredNewTimeSpanStats.getValue()) {
                 generateRodChart(avgMoods.size(), Tools.dpToPx(getContext(), 3f), avgMoodsContainer, moodIcons, avgMoods);
@@ -123,17 +125,16 @@ public class Statistics extends Fragment {
                 rpSleepQuality.setData(3, averageQuality, "SLEEP QUALITY", qualityIcons[Math.round(averageQuality)], null);
                 rpDreamsPerNight.setData(Collections.max(dreamCounts).floatValue(), averageDreamCount, "DREAMS PER NIGHT", null, df.format(averageDreamCount));
 
-                //Calendar cldr = new GregorianCalendar(TimeZone.getDefault());
-                //cldr.setTime(Calendar.getInstance().getTime());
-                db.journalEntryDao().getLucidEntriesCount(startTimeSpan, endTimeSpan).subscribe((lucidEntriesCount, throwable) -> {
-                    db.journalEntryDao().getEntriesCount(startTimeSpan, endTimeSpan).subscribe((totalEntriesCount, throwable2) -> {
+                Pair<Long, Long> timeSpan = getTimeSpanFrom(selectedDaysCount - 1, true);
+                db.journalEntryDao().getLucidEntriesCount(timeSpan.first, timeSpan.second).subscribe((lucidEntriesCount, throwable) -> {
+                    db.journalEntryDao().getEntriesCount(timeSpan.first, timeSpan.second).subscribe((totalEntriesCount, throwable2) -> {
                         // TODO: maybe display numbers as well?
                         lucidPercentage.setData(lucidEntriesCount, totalEntriesCount-lucidEntriesCount, Tools.dpToPx(getContext(), 15), Tools.dpToPx(getContext(), 1.25));
                         totalEntriesNotice.setText(getResources().getString(R.string.total_entries_count).replace("<TOTAL_COUNT>", totalEntriesCount.toString()));
                     });
                 });
 
-                db.journalEntryHasTagDao().getMostUsedTagsList(10).subscribe((tagCounts, throwable) -> {
+                db.journalEntryHasTagDao().getMostUsedTagsList(timeSpan.first, timeSpan.second, 10).subscribe((tagCounts, throwable) -> {
                     // TODO: only make 1 object that draws all of the graphs
                     mostUsedTagsContainer.removeAllViews();
                     if(tagCounts.size() > 0){
@@ -163,13 +164,16 @@ public class Statistics extends Fragment {
             goalsContainer.removeAllViews();
             switch (i){
                 case R.id.chp_last_7_days:
-                    getAveragesForLastNDays(7, 0);
+                    selectedDaysCount = 7;
+                    getAveragesForLastNDays(selectedDaysCount, 0);
                     break;
                 case R.id.chp_last_31_days:
-                    getAveragesForLastNDays(31, 0);
+                    selectedDaysCount = 31;
+                    getAveragesForLastNDays(selectedDaysCount, 0);
                     break;
                 case R.id.chp_all_time:
-                    getAveragesForLastNDays(5000, 0);
+                    selectedDaysCount = 5000;
+                    getAveragesForLastNDays(selectedDaysCount, 0);
                     break;
             }
         });
@@ -222,38 +226,46 @@ public class Statistics extends Fragment {
 
     private void getAveragesForLastNDays(int amount, int daysBeforeToday) {
         gatheredNewTimeSpanStats.setValue(false);
-        Calendar cldr = new GregorianCalendar(TimeZone.getDefault());
-        cldr.setTime(Calendar.getInstance().getTime());
-        cldr.add(Calendar.DAY_OF_MONTH, -daysBeforeToday);
-        cldr.set(Calendar.HOUR_OF_DAY, 0);
-        cldr.set(Calendar.MINUTE, 0);
-        cldr.set(Calendar.SECOND, 0);
-        cldr.set(Calendar.MILLISECOND, 0);
-        long startTime = cldr.getTimeInMillis();
-        cldr.set(Calendar.HOUR_OF_DAY, 23);
-        cldr.set(Calendar.MINUTE, 59);
-        cldr.set(Calendar.SECOND, 59);
-        cldr.set(Calendar.MILLISECOND, 999);
-        long endTime = cldr.getTimeInMillis();
+        Pair<Long, Long> timeSpan = getTimeSpanFrom(daysBeforeToday, false);
         if(daysBeforeToday == 0) {
             avgQualities.clear();
             avgMoods.clear();
             avgClarities.clear();
             dreamCounts.clear();
-            endTimeSpan = startTime;
+            endTimeSpan = timeSpan.second;
         }
-        db.journalEntryDao().getAverageEntryInTimeSpan(startTime, endTime).subscribe((averageEntryValues, throwable) -> {
+        db.journalEntryDao().getAverageEntryInTimeSpan(timeSpan.first, timeSpan.second).subscribe((averageEntryValues, throwable) -> {
             avgQualities.add(averageEntryValues.getAvgQualities());
             avgMoods.add(averageEntryValues.getAvgMoods());
             avgClarities.add(averageEntryValues.getAvgClarities());
             dreamCounts.add(averageEntryValues.getDreamCount());
             if(daysBeforeToday == amount-1) {
-                startTimeSpan = endTime;
+                startTimeSpan = timeSpan.first;
                 gatheredNewTimeSpanStats.setValue(true);
             }
             else {
                 getAveragesForLastNDays(amount, daysBeforeToday +1);
             }
         });
+    }
+
+    private Pair<Long, Long> getTimeSpanFrom(int toDaysInPast, boolean getTimeSpanUntilNow) {
+        Calendar cldr = new GregorianCalendar(TimeZone.getDefault());
+        cldr.setTime(Calendar.getInstance().getTime());
+        cldr.add(Calendar.DAY_OF_MONTH, -toDaysInPast);
+        cldr.set(Calendar.HOUR_OF_DAY, 0);
+        cldr.set(Calendar.MINUTE, 0);
+        cldr.set(Calendar.SECOND, 0);
+        cldr.set(Calendar.MILLISECOND, 0);
+        long startTime = cldr.getTimeInMillis();
+        if(getTimeSpanUntilNow) {
+            cldr.add(Calendar.DAY_OF_MONTH, toDaysInPast);
+        }
+        cldr.set(Calendar.HOUR_OF_DAY, 23);
+        cldr.set(Calendar.MINUTE, 59);
+        cldr.set(Calendar.SECOND, 59);
+        cldr.set(Calendar.MILLISECOND, 999);
+        long endTime = cldr.getTimeInMillis();
+        return new Pair<>(startTime, endTime);
     }
 }

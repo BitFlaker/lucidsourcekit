@@ -47,6 +47,7 @@ public class DreamJournal extends Fragment {
     private JournalDatabase db;
 
     // TODO: new audio entry added => displaying 0 audio files and does not display them, but when reloaded, it shows correct values
+    // same goes for tags => queried too fast => entry added but tags and audio files not !
 
     @Nullable
     @Override

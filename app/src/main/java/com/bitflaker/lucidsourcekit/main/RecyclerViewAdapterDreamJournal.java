@@ -106,7 +106,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         Calendar cldr = current.getTimestamps()[position];
         DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
         DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
-        holder.dateTime.setText(MessageFormat.format("{0} {1} {2}", dateFormat.format(cldr.getTime()), context.getResources().getString(R.string.journal_time_at), timeFormat.format(cldr.getTime())));
+        holder.dateTime.setText(MessageFormat.format("~ {0} {1} {2}", dateFormat.format(cldr.getTime()), context.getResources().getString(R.string.journal_time_at), timeFormat.format(cldr.getTime())));
         holder.title.setText(current.getTitles()[position]);
         if(current.getDescriptions()[position] == null){
             holder.description.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_mic_24, 0, 0, 0);
@@ -122,26 +122,28 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             holder.description.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             holder.description.setText(current.getDescriptions()[position]);
             ConstraintLayout.LayoutParams lparamsDesc = (ConstraintLayout.LayoutParams) holder.description.getLayoutParams();
-            lparamsDesc.setMargins(0, Tools.dpToPx(context, 5), 0, 0);
+            lparamsDesc.setMargins(0, Tools.dpToPx(context, 10), 0, 0);
             holder.description.setLayoutParams(lparamsDesc);
-            holder.description.setMaxHeight(Tools.spToPx(context, holder.description.getTextSize())-4);
+            holder.description.setMaxHeight(Tools.spToPx(context, holder.description.getTextSize())-5);
         }
 
         int iconCount = holder.titleIcons.getChildCount();
         int skip = 0;
         for (int i = 0; i < iconCount; i++){
-            if(!(holder.titleIcons.getChildAt(0+skip) instanceof ImageView)){
+            if(!(holder.titleIcons.getChildAt(skip) instanceof ImageView)){
                 skip++;
                 continue;
             }
-            holder.titleIcons.removeViewAt(0 + skip);
+            holder.titleIcons.removeViewAt(skip);
         }
 
-        int tagCount = holder.tags.getChildCount();
-        for (int i = 0; i < tagCount; i++){
-            holder.tags.removeViewAt(0);
+        if(current.getTags().get(position).size() == 0){
+            holder.tags.setVisibility(View.GONE);
         }
-
+        else {
+            holder.tags.setVisibility(View.VISIBLE);
+        }
+        holder.tags.removeAllViews();
         for (int i = 0; i < current.getTags().get(position).size(); i++){
             TextView tag = new TextView(context);
             tag.setText(current.getTags().get(position).get(i).description);
@@ -152,7 +154,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             tag.setPadding(dpLarger,dpSmaller,dpLarger,dpSmaller);
             tag.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
             tag.setBackground(context.getResources().getDrawable(R.drawable.rounded_spinner));
-            tag.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, context.getTheme()));
+            tag.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated2x, context.getTheme()));
             LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             llParams.setMargins(dpSmall, dpSmall, dpSmall, dpSmall);
             tag.setLayoutParams(llParams);

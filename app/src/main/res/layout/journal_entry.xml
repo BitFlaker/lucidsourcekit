@@ -32,6 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:gravity="center_vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -69,7 +70,9 @@
                 android:layout_marginTop="8dp"
                 android:layout_gravity="center_vertical"
                 android:text="15.12.2021 at 04:16"
-                android:textColor="?attr/secondaryTextColor"
+                android:textColor="?attr/tertiaryTextColor"
+                android:textStyle="italic"
+                android:visibility="visible"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txt_description"  />
 
@@ -78,7 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="18dp"
                 app:flexWrap="wrap"
                 app:justifyContent="flex_start"
                 app:layout_constraintEnd_toEndOf="parent"
