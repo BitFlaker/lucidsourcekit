@@ -15,6 +15,8 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="15dp"
         android:layout_marginRight="10dp"
+        android:gravity="center_vertical"
+        android:minHeight="48dp"
         android:text="Edit goals"
         android:textColor="?attr/primaryTextColor"
         android:textSize="20sp"
@@ -23,9 +25,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv_edit_goals"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_below="@+id/txt_edit_goals_heading"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/txt_edit_goals_heading"
+        android:layout_marginTop="15dp" />
 
     <ImageButton
         android:id="@+id/btn_goals_edit_tapped_outside"

@@ -17,11 +17,12 @@ import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
-import com.bitflaker.lucidsourcekit.database.JournalDatabase;
-import com.bitflaker.lucidsourcekit.database.entities.DreamClarity;
-import com.bitflaker.lucidsourcekit.database.entities.DreamMood;
-import com.bitflaker.lucidsourcekit.database.entities.DreamType;
-import com.bitflaker.lucidsourcekit.database.entities.SleepQuality;
+import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamClarity;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamType;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.SleepQuality;
+import com.bitflaker.lucidsourcekit.database.goals.entities.defaults.DefaultGoals;
 import com.bitflaker.lucidsourcekit.general.Crypt;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.main.MainViewer;
@@ -114,12 +115,22 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO: only insert when necessary and add loading
         // TODO: add loading indicator
-        JournalDatabase db = JournalDatabase.getInstance(MainActivity.this);
-        db.dreamTypeDao().insertAll(DreamType.populateData()).subscribe(() -> {
-            db.dreamMoodDao().insertAll(DreamMood.populateData()).subscribe(() -> {
-                db.dreamClarityDao().insertAll(DreamClarity.populateData()).subscribe(() -> {
-                    db.sleepQualityDao().insertAll(SleepQuality.populateData()).subscribe(() -> {
-                        // TODO: hide loading indicator
+        MainDatabase db = MainDatabase.getInstance(MainActivity.this);
+        db.getDreamTypeDao().insertAll(DreamType.populateData()).subscribe(() -> {
+            db.getDreamMoodDao().insertAll(DreamMood.populateData()).subscribe(() -> {
+                db.getDreamClarityDao().insertAll(DreamClarity.populateData()).subscribe(() -> {
+                    db.getSleepQualityDao().insertAll(SleepQuality.populateData()).subscribe(() -> {
+                        db.getGoalDao().getGoalCount().subscribe((count) -> {
+                            if(count == 0) {
+                                DefaultGoals defaultGoals = new DefaultGoals(this);
+                                db.getGoalDao().insertAll(defaultGoals.getGoalsList()).subscribe(() -> {
+                                    // TODO: hide loading indicator
+                                });
+                            }
+                            else {
+                                // TODO: hide loading indicator
+                            }
+                        });
                     });
                 });
             });

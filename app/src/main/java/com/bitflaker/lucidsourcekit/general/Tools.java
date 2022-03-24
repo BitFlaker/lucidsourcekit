@@ -151,4 +151,51 @@ public class Tools {
         }
         return result;
     }
+
+    @ColorInt
+    public static int getColorAtGradientPosition(float x, float minX, float maxX, @ColorInt int... colors) {
+        if (colors.length == 0) {
+            return -1;
+        }
+        else if(colors.length == 1){
+            return colors[0];
+        }
+        else {
+            float step = (maxX - minX) / (colors.length - 1);
+            for (int i = 1; i < colors.length; i++) {
+                if(x <= minX + step * i) {
+                    return getColorAtGradientPosition(x, minX + step * (i - 1), minX + step * i, false, colors[i-1], colors[i]);
+                }
+            }
+            return -1;
+        }
+    }
+
+    @ColorInt
+    public static int getColorAtGradientPosition(float x, float minX, float maxX, boolean reduceAccuracy, @ColorInt int fromColor, @ColorInt int toColor) {
+        float range = maxX - minX;
+        float pos = (x - minX) / range;
+        if(reduceAccuracy){
+            pos = Math.round(pos * 10) / 10.0f;
+            pos = Math.round(pos * 2) / 2.0f;
+        }
+        float invPos = 1 - pos;
+
+        int fromAlpha = Color.alpha(fromColor);
+        int fromRed = Color.red(fromColor);
+        int fromGreen = Color.green(fromColor);
+        int fromBlue = Color.blue(fromColor);
+
+        int toAlpha = Color.alpha(toColor);
+        int toRed = Color.red(toColor);
+        int toGreen = Color.green(toColor);
+        int toBlue = Color.blue(toColor);
+
+        int resAlpha = Math.round(fromAlpha * invPos + toAlpha * pos);
+        int resRed = Math.round(fromRed * invPos + toRed * pos);
+        int resGreen = Math.round(fromGreen * invPos + toGreen * pos);
+        int resBlue = Math.round(fromBlue * invPos + toBlue * pos);
+
+        return Color.argb(resAlpha, resRed, resGreen, resBlue);
+    }
 }

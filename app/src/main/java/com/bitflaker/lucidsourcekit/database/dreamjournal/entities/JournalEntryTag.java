@@ -1,4 +1,4 @@
-package com.bitflaker.lucidsourcekit.database.entities;
+package com.bitflaker.lucidsourcekit.database.dreamjournal.entities;
 
 import androidx.room.Entity;
 import androidx.room.Index;

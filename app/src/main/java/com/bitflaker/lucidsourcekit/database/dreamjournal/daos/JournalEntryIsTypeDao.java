@@ -1,11 +1,11 @@
-package com.bitflaker.lucidsourcekit.database.daos;
+package com.bitflaker.lucidsourcekit.database.dreamjournal.daos;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.bitflaker.lucidsourcekit.database.entities.JournalEntryHasType;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasType;
 
 import java.util.List;
 

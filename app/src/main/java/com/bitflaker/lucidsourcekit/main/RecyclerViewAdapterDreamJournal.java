@@ -17,11 +17,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.database.JournalDatabase;
-import com.bitflaker.lucidsourcekit.database.entities.AssignedTags;
-import com.bitflaker.lucidsourcekit.database.entities.AudioLocation;
-import com.bitflaker.lucidsourcekit.database.entities.JournalEntry;
-import com.bitflaker.lucidsourcekit.database.entities.JournalEntryHasType;
+import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AssignedTags;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasType;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.SortOrders;
 import com.bitflaker.lucidsourcekit.general.Tools;
@@ -46,14 +46,14 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     private DreamJournalEntriesList filteredEntries;
     private int currentSort;
     private AppliedFilter currentFilter;
-    private JournalDatabase db;
+    private MainDatabase db;
     private RecyclerView mRecyclerView;
 
     public RecyclerViewAdapterDreamJournal(DreamJournal journalList, Context context, DreamJournalEntriesList entries) {
         this.journalList = journalList;
         this.context = context;
         this.entries = entries;
-        db = JournalDatabase.getInstance(context);
+        db = MainDatabase.getInstance(context);
         filteredEntries = null;
         currentFilter = null;
     }
@@ -218,7 +218,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
                 recs[i] = audioLocationsList.get(position).get(i).audioPath;
             }
 
-            db.journalEntryTagDao().getAll().subscribe((journalEntryTags, throwable) -> {
+            db.getJournalEntryTagDao().getAll().subscribe((journalEntryTags, throwable) -> {
                 String[] availableTags = new String[journalEntryTags.size()];
                 for (int i = 0; i < journalEntryTags.size(); i++) {
                     availableTags[i] = journalEntryTags.get(i).description;

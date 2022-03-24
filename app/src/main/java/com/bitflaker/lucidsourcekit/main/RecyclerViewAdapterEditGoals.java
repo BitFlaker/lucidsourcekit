@@ -1,17 +1,20 @@
 package com.bitflaker.lucidsourcekit.main;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import com.bitflaker.lucidsourcekit.general.Tools;
-import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
 
@@ -19,6 +22,8 @@ public class RecyclerViewAdapterEditGoals extends RecyclerView.Adapter<RecyclerV
     private OnEntryClicked mListener;
     private Context context;
     private List<Goal> goals;
+    private boolean isInSelectionMode = false;
+    private int selectionCount = 0;
 
     public RecyclerViewAdapterEditGoals(Context context, List<Goal> goals) {
         this.context = context;
@@ -35,23 +40,46 @@ public class RecyclerViewAdapterEditGoals extends RecyclerView.Adapter<RecyclerV
 
     @Override
     public void onBindViewHolder(@NonNull MainViewHolderGoals holder, int position) {
-        holder.goalText.setText(goals.get(position).getName());
-        holder.difficulty.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_baseline_priority_high_24, context.getTheme()), null, null, null);
-        switch (goals.get(position).getDifficulty()){
-            case Easy:
-                holder.difficulty.setCompoundDrawableTintList(Tools.getAttrColorStateList(R.attr.colorSuccess, context.getTheme()));
-                break;
-            case Moderate:
-                holder.difficulty.setCompoundDrawableTintList(Tools.getAttrColorStateList(R.attr.colorWarning, context.getTheme()));
-                break;
-            case Difficult:
-                holder.difficulty.setCompoundDrawableTintList(Tools.getAttrColorStateList(R.attr.colorError, context.getTheme()));
-                break;
+        holder.goalText.setText(goals.get(position).description);
+        if(goals.get(position).isSelected && !holder.isSelected) {
+            holder.select();
         }
-        holder.card.setOnClickListener(e -> {
-            if(mListener != null) {
-                mListener.onEvent(goals.get(position), position);
+        else if(!goals.get(position).isSelected && holder.isSelected) {
+            holder.unselect();
+        }
+        @ColorInt int difficultyColor = Tools.getColorAtGradientPosition(goals.get(position).difficulty, 1, 3, Tools.getAttrColor(R.attr.colorSuccess, context.getTheme()), Tools.getAttrColor(R.attr.colorWarning, context.getTheme()), Tools.getAttrColor(R.attr.colorError, context.getTheme()));
+        holder.difficulty.setCompoundDrawableTintList(ColorStateList.valueOf(difficultyColor));
+        holder.container.setOnClickListener(e -> {
+            if(!isInSelectionMode){
+                if(mListener != null) {
+                    mListener.onEvent(goals.get(position), position);
+                }
             }
+            else {
+                if(!holder.isSelected) {
+                    goals.get(position).isSelected = true;
+                    holder.select();
+                    selectionCount++;
+                }
+                else {
+                    goals.get(position).isSelected = false;
+                    holder.unselect();
+                    selectionCount--;
+                    if(selectionCount == 0) {
+                        isInSelectionMode = false;
+                    }
+                }
+            }
+        });
+        holder.container.setOnLongClickListener(view -> {
+            if(!holder.isSelected) {
+                // TODO: raise event so in lister the add button can be exchanged to a delete button (and colored red)
+                isInSelectionMode = true;
+                goals.get(position).isSelected = true;
+                holder.select();
+                selectionCount++;
+            }
+            return true;
         });
     }
 
@@ -62,13 +90,26 @@ public class RecyclerViewAdapterEditGoals extends RecyclerView.Adapter<RecyclerV
 
     public class MainViewHolderGoals extends RecyclerView.ViewHolder {
         TextView goalText, difficulty;
-        MaterialCardView card;
+        ConstraintLayout container;
+        boolean isSelected = false;
 
         public MainViewHolderGoals(@NonNull View itemView) {
             super(itemView);
             goalText = itemView.findViewById(R.id.txt_goal_text);
             difficulty = itemView.findViewById(R.id.txt_goal_difficulty);
-            card = itemView.findViewById(R.id.crd_goal_card);
+            container = itemView.findViewById(R.id.cl_goal_container);
+        }
+
+        public void select() {
+            isSelected = true;
+            container.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, context.getTheme()));
+            difficulty.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_baseline_check_24, context.getTheme()), null, null, null);
+        }
+
+        public void unselect() {
+            isSelected = false;
+            container.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.backgroundColor, context.getTheme()));
+            difficulty.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.ic_baseline_circle_24, context.getTheme()), null, null, null);
         }
     }
 

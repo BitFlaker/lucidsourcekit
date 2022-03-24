@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/txt_goal_editor_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:drawablePadding="8dp"
+        android:gravity="center_horizontal"
+        android:text="Edit goal"
+        android:textColor="?attr/primaryTextColor"
+        android:textSize="22sp" />
+
+    <EditText
+        android:id="@+id/txt_goal_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/medium_rounded_rectangle"
+        android:backgroundTint="?attr/slightElevated"
+        android:textSize="16sp"
+        android:padding="10dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:textColor="?attr/primaryTextColor"
+        android:hint="Enter name of goal here"
+        android:layout_below="@id/txt_goal_editor_title"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:id="@+id/txt_goal_difficulty_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_goal_description"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:text="Difficulty"
+        android:textColor="?attr/primaryTextColor"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/txt_goal_difficulty_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_goal_difficulty_title"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:gravity="center_horizontal"
+        android:text="Set the base difficulty level to a desired value. It will then be adjusted automatically. If this is not desired, you can lock the difficulty."
+        android:textColor="?attr/secondaryTextColor"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:id="@+id/ll_difficulty_slider_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_below="@id/txt_goal_difficulty_description">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/small_circle"
+            app:tint="?attr/colorSuccess" />
+
+            <com.google.android.material.slider.Slider
+            android:id="@+id/sld_goal_difficulty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:valueFrom="1"
+            android:valueTo="3" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/small_circle"
+            app:tint="?attr/colorError" />
+    </LinearLayout>
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/chk_lock_difficulty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_difficulty_slider_container"
+        android:layout_marginStart="30dp"
+        android:text="Lock difficulty" />
+
+    <TextView
+        android:id="@+id/txt_success_rate_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/chk_lock_difficulty"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:drawableStart="@drawable/ic_outline_info_24"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:textColor="?attr/secondaryTextColor"
+        android:textSize="14sp"
+        android:textStyle="italic"
+        android:text="@string/goal_achievement_stats"/>
+
+    <LinearLayout
+        android:id="@+id/ll_buttons_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:orientation="horizontal"
+        android:divider="@drawable/empty_divider"
+        android:showDividers="middle"
+        android:layout_below="@id/txt_success_rate_info">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_delete_goal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Delete"
+            android:background="@drawable/rounded_ripple"
+            app:backgroundTint="?attr/slightElevated" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save_goal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Save"
+            android:background="@drawable/rounded_ripple"
+            app:backgroundTint="?attr/slightElevated" />
+    </LinearLayout>
+</RelativeLayout>

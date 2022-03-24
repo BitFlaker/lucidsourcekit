@@ -2,23 +2,27 @@ package com.bitflaker.lucidsourcekit.main;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
+import com.bitflaker.lucidsourcekit.general.Tools;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.google.android.material.slider.Slider;
 
 public class EditGoals extends AppCompatActivity {
     private RecyclerView editGoals;
@@ -30,11 +34,15 @@ public class EditGoals extends AppCompatActivity {
     private FloatingActionButton addGoal;
     private ImageView backgroundUnfocus;
     private TextView goalsEditAddTitle;
+    private MainDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_goals);
+        Tools.makeStatusBarTransparent(EditGoals.this);
+        findViewById(R.id.txt_edit_goals_heading).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(EditGoals.this));
+        db = MainDatabase.getInstance(this);
 
         editGoals = findViewById(R.id.rcv_edit_goals);
         editGoalsDialog = findViewById(R.id.rl_edit_goals);
@@ -50,68 +58,76 @@ public class EditGoals extends AppCompatActivity {
         backgroundUnfocus = findViewById(R.id.img_goals_edit_background_unfocus);
 
         setupRecycleView();
-        goalsEditTappedOutside.setOnClickListener(e -> closeDialogAndSaveGoal());
+        //goalsEditTappedOutside.setOnClickListener(e -> closeDialogAndSaveGoal());
 
         addGoal.setOnClickListener(e -> {
-            editGoalsDialog.setVisibility(View.VISIBLE);
-            goalsEditTappedOutside.setVisibility(View.VISIBLE);
-            backgroundUnfocus.setVisibility(View.VISIBLE);
-            goalsEditAddTitle.setText("Add goal");  // TODO extract string resource and change margin of store button as well
-            removeGoal.setVisibility(View.GONE);
-            addGoal.setVisibility(View.GONE);
-            storeGoal.setOnClickListener(e2 -> closeDialogAndSaveGoal());
+            final BottomSheetDialog addGoalSheet = new BottomSheetDialog(EditGoals.this, R.style.BottomSheetDialog_Dark);
+            addGoalSheet.setContentView(R.layout.goals_editor_sheet);
+            MaterialButton deleteButton = addGoalSheet.findViewById(R.id.btn_delete_goal);
+            MaterialButton saveButton = addGoalSheet.findViewById(R.id.btn_save_goal);
+            EditText goalDescription = addGoalSheet.findViewById(R.id.txt_goal_description);
+            Slider goalDifficultySlider = addGoalSheet.findViewById(R.id.sld_goal_difficulty);
+            CheckBox lockDifficulty = addGoalSheet.findViewById(R.id.chk_lock_difficulty);
+            TextView goalEditorTitle = addGoalSheet.findViewById(R.id.txt_goal_editor_title);
+            TextView successRateInfo = addGoalSheet.findViewById(R.id.txt_success_rate_info);
+
+            successRateInfo.setVisibility(View.GONE);
+            deleteButton.setVisibility(View.GONE);
+            goalEditorTitle.setText("Add goal");  // TODO extract string resource
+
+            saveButton.setOnClickListener(view -> {
+                if(goalDescription.getText().toString().length() == 0) { return; }
+                Goal newGoal = new Goal(goalDescription.getText().toString(), goalDifficultySlider.getValue(), lockDifficulty.isChecked());
+                db.getGoalDao().insert(newGoal).subscribe(addGoalSheet::hide);
+            });
+
+            addGoalSheet.show();
         });
     }
 
-    private void closeDialogAndSaveGoal() {
-        if(editGoalsDialog.getVisibility() == View.VISIBLE){
-            closeDialog();
-            // TODO: store goal and refresh
-        }
-    }
-
-    private void closeDialogAndSaveEditedGoal(int position) {
-        if(editGoalsDialog.getVisibility() == View.VISIBLE){
-            closeDialog();
-            // TODO: store edited goal and refresh
-        }
-    }
-
-    private void closeDialog(){
-        editGoalsDialog.setVisibility(View.GONE);
-        goalsEditTappedOutside.setVisibility(View.GONE);
-        backgroundUnfocus.setVisibility(View.GONE);
-        addGoal.setVisibility(View.VISIBLE);
-    }
-
     private void setupRecycleView() {
-        List<Goal> goals = new ArrayList<>();
-        goals.add(new Goal("sdfsdf test", GoalDifficulty.Easy));
-        goals.add(new Goal("asdasdfsdsdaffsdfsd test", GoalDifficulty.Moderate));
-        goals.add(new Goal("tesasdat sdfsdfsdftsdest", GoalDifficulty.Moderate));
-        goals.add(new Goal("tesdfsdffsdfst asdaw", GoalDifficulty.Easy));
-        goals.add(new Goal("afsdf sdfsdfsdf", GoalDifficulty.Difficult));
-        goals.add(new Goal("testsfsddfs test", GoalDifficulty.Moderate));
-        RecyclerViewAdapterEditGoals rvaeg = new RecyclerViewAdapterEditGoals(EditGoals.this, goals);
-        editGoals.setAdapter(rvaeg);
-        editGoals.setLayoutManager(new LinearLayoutManager(EditGoals.this));
-        rvaeg.setOnEntryClickedListener((goal, position) -> {
-            editGoalsDialog.setVisibility(View.VISIBLE);
-            goalsEditTappedOutside.setVisibility(View.VISIBLE);
-            backgroundUnfocus.setVisibility(View.VISIBLE);
-            goalsEditAddTitle.setText("Edit goal");  // TODO extract string resource
-            removeGoal.setVisibility(View.VISIBLE);
-            addGoal.setVisibility(View.GONE);
-            goalText.setText(goal.getName());
-            switch (goal.getDifficulty()){
-                case Easy: diffEasy.setChecked(true); break;
-                case Moderate: diffModerate.setChecked(true); break;
-                case Difficult: diffHard.setChecked(true); break;
-            }
-            storeGoal.setOnClickListener(e2 -> closeDialogAndSaveEditedGoal(position));
-            removeGoal.setOnClickListener(e -> {
-                closeDialog();
-                // TODO remove goal
+        // TODO make flowable so added/changes goals are reloaded
+        db.getGoalDao().getAll().subscribe((goals, throwable) -> {
+            RecyclerViewAdapterEditGoals rvaeg = new RecyclerViewAdapterEditGoals(EditGoals.this, goals);
+            editGoals.setAdapter(rvaeg);
+            editGoals.setLayoutManager(new LinearLayoutManager(EditGoals.this));
+            rvaeg.setOnEntryClickedListener((goal, position) -> {
+                final BottomSheetDialog editGoalSheet = new BottomSheetDialog(EditGoals.this, R.style.BottomSheetDialog_Dark);
+                editGoalSheet.setContentView(R.layout.goals_editor_sheet);
+                MaterialButton deleteButton = editGoalSheet.findViewById(R.id.btn_delete_goal);
+                MaterialButton saveButton = editGoalSheet.findViewById(R.id.btn_save_goal);
+                EditText goalDescription = editGoalSheet.findViewById(R.id.txt_goal_description);
+                Slider goalDifficultySlider = editGoalSheet.findViewById(R.id.sld_goal_difficulty);
+                CheckBox lockDifficulty = editGoalSheet.findViewById(R.id.chk_lock_difficulty);
+                TextView goalEditorTitle = editGoalSheet.findViewById(R.id.txt_goal_editor_title);
+                TextView successRateInfo = editGoalSheet.findViewById(R.id.txt_success_rate_info);
+
+                // TODO: check if this goal was on schedule at all
+                successRateInfo.setText(getResources().getString(R.string.goal_achievement_stats).replace("<COUNT>", "2").replace("<TOTAL>", "10").replace("<PERCENTAGE>", "20"));
+                //successRateInfo.setText("This goal has not been on your schedule yet");
+                goalEditorTitle.setText("Edit goal");  // TODO extract string resource
+                goalDescription.setText(goal.description);
+                goalDifficultySlider.setValue(goal.difficulty);
+                lockDifficulty.setChecked(goal.difficultyLocked);
+
+                saveButton.setOnClickListener(view -> {
+                    if(goalDescription.getText().toString().length() == 0) { return; }
+                    goal.description = goalDescription.getText().toString();
+                    goal.difficulty = goalDifficultySlider.getValue();
+                    goal.difficultyLocked = lockDifficulty.isChecked();
+                    db.getGoalDao().update(goal).subscribe(editGoalSheet::hide);
+                });
+
+                deleteButton.setOnClickListener(view -> {
+                    new AlertDialog.Builder(EditGoals.this, Tools.getThemeDialog()).setTitle("Delete goal").setMessage("Do you really want to delete this goal?") // TODO: extract string resources
+                            .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
+                                db.getGoalDao().delete(goal).subscribe(editGoalSheet::hide);
+                            })
+                            .setNegativeButton(getResources().getString(R.string.no), null)
+                            .show();
+                });
+
+                editGoalSheet.show();
             });
         });
     }

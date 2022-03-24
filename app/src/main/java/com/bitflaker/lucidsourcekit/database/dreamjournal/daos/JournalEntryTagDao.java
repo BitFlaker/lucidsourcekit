@@ -1,4 +1,4 @@
-package com.bitflaker.lucidsourcekit.database.daos;
+package com.bitflaker.lucidsourcekit.database.dreamjournal.daos;
 
 import static androidx.room.OnConflictStrategy.IGNORE;
 
@@ -7,7 +7,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.bitflaker.lucidsourcekit.database.entities.JournalEntryTag;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryTag;
 
 import java.util.List;
 

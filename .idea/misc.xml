@@ -83,6 +83,7 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/line.xml" value="0.37864583333333335" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/medium_rounded_rectangle.xml" value="0.3351851851851852" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/rectangle.xml" value="0.2375" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/rectangle_ripple.xml" value="0.35555555555555557" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/rounded_border.xml" value="0.3728205128205128" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/rounded_edit_text.xml" value="0.37864583333333335" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/rounded_ripple.xml" value="0.24322916666666666" />
@@ -127,6 +128,7 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_setup_open_source.xml" value="0.24166666666666667" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_statistics.xml" value="0.2857142857142857" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/goal_entry.xml" value="0.33" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/goals_editor_sheet.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/icon_spinner_row.xml" value="0.3120471014492754" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/journal_entry.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/menu/add_open.xml" value="0.2359375" />

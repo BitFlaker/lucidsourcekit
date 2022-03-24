@@ -33,12 +33,12 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.database.JournalDatabase;
-import com.bitflaker.lucidsourcekit.database.entities.AudioLocation;
-import com.bitflaker.lucidsourcekit.database.entities.JournalEntry;
-import com.bitflaker.lucidsourcekit.database.entities.JournalEntryHasTag;
-import com.bitflaker.lucidsourcekit.database.entities.JournalEntryHasType;
-import com.bitflaker.lucidsourcekit.database.entities.JournalEntryTag;
+import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasTag;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasType;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryTag;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
@@ -86,7 +86,7 @@ public class AddTextEntry extends AppCompatActivity {
     private FormsJournalEditorFrag formsFrag;
     private TextJournalEditorFrag textFrag;
 
-    private JournalDatabase db;
+    private MainDatabase db;
     private Calendar timestampCalendar;
     private JournalTypes currentType;
 
@@ -216,7 +216,7 @@ public class AddTextEntry extends AppCompatActivity {
 
     private void setupAddEntryButton() {
         addEntry.setOnClickListener(e -> {
-            db = JournalDatabase.getInstance(this);
+            db = MainDatabase.getInstance(this);
             String title = entryTitle.getText().toString();
             String description = null;
             switch (currentType) {
@@ -257,11 +257,11 @@ public class AddTextEntry extends AppCompatActivity {
 
         if(entryId != -1) {
             entry.setEntryId(entryId);
-            db.journalEntryHasTagDao().deleteAll(entryId);
-            db.journalEntryIsTypeDao().deleteAll(entryId);
+            db.getJournalEntryHasTagDao().deleteAll(entryId);
+            db.getJournalEntryIsTypeDao().deleteAll(entryId);
         }
 
-        db.journalEntryDao().insert(entry).subscribe((insertedIds, throwable) -> {
+        db.getJournalEntryDao().insert(entry).subscribe((insertedIds, throwable) -> {
             int currentEntryId = insertedIds.intValue();
             List<String> dreamTypes = new ArrayList<>();
             if(nightmare.isChecked()) { dreamTypes.add(DreamTypes.Nightmare.getId()); }
@@ -272,7 +272,7 @@ public class AddTextEntry extends AppCompatActivity {
             for (String type : dreamTypes) {
                 journalEntryHasTypes.add(new JournalEntryHasType(currentEntryId, type));
             }
-            db.journalEntryIsTypeDao().insertAll(journalEntryHasTypes).subscribe(() -> {
+            db.getJournalEntryIsTypeDao().insertAll(journalEntryHasTypes).subscribe(() -> {
                 List<String> tags = new ArrayList<>();
                 int childCount = tagContainer.getChildCount();
                 for (int i = 0; i < childCount; i++){
@@ -286,18 +286,18 @@ public class AddTextEntry extends AppCompatActivity {
                 for (String tag : tags) {
                     journalEntryTagsToInsert.add(new JournalEntryTag(tag));
                 }
-                db.journalEntryTagDao().insertAll(journalEntryTagsToInsert).subscribe((insertedTagIds, throwable1) -> {
-                    db.journalEntryTagDao().getIdsByDescription(tags).subscribe((journalEntryTags, throwable2) -> {
+                db.getJournalEntryTagDao().insertAll(journalEntryTagsToInsert).subscribe((insertedTagIds, throwable1) -> {
+                    db.getJournalEntryTagDao().getIdsByDescription(tags).subscribe((journalEntryTags, throwable2) -> {
                         List<JournalEntryHasTag> journalEntryHasTags = new ArrayList<>();
                         for (int i = 0; i < journalEntryTags.size(); i++) {
                             journalEntryHasTags.add(new JournalEntryHasTag(currentEntryId, journalEntryTags.get(i).tagId));
                         }
-                        db.journalEntryHasTagDao().insertAll(journalEntryHasTags).subscribe((integers, throwable3) -> {
+                        db.getJournalEntryHasTagDao().insertAll(journalEntryHasTags).subscribe((integers, throwable3) -> {
                             List<AudioLocation> audioLocations = new ArrayList<>();
                             for (String location : recordedAudios){
                                 audioLocations.add(new AudioLocation(currentEntryId, location));
                             }
-                            db.audioLocationDao().insertAll(audioLocations).subscribe((integers1, throwable4) -> {
+                            db.getAudioLocationDao().insertAll(audioLocations).subscribe((integers1, throwable4) -> {
                                 // TODO hide loading animation
                                 Intent data = new Intent();
                                 data.putExtra("entryId", currentEntryId);

@@ -103,6 +103,7 @@
         <item name="colorOnPrimary">@color/white</item>
         <item name="android:backgroundTint">@color/background</item>
         <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
+        <item name="theme">@style/Theme.LucidSourceKit.Dark</item>
     </style>
 
     <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">

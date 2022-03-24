@@ -20,8 +20,8 @@ import com.bitflaker.lucidsourcekit.charts.CircleGraph;
 import com.bitflaker.lucidsourcekit.charts.DataValue;
 import com.bitflaker.lucidsourcekit.charts.RangeProgress;
 import com.bitflaker.lucidsourcekit.charts.RodGraph;
-import com.bitflaker.lucidsourcekit.database.JournalDatabase;
-import com.bitflaker.lucidsourcekit.database.entities.TagCount;
+import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.TagCount;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.chip.ChipGroup;
 
@@ -41,7 +41,7 @@ public class Statistics extends Fragment {
     public CircleGraph lucidPercentage;
     public TextView totalEntriesNotice, currentStreak, longestStreak;
     public RangeProgress rpDreamMood, rpDreamClarity, rpSleepQuality, rpDreamsPerNight;
-    private JournalDatabase db;
+    private MainDatabase db;
     private List<Double> avgClarities = new ArrayList<>();
     private List<Double> avgMoods = new ArrayList<>();
     private List<Double> avgQualities = new ArrayList<>();
@@ -78,7 +78,7 @@ public class Statistics extends Fragment {
         rpDreamClarity = getView().findViewById(R.id.rp_dream_clarity);
         rpSleepQuality = getView().findViewById(R.id.rp_sleep_quality);
         rpDreamsPerNight = getView().findViewById(R.id.rp_dreams_per_night);
-        db = JournalDatabase.getInstance(getContext());
+        db = MainDatabase.getInstance(getContext());
 
         Drawable iconMood1 = getResources().getDrawable(R.drawable.ic_baseline_sentiment_very_dissatisfied_24, getContext().getTheme());
         Drawable iconMood2 = getResources().getDrawable(R.drawable.ic_baseline_sentiment_dissatisfied_24, getContext().getTheme());
@@ -126,15 +126,15 @@ public class Statistics extends Fragment {
                 rpDreamsPerNight.setData(Collections.max(dreamCounts).floatValue(), averageDreamCount, "DREAMS PER NIGHT", null, df.format(averageDreamCount));
 
                 Pair<Long, Long> timeSpan = getTimeSpanFrom(selectedDaysCount - 1, true);
-                db.journalEntryDao().getLucidEntriesCount(timeSpan.first, timeSpan.second).subscribe((lucidEntriesCount, throwable) -> {
-                    db.journalEntryDao().getEntriesCount(timeSpan.first, timeSpan.second).subscribe((totalEntriesCount, throwable2) -> {
+                db.getJournalEntryDao().getLucidEntriesCount(timeSpan.first, timeSpan.second).subscribe((lucidEntriesCount, throwable) -> {
+                    db.getJournalEntryDao().getEntriesCount(timeSpan.first, timeSpan.second).subscribe((totalEntriesCount, throwable2) -> {
                         // TODO: maybe display numbers as well?
                         lucidPercentage.setData(lucidEntriesCount, totalEntriesCount-lucidEntriesCount, Tools.dpToPx(getContext(), 15), Tools.dpToPx(getContext(), 1.25));
                         totalEntriesNotice.setText(getResources().getString(R.string.total_entries_count).replace("<TOTAL_COUNT>", totalEntriesCount.toString()));
                     });
                 });
 
-                db.journalEntryHasTagDao().getMostUsedTagsList(timeSpan.first, timeSpan.second, 10).subscribe((tagCounts, throwable) -> {
+                db.getJournalEntryHasTagDao().getMostUsedTagsList(timeSpan.first, timeSpan.second, 10).subscribe((tagCounts, throwable) -> {
                     // TODO: only make 1 object that draws all of the graphs
                     mostUsedTagsContainer.removeAllViews();
                     if(tagCounts.size() > 0){
@@ -234,7 +234,7 @@ public class Statistics extends Fragment {
             dreamCounts.clear();
             endTimeSpan = timeSpan.second;
         }
-        db.journalEntryDao().getAverageEntryInTimeSpan(timeSpan.first, timeSpan.second).subscribe((averageEntryValues, throwable) -> {
+        db.getJournalEntryDao().getAverageEntryInTimeSpan(timeSpan.first, timeSpan.second).subscribe((averageEntryValues, throwable) -> {
             avgQualities.add(averageEntryValues.getAvgQualities());
             avgMoods.add(averageEntryValues.getAvgMoods());
             avgClarities.add(averageEntryValues.getAvgClarities());

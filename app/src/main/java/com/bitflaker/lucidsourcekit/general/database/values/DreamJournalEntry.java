@@ -1,9 +1,9 @@
 package com.bitflaker.lucidsourcekit.general.database.values;
 
-import com.bitflaker.lucidsourcekit.database.entities.AssignedTags;
-import com.bitflaker.lucidsourcekit.database.entities.AudioLocation;
-import com.bitflaker.lucidsourcekit.database.entities.JournalEntry;
-import com.bitflaker.lucidsourcekit.database.entities.JournalEntryHasType;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AssignedTags;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasType;
 
 import java.util.ArrayList;
 import java.util.List;

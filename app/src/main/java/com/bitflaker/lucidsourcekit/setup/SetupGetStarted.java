@@ -7,11 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bitflaker.lucidsourcekit.MainActivity;
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.database.JournalDatabase;
-import com.bitflaker.lucidsourcekit.database.entities.DreamClarity;
-import com.bitflaker.lucidsourcekit.database.entities.DreamMood;
-import com.bitflaker.lucidsourcekit.database.entities.DreamType;
-import com.bitflaker.lucidsourcekit.database.entities.SleepQuality;
+import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamClarity;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamType;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.SleepQuality;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.File;
@@ -26,11 +26,11 @@ public class SetupGetStarted extends AppCompatActivity {
 
         // TODO: only insert when necessary and add loading
         // TODO: add loading indicator
-        JournalDatabase db = JournalDatabase.getInstance(SetupGetStarted.this);
-        db.dreamTypeDao().insertAll(DreamType.populateData()).subscribe(() -> {
-            db.dreamMoodDao().insertAll(DreamMood.populateData()).subscribe(() -> {
-                db.dreamClarityDao().insertAll(DreamClarity.populateData()).subscribe(() -> {
-                    db.sleepQualityDao().insertAll(SleepQuality.populateData()).subscribe(() -> {
+        MainDatabase db = MainDatabase.getInstance(SetupGetStarted.this);
+        db.getDreamTypeDao().insertAll(DreamType.populateData()).subscribe(() -> {
+            db.getDreamMoodDao().insertAll(DreamMood.populateData()).subscribe(() -> {
+                db.getDreamClarityDao().insertAll(DreamClarity.populateData()).subscribe(() -> {
+                    db.getSleepQualityDao().insertAll(SleepQuality.populateData()).subscribe(() -> {
                         // TODO: hide loading indicator
                         /*
 

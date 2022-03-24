@@ -24,7 +24,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.widget.TextViewCompat;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.database.JournalDatabase;
+import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
@@ -57,7 +57,7 @@ public class ViewJournalEntry extends AppCompatActivity {
     private ActivityResultLauncher<Intent> editEntryActivityResultLauncher;
     private JournalTypes journalType;
     private int position, entryId;
-    private JournalDatabase db;
+    private MainDatabase db;
     private long timestamp;
     private Calendar cldr;
     private DateFormat dateFormat, timeFormat;
@@ -91,7 +91,7 @@ public class ViewJournalEntry extends AppCompatActivity {
         editEntry = findViewById(R.id.btn_edit_entry);
         deleteEntry = findViewById(R.id.btn_delete_entry);
         mPlayer = new MediaPlayer();
-        db = JournalDatabase.getInstance(this);
+        db = MainDatabase.getInstance(this);
         cldr = new GregorianCalendar(TimeZone.getDefault());
         dateFormat = android.text.format.DateFormat.getDateFormat(this);
         timeFormat = android.text.format.DateFormat.getTimeFormat(this);
@@ -122,9 +122,9 @@ public class ViewJournalEntry extends AppCompatActivity {
         });
         deleteEntry.setOnClickListener(e -> new AlertDialog.Builder(ViewJournalEntry.this, Tools.getThemeDialog()).setTitle(getResources().getString(R.string.entry_delete_header)).setMessage(getResources().getString(R.string.entry_delete_message))
                 .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-                    db.journalEntryDao().getEntryById(entryId).subscribe(journalEntry -> {
+                    db.getJournalEntryDao().getEntryById(entryId).subscribe(journalEntry -> {
                         // TODO display loading screen
-                        db.journalEntryDao().delete(journalEntry).subscribe(() -> {
+                        db.getJournalEntryDao().delete(journalEntry).subscribe(() -> {
                             Intent data = new Intent();
                             data.putExtra("action", "DELETE");
                             data.putExtra("entryId", entryId);

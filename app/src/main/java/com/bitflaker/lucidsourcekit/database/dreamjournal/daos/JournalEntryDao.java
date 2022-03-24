@@ -1,4 +1,4 @@
-package com.bitflaker.lucidsourcekit.database.daos;
+package com.bitflaker.lucidsourcekit.database.dreamjournal.daos;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 
@@ -7,8 +7,8 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.bitflaker.lucidsourcekit.database.entities.AverageEntryValues;
-import com.bitflaker.lucidsourcekit.database.entities.JournalEntry;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AverageEntryValues;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
 
 import java.util.List;
 

@@ -24,8 +24,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.database.JournalDatabase;
-import com.bitflaker.lucidsourcekit.database.entities.JournalEntry;
+import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntriesList;
@@ -44,7 +44,7 @@ public class DreamJournal extends Fragment {
     public ActivityResultLauncher<Intent> viewEntryActivityResultLauncher;
     private ImageButton sortEntries, filterEntries, resetFilterEntries;
     private int sortBy = 0;
-    private JournalDatabase db;
+    private MainDatabase db;
 
     // TODO: new audio entry added => displaying 0 audio files and does not display them, but when reloaded, it shows correct values
     // same goes for tags => queried too fast => entry added but tags and audio files not !
@@ -61,16 +61,16 @@ public class DreamJournal extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getView().findViewById(R.id.ll_header).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
 
-        db = JournalDatabase.getInstance(getContext());
+        db = MainDatabase.getInstance(getContext());
 
         Context context = getContext();
-        db.journalEntryDao().getAll().subscribe(journalEntries -> {
+        db.getJournalEntryDao().getAll().subscribe(journalEntries -> {
             // TODO gather all data in a more efficient way!
             DreamJournalEntriesList djel = new DreamJournalEntriesList();
             for (JournalEntry entry : journalEntries) {
-                db.journalEntryHasTagDao().getAllFromEntryId(entry.entryId).subscribe((assignedTags, throwable1) -> {
-                    db.journalEntryIsTypeDao().getAllFromEntryId(entry.entryId).subscribe((journalEntryHasTypes, throwable2) -> {
-                        db.audioLocationDao().getAllFromEntryId(entry.entryId).subscribe((audioLocations, throwable3) -> {
+                db.getJournalEntryHasTagDao().getAllFromEntryId(entry.entryId).subscribe((assignedTags, throwable1) -> {
+                    db.getJournalEntryIsTypeDao().getAllFromEntryId(entry.entryId).subscribe((journalEntryHasTypes, throwable2) -> {
+                        db.getAudioLocationDao().getAllFromEntryId(entry.entryId).subscribe((audioLocations, throwable3) -> {
                             DreamJournalEntry djEntry = new DreamJournalEntry(entry, assignedTags, journalEntryHasTypes, audioLocations);
                             djel.add(djEntry);
                         });
@@ -112,7 +112,7 @@ public class DreamJournal extends Fragment {
     private void setupFilterButton() {
         filterEntries.setOnClickListener(e -> {
             // TODO start loading animation
-            db.journalEntryTagDao().getAll().subscribe((journalEntryTags, throwable) -> {
+            db.getJournalEntryTagDao().getAll().subscribe((journalEntryTags, throwable) -> {
                 String[] availableTags = new String[journalEntryTags.size()];
                 for (int i = 0; i < journalEntryTags.size(); i++) {
                     availableTags[i] = journalEntryTags.get(i).description;
@@ -197,7 +197,7 @@ public class DreamJournal extends Fragment {
         // TODO migrate available tags from extra to load in journal entry creator!
         // TODO start loading animation
         animateFab();
-        db.journalEntryTagDao().getAll().subscribe((journalEntryTags, throwable) -> {
+        db.getJournalEntryTagDao().getAll().subscribe((journalEntryTags, throwable) -> {
             String[] availableTags = new String[journalEntryTags.size()];
             for (int i = 0; i < journalEntryTags.size(); i++) {
                 availableTags[i] = journalEntryTags.get(i).description;

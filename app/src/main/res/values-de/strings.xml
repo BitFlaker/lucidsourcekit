@@ -99,6 +99,7 @@
     <string name="app_opening_streak_description">Diese Zahl gibt die Anzahl an aufeinanderfolgenden Tagen an, an denen die App mindestens einmal geöffnet wurde.</string>
     <string name="goals_reached_description">Diese Zahl gibt die Anzahl an bisher erreichten Zielen an. Diese Ziele unterstützen dich dabei, den ganzen Tag über bewusster und aufmerksamer zu sein.</string>
     <string name="total_entries_count"><![CDATA[This data is based on a total of <TOTAL_COUNT> dream journal entries.]]></string>
+    <string name="goal_achievement_stats"><![CDATA[You achieved this goal <COUNT> out of <TOTAL> times. Your success rate is <PERCENTAGE>%]]></string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>
@@ -107,5 +108,15 @@
         <item>PIN</item>
         <item>Passwort</item>
         <item>Keine</item>
+    </string-array>
+    <string-array name="goals">
+        <item>Ich sehe ein gelbes Auto</item>
+        <item>Ich höre eine Eule</item>
+        <item>Ich höre das Wasser fließen</item>
+        <item>Ich höre das Bremsen eines Autos</item>
+        <item>Ich sehe eine Ampel</item>
+        <item>Ich fühle mich müde</item>
+        <item>Ich fühle mich entmutigt</item>
+        <item>Es fühlt sich kühl an</item>
     </string-array>
 </resources>
