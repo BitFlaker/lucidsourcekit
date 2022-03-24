@@ -55,7 +55,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:text="streak"
+                        android:text="Streak"
                         android:textAlignment="center"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
@@ -105,10 +105,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
-                            android:text="current streak"
+                            android:text="Current streak"
                             android:textAlignment="center"
                             android:textColor="?attr/primaryTextColor"
-                            android:textSize="15sp"
+                            android:textSize="16sp"
                             android:textStyle="bold"/>
 
                         <TextView
@@ -149,10 +149,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
-                            android:text="longest streak"
+                            android:text="Longest streak"
                             android:textAlignment="center"
                             android:textColor="?attr/primaryTextColor"
-                            android:textSize="15sp"
+                            android:textSize="16sp"
                             android:textStyle="bold"/>
 
                         <TextView
@@ -205,7 +205,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="last 7 days"
+                    android:text="Last 7 days"
                     android:textAlignment="center" />
 
                 <com.google.android.material.chip.Chip
@@ -213,7 +213,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="last 31 days" />
+                    android:text="Last 31 days" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chp_all_time"
@@ -242,7 +242,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="amount of lucid dreams"
+                        android:text="Amount of lucid dreams"
                         android:textAlignment="center"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
@@ -271,7 +271,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:drawablePadding="5dp"
-                                android:text="lucid dream"
+                                android:text="Lucid dream"
                                 android:textColor="?attr/primaryTextColor"
                                 app:drawableLeftCompat="@drawable/ic_round_square_24"
                                 app:drawableTint="?attr/colorSecondary" />
@@ -280,7 +280,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:drawablePadding="5dp"
-                                android:text="normal dream"
+                                android:text="Normal dream"
                                 android:textColor="?attr/primaryTextColor"
                                 app:drawableLeftCompat="@drawable/ic_round_square_24"
                                 app:drawableTint="?attr/colorPrimary" />
@@ -312,7 +312,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="15dp"
-                        android:text="averages"
+                        android:text="Averages"
                         android:textAlignment="center"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
@@ -372,7 +372,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:text="average dream moods"
+                        android:text="Average dream moods"
                         android:textAlignment="center"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
@@ -409,7 +409,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:text="average dream clarities"
+                        android:text="Average dream clarities"
                         android:textAlignment="center"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
@@ -446,7 +446,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:text="average sleep quality"
+                        android:text="Average sleep quality"
                         android:textAlignment="center"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
@@ -483,7 +483,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:text="goals reached"
+                        android:text="Goals reached"
                         android:textAlignment="center"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
@@ -520,7 +520,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:text="most frequently used tags"
+                        android:text="Most frequently used tags"
                         android:textAlignment="center"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"

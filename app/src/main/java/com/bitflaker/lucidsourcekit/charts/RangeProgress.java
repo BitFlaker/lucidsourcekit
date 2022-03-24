@@ -131,7 +131,7 @@ public class RangeProgress extends View {
             }
             canvas.drawBitmap(addGradient(icon, iconSize, iconFillPercentage), begin, getHeight()/2.0f-iconSize/2.0f, dataLabelPaint);
         }
-        else {
+        else if(text != null && text.length() > 0) {
             dataLabelPaint.getTextBounds(text, 0, text.length(), textBounds);
             canvas.drawText(text, getWidth() - minRadMargin - textBounds.width(), getHeight()/2.0f - textBounds.exactCenterY(), dataLabelPaint);
         }

@@ -24,7 +24,7 @@ import java.util.List;
 public class Goals extends Fragment {
     private LinearLayout difficultyChartContainer;
     private FloatingActionButton floatingEdit;
-    private RangeProgress goalsReachedYesterday;
+    private RangeProgress goalsReachedYesterday, difficultyLevel, averageDifficultyLevel, averageDifficultyLevelYesterday;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,9 +38,16 @@ public class Goals extends Fragment {
         getView().findViewById(R.id.txt_goals_heading).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
         difficultyChartContainer = getView().findViewById(R.id.ll_difficulty);
         goalsReachedYesterday = getView().findViewById(R.id.rp_goals_reached_yesterday);
+        difficultyLevel = getView().findViewById(R.id.rp_difficulty_level);
+        averageDifficultyLevel = getView().findViewById(R.id.rp_average_difficulty_level);
+        averageDifficultyLevelYesterday = getView().findViewById(R.id.rp_goals_average_difficulty_yesterday);
         floatingEdit = getView().findViewById(R.id.btn_add_journal_entry);
 
+        // TODO: replace with string resources
         goalsReachedYesterday.setData(3, 1, "GOALS REACHED", null, "1/3");
+        difficultyLevel.setData(3, 1.35f, "DIFFICULTY LEVEL", null, "1.35");
+        averageDifficultyLevel.setData(3, 1.57f, "AVERAGE DIFFICULTY LEVEL", null, "1.57");
+        averageDifficultyLevelYesterday.setData(3, 2.32f, "AVERAGE DIFFICULTY LEVEL", null, "2.32");
 
         floatingEdit.setOnClickListener(e -> {
             Intent intent = new Intent(getContext(), EditGoals.class);

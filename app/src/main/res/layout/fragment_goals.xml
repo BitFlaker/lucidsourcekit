@@ -69,9 +69,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
                         android:layout_marginBottom="30dp"
-                        android:text="toady's goals difficulty ratings"
-                        android:textColor="?attr/primaryTextColor" />
+                        android:text="Toady's goals difficulty ratings"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -80,6 +83,8 @@
                         android:layout_marginRight="20dp"
                         android:orientation="horizontal">
 
+                        <!-- TODO: make the colors not fixed but rather like a gradient: 1 = green | 1.5 = orange-green | 1.75 = orange-orange-green | 2 = orange | ... -->
+                        <!-- TODO: calculate difficulty ratings based on occurrences and times missed/hit and ignore days where app was not opened or goals tab was just ignored or something like that -->
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -111,14 +116,20 @@
                             app:drawableTopCompat="@drawable/ic_baseline_circle_24" />
                     </LinearLayout>
 
-                    <TextView
+                    <com.bitflaker.lucidsourcekit.charts.RangeProgress
+                        android:id="@+id/rp_average_difficulty_level"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginTop="30dp" />
+                    <!--<TextView
                         android:id="@+id/txt_total_difficulty"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
                         android:text="this makes a total difficulty of 2.5/3"
                         android:textAlignment="center"
-                        android:textColor="?attr/primaryTextColor" />
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="14sp" />-->
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -151,9 +162,13 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginTop="-5dp"
+                            android:layout_marginRight="-48dp"
                             android:layout_weight="1"
-                            android:text="toady's goals"
-                            android:textColor="?attr/primaryTextColor" />
+                            android:gravity="center_horizontal"
+                            android:text="Toady's goals"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
                         <ImageButton
                             android:id="@+id/btn_reshuffle_goals"
@@ -165,13 +180,15 @@
                             app:backgroundTint="?attr/slightElevated" />
                     </LinearLayout>
 
+                    <!-- TODO: change font to italic when checked (and probably even strike out) -->
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:button="@drawable/checkbox_button"
                         android:drawableLeft="@android:color/transparent"
                         android:drawablePadding="15dp"
-                        android:text="I see a yellow car" />
+                        android:text="I see a yellow car"
+                        android:textColor="@color/checkbox_text_check_change" />
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:layout_width="match_parent"
@@ -179,7 +196,8 @@
                         android:button="@drawable/checkbox_button"
                         android:drawableLeft="@android:color/transparent"
                         android:drawablePadding="15dp"
-                        android:text="I turn off a light" />
+                        android:text="I turn off a light"
+                        android:textColor="@color/checkbox_text_check_change" />
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:layout_width="match_parent"
@@ -187,9 +205,34 @@
                         android:button="@drawable/checkbox_button"
                         android:drawableLeft="@android:color/transparent"
                         android:drawablePadding="15dp"
-                        android:text="I feel tired" />
+                        android:text="I feel tired"
+                        android:textColor="@color/checkbox_text_check_change" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/txt_goals_options_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="35dp"
+                android:text="Adjustments"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="23sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_goals_options_subheading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="30dp"
+                android:text="Adjust the goals to you, not the other way around"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="14sp" />
+
+            <!-- TODO: probably lower opacity to like 40% and when it is scrolled further down, increase opacity until 100% (and on larger devices where you cannot scroll => leave on 100% opacity) -->
+            <!-- TODO: probably hide if it's the first day of using this tool -->
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -210,16 +253,30 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Want to improve compared to yesterday?"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Yesterday's progress"
                         android:textColor="?attr/primaryTextColor"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-                    <!-- TODO: make adaptive:
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center_horizontal"
+                        android:text="Here is some general information about your yesterday's progress with some suggestions for you to improve"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="14sp" />
+
+                    <!-- TODO: make adaptive: (or not)
+
                                 if reached no or very few goals:
-                                    advice to be more aware and maybe turn on notification (or reduce count if more than 3 goals) and advice to shuffle again if goals are not good for that day and also to probably edit or add some new ones
+                                    advice to be more aware and maybe turn on notification (or reduce count if more than 3 goals) and advice to shuffle again if goals are not good for that day and also to probably edit or add some new ones and if the difficulty level is just to high, advice to lower it
+                            => As you only got 0/3 you might want to turn on a permanent notification to remind you of the goals to look out for. <TEXT FOR REDUCTION OF GOALS HERE OR BLANK>. <TEXT FOR REDUCTION DIFFICULTY LEVEL HERE OR BLANK>. You can also reshuffle them if they do not suit for the current day. By clicking the Pen-Button at the bottom right corner, you can also add/edit goals.
 
                                 if reached about all goals:
                                     advice to increase goal count to challenge you more, raise the average difficulty goal
+                            => As you got 3/3 you might want to increase the current amount of goals to be a greater challenge for you. How does that sound to you?
 
                                 => all with quick access buttons, so you do not have to go to settings
                                 -->
@@ -228,15 +285,56 @@
                         android:id="@+id/rp_goals_reached_yesterday"
                         android:layout_width="match_parent"
                         android:layout_height="25dp"
-                        android:layout_marginTop="15dp" />
+                        android:layout_marginTop="20dp" />
+
+                    <com.bitflaker.lucidsourcekit.charts.RangeProgress
+                        android:id="@+id/rp_goals_average_difficulty_yesterday"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginTop="10dp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="As you only got 0/3 you might want to ..."
+                        android:layout_marginTop="30dp"
+                        android:gravity="center_horizontal"
+                        android:text="Suggestions"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_horizontal"
+                        android:text="Here are some possible quick actions you might probably want to make use of"
                         android:textColor="?attr/secondaryTextColor"
                         android:textSize="14sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:divider="@drawable/empty_divider"
+                        android:orientation="vertical"
+                        android:showDividers="middle">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/rounded_ripple"
+                            android:src="@drawable/ic_baseline_shuffle_24"
+                            android:text="reduce to 3 goals"
+                            app:backgroundTint="?attr/slightElevated2x" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/rounded_ripple"
+                            android:src="@drawable/ic_baseline_shuffle_24"
+                            android:text="turn on notifications"
+                            app:backgroundTint="?attr/slightElevated2x" />
+                    </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -256,35 +354,78 @@
                     android:layout_margin="20dp"
                     android:orientation="vertical">
 
+                    <!--<ImageButton
+                        android:id="@+id/btn_card_help"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_baseline_help_24"
+                        android:background="@drawable/rounded_ripple"
+                        android:backgroundTint="?attr/slightElevated"/>-->
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="average difficulty selection goal"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Average difficulty selection goal"
                         android:textColor="?attr/primaryTextColor"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:text="Your current difficulty level is: 1.35"
+                        android:layout_marginTop="10dp"
+                        android:text="This option allows you to specify the average difficulty level the algorithm should target for selecting your daily goals. The value 1 stands for the easiest and the value 3 for the hardest difficulty."
                         android:textColor="?attr/secondaryTextColor"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textAlignment="center"/>
 
-                    <com.google.android.material.slider.Slider
+                    <com.bitflaker.lucidsourcekit.charts.RangeProgress
+                        android:id="@+id/rp_difficulty_level"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginTop="15dp" />
+
+                    <!--<com.google.android.material.slider.Slider
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:value="1.35"
-                        android:valueTo="3" />
+                        android:valueFrom="1"
+                        android:valueTo="3" />-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="This option allows you to specify the average difficulty level the algorithm should target for selecting your daily goals. The value 1 stands for the easiest and the value 3 for the hardest difficulty."
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="14sp" />
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Auto-adjusting of difficulty level is "
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="ENABLED"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/rounded_ripple"
+                        android:src="@drawable/ic_baseline_shuffle_24"
+                        android:text="adjust manually"
+                        app:backgroundTint="?attr/slightElevated2x" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
