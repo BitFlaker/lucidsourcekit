@@ -12,12 +12,13 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao
 public interface GoalDao {
     @Query("SELECT * FROM Goal ORDER BY difficulty")
-    Single<List<Goal>> getAll();
+    Flowable<List<Goal>> getAll();
 
     @Query("SELECT COUNT(*) FROM Goal")
     Single<Integer> getGoalCount();
@@ -30,6 +31,9 @@ public interface GoalDao {
 
     @Delete
     Completable delete(Goal goal);
+
+    @Delete
+    void deleteAll(List<Goal> selectedGoalIds);
 
     @Update
     Completable update(Goal goal);

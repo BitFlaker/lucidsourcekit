@@ -21,18 +21,19 @@
         android:id="@+id/txt_goal_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/txt_goal_editor_title"
         android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="30dp"
         android:background="@drawable/medium_rounded_rectangle"
         android:backgroundTint="?attr/slightElevated"
-        android:textSize="16sp"
+        android:inputType="text"
+        android:hint="Enter name of goal here"
         android:padding="10dp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:textColor="?attr/primaryTextColor"
-        android:hint="Enter name of goal here"
-        android:layout_below="@id/txt_goal_editor_title"
-        android:layout_marginTop="20dp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/txt_goal_difficulty_title"
@@ -58,62 +59,47 @@
         android:textColor="?attr/secondaryTextColor"
         android:textSize="14sp" />
 
-    <LinearLayout
-        android:id="@+id/ll_difficulty_slider_container"
+    <com.google.android.material.slider.Slider
+        android:id="@+id/sld_goal_difficulty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="5dp"
+        android:layout_below="@id/txt_goal_difficulty_description"
         android:layout_marginLeft="30dp"
+        android:layout_marginTop="5dp"
         android:layout_marginRight="30dp"
-        android:layout_below="@id/txt_goal_difficulty_description">
+        app:labelStyle="@style/Tooltip.Dark"
+        android:value="1.25"
+        android:valueFrom="1"
+        android:valueTo="3"
+        app:haloColor="@android:color/transparent" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/small_circle"
-            app:tint="?attr/colorSuccess" />
-
-            <com.google.android.material.slider.Slider
-            android:id="@+id/sld_goal_difficulty"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:valueFrom="1"
-            android:valueTo="3" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/small_circle"
-            app:tint="?attr/colorError" />
-    </LinearLayout>
-
-    <com.google.android.material.checkbox.MaterialCheckBox
-        android:id="@+id/chk_lock_difficulty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ll_difficulty_slider_container"
+    <ImageButton
+        android:id="@+id/btn_toggle_lock_difficulty"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginStart="30dp"
-        android:text="Lock difficulty" />
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/rounded_ripple"
+        android:backgroundTint="?attr/backgroundColor"
+        android:layout_below="@id/sld_goal_difficulty"
+        android:src="@drawable/ic_baseline_lock_open_24"/>
 
     <TextView
         android:id="@+id/txt_success_rate_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/chk_lock_difficulty"
-        android:layout_marginTop="10dp"
+        android:layout_below="@id/btn_toggle_lock_difficulty"
         android:layout_marginLeft="30dp"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="30dp"
         android:drawableStart="@drawable/ic_outline_info_24"
         android:drawablePadding="10dp"
+        android:drawableTint="?attr/tertiaryTextColor"
         android:gravity="center_vertical"
-        android:textColor="?attr/secondaryTextColor"
+        android:text="@string/goal_achievement_stats"
+        android:textColor="?attr/tertiaryTextColor"
         android:textSize="14sp"
-        android:textStyle="italic"
-        android:text="@string/goal_achievement_stats"/>
+        android:textStyle="italic" />
 
     <LinearLayout
         android:id="@+id/ll_buttons_container"

@@ -68,6 +68,7 @@
         <item name="slightElevated2x">@color/white_6p</item>
         <item name="colorPrimaryTranslucent">@color/prim_30p</item>
         <item name="colorError">@color/lighter_red</item>
+        <item name="colorOnError">@color/white</item>
         <item name="colorWarning">@color/lighter_orange</item>
         <item name="colorSuccess">@color/lighter_green</item>
         <item name="main_overview_graphic">@drawable/deep_night_mountains_new_dark</item>
@@ -96,15 +97,18 @@
         <item name="android:textColor">@color/blue_500</item>
     </style>
 
+    <style name="Tooltip.Dark" parent="Widget.MaterialComponents.Tooltip">
+        <item name="backgroundTint">?attr/slightElevated2x</item>
+    </style>
+
     <!-- Bottom Sheet styles -->
 
     <style name="BottomSheetDialog.Dark" parent="Theme.MaterialComponents.BottomSheetDialog">
-        <item name="colorPrimary">@color/blue_500</item>
-        <item name="colorOnPrimary">@color/white</item>
         <item name="android:backgroundTint">@color/background</item>
         <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
-        <item name="theme">@style/Theme.LucidSourceKit.Dark</item>
+        <item name="android:theme">@style/Theme.LucidSourceKit.Dark</item>
     </style>
+
 
     <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>

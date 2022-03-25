@@ -77,8 +77,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
-                android:layout_marginRight="0dp"
                 android:layout_marginTop="6dp"
+                android:layout_marginRight="0dp"
                 android:orientation="horizontal">
 
                 <com.google.android.material.card.MaterialCardView
@@ -109,14 +109,14 @@
                             android:textAlignment="center"
                             android:textColor="?attr/primaryTextColor"
                             android:textSize="16sp"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/txt_current_streak"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
                             android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="10dp"
                             android:text="235"
                             android:textAlignment="center"
                             android:textColor="?attr/primaryTextColor"
@@ -153,19 +153,19 @@
                             android:textAlignment="center"
                             android:textColor="?attr/primaryTextColor"
                             android:textSize="16sp"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/txt_longest_streak"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
                             android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="10dp"
                             android:text="689"
                             android:textAlignment="center"
                             android:textColor="?attr/primaryTextColor"
                             android:textSize="32sp"
-                            app:drawableStartCompat="@drawable/big_flame"/>
+                            app:drawableStartCompat="@drawable/big_flame" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
@@ -329,22 +329,22 @@
                         <com.bitflaker.lucidsourcekit.charts.RangeProgress
                             android:id="@+id/rp_dream_mood"
                             android:layout_width="match_parent"
-                            android:layout_height="25dp"/>
+                            android:layout_height="25dp" />
 
                         <com.bitflaker.lucidsourcekit.charts.RangeProgress
                             android:id="@+id/rp_dream_clarity"
                             android:layout_width="match_parent"
-                            android:layout_height="25dp"/>
+                            android:layout_height="25dp" />
 
                         <com.bitflaker.lucidsourcekit.charts.RangeProgress
                             android:id="@+id/rp_sleep_quality"
                             android:layout_width="match_parent"
-                            android:layout_height="25dp"/>
+                            android:layout_height="25dp" />
 
                         <com.bitflaker.lucidsourcekit.charts.RangeProgress
                             android:id="@+id/rp_dreams_per_night"
                             android:layout_width="match_parent"
-                            android:layout_height="25dp"/>
+                            android:layout_height="25dp" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

@@ -20,20 +20,22 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/txt_goal_difficulty"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
-            app:drawableLeftCompat="@drawable/ic_baseline_circle_24"
-            app:drawableTint="?attr/colorError" />
-
-        <TextView
             android:id="@+id/txt_goal_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:text="sample goal"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:drawablePadding="15dp"
+            app:drawableLeftCompat="@drawable/ic_baseline_circle_24"
+            app:drawableTint="?attr/colorError"/>
+
+        <ImageView
+            android:id="@+id/img_difficulty_locked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_baseline_lock_24"
+            android:backgroundTint="?attr/tertiaryTextColor"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

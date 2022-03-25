@@ -313,7 +313,6 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             return new Pair<>(Operation.CHANGED, -1);
         }
         else if(this.entries.size() < entries.size()) {
-            // TODO: error when added at last position ?
             for (int i = 0; i < entries.size(); i++) {
                 if(this.entries.size() > i && this.entries.get(i).getEntry().entryId != entries.get(i).getEntry().entryId || this.entries.size() <= i) {
                     return new Pair<>(Operation.ADDED, i);
@@ -322,7 +321,6 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         }
         else {
             for (int i = 0; i < this.entries.size(); i++) {
-                // TODO: error when last is deleted ?
                 if(entries.size() > i && this.entries.get(i).getEntry().entryId != entries.get(i).getEntry().entryId || entries.size() <= i) {
                     return new Pair<>(Operation.DELETED, i);
                 }

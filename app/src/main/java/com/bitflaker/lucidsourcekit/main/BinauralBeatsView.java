@@ -132,7 +132,7 @@ public class BinauralBeatsView extends Fragment {
             beats.add(new BinauralBeat("sample dd d d  d d dd", "sample description with some length to it", 455, "NULL", freqs));
             RecyclerViewAdapterBinauralBeatsSelector rvabbs = new RecyclerViewAdapterBinauralBeatsSelector(getContext(), beats);
             rvabbs.setOnEntryClickedListener((binauralBeat, position) -> {
-                bottomSheetDialog.hide();
+                bottomSheetDialog.dismiss();
                 System.out.println(binauralBeat.getTitle());
                 noBeatSelected.setVisibility(GONE);
                 beatSelected.setVisibility(VISIBLE);
@@ -231,7 +231,7 @@ public class BinauralBeatsView extends Fragment {
                     autoStopTime = cal.getTime();
                     System.out.println(autoStopTime);
                     autoStopButton.setImageDrawable(getContext().getDrawable(R.drawable.ic_outline_timer_off_24));
-                    bottomSheetDialog.hide();
+                    bottomSheetDialog.dismiss();
                 });
 
                 bottomSheetDialog.show();

@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_goals_heading"
-        android:layout_marginTop="15dp">
+        android:layout_marginTop="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -53,8 +53,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp"
                 android:backgroundTint="?attr/slightElevated"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="@dimen/cardElevationRegular">
@@ -70,72 +70,139 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="30dp"
-                        android:text="Toady's goals difficulty ratings"
+                        android:text="Toady's goals difficulty rating"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
-                        android:orientation="horizontal">
-
-                        <!-- TODO: make the colors not fixed but rather like a gradient: 1 = green | 1.5 = orange-green | 1.75 = orange-orange-green | 2 = orange | ... -->
-                        <!-- TODO: calculate difficulty ratings based on occurrences and times missed/hit and ignore days where app was not opened or goals tab was just ignored or something like that -->
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Goal 1"
-                            android:textAlignment="center"
-                            android:textColor="?attr/primaryTextColor"
-                            app:drawableTint="?attr/colorSuccess"
-                            app:drawableTopCompat="@drawable/ic_baseline_circle_24" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Goal 2"
-                            android:textAlignment="center"
-                            android:textColor="?attr/primaryTextColor"
-                            app:drawableTint="?attr/colorWarning"
-                            app:drawableTopCompat="@drawable/ic_baseline_circle_24" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Goal 3"
-                            android:textAlignment="center"
-                            android:textColor="?attr/primaryTextColor"
-                            app:drawableTint="?attr/colorError"
-                            app:drawableTopCompat="@drawable/ic_baseline_circle_24" />
-                    </LinearLayout>
-
                     <com.bitflaker.lucidsourcekit.charts.RangeProgress
                         android:id="@+id/rp_average_difficulty_level"
                         android:layout_width="match_parent"
-                        android:layout_height="25dp"
-                        android:layout_marginTop="30dp" />
-                    <!--<TextView
-                        android:id="@+id/txt_total_difficulty"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
-                        android:text="this makes a total difficulty of 2.5/3"
-                        android:textAlignment="center"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="14sp" />-->
+                        android:layout_height="30dp"
+                        android:layout_marginTop="20dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginRight="0dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="3dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="?attr/slightElevated"
+                    app:cardCornerRadius="@dimen/cardRadius"
+                    app:cardElevation="@dimen/cardElevationRegular">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="vertical">
+
+                        <!-- TODO: calculate dateset difficulty: db contains 10 easy, 5 medium and 3 tough ones and you get 2 tough ones and 1 medium it would be -->
+
+                        <!--    10*1 + 5*2 + 3*3 = 29
+                                29 / 18 = 1,611111...
+                                2*3 + 1*2 = 8
+                                8 / 3 = 2,6666666...
+                                100 * 2,666666... / 1,611111... = 165,5172%
+                                    => 165,52 %
+                        -->
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:text="Selection\ndifficulty"
+                            android:textAlignment="center"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txt_current_streak"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="10dp"
+                            android:text="165,52 %"
+                            android:gravity="bottom"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="?attr/slightElevated"
+                    app:cardCornerRadius="@dimen/cardRadius"
+                    app:cardElevation="@dimen/cardElevationRegular">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="vertical">
+
+                        <!-- TODO: calculate occurrence frequency: 58 times a dataset of 3 records each was shown already => 174, each now selected entry gets checked and calcs: -->
+
+                        <!--    174 total selections
+                                goal 1: 5x
+                                goal 2: 2x
+                                goal 3: 7x
+                                goal total: 14x
+                                => 14 * 100 / 174 = 8,045977
+                                => 8,046 %
+                        -->
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:text="Occurrence frequency"
+                            android:textAlignment="center"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txt_longest_streak"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="10dp"
+                            android:gravity="bottom"
+                            android:text="8,046 %"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="20dp"
@@ -284,13 +351,13 @@
                     <com.bitflaker.lucidsourcekit.charts.RangeProgress
                         android:id="@+id/rp_goals_reached_yesterday"
                         android:layout_width="match_parent"
-                        android:layout_height="25dp"
+                        android:layout_height="30dp"
                         android:layout_marginTop="20dp" />
 
                     <com.bitflaker.lucidsourcekit.charts.RangeProgress
                         android:id="@+id/rp_goals_average_difficulty_yesterday"
                         android:layout_width="match_parent"
-                        android:layout_height="25dp"
+                        android:layout_height="30dp"
                         android:layout_marginTop="10dp" />
 
                     <TextView
@@ -376,23 +443,15 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:text="This option allows you to specify the average difficulty level the algorithm should target for selecting your daily goals. The value 1 stands for the easiest and the value 3 for the hardest difficulty."
+                        android:textAlignment="center"
                         android:textColor="?attr/secondaryTextColor"
-                        android:textSize="14sp"
-                        android:textAlignment="center"/>
+                        android:textSize="14sp" />
 
                     <com.bitflaker.lucidsourcekit.charts.RangeProgress
                         android:id="@+id/rp_difficulty_level"
                         android:layout_width="match_parent"
-                        android:layout_height="25dp"
+                        android:layout_height="30dp"
                         android:layout_marginTop="15dp" />
-
-                    <!--<com.google.android.material.slider.Slider
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:value="1.35"
-                        android:valueFrom="1"
-                        android:valueTo="3" />-->
 
                     <LinearLayout
                         android:layout_width="match_parent"
