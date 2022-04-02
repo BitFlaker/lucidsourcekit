@@ -68,6 +68,7 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/checkbox_on.xml" value="0.3728205128205128" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/circle_chart.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/difficulty_seekbar_style.xml" value="0.246875" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/divider_large.xml" value="0.2421875" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/empty_divider.xml" value="0.35555555555555557" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/gradient_background.xml" value="0.246875" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/ic_baseline_ballot_24.xml" value="0.3527777777777778" />
@@ -97,6 +98,7 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/shadowed_background.xml" value="1.0" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/slight_rounded_box.xml" value="0.2755208333333333" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/small_circle.xml" value="0.3574074074074074" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/small_divider.xml" value="0.2421875" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/small_square.xml" value="0.3728205128205128" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/toggle_button.xml" value="0.3728205128205128" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/toggle_button_color.xml" value="0.25885416666666666" />

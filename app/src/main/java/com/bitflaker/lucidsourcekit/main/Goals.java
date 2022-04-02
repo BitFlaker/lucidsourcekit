@@ -15,6 +15,7 @@ import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.charts.DataValue;
 import com.bitflaker.lucidsourcekit.charts.RangeProgress;
 import com.bitflaker.lucidsourcekit.charts.RodGraph;
+import com.bitflaker.lucidsourcekit.charts.Speedometer;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -22,9 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Goals extends Fragment {
-    private LinearLayout difficultyChartContainer;
     private FloatingActionButton floatingEdit;
-    private RangeProgress goalsReachedYesterday, difficultyLevel, averageDifficultyLevel, averageDifficultyLevelYesterday;
+    private RangeProgress goalsReachedYesterday, difficultyLevel, averageDifficultyLevelYesterday;
+    private Speedometer difficultySpeedometer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -36,18 +37,17 @@ public class Goals extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         getView().findViewById(R.id.txt_goals_heading).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
-        difficultyChartContainer = getView().findViewById(R.id.ll_difficulty);
         goalsReachedYesterday = getView().findViewById(R.id.rp_goals_reached_yesterday);
         difficultyLevel = getView().findViewById(R.id.rp_difficulty_level);
-        averageDifficultyLevel = getView().findViewById(R.id.rp_average_difficulty_level);
         averageDifficultyLevelYesterday = getView().findViewById(R.id.rp_goals_average_difficulty_yesterday);
         floatingEdit = getView().findViewById(R.id.btn_add_journal_entry);
+        difficultySpeedometer = getView().findViewById(R.id.som_difficulty);
 
         // TODO: replace with string resources
         goalsReachedYesterday.setData(3, 1, "GOALS REACHED", null, "1/3");
         difficultyLevel.setData(3, 1.35f, "DIFFICULTY LEVEL", null, "1.35");
-        averageDifficultyLevel.setData(3, 1.57f, "AVERAGE DIFFICULTY LEVEL", null, "1.57");
         averageDifficultyLevelYesterday.setData(3, 2.32f, "AVERAGE DIFFICULTY LEVEL", null, "2.32");
+        difficultySpeedometer.setData(25, 1.5f, 3);
 
         floatingEdit.setOnClickListener(e -> {
             Intent intent = new Intent(getContext(), EditGoals.class);
