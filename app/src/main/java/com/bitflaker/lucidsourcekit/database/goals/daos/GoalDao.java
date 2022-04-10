@@ -20,8 +20,17 @@ public interface GoalDao {
     @Query("SELECT * FROM Goal ORDER BY difficulty")
     Flowable<List<Goal>> getAll();
 
+    @Query("SELECT * FROM Goal ORDER BY difficulty")
+    Single<List<Goal>> getAllSingle();
+
+    @Query("SELECT COUNT(*) FROM Goal WHERE difficulty <= :difficulty ORDER BY difficulty")
+    Single<Integer> getCountUntilDifficulty(float difficulty);
+
     @Query("SELECT COUNT(*) FROM Goal")
     Single<Integer> getGoalCount();
+
+    @Query("SELECT SUM(difficulty) / COUNT(goalId) FROM Goal")
+    Single<Double> getAverageDifficulty();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     Completable insertAll(List<Goal> goals);

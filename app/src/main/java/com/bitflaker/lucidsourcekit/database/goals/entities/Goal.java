@@ -38,4 +38,12 @@ public class Goal {
         this.description = description;
         this.difficulty = difficulty;
     }
+
+    @Ignore
+
+    @NonNull
+    @Override
+    public Goal clone() {
+        return new Goal(this.goalId, this.description, this.difficulty, this.difficultyLocked);
+    }
 }

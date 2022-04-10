@@ -7,7 +7,9 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.preference.PreferenceManager;
+import android.util.Pair;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +19,18 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class Tools {
     private static int THEME_DIALOG;
@@ -197,5 +206,136 @@ public class Tools {
         int resBlue = Math.round(fromBlue * invPos + toBlue * pos);
 
         return Color.argb(resAlpha, resRed, resGreen, resBlue);
+    }
+
+    public static Pair<Long, Long> getTimeSpanFrom(int toDaysInPast, boolean getTimeSpanUntilNow) {
+        Calendar cldr = new GregorianCalendar(TimeZone.getDefault());
+        cldr.setTime(Calendar.getInstance().getTime());
+        cldr.add(Calendar.DAY_OF_MONTH, -toDaysInPast);
+        cldr.set(Calendar.HOUR_OF_DAY, 0);
+        cldr.set(Calendar.MINUTE, 0);
+        cldr.set(Calendar.SECOND, 0);
+        cldr.set(Calendar.MILLISECOND, 0);
+        long startTime = cldr.getTimeInMillis();
+        if(getTimeSpanUntilNow) {
+            cldr.add(Calendar.DAY_OF_MONTH, toDaysInPast);
+        }
+        cldr.set(Calendar.HOUR_OF_DAY, 23);
+        cldr.set(Calendar.MINUTE, 59);
+        cldr.set(Calendar.SECOND, 59);
+        cldr.set(Calendar.MILLISECOND, 999);
+        long endTime = cldr.getTimeInMillis();
+        return new Pair<>(startTime, endTime);
+    }
+
+    /**
+     * finds the required amount of goals approximately suiting within a specified difficulty constraint
+     * @param context current context (used for acquiring preferences)
+     * @param providedGoals goals to be selected from
+     * @param difficultyConstraint average difficulty that should be reached by selection (should be a number from 1.0f to 3.0f)
+     * @param difficultyVariance the amount the difficultyConstraint should randomly spread within (difficultyVariance of 0.3f means difficultyConstraint of 2.0f will be spreading between 1.7f and 2.3f)
+     * @param accuracy should be a multiple of ten and is used to specify the accuracy of the difficulties to calculate with
+     * @param variance should be a small number for getting a little bit of randomization into selections (the higher it is, the more the result spreads around the difficulty constraint)
+     * @param count the amount of goals to choose
+     * @return the chosen goals suiting the specified constraints
+     */
+    public static List<Goal> getSuitableGoals(Context context, List<Goal> providedGoals, float difficultyConstraint, float difficultyVariance, int accuracy, float variance, int count) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        List<Goal> fitGoals = new ArrayList<>();
+        float randomizedDiffConstraint = (float)(difficultyConstraint + ThreadLocalRandom.current().nextDouble(-difficultyVariance, difficultyVariance));
+        float difficultyLimit = randomizedDiffConstraint * count;
+        List<Goal> goals = new ArrayList<>();
+        for (Goal goal : providedGoals) {
+            goals.add(goal.clone());
+        }
+        Integer[] difficulties = new Integer[goals.size()];
+        Integer[] goalVal = new Integer[goals.size()];
+
+        for (int i = 0; i < goals.size(); i++) {
+            difficulties[i] = (int)(goals.get(i).difficulty * accuracy);
+            double valFunction = preferences.getFloat("goal_function_value_a", -1.0f) * Math.pow(i, 2) + preferences.getFloat("goal_function_value_b", -1.0f) * i + preferences.getFloat("goal_function_value_c", -1.0f);
+            double val = (Math.max(0, valFunction * ((1.0f/(goals.size()/6.0f)) * Math.pow(2.0f - Math.abs((difficulties[i]/(float)accuracy) - randomizedDiffConstraint), 2)) + ThreadLocalRandom.current().nextDouble(-variance, variance)));
+            goalVal[i] = (int)(val);
+        }
+
+        int[][] m = new int[goals.size() + 1][(int)(difficultyLimit * accuracy) + 1];
+        int res = findBestSuiting(difficulties, goalVal, goals.size(), (int)(difficultyLimit * accuracy), m);
+        int w = (int)(difficultyLimit * accuracy);
+
+        List<Integer> indexesToRemove = new ArrayList<>();
+        for (int i = goals.size(); i > 0 && res > 0; i--) {
+            if (res != m[i-1][w]) {
+                fitGoals.add(goals.get(i-1));
+                indexesToRemove.add(i-1);
+                res -= goalVal[i-1]; // value
+                w -= difficulties[i-1]; // weight
+            }
+        }
+
+        // remove all goals selected by the algorithm to not choose them in the fill ups
+        Collections.reverse(indexesToRemove);
+        for (int i = 0; i < indexesToRemove.size(); i++) {
+            goals.remove(indexesToRemove.get(i) - i);
+            removeAt(difficulties, indexesToRemove.get(i) - i);
+            removeAt(goalVal, indexesToRemove.get(i) - i);
+        }
+        indexesToRemove.clear();
+
+        // fill the amount of goals to the desired count TODO check whether there are even enough goals inside
+        while (fitGoals.size() < count) {
+            m = new int[goals.size() + 1][(int)(difficultyLimit * accuracy) + 1];
+            res = findBestSuiting(difficulties, goalVal, goals.size(), (int)(difficultyLimit * accuracy), m);
+            w = (int)(difficultyLimit * accuracy);
+
+            for (int i = goals.size(); i > 0 && res > 0; i--) {
+                if (res != m[i-1][w]) {
+                    fitGoals.add(goals.get(i-1));
+                    indexesToRemove.add(i-1);
+                    res -= goalVal[i-1]; // value
+                    w -= difficulties[i-1]; // weight
+                }
+            }
+
+            Collections.reverse(indexesToRemove);
+            for (int i = 0; i < indexesToRemove.size(); i++) {
+                goals.remove(indexesToRemove.get(i) - i);
+                removeAt(difficulties, indexesToRemove.get(i) - i);
+                removeAt(goalVal, indexesToRemove.get(i) - i);
+            }
+            indexesToRemove.clear();
+        }
+
+        return fitGoals.stream().limit(count).collect(Collectors.toList());
+    }
+
+    public static double[] calculateQuadraticFunction(PointF weight1, PointF weight2, PointF weight3) {
+        double[] points = new double[3];
+
+        points[0] = (weight2.x * weight1.y - weight2.x * weight3.y - weight3.x * weight1.y + weight3.x * weight2.y) / (Math.pow(weight2.x, 2) * weight3.x - weight2.x * Math.pow(weight3.x, 2));
+        points[1] = (-Math.pow(weight2.x, 2) * weight1.y + Math.pow(weight2.x, 2) * weight3.y + Math.pow(weight3.x, 2) * weight1.y - Math.pow(weight3.x, 2) * weight2.y) / (Math.pow(weight2.x, 2) * weight3.x - weight2.x * Math.pow(weight3.x, 2));
+        points[2] = weight1.y;
+
+        return points;
+    }
+
+    public static int findBestSuiting(Integer[] w, Integer[] v, int n, int W, int[][] m) {
+        if (n <= 0 || W <= 0) {
+            return 0;
+        }
+
+        for (int j = 0; j <= W; j++) {
+            m[0][j] = 0;
+        }
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= W; j++) {
+                if (w[i - 1] > j) {
+                    m[i][j] = m[i - 1][j];
+                } else {
+                    m[i][j] = Math.max(m[i - 1][j], m[i - 1][j - w[i - 1]] + v[i - 1]);
+                }
+            }
+        }
+        return m[n][W];
     }
 }

@@ -68,8 +68,9 @@ public class Speedometer extends View {
         this.value = value;
         this.maxValue = maxValue;
         dataLinePaint.setStrokeWidth(this.lineWidth);
-        percentage = value / maxValue;
+        percentage = (value-1) / (maxValue-1);
         circlePercentage = percentage / 2.0f + 0.5f;
+        gradientShader = null;
         invalidate();
     }
 
@@ -98,7 +99,7 @@ public class Speedometer extends View {
         canvas.drawCircle(leftOffset, paddedHeight, lineWidth/2.0f, dataLinePaintCap);
         canvas.drawCircle((float)xVal, (float)yVal, lineWidth/2.0f, dataLinePaintCap);
 
-        String text = value + " / " + maxValue;
+        String text = String.format("%.1f",value) + " / " + maxValue;   // TODO: , and . as separators have to be taken into consideration
         String[] descriptions = "Today's goals combined\ndifficulty rating".split("\n");    // TODO: extract string resource
         int accHeight = 0;
 

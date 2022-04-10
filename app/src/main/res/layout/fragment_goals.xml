@@ -106,7 +106,7 @@
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/txt_current_streak"
+                            android:id="@+id/txt_current_selection_diff"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="165,52 %"
@@ -115,6 +115,7 @@
 
                         <!-- TODO: probably desaturate the buttons a bit for better readability -->
                         <ImageView
+                            android:id="@+id/img_selection_diff_comparison"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_baseline_arrow_drop_down_24"
@@ -149,7 +150,7 @@
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/txt_longest_streak"
+                            android:id="@+id/txt_occurrence_freq"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="8,046 %"
@@ -157,6 +158,7 @@
                             android:textSize="16sp" />
 
                         <ImageView
+                            android:id="@+id/img_occ_freq_comparison"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_baseline_arrow_drop_up_24"
@@ -177,6 +179,7 @@
                 app:cardElevation="@dimen/cardElevationRegular">
 
                 <LinearLayout
+                    android:id="@+id/ll_current_goals_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -422,10 +425,10 @@
                         android:textColor="?attr/secondaryTextColor"
                         android:textSize="14sp" />
 
-                    <com.bitflaker.lucidsourcekit.charts.RangeProgress
+                    <com.bitflaker.lucidsourcekit.charts.QuadraticFunctionCurve
                         android:id="@+id/rp_difficulty_level"
                         android:layout_width="match_parent"
-                        android:layout_height="30dp"
+                        android:layout_height="150dp"
                         android:layout_marginTop="15dp" />
 
                     <LinearLayout

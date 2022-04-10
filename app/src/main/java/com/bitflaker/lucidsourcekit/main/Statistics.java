@@ -125,7 +125,7 @@ public class Statistics extends Fragment {
                 rpSleepQuality.setData(3, averageQuality, "SLEEP QUALITY", qualityIcons[Math.round(averageQuality)], null);
                 rpDreamsPerNight.setData(Collections.max(dreamCounts).floatValue(), averageDreamCount, "DREAMS PER NIGHT", null, df.format(averageDreamCount));
 
-                Pair<Long, Long> timeSpan = getTimeSpanFrom(selectedDaysCount - 1, true);
+                Pair<Long, Long> timeSpan = Tools.getTimeSpanFrom(selectedDaysCount - 1, true);
                 db.getJournalEntryDao().getLucidEntriesCount(timeSpan.first, timeSpan.second).subscribe((lucidEntriesCount, throwable) -> {
                     db.getJournalEntryDao().getEntriesCount(timeSpan.first, timeSpan.second).subscribe((totalEntriesCount, throwable2) -> {
                         // TODO: maybe display numbers as well?
@@ -226,7 +226,7 @@ public class Statistics extends Fragment {
 
     private void getAveragesForLastNDays(int amount, int daysBeforeToday) {
         gatheredNewTimeSpanStats.setValue(false);
-        Pair<Long, Long> timeSpan = getTimeSpanFrom(daysBeforeToday, false);
+        Pair<Long, Long> timeSpan = Tools.getTimeSpanFrom(daysBeforeToday, false);
         if(daysBeforeToday == 0) {
             avgQualities.clear();
             avgMoods.clear();
@@ -247,25 +247,5 @@ public class Statistics extends Fragment {
                 getAveragesForLastNDays(amount, daysBeforeToday +1);
             }
         });
-    }
-
-    private Pair<Long, Long> getTimeSpanFrom(int toDaysInPast, boolean getTimeSpanUntilNow) {
-        Calendar cldr = new GregorianCalendar(TimeZone.getDefault());
-        cldr.setTime(Calendar.getInstance().getTime());
-        cldr.add(Calendar.DAY_OF_MONTH, -toDaysInPast);
-        cldr.set(Calendar.HOUR_OF_DAY, 0);
-        cldr.set(Calendar.MINUTE, 0);
-        cldr.set(Calendar.SECOND, 0);
-        cldr.set(Calendar.MILLISECOND, 0);
-        long startTime = cldr.getTimeInMillis();
-        if(getTimeSpanUntilNow) {
-            cldr.add(Calendar.DAY_OF_MONTH, toDaysInPast);
-        }
-        cldr.set(Calendar.HOUR_OF_DAY, 23);
-        cldr.set(Calendar.MINUTE, 59);
-        cldr.set(Calendar.SECOND, 59);
-        cldr.set(Calendar.MILLISECOND, 999);
-        long endTime = cldr.getTimeInMillis();
-        return new Pair<>(startTime, endTime);
     }
 }

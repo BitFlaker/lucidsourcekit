@@ -2,9 +2,11 @@ package com.bitflaker.lucidsourcekit;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Base64;
+import android.util.Pair;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
@@ -22,6 +24,9 @@ import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamClarity;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamType;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.SleepQuality;
+import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
+import com.bitflaker.lucidsourcekit.database.goals.entities.Shuffle;
+import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.defaults.DefaultGoals;
 import com.bitflaker.lucidsourcekit.general.Crypt;
 import com.bitflaker.lucidsourcekit.general.Tools;
@@ -33,8 +38,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -67,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
+
+        // TODO: set language of controls
 
         Calendar cldrStored = new GregorianCalendar(TimeZone.getDefault());
         Calendar cldrNow = new GregorianCalendar(TimeZone.getDefault());
@@ -104,52 +113,33 @@ public class MainActivity extends AppCompatActivity {
         }
         editor.apply();
         
-        /*
-        String filename = getFilesDir().getAbsolutePath() + "/Recordings";
-        File directory = new File(filename);
-        File[] files = directory.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            System.out.println(files[i].getName());
-        }
-         */
-
-        // TODO: only insert when necessary and add loading
+        // TODO: only insert when necessary
         // TODO: add loading indicator
-        MainDatabase db = MainDatabase.getInstance(MainActivity.this);
-        db.getDreamTypeDao().insertAll(DreamType.populateData()).subscribe(() -> {
-            db.getDreamMoodDao().insertAll(DreamMood.populateData()).subscribe(() -> {
-                db.getDreamClarityDao().insertAll(DreamClarity.populateData()).subscribe(() -> {
-                    db.getSleepQualityDao().insertAll(SleepQuality.populateData()).subscribe(() -> {
-                        db.getGoalDao().getGoalCount().subscribe((count) -> {
-                            if(count == 0) {
-                                DefaultGoals defaultGoals = new DefaultGoals(this);
-                                db.getGoalDao().insertAll(defaultGoals.getGoalsList()).subscribe(() -> {
-                                    // TODO: hide loading indicator
-                                });
-                            }
-                            else {
-                                // TODO: hide loading indicator
-                            }
+        new Thread(() -> {
+            MainDatabase db = MainDatabase.getInstance(MainActivity.this);
+            db.getDreamTypeDao().insertAll(DreamType.populateData()).subscribe(() -> {
+                db.getDreamMoodDao().insertAll(DreamMood.populateData()).subscribe(() -> {
+                    db.getDreamClarityDao().insertAll(DreamClarity.populateData()).subscribe(() -> {
+                        db.getSleepQualityDao().insertAll(SleepQuality.populateData()).subscribe(() -> {
+                            db.getGoalDao().getGoalCount().subscribe((count) -> {
+                                if(count == 0) {
+                                    DefaultGoals defaultGoals = new DefaultGoals(this);
+                                    db.getGoalDao().insertAll(defaultGoals.getGoalsList()).subscribe(() -> {
+                                        dataSetupHandler(db, preferences, count);
+                                    });
+                                }
+                                else {
+                                    dataSetupHandler(db, preferences, count);
+                                }
+                            });
                         });
                     });
                 });
             });
-        });
+        }).start();
+    }
 
-        /*
-        JournalDatabase db = JournalDatabase.getInstance(MainActivity.this);
-        System.out.println("==== start of reading database ====");
-
-        List<SleepQuality> sqs = db.sleepQualityDao().getAll();
-        for (SleepQuality sq : sqs) {
-            System.out.println(sq.qualityId + " | " + sq.description);
-        }
-
-        System.out.println("==== end  of reading database ====");
-         */
-
-        // TODO: set language of controls
-
+    private void applicationLogin(SharedPreferences preferences) {
         String path = getFilesDir().getAbsolutePath() + "/.app_setup_done";
         File file = new File(path);
         if(file.exists()) {
@@ -184,6 +174,71 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    private void dataSetupHandler(MainDatabase db, SharedPreferences preferences, int goalsCount) {
+        SharedPreferences.Editor editor = preferences.edit();
+        db.getGoalDao().getCountUntilDifficulty(2.0f).blockingSubscribe(amount -> {
+            if(anyGoalSettingMissing(preferences)) {
+                float easyValue = 100.0f;
+                float normalValue = 100.0f;
+                float hardValue = 100.0f;
+                editor.putFloat("goal_difficulty_easy_value", easyValue);
+                editor.putFloat("goal_difficulty_normal_value", normalValue);
+                editor.putFloat("goal_difficulty_hard_value", hardValue);
+                editor.putFloat("goal_difficulty_tendency", 1.8f);
+                editor.putInt("goal_difficulty_count", 3);
+                editor.putFloat("goal_difficulty_value_variance", 10.0f);
+                editor.putFloat("goal_difficulty_variance", 0.15f);
+                editor.putInt("goal_difficulty_accuracy", 100);
+                PointF weight1 = new PointF(0f, easyValue);
+                PointF weight2 = new PointF(amount-1, normalValue);
+                PointF weight3 = new PointF(goalsCount-1, hardValue);
+                double[] points = Tools.calculateQuadraticFunction(weight1, weight2, weight3);
+                editor.putFloat("goal_function_value_a", (float)points[0]);
+                editor.putFloat("goal_function_value_b", (float)points[1]);
+                editor.putFloat("goal_function_value_c", (float)points[2]);
+            }
+            editor.apply();
+            Pair<Long, Long> dayTimeSpans = Tools.getTimeSpanFrom(0, true);
+            db.getShuffleDao().getLastShuffleInDay(dayTimeSpans.first, dayTimeSpans.second).subscribe((shuffle, throwable) -> {
+                if(shuffle == null) {
+                    db.getGoalDao().getAllSingle().subscribe((goals, throwable2) -> {
+                        List<Goal> goalsResult = Tools.getSuitableGoals(this, goals, preferences.getFloat("goal_difficulty_tendency", 1.8f), preferences.getFloat("goal_difficulty_variance", 0.15f), preferences.getInt("goal_difficulty_accuracy", 100), preferences.getFloat("goal_difficulty_value_variance", 3.0f), preferences.getInt("goal_difficulty_count", 3));
+                        db.getShuffleDao().insert(new Shuffle(dayTimeSpans.first, dayTimeSpans.second)).subscribe(newShuffleId -> {
+                            int id = newShuffleId.intValue();
+                            List<ShuffleHasGoal> hasGoals = new ArrayList<>();
+                            for (Goal goal : goalsResult) {
+                                hasGoals.add(new ShuffleHasGoal(id, goal.goalId));
+                            }
+                            db.getShuffleHasGoalDao().insertAll(hasGoals).subscribe(() -> {
+                                // TODO: hide loading indicator
+                                runOnUiThread(() -> applicationLogin(preferences));
+                            });
+                        });
+                    });
+                }
+                else {
+                    System.out.println("SHUFFLE " + shuffle.shuffleId + " already present");
+                    // TODO: hide loading indicator
+                    runOnUiThread(() -> applicationLogin(preferences) );
+                }
+            });
+        });
+    }
+
+    private boolean anyGoalSettingMissing(SharedPreferences preferences) {
+        return preferences.getFloat("goal_difficulty_easy_value", -1.0f) == -1.0f ||
+                preferences.getFloat("goal_difficulty_normal_value", -1.0f) == -1.0f ||
+                preferences.getFloat("goal_difficulty_hard_value", -1.0f) == -1.0f ||
+                preferences.getFloat("goal_difficulty_tendency", -1.0f) == -1.0f ||
+                preferences.getInt("goal_difficulty_count", -1) == -1 ||
+                preferences.getInt("goal_difficulty_accuracy", -1) == -1 ||
+                preferences.getFloat("goal_difficulty_value_variance", -1.0f) == -1.0f ||
+                preferences.getFloat("goal_difficulty_difficulty_variance", -1.0f) == -1.0f ||
+                preferences.getFloat("goal_function_value_a", -1.0f) == -1.0f ||
+                preferences.getFloat("goal_function_value_b", -1.0f) == -1.0f ||
+                preferences.getFloat("goal_function_value_c", -1.0f) == -1.0f;
     }
 
     private void setupPasswordAuthentication() {
@@ -270,41 +325,34 @@ public class MainActivity extends AppCompatActivity {
                 txtEnteredPin.setText(txtEnteredPin.getText() + "\u2022");
                 enteredPin += pinButton.getText();
 
-                Thread thread = new Thread() {
-                    @Override
-                    public void run() {
-                        boolean success = false;
-                        try {
-                            String hash = Crypt.encryptStringBlowfish(enteredPin, storedSalt);
-                            if(hash.equals(storedHash)){
-                                success = true;
-                            }
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
+                new Thread(() -> {
+                    boolean success = false;
+                    try {
+                        String hash = Crypt.encryptStringBlowfish(enteredPin, storedSalt);
+                        if(hash.equals(storedHash)){
+                            success = true;
                         }
-
-                        boolean finalSuccess = success;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(finalSuccess){
-                                    Intent intent = new Intent(MainActivity.this, MainViewer.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                                else{
-                                    if(enteredPin.length() > 7) {
-                                        enteredPin = "";
-                                        txtEnteredPin.setText("");
-                                        Toast.makeText(MainActivity.this, "Invalid PIN entered!", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            }
-                        });
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-                };
-                thread.start();
+
+                    boolean finalSuccess = success;
+                    runOnUiThread(() -> {
+                        if(finalSuccess){
+                            Intent intent = new Intent(MainActivity.this, MainViewer.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+                        }
+                        else{
+                            if(enteredPin.length() > 7) {
+                                enteredPin = "";
+                                txtEnteredPin.setText("");
+                                Toast.makeText(MainActivity.this, "Invalid PIN entered!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }).start();
             });
         }
 
