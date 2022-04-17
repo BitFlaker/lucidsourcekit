@@ -338,7 +338,7 @@
                         android:layout_height="30dp"
                         android:layout_marginTop="10dp" />
 
-                    <TextView
+                    <!--<TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
@@ -354,32 +354,21 @@
                         android:gravity="center_horizontal"
                         android:text="Here are some possible quick actions you might probably want to make use of"
                         android:textColor="?attr/secondaryTextColor"
-                        android:textSize="14sp" />
+                        android:textSize="14sp" />-->
 
-                    <LinearLayout
+                    <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:divider="@drawable/divider_medium"
-                        android:orientation="vertical"
-                        android:showDividers="middle">
+                        android:layout_marginTop="30dp"
+                        android:backgroundTint="?attr/slightElevated2x"
+                        app:cardCornerRadius="@dimen/cardRadius"
+                        app:cardElevation="0dp">
 
-                        <com.google.android.material.button.MaterialButton
+                        <ExpandableListView
+                            android:id="@+id/elv_suggestions"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/rounded_ripple"
-                            android:src="@drawable/ic_baseline_shuffle_24"
-                            android:text="reduce to 3 goals"
-                            app:backgroundTint="?attr/slightElevated2x" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/rounded_ripple"
-                            android:src="@drawable/ic_baseline_shuffle_24"
-                            android:text="turn on notifications"
-                            app:backgroundTint="?attr/slightElevated2x" />
-                    </LinearLayout>
+                            android:layout_height="wrap_content"/>
+                    </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -411,7 +400,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="Average difficulty selection goal"
+                        android:text="Algorithm details"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -420,39 +409,120 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="This option allows you to specify the average difficulty level the algorithm should target for selecting your daily goals. The value 1 stands for the easiest and the value 3 for the hardest difficulty."
+                        android:text="Here you get an overview of the current algorithm settings and can change them if you want to"
                         android:textAlignment="center"
                         android:textColor="?attr/secondaryTextColor"
                         android:textSize="14sp" />
 
-                    <com.bitflaker.lucidsourcekit.charts.QuadraticFunctionCurve
+                    <!--<com.bitflaker.lucidsourcekit.charts.QuadraticFunctionCurve
                         android:id="@+id/rp_difficulty_level"
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
-                        android:layout_marginTop="15dp" />
+                        android:layout_marginTop="15dp" />-->
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="30dp"
+                        android:orientation="horizontal"
+                        android:divider="@drawable/divider_large"
+                        android:showDividers="middle">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Auto-adjusting of difficulty level is "
-                            android:textColor="?attr/secondaryTextColor"
-                            android:textSize="14sp" />
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="15dp"
+                            android:backgroundTint="?attr/colorSecondary">
 
-                        <TextView
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_baseline_vertical_align_top_24"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="7dp"
+                                android:text="1.5"
+                                android:textColor="?attr/primaryTextColor"
+                                android:textStyle="bold"
+                                android:textSize="16sp" />
+
+                            <!--<TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center"
+                                android:text="Maximum\ndifficulty\nlevel"
+                                android:textColor="?attr/secondaryTextColor"
+                                android:textSize="14sp" />-->
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="ENABLED"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="14sp" />
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="15dp"
+                            android:backgroundTint="?attr/colorSecondary">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_baseline_auto_graph_24"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="7dp"
+                                android:text="ENABLED"
+                                android:textStyle="bold"
+                                android:textColor="?attr/primaryTextColor"
+                                android:textSize="16sp" />
+
+                            <!--<TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center"
+                                android:text="Auto-adjusting\nof difficulty\nlevel"
+                                android:textColor="?attr/secondaryTextColor"
+                                android:textSize="14sp" />-->
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="15dp"
+                            android:backgroundTint="?attr/colorSecondary">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_baseline_multiple_stop_24"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="7dp"
+                                android:text="0.2"
+                                android:textStyle="bold"
+                                android:textColor="?attr/primaryTextColor"
+                                android:textSize="16sp" />
+
+                            <!--<TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center"
+                                android:text="Difficulty\nlevel\nspread"
+                                android:textColor="?attr/secondaryTextColor"
+                                android:textSize="14sp" />-->
+                        </LinearLayout>
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
@@ -461,7 +531,7 @@
                         android:layout_marginTop="20dp"
                         android:background="@drawable/rounded_ripple"
                         android:src="@drawable/ic_baseline_shuffle_24"
-                        android:text="adjust manually"
+                        android:text="adjust"
                         app:backgroundTint="?attr/slightElevated2x" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

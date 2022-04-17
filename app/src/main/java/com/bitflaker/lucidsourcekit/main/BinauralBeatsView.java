@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,6 +48,7 @@ public class BinauralBeatsView extends Fragment {
     private TextView currentTrackName, currentTrackDescription, binauralTimeline, binauralTimeTotal, binauralFrequency;
     private TextLegend binauralLegend;
     private BinauralBeatsPlayer binBeatPlayer;
+    private LinearLayout controlsContainer;
 
     // TODO really repeat beats
     // TODO really start and pause beats
@@ -78,6 +80,7 @@ public class BinauralBeatsView extends Fragment {
         binauralTimeline = getView().findViewById(R.id.txt_binaural_beats_timeline);
         binauralTimeTotal = getView().findViewById(R.id.txt_binaural_beats_total_time);
         binauralFrequency = getView().findViewById(R.id.txt_current_binaural_frequency);
+        controlsContainer = getView().findViewById(R.id.ll_binaural_controls_container);
 
         repeatBeat = false;
         autoStopTime = null;
@@ -142,6 +145,7 @@ public class BinauralBeatsView extends Fragment {
                 binauralTimeline.setText(getTimeStringFromSeconds(0));
                 binauralFrequency.setText("0,00 Hz");
                 binBeatPlayer = new BinauralBeatsPlayer(binauralBeat);
+                progressLineGraph.setData(binauralBeat.getFrequencyList(), 32, 4f, 0f, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
                 binBeatPlayer.setOnTrackProgressListener(((currentBinauralBeat, progress) -> {
                     progressLineGraph.updateProgress(progress);
                     getActivity().runOnUiThread(() -> {
@@ -255,9 +259,9 @@ public class BinauralBeatsView extends Fragment {
         });
 
         progressLineGraph.setBottomLineSpacing(20);
-        progressLineGraph.setData(freqs, 32, 4f, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
         progressLineGraph.setDrawGradient(true);
         progressLineGraph.setGradientOpacity(0.15f);
+        controlsContainer.addOnLayoutChangeListener((view1, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> progressLineGraph.setBottomLinePadding(controlsContainer.getMeasuredHeight()));
 
         String[] labels = new String[] { "beta", "alpha", "theta", "delta" };
         binauralLegend.setData(labels, Brainwaves.getStageColors(), Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()), 12);

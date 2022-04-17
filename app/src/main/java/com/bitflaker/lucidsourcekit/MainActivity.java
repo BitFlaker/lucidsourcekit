@@ -117,25 +117,27 @@ public class MainActivity extends AppCompatActivity {
         // TODO: add loading indicator
         new Thread(() -> {
             MainDatabase db = MainDatabase.getInstance(MainActivity.this);
-            db.getDreamTypeDao().insertAll(DreamType.populateData()).subscribe(() -> {
-                db.getDreamMoodDao().insertAll(DreamMood.populateData()).subscribe(() -> {
-                    db.getDreamClarityDao().insertAll(DreamClarity.populateData()).subscribe(() -> {
-                        db.getSleepQualityDao().insertAll(SleepQuality.populateData()).subscribe(() -> {
-                            db.getGoalDao().getGoalCount().subscribe((count) -> {
-                                if(count == 0) {
-                                    DefaultGoals defaultGoals = new DefaultGoals(this);
-                                    db.getGoalDao().insertAll(defaultGoals.getGoalsList()).subscribe(() -> {
+            //db.getShuffleHasGoalDao().deleteAll().subscribe(() -> db.getShuffleDao().deleteAll().subscribe(() -> {
+                db.getDreamTypeDao().insertAll(DreamType.populateData()).subscribe(() -> {
+                    db.getDreamMoodDao().insertAll(DreamMood.populateData()).subscribe(() -> {
+                        db.getDreamClarityDao().insertAll(DreamClarity.populateData()).subscribe(() -> {
+                            db.getSleepQualityDao().insertAll(SleepQuality.populateData()).subscribe(() -> {
+                                db.getGoalDao().getGoalCount().subscribe((count) -> {
+                                    if(count == 0) {
+                                        DefaultGoals defaultGoals = new DefaultGoals(this);
+                                        db.getGoalDao().insertAll(defaultGoals.getGoalsList()).subscribe(() -> {
+                                            dataSetupHandler(db, preferences, count);
+                                        });
+                                    }
+                                    else {
                                         dataSetupHandler(db, preferences, count);
-                                    });
-                                }
-                                else {
-                                    dataSetupHandler(db, preferences, count);
-                                }
+                                    }
+                                });
                             });
                         });
                     });
                 });
-            });
+            //}));
         }).start();
     }
 
@@ -178,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void dataSetupHandler(MainDatabase db, SharedPreferences preferences, int goalsCount) {
         SharedPreferences.Editor editor = preferences.edit();
-        db.getGoalDao().getCountUntilDifficulty(2.0f).blockingSubscribe(amount -> {
+        db.getGoalDao().getCountUntilDifficulty(2.0f).subscribe(amount -> {
             if(anyGoalSettingMissing(preferences)) {
                 float easyValue = 100.0f;
                 float normalValue = 100.0f;
@@ -204,18 +206,22 @@ public class MainActivity extends AppCompatActivity {
             db.getShuffleDao().getLastShuffleInDay(dayTimeSpans.first, dayTimeSpans.second).subscribe((shuffle, throwable) -> {
                 if(shuffle == null) {
                     db.getGoalDao().getAllSingle().subscribe((goals, throwable2) -> {
-                        List<Goal> goalsResult = Tools.getSuitableGoals(this, goals, preferences.getFloat("goal_difficulty_tendency", 1.8f), preferences.getFloat("goal_difficulty_variance", 0.15f), preferences.getInt("goal_difficulty_accuracy", 100), preferences.getFloat("goal_difficulty_value_variance", 3.0f), preferences.getInt("goal_difficulty_count", 3));
-                        db.getShuffleDao().insert(new Shuffle(dayTimeSpans.first, dayTimeSpans.second)).subscribe(newShuffleId -> {
-                            int id = newShuffleId.intValue();
-                            List<ShuffleHasGoal> hasGoals = new ArrayList<>();
-                            for (Goal goal : goalsResult) {
-                                hasGoals.add(new ShuffleHasGoal(id, goal.goalId));
-                            }
-                            db.getShuffleHasGoalDao().insertAll(hasGoals).subscribe(() -> {
-                                // TODO: hide loading indicator
-                                runOnUiThread(() -> applicationLogin(preferences));
+                        //for (int i = 0; i < 10000; i++){
+                            List<Goal> goalsResult = Tools.getSuitableGoals(this, goals, preferences.getFloat("goal_difficulty_tendency", 1.8f), preferences.getFloat("goal_difficulty_variance", 0.15f), preferences.getInt("goal_difficulty_accuracy", 100), preferences.getFloat("goal_difficulty_value_variance", 3.0f), preferences.getInt("goal_difficulty_count", 3));
+                            db.getShuffleDao().insert(new Shuffle(dayTimeSpans.first, dayTimeSpans.second)).subscribe(newShuffleId -> {
+                                int id = newShuffleId.intValue();
+                                List<ShuffleHasGoal> hasGoals = new ArrayList<>();
+                                for (Goal goal : goalsResult) {
+                                    hasGoals.add(new ShuffleHasGoal(id, goal.goalId));
+                                }
+                                db.getShuffleHasGoalDao().insertAll(hasGoals).blockingSubscribe(() -> {
+                                    // TODO: hide loading indicator
+                                    runOnUiThread(() -> applicationLogin(preferences));
+                                });
                             });
-                        });
+                        //}
+                        //System.out.println("FINSIHED ??????????????????");
+                        //runOnUiThread(() -> applicationLogin(preferences));
                     });
                 }
                 else {

@@ -6,11 +6,13 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,13 +32,13 @@ import com.bitflaker.lucidsourcekit.charts.RodGraph;
 import com.bitflaker.lucidsourcekit.charts.Speedometer;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
-import com.bitflaker.lucidsourcekit.database.goals.entities.Shuffle;
 import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.resulttables.DetailedShuffleHasGoal;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -51,6 +53,8 @@ public class Goals extends Fragment {
     private ImageView selectionDiffComparison, occFreqComparison;
     private ImageButton reshuffle;
     private List<Goal> cachedGoals;
+    private ExpandableListView expLView;
+    private ExpandableListViewAdapter expLViewAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,7 +67,7 @@ public class Goals extends Fragment {
 
         getView().findViewById(R.id.txt_goals_heading).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
         goalsReachedYesterday = getView().findViewById(R.id.rp_goals_reached_yesterday);
-        difficultyLevel = getView().findViewById(R.id.rp_difficulty_level);
+        //difficultyLevel = getView().findViewById(R.id.rp_difficulty_level);
         averageDifficultyLevelYesterday = getView().findViewById(R.id.rp_goals_average_difficulty_yesterday);
         floatingEdit = getView().findViewById(R.id.btn_add_journal_entry);
         difficultySpeedometer = getView().findViewById(R.id.som_difficulty);
@@ -73,7 +77,33 @@ public class Goals extends Fragment {
         selectionDiffComparison = getView().findViewById(R.id.img_selection_diff_comparison);
         occFreqComparison = getView().findViewById(R.id.img_occ_freq_comparison);
         reshuffle = getView().findViewById(R.id.btn_reshuffle_goals);
+        expLView = getView().findViewById(R.id.elv_suggestions);
         db = MainDatabase.getInstance(getContext());
+        List<String> headings = new ArrayList<>();
+        headings.add("");//Suggestions for improving");
+        HashMap<String, List<GoalSuggestion>> entries = new HashMap<>();
+        expLViewAdapter = new ExpandableListViewAdapter(getContext(), headings, entries);
+        expLView.setAdapter(expLViewAdapter);
+
+        List<GoalSuggestion> suggs = new ArrayList<>();
+        suggs.add(new GoalSuggestion(R.drawable.ic_baseline_notifications_active_24, "Activate notifications"));
+        suggs.add(new GoalSuggestion(R.drawable.ic_baseline_arrow_drop_up_24, "Increase goal count"));
+        suggs.add(new GoalSuggestion(R.drawable.ic_baseline_access_alarm_24, "Set recurring alarm"));
+
+        entries.put(headings.get(0), suggs);
+        expLView.deferNotifyDataSetChanged();
+        expLView.setDividerHeight(0);
+        setGroupIndicatorToRight();
+
+        expLView.setOnGroupExpandListener(groupPosition -> {
+            int height = Tools.dpToPx(getContext(), Math.max(50, Tools.pxToDp(getContext(), expLView.getMeasuredHeight()) - 36));
+            for (int i = 0; i < expLViewAdapter.getChildrenCount(groupPosition); i++) {
+                height += Tools.dpToPx(getContext(), 58)+2; // TODO remove hardcoded height of entries (58dp)
+                height += expLView.getDividerHeight();
+            }
+            expLView.getLayoutParams().height = height;
+        });
+        expLView.setOnGroupCollapseListener(groupPosition -> expLView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT);
 
         Pair<Long, Long> todayTimeSpan = Tools.getTimeSpanFrom(0, false);
         updateStats(todayTimeSpan);
@@ -97,7 +127,7 @@ public class Goals extends Fragment {
         // TODO: replace with string resources
         goalsReachedYesterday.setData(3, 1, "GOALS REACHED", null, "1/3");
         averageDifficultyLevelYesterday.setData(3, 2.32f, "AVERAGE DIFFICULTY LEVEL", null, "2.32");
-        difficultyLevel.setData(3, 100, -0.047038327526132406f, 2.416376306620209f, 10, 41);
+        //difficultyLevel.setData(3, 100, -0.047038327526132406f, 2.416376306620209f, 10, 41);
 
         floatingEdit.setOnClickListener(e -> {
             Intent intent = new Intent(getContext(), EditGoals.class);
@@ -116,9 +146,19 @@ public class Goals extends Fragment {
         rg.setData(data, Tools.dpToPx(getContext(), 3f), Tools.dpToPx(getContext(), 24), null);
     }
 
+    private void setGroupIndicatorToRight() {
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        expLView.setIndicatorBounds(dm.widthPixels - getDipsFromPixel(35), dm.widthPixels - getDipsFromPixel(5));
+    }
+
+    public int getDipsFromPixel(float pixels) {
+        return (int) (pixels * getResources().getDisplayMetrics().density + 250.5f);
+    }
+
    private void updateStats(Pair<Long, Long> todayTimeSpan) {
        Pair<Long, Long> pastTimeSpan = Tools.getTimeSpanFrom(1, false);
-       db.getShuffleHasGoalDao().getCurrentFromLatestShuffle(todayTimeSpan.first, todayTimeSpan.second).subscribe((detailedShuffleHasGoals, throwable) -> {
+       db.getShuffleHasGoalDao().getShuffleFrom(todayTimeSpan.first, todayTimeSpan.second).subscribe((detailedShuffleHasGoals, throwable) -> {
            List<AppCompatCheckBox> goalChecks = new ArrayList<>();
            float currentDifficulty;
            AtomicReference<Float> strAvgDiff = new AtomicReference<>((float) 0);
@@ -149,7 +189,7 @@ public class Goals extends Fragment {
            currentDifficulty = totalDifficultySum / count;
            db.getGoalDao().getAverageDifficulty().subscribe((avgDiff, throwable1) -> {
                strAvgDiff.set(avgDiff.floatValue());
-               db.getShuffleHasGoalDao().getCurrentFromLatestShuffle(pastTimeSpan.first, pastTimeSpan.second).subscribe((pastShuffleGoals, throwable2) -> {
+               db.getShuffleHasGoalDao().getShuffleFrom(pastTimeSpan.first, pastTimeSpan.second).subscribe((pastShuffleGoals, throwable2) -> {
                    float yesterdaysTotalDifficultySum = 0;
                    int yesterdayCount = 0;
                    for (DetailedShuffleHasGoal goal : pastShuffleGoals) {
@@ -221,14 +261,16 @@ public class Goals extends Fragment {
     private void storeNewShuffle(List<Goal> goals, Pair<Long, Long> todayTimeSpan) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         List<com.bitflaker.lucidsourcekit.database.goals.entities.Goal> goalsResult = Tools.getSuitableGoals(getContext(), goals, preferences.getFloat("goal_difficulty_tendency", 1.8f), preferences.getFloat("goal_difficulty_variance", 0.15f), preferences.getInt("goal_difficulty_accuracy", 100), preferences.getFloat("goal_difficulty_value_variance", 3.0f), preferences.getInt("goal_difficulty_count", 3));
-        db.getShuffleDao().insert(new Shuffle(todayTimeSpan.first, todayTimeSpan.second)).subscribe(newShuffleId -> {
-            int id = newShuffleId.intValue();
+        db.getShuffleDao().getLastShuffleInDay(todayTimeSpan.first, todayTimeSpan.second).subscribe(alreadyPresentShuffle -> {
+            int id = alreadyPresentShuffle.shuffleId;
             List<ShuffleHasGoal> hasGoals = new ArrayList<>();
             for (Goal goal : goalsResult) {
                 hasGoals.add(new ShuffleHasGoal(id, goal.goalId));
             }
-            db.getShuffleHasGoalDao().insertAll(hasGoals).subscribe(() -> {
-                updateStats(todayTimeSpan);
+            db.getShuffleHasGoalDao().deleteAllWithShuffleId(id).subscribe(() -> {
+                db.getShuffleHasGoalDao().insertAll(hasGoals).subscribe(() -> {
+                    updateStats(todayTimeSpan);
+                });
             });
         });
     }

@@ -21,241 +21,251 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/txt_binaural_beats_heading"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical">
+        android:layout_below="@id/txt_binaural_beats_heading">
 
-        <com.google.android.flexbox.FlexboxLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            app:flexDirection="column"
-            app:justifyContent="space_evenly">
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/crd_legend"
+            android:layout_width="280dp"
+            android:layout_height="30dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            app:cardElevation="@dimen/cardElevationRegular"
+            app:cardCornerRadius="@dimen/cardRadius"
+            app:cardBackgroundColor="?attr/slightElevated">
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="280dp"
-                android:layout_height="215dp"
-                app:cardElevation="@dimen/cardElevationRegular"
-                app:cardCornerRadius="@dimen/cardRadius"
-                app:cardBackgroundColor="?attr/slightElevated"
-                app:layout_alignSelf="center">
+            <!-- TODO add icon/text indicating, there is no beat selected -->
 
-                <!-- TODO add icon/text indicating, there is no beat selected -->
-
-                <RelativeLayout
-                    android:id="@+id/rl_no_binaural_beat_selected"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="visible">
-
-                    <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="80dp"
-                        android:src="@drawable/frequency_symbol"
-                        app:tint="?attr/secondaryTextColor" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginBottom="40dp"
-                        android:text="No Binaural Beat selected"
-                        android:textAlignment="center"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="16sp" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/rl_playing_binaural_beat"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="13dp"
-                        android:layout_marginTop="10dp"
-                        android:drawableStart="@drawable/frequency_symbol"
-                        android:drawablePadding="8dp"
-                        android:drawableTint="?attr/primaryTextColor"
-                        android:gravity="center_vertical"
-                        android:text="Frequency" />
-
-                    <com.bitflaker.lucidsourcekit.charts.LineGraph
-                        android:id="@+id/lg_binaural_time_progress"
-                        android:layout_width="match_parent"
-                        android:layout_height="140dp"
-                        android:layout_above="@id/tl_binaural_legend"/>
-
-                    <com.bitflaker.lucidsourcekit.charts.TextLegend
-                        android:id="@+id/tl_binaural_legend"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:layout_alignParentBottom="true"/>
-                </RelativeLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <LinearLayout
-                android:id="@+id/ll_track_details"
+            <RelativeLayout
+                android:id="@+id/rl_no_binaural_beat_selected"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:paddingLeft="50dp"
-                android:paddingRight="50dp">
+                android:layout_height="match_parent"
+                android:visibility="visible">
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="80dp"
+                    android:src="@drawable/frequency_symbol"
+                    app:tint="?attr/secondaryTextColor" />
 
                 <TextView
-                    android:id="@+id/txt_curr_track_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="40dp"
+                    android:text="No Binaural Beat selected"
                     android:textAlignment="center"
-                    android:textColor="?attr/primaryTextColor"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textColor="?attr/secondaryTextColor"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_playing_binaural_beat"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
 
                 <TextView
-                    android:id="@+id/txt_curr_track_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="13dp"
+                    android:layout_marginTop="10dp"
+                    android:drawableStart="@drawable/frequency_symbol"
+                    android:drawablePadding="8dp"
+                    android:drawableTint="?attr/primaryTextColor"
+                    android:gravity="center_vertical"
+                    android:text="Frequency" />
+
+                <com.bitflaker.lucidsourcekit.charts.TextLegend
+                    android:id="@+id/tl_binaural_legend"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"/>
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.bitflaker.lucidsourcekit.charts.LineGraph
+            android:id="@+id/lg_binaural_time_progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/crd_legend"
+            android:layout_marginTop="30dp" />
+
+        <LinearLayout
+            android:id="@+id/ll_binaural_controls_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginBottom="30dp"
+                android:layout_weight="1"
+                app:flexDirection="column"
+                app:justifyContent="space_evenly">
+
+                <LinearLayout
+                    android:id="@+id/ll_track_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingLeft="50dp"
+                    android:paddingRight="50dp">
+
+                    <TextView
+                        android:id="@+id/txt_curr_track_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textAlignment="center"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txt_curr_track_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text=""
+                        android:textAlignment="center"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="15sp" />
+                </LinearLayout>
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add_background_noise_floating"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/rounded_spinner"
+                android:text="Manage background sounds"
+                android:visibility="gone"
+                app:backgroundTint="?attr/slightElevated" />
+
+            <!--<TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:drawableLeft="@drawable/ic_outline_info_24"
+                android:drawablePadding="15dp"
+                android:gravity="start"
+                android:text="To get the best experience from binaural beats, use headphones with a relatively good quality."
+                android:textColor="?attr/secondaryTextColor" />-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_current_binaural_frequency"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="3dp"
+                    android:text="0,00 Hz"
+                    android:textColor="?attr/secondaryTextColor" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txt_binaural_beats_timeline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="--:--"
+                        android:textColor="?attr/primaryTextColor" />
+
+                    <TextView
+                        android:id="@+id/txt_binaural_beats_total_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" / --:--"
+                        android:textColor="?attr/secondaryTextColor" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_track_controls_bottom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text=""
-                    android:textAlignment="center"
-                    android:textColor="?attr/secondaryTextColor"
-                    android:textSize="15sp" />
-            </LinearLayout>
-        </com.google.android.flexbox.FlexboxLayout>
+                    android:layout_marginBottom="35dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_add_background_noise_floating"
-            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/rounded_spinner"
-            android:text="Manage background sounds"
-            android:visibility="gone"
-            app:backgroundTint="?attr/slightElevated" />
+                    <ImageButton
+                        android:id="@+id/btn_add_background_noise"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:backgroundTint="@android:color/transparent"
+                        android:padding="12dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_baseline_air_24"
+                        app:tint="?attr/primaryTextColor" />
 
-        <!--<TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:drawableLeft="@drawable/ic_outline_info_24"
-            android:drawablePadding="15dp"
-            android:gravity="start"
-            android:text="To get the best experience from binaural beats, use headphones with a relatively good quality."
-            android:textColor="?attr/secondaryTextColor" />-->
+                    <ImageButton
+                        android:id="@+id/btn_loop_track"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:backgroundTint="@android:color/transparent"
+                        android:padding="12dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_baseline_repeat_24"
+                        app:tint="?attr/primaryTextColor" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+                    <ImageButton
+                        android:id="@+id/btn_play_track"
+                        android:layout_width="54dp"
+                        android:layout_height="54dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/rounded_spinner"
+                        android:backgroundTint="?attr/colorSecondary"
+                        android:padding="10dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_baseline_play_arrow_24"
+                        app:tint="?attr/primaryTextColor" />
 
-            <TextView
-                android:id="@+id/txt_current_binaural_frequency"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="?attr/secondaryTextColor"
-                android:layout_gravity="center"
-                android:layout_marginBottom="3dp"
-                android:text="0,00 Hz"/>
+                    <ImageButton
+                        android:id="@+id/btn_auto_stop"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:backgroundTint="@android:color/transparent"
+                        android:padding="12dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_outline_timer_24"
+                        app:tint="?attr/primaryTextColor" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="15dp"
-                android:layout_gravity="center">
-
-                <TextView
-                    android:id="@+id/txt_binaural_beats_timeline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="?attr/primaryTextColor"
-                    android:text="--:--"/>
-
-                <TextView
-                    android:id="@+id/txt_binaural_beats_total_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="?attr/secondaryTextColor"
-                    android:text=" / --:--"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_track_controls_bottom"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="35dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:id="@+id/btn_add_background_noise"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:backgroundTint="@android:color/transparent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_baseline_air_24"
-                    android:padding="12dp"
-                    app:tint="?attr/primaryTextColor" />
-
-                <ImageButton
-                    android:id="@+id/btn_loop_track"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:backgroundTint="@android:color/transparent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_baseline_repeat_24"
-                    android:padding="12dp"
-                    app:tint="?attr/primaryTextColor" />
-
-                <ImageButton
-                    android:id="@+id/btn_play_track"
-                    android:layout_width="54dp"
-                    android:layout_height="54dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/rounded_spinner"
-                    android:backgroundTint="?attr/colorSecondary"
-                    android:padding="10dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_baseline_play_arrow_24"
-                    app:tint="?attr/primaryTextColor" />
-
-                <ImageButton
-                    android:id="@+id/btn_auto_stop"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:backgroundTint="@android:color/transparent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_outline_timer_24"
-                    android:padding="12dp"
-                    app:tint="?attr/primaryTextColor" />
-
-                <ImageButton
-                    android:id="@+id/btn_display_all_beats"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:backgroundTint="@android:color/transparent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_baseline_queue_music_24"
-                    android:padding="12dp"
-                    app:tint="?attr/primaryTextColor" />
+                    <ImageButton
+                        android:id="@+id/btn_display_all_beats"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:backgroundTint="@android:color/transparent"
+                        android:padding="12dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_baseline_queue_music_24"
+                        app:tint="?attr/primaryTextColor" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

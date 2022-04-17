@@ -37,7 +37,7 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal;
 @Database(entities = {JournalEntryTag.class, DreamType.class, SleepQuality.class,
         DreamMood.class, DreamClarity.class, AudioLocation.class, JournalEntry.class,
         JournalEntryHasTag.class, JournalEntryHasType.class, Goal.class, Shuffle.class,
-        ShuffleHasGoal.class}, version = 6, exportSchema = false)
+        ShuffleHasGoal.class}, version = 7, exportSchema = false)
 public abstract class MainDatabase extends RoomDatabase {
     // Dream Journal tables
     public abstract JournalEntryTagDao getJournalEntryTagDao();
@@ -72,7 +72,12 @@ public abstract class MainDatabase extends RoomDatabase {
 
     private static MainDatabase create(final Context context) {
         // .allowMainThreadQueries()
-        return Room.databaseBuilder(context, MainDatabase.class, "journalDatabase.db").allowMainThreadQueries().fallbackToDestructiveMigrationFrom(4).addMigrations(MIGRATION_5_6).build();
+        return Room.databaseBuilder(context, MainDatabase.class, "journalDatabase.db")
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigrationFrom(4)
+                .addMigrations(MIGRATION_5_6)
+                .addMigrations(MIGRATION_6_7)
+                .build();
     }
 
     private static void populateStaticTables(MainDatabase instance) {
@@ -113,6 +118,15 @@ public abstract class MainDatabase extends RoomDatabase {
                             "ON DELETE CASCADE " +
                             "ON UPDATE NO ACTION" +
                     ");");
+        }
+    };
+
+    static final Migration MIGRATION_6_7 = new Migration(6, 7) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("DELETE FROM Shuffle;");
+            database.execSQL("DELETE FROM ShuffleHasGoal;");
+            database.execSQL("CREATE INDEX index_ShuffleHasGoal_goalId ON ShuffleHasGoal (goalId);");
         }
     };
 }

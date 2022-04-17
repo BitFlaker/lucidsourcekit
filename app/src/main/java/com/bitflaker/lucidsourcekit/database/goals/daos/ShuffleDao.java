@@ -31,4 +31,7 @@ public interface ShuffleDao {
 
     @Delete
     Completable delete(Shuffle shuffle);
+
+    @Query("DELETE FROM Shuffle")
+    Completable deleteAll();
 }

@@ -41,7 +41,7 @@ public class RecyclerViewAdapterBinauralBeatsSelector extends RecyclerView.Adapt
         holder.binauralDescription.setText(binauralBeats.get(position).getDescription());
         holder.baseFrequency.setText(binauralBeats.get(position).getBaseFrequencyString());
 
-        holder.dataGraph.setData(binauralBeats.get(position).getFrequencyList(), 32, 3f, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
+        holder.dataGraph.setData(binauralBeats.get(position).getFrequencyList(), 32, 3f, 0f, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
         holder.dataGraph.changeProgressIndicator(Color.TRANSPARENT, 0);
 
         holder.card.setOnClickListener(e -> {

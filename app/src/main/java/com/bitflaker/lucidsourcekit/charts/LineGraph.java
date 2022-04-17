@@ -40,6 +40,7 @@ public class LineGraph extends View {
     private float bottomLineSpacing;
     private float gradientOpacity;
     private boolean scalePositions;
+    private float padding_bottom;
 
     public LineGraph(Context context){
         super(context);
@@ -69,14 +70,14 @@ public class LineGraph extends View {
         scalePositions = false;
     }
 
-    public void setData(FrequencyList data, float maxValue, float lineWidth, int[] colors, double[] stages) {
+    public void setData(FrequencyList data, float maxValue, float lineWidth, float padding_bottom, int[] colors, double[] stages) {
         yMax = maxValue;
         xMax = data.getDuration();
         progress = -1;
         this.colors = colors;
         this.data = data;
+        this.padding_bottom = Tools.dpToPx(getContext(), padding_bottom);
         dataLinePaint.setStrokeWidth(Tools.dpToPx(getContext(), lineWidth));
-        invalidate();
 
         List<Float> values = new ArrayList<>();
         values.add((float)(maxValue - stages[0])/maxValue);
@@ -90,6 +91,7 @@ public class LineGraph extends View {
             positions[i++] = (f != null ? f : Float.NaN);
         }
         scalePositions = true;
+        invalidate();
     }
 
     public void updateProgress(double progress){
@@ -107,8 +109,13 @@ public class LineGraph extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if(scalePositions){
-            float ratio = 1-bottomLineSpacing/getHeight();
+        if(positions == null || colors == null || data == null){
+            System.out.println(positions + " " + colors  + " " + data);
+            return;
+        }
+
+        if(scalePositions) {
+            float ratio = 1-bottomLineSpacing/(getHeight()-padding_bottom);  // TODO: remove padding_bottom from getHeight() here as well ??
             for (int i = 0; i < positions.length; i++){
                 if(i == 0){
                     positionsBuffer[i] = positions[i] * ratio;
@@ -121,10 +128,10 @@ public class LineGraph extends View {
             scalePositions = false;
         }
 
-        dataLinePaint.setShader(new LinearGradient(0f, 0f, 0f, getHeight(), colors, positionsBuffer, Shader.TileMode.MIRROR));
+        dataLinePaint.setShader(new LinearGradient(0f, 0f, 0f, (getHeight()-padding_bottom), colors, positionsBuffer, Shader.TileMode.MIRROR));
 
         float radiusMargin = dataLinePaint.getStrokeWidth()/2.0f;
-        float drawAreaHeight = getHeight() - dataLinePaint.getStrokeWidth() - bottomLineSpacing;
+        float drawAreaHeight = (getHeight()-padding_bottom) - dataLinePaint.getStrokeWidth() - bottomLineSpacing;
         float drawAreaWidth = getWidth() - dataLinePaint.getStrokeWidth();
         boolean drewProgress = false;
 
@@ -201,7 +208,7 @@ public class LineGraph extends View {
         if (points.size() < 2) { return; }
         Paint polyPaint = new Paint();
         polyPaint.setColor(color);
-        polyPaint.setShader(new LinearGradient(0f, 0f, 0f, getHeight(), manipulateAlphaArray(colors, gradientOpacity), positionsBuffer, Shader.TileMode.MIRROR));
+        polyPaint.setShader(new LinearGradient(0f, 0f, 0f, (getHeight()-padding_bottom), manipulateAlphaArray(colors, gradientOpacity), positionsBuffer, Shader.TileMode.CLAMP));
         polyPaint.setStyle(Paint.Style.FILL);
         Path p = new Path();
         p.moveTo(points.get(0)[0], points.get(0)[1]);
@@ -229,6 +236,11 @@ public class LineGraph extends View {
         int green = Color.green(color);
         int blue = Color.blue(color);
         return Color.argb(alpha, red, green, blue);
+    }
+
+    public void setBottomLinePadding(int padding) {
+        this.padding_bottom = padding;
+        invalidate();
     }
 }
 

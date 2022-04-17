@@ -8,15 +8,16 @@ import androidx.room.Index;
 
 @Entity(primaryKeys = { "shuffleId", "goalId" },
         foreignKeys = {
-        @ForeignKey(entity = Shuffle.class,
-                parentColumns = "shuffleId",
-                childColumns = "shuffleId",
-                onDelete = ForeignKey.CASCADE),
-        @ForeignKey(entity = Goal.class,
-                parentColumns = "goalId",
-                childColumns = "goalId",
-                onDelete = ForeignKey.CASCADE)
-        }
+                @ForeignKey(entity = Shuffle.class,
+                        parentColumns = "shuffleId",
+                        childColumns = "shuffleId",
+                        onDelete = ForeignKey.CASCADE),
+                @ForeignKey(entity = Goal.class,
+                        parentColumns = "goalId",
+                        childColumns = "goalId",
+                        onDelete = ForeignKey.CASCADE)
+        },
+        indices = { @Index("goalId") }
 )
 public class ShuffleHasGoal {
     public int shuffleId;
