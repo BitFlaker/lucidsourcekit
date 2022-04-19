@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.general.Tools;
 
+import java.util.Locale;
+
 public class Speedometer extends View {
     private final Paint dataLabelPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
     private final Paint dataLinePaint = new Paint();
@@ -99,7 +101,7 @@ public class Speedometer extends View {
         canvas.drawCircle(leftOffset, paddedHeight, lineWidth/2.0f, dataLinePaintCap);
         canvas.drawCircle((float)xVal, (float)yVal, lineWidth/2.0f, dataLinePaintCap);
 
-        String text = String.format("%.1f",value) + " / " + maxValue;   // TODO: , and . as separators have to be taken into consideration
+        String text = String.format(Locale.ENGLISH, "%.1f",value) + " / " + maxValue;   // TODO: , and . as separators have to be taken into consideration
         String[] descriptions = "Today's goals combined\ndifficulty rating".split("\n");    // TODO: extract string resource
         int accHeight = 0;
 

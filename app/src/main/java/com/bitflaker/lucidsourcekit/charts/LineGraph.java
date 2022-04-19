@@ -3,9 +3,12 @@ package com.bitflaker.lucidsourcekit.charts;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ComposeShader;
 import android.graphics.LinearGradient;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
 import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
@@ -25,6 +28,7 @@ public class LineGraph extends View {
     private final Paint axisLinePaint = new Paint();
     private final Paint dataLinePaint = new Paint();
     private final Paint progressPainter = new Paint();
+    private final Paint polyPaint = new Paint();
     private List<float[]> polygonPos;
     private float[] topLeft;
     private float[] topRight;
@@ -41,6 +45,15 @@ public class LineGraph extends View {
     private float gradientOpacity;
     private boolean scalePositions;
     private float padding_bottom;
+    private boolean drawProgressIndicator;
+    private int[] colorsLineProgress, colorsPolyProgress;
+    private float[] emptyProgressTwoFields;
+    private LinearGradient lgradOpac, lgradPolyPaint, lgradDataLine;
+    private ComposeShader csDataLine, csPolyPaint;
+    private double lastSetProgress = 0;
+    private Matrix lgradOpacMatrix, lgradOpacMatrix2, lgradOpacMatrix3;
+    private Path polyPath;
+
 
     public LineGraph(Context context){
         super(context);
@@ -62,22 +75,33 @@ public class LineGraph extends View {
         dataLinePaint.setColor(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()));
         dataLinePaint.setStrokeCap(Paint.Cap.ROUND);
         dataLinePaint.setAntiAlias(true);
+        polyPaint.setColor(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()));
+        polyPaint.setStyle(Paint.Style.FILL);
         polygonPos = new ArrayList<>();
         topLeft = new float[2];
         topRight = new float[2];
         bottomRight = new float[2];
         bottomLeft = new float[2];
         scalePositions = false;
+        lgradOpacMatrix = new Matrix();
+        lgradOpacMatrix2 = new Matrix();
+        lgradOpacMatrix3 = new Matrix();
+        polyPath = new Path();
     }
 
     public void setData(FrequencyList data, float maxValue, float lineWidth, float padding_bottom, int[] colors, double[] stages) {
+        // TODO: setting a second time overlays with previous and makes shader opacity 100%
         yMax = maxValue;
         xMax = data.getDuration();
-        progress = -1;
+        progress = 0;
         this.colors = colors;
         this.data = data;
         this.padding_bottom = Tools.dpToPx(getContext(), padding_bottom);
         dataLinePaint.setStrokeWidth(Tools.dpToPx(getContext(), lineWidth));
+
+        colorsLineProgress = new int[] { Color.argb(0,0,0,0), Color.argb(185, 30, 30, 30) };
+        colorsPolyProgress = new int[] {  Color.argb(0,0,0,0), Color.argb(200, 25, 25, 25) };
+        emptyProgressTwoFields = new float[2];
 
         List<Float> values = new ArrayList<>();
         values.add((float)(maxValue - stages[0])/maxValue);
@@ -91,6 +115,7 @@ public class LineGraph extends View {
             positions[i++] = (f != null ? f : Float.NaN);
         }
         scalePositions = true;
+        lgradOpac = new LinearGradient(0f, 0f, 1f, 0f, colorsLineProgress, emptyProgressTwoFields, Shader.TileMode.CLAMP);
         invalidate();
     }
 
@@ -109,15 +134,16 @@ public class LineGraph extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        float radiusMargin = dataLinePaint.getStrokeWidth()/2.0f;
+
         if(positions == null || colors == null || data == null){
-            System.out.println(positions + " " + colors  + " " + data);
             return;
         }
 
         if(scalePositions) {
-            float ratio = 1-bottomLineSpacing/(getHeight()-padding_bottom);  // TODO: remove padding_bottom from getHeight() here as well ??
+            float ratio = 1-bottomLineSpacing/(getHeight()-padding_bottom);
             for (int i = 0; i < positions.length; i++){
-                if(i == 0){
+                if(i == 0) {
                     positionsBuffer[i] = positions[i] * ratio;
                 }
                 else {
@@ -126,14 +152,41 @@ public class LineGraph extends View {
             }
             positions = Arrays.copyOf(positionsBuffer, positionsBuffer.length);
             scalePositions = false;
+            //radiusReducedWidth = new Float(getWidth() - radiusMargin);
+            //paddedVertHeight = new Float(getHeight() - padding_bottom);
+
+            lgradOpac.getLocalMatrix(lgradOpacMatrix);
+            lgradOpacMatrix.postScale(getWidth() - radiusMargin, getHeight() - padding_bottom);
+            lgradOpac.setLocalMatrix(lgradOpacMatrix);
+
+            /*lgradPolyPaint.getLocalMatrix(lgradOpacMatrix2);
+            lgradOpacMatrix2.postScale(getWidth() - radiusMargin, getHeight() - padding_bottom);
+            lgradPolyPaint.setLocalMatrix(lgradOpacMatrix2);
+
+            lgradDataLine.getLocalMatrix(lgradOpacMatrix3);
+            lgradOpacMatrix3.postScale(getWidth() - radiusMargin, getHeight() - padding_bottom);
+            lgradDataLine.setLocalMatrix(lgradOpacMatrix3);
+             */
+            // TODO find solution without allocation in draw
+            lgradPolyPaint = new LinearGradient(0f, 0f, 0f, getHeight() - padding_bottom, manipulateAlphaArray(colors, gradientOpacity), positionsBuffer, Shader.TileMode.CLAMP);
+            lgradDataLine = new LinearGradient(0f, 0f, 0f, getHeight() - padding_bottom, colors, positionsBuffer, Shader.TileMode.MIRROR);
+            csDataLine = new ComposeShader(lgradDataLine, lgradOpac, PorterDuff.Mode.SRC_ATOP);
+            csPolyPaint = new ComposeShader(lgradPolyPaint, lgradOpac, PorterDuff.Mode.SRC_ATOP);
+            dataLinePaint.setShader(csDataLine);
+            polyPaint.setShader(csPolyPaint);
         }
 
-        dataLinePaint.setShader(new LinearGradient(0f, 0f, 0f, (getHeight()-padding_bottom), colors, positionsBuffer, Shader.TileMode.MIRROR));
-
-        float radiusMargin = dataLinePaint.getStrokeWidth()/2.0f;
         float drawAreaHeight = (getHeight()-padding_bottom) - dataLinePaint.getStrokeWidth() - bottomLineSpacing;
         float drawAreaWidth = getWidth() - dataLinePaint.getStrokeWidth();
         boolean drewProgress = false;
+        float realXProgress = (float)progress / xMax * (getWidth()-radiusMargin);
+
+        if(progress != lastSetProgress) {
+            lastSetProgress = progress;
+            lgradOpac.getLocalMatrix(lgradOpacMatrix);
+            lgradOpacMatrix.postTranslate((1/xMax) * getWidth(), 0);
+            lgradOpac.setLocalMatrix(lgradOpacMatrix);
+        }
 
         for (int i = 0; i < data.size(); i++) {
             FrequencyData current = data.get(i);
@@ -169,11 +222,10 @@ public class LineGraph extends View {
             polygonPos.add(bottomLeft);
 
             if(drawGradient) {
-                drawPoly(canvas, Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), polygonPos);
+                drawPoly(canvas, polygonPos);
             }
 
-            float realXProgress = (float)progress / xMax * (getWidth()-radiusMargin);
-            if(progress > -1 && !drewProgress && realXProgress >= topLeft[0] && realXProgress <= topRight[0]){
+            if(drawProgressIndicator && progress > -1 && !drewProgress && realXProgress >= topLeft[0] && realXProgress <= topRight[0]){
                 float realYProgress = (yMax - (float)data.getFrequencyAtDuration(progress)) / yMax * drawAreaHeight + radiusMargin + progressPainter.getStrokeWidth()/4.0f;
                 canvas.drawLine(realXProgress, realYProgress, realXProgress, getHeight(), progressPainter);
                 drewProgress = true;
@@ -194,6 +246,16 @@ public class LineGraph extends View {
 
     public void setDrawGradient(boolean drawGradient) {
         this.drawGradient = drawGradient;
+        invalidate();
+    }
+
+    public boolean isDrawingProgressIndicator() {
+        return drawProgressIndicator;
+    }
+
+    public void setDrawProgressIndicator(boolean drawProgressIndicator) {
+        this.drawProgressIndicator = drawProgressIndicator;
+        invalidate();
     }
 
     public float getGradientOpacity() {
@@ -202,23 +264,20 @@ public class LineGraph extends View {
 
     public void setGradientOpacity(float gradientOpacity) {
         this.gradientOpacity = gradientOpacity;
+        invalidate();
     }
 
-    private void drawPoly(Canvas canvas, int color, List<float[]> points) {
+    private void drawPoly(Canvas canvas, List<float[]> points) {
         if (points.size() < 2) { return; }
-        Paint polyPaint = new Paint();
-        polyPaint.setColor(color);
-        polyPaint.setShader(new LinearGradient(0f, 0f, 0f, (getHeight()-padding_bottom), manipulateAlphaArray(colors, gradientOpacity), positionsBuffer, Shader.TileMode.CLAMP));
-        polyPaint.setStyle(Paint.Style.FILL);
-        Path p = new Path();
-        p.moveTo(points.get(0)[0], points.get(0)[1]);
+        polyPath.reset();
+        polyPath.moveTo(points.get(0)[0], points.get(0)[1]);
         int i, size;
         size = points.size();
         for (i = 0; i < size; i++) {
-            p.lineTo(points.get(i)[0], points.get(i)[1]);
+            polyPath.lineTo(points.get(i)[0], points.get(i)[1]);
         }
-        p.lineTo(points.get(0)[0], points.get(0)[1]);
-        canvas.drawPath(p, polyPaint);
+        polyPath.lineTo(points.get(0)[0], points.get(0)[1]);
+        canvas.drawPath(polyPath, polyPaint);
     }
 
     public static int[] manipulateAlphaArray(int[] colors, float factor){

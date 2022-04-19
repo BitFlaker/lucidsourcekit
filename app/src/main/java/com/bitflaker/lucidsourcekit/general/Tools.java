@@ -242,7 +242,7 @@ public class Tools {
     public static List<Goal> getSuitableGoals(Context context, List<Goal> providedGoals, float difficultyConstraint, float difficultyVariance, int accuracy, float variance, int count) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         List<Goal> fitGoals = new ArrayList<>();
-        float randomizedDiffConstraint = (float)(difficultyConstraint + ThreadLocalRandom.current().nextDouble(-difficultyVariance, difficultyVariance));
+        float randomizedDiffConstraint = Math.min(3.0f, Math.max(1.0f, difficultyConstraint + (difficultyVariance > 0.0f ? (float)(ThreadLocalRandom.current().nextDouble(-difficultyVariance, difficultyVariance)) : 0.0f)));
         float difficultyLimit = randomizedDiffConstraint * count;
         List<Goal> goals = new ArrayList<>();
         for (Goal goal : providedGoals) {

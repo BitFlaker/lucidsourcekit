@@ -260,7 +260,8 @@ public class BinauralBeatsView extends Fragment {
 
         progressLineGraph.setBottomLineSpacing(20);
         progressLineGraph.setDrawGradient(true);
-        progressLineGraph.setGradientOpacity(0.15f);
+        progressLineGraph.setGradientOpacity(0.35f);
+        progressLineGraph.setDrawProgressIndicator(false);
         controlsContainer.addOnLayoutChangeListener((view1, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> progressLineGraph.setBottomLinePadding(controlsContainer.getMeasuredHeight()));
 
         String[] labels = new String[] { "beta", "alpha", "theta", "delta" };

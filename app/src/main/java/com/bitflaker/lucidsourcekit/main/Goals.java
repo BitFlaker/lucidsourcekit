@@ -3,6 +3,7 @@ package com.bitflaker.lucidsourcekit.main;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -10,17 +11,23 @@ import android.util.DisplayMetrics;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
@@ -35,11 +42,16 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.resulttables.DetailedShuffleHasGoal;
 import com.bitflaker.lucidsourcekit.general.Tools;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.slider.Slider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Goals extends Fragment {
@@ -49,12 +61,16 @@ public class Goals extends Fragment {
     private Speedometer difficultySpeedometer;
     private LinearLayout currentGoalsContainer;
     private MainDatabase db;
-    private TextView currentSelectionDiff, currentOccurrenceFreq;
+    private TextView currentSelectionDiff, currentOccurrenceFreq, algoDetailsDiffTend, algoDetailsDiffSpread, algoDetailsAutoAdjust;
     private ImageView selectionDiffComparison, occFreqComparison;
     private ImageButton reshuffle;
     private List<Goal> cachedGoals;
+    private int cachedUpToDiffCount = -1;
     private ExpandableListView expLView;
     private ExpandableListViewAdapter expLViewAdapter;
+    private MaterialButton adjustAlgorithm;
+    private int newGoalAmount = -1, newSignificantDifficultyDigits = -1;
+    private BottomSheetDialog bsdAdjustAlgorithm;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,6 +94,10 @@ public class Goals extends Fragment {
         occFreqComparison = getView().findViewById(R.id.img_occ_freq_comparison);
         reshuffle = getView().findViewById(R.id.btn_reshuffle_goals);
         expLView = getView().findViewById(R.id.elv_suggestions);
+        adjustAlgorithm = getView().findViewById(R.id.btn_adjust_algorithm);
+        algoDetailsDiffTend = getView().findViewById(R.id.txt_goal_algo_details_diff_tendency);
+        algoDetailsDiffSpread = getView().findViewById(R.id.txt_goal_algo_details_diff_spread);
+        algoDetailsAutoAdjust = getView().findViewById(R.id.txt_goal_algo_details_auto_adjust);
         db = MainDatabase.getInstance(getContext());
         List<String> headings = new ArrayList<>();
         headings.add("");//Suggestions for improving");
@@ -94,6 +114,110 @@ public class Goals extends Fragment {
         expLView.deferNotifyDataSetChanged();
         expLView.setDividerHeight(0);
         setGroupIndicatorToRight();
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        algoDetailsDiffTend.setText(String.format(Locale.ENGLISH, "%.1f", preferences.getFloat("goal_difficulty_tendency", 1.8f)));
+        algoDetailsDiffSpread.setText(String.format(Locale.ENGLISH, "%.2f", preferences.getFloat("goal_difficulty_variance", 0.15f)));
+        algoDetailsAutoAdjust.setText(preferences.getBoolean("goal_difficulty_auto_adjust", true) ? "ENABLED" : "DISABLED"); // TODO: extract string resource
+
+        adjustAlgorithm.setOnClickListener(e -> {
+            bsdAdjustAlgorithm = new BottomSheetDialog(getContext(), R.style.BottomSheetDialog_Dark);
+            bsdAdjustAlgorithm.setContentView(R.layout.algorithm_adjustment_sheet);
+
+            Slider easySld = bsdAdjustAlgorithm.findViewById(R.id.sld_algo_diff_easy);
+            Slider normalSld = bsdAdjustAlgorithm.findViewById(R.id.sld_algo_diff_normal);
+            Slider hardSld = bsdAdjustAlgorithm.findViewById(R.id.sld_algo_diff_hard);
+            QuadraticFunctionCurve qfc = bsdAdjustAlgorithm.findViewById(R.id.rp_difficulty_level);
+
+            easySld.setValue(preferences.getFloat("goal_difficulty_easy_value", 0));
+            normalSld.setValue(preferences.getFloat("goal_difficulty_normal_value", 0));
+            hardSld.setValue(preferences.getFloat("goal_difficulty_hard_value", 0));
+            qfc.setData(3, 120.5f, preferences.getFloat("goal_function_value_a", 1), preferences.getFloat("goal_function_value_b", 1), preferences.getFloat("goal_function_value_c", 1), 41);
+            qfc.setZeroMinValue(true);
+            easySld.setOnTouchListener(preventScrollOnTouch());
+            normalSld.setOnTouchListener(preventScrollOnTouch());
+            hardSld.setOnTouchListener(preventScrollOnTouch());
+
+            ((Slider) bsdAdjustAlgorithm.findViewById(R.id.sld_algo_avg_goal_difficulty_spread)).setValue(preferences.getFloat("goal_difficulty_variance", 0.15f));
+            ((Slider) bsdAdjustAlgorithm.findViewById(R.id.sld_algo_avg_goal_difficulty)).setValue(preferences.getFloat("goal_difficulty_tendency", 1.8f));
+            ((SwitchCompat) bsdAdjustAlgorithm.findViewById(R.id.swt_auto_adjust_goal_diff)).setChecked(preferences.getBoolean("goal_difficulty_auto_adjust", true));
+
+            bsdAdjustAlgorithm.findViewById(R.id.btn_cancel_algo_adjust).setOnClickListener(e2 -> {
+                bsdAdjustAlgorithm.cancel();
+            });
+
+            bsdAdjustAlgorithm.findViewById(R.id.btn_save_algo_adjust).setOnClickListener(e2 -> {
+                SharedPreferences.Editor editor = preferences.edit();
+
+                editor.putFloat("goal_difficulty_variance", ((Slider) bsdAdjustAlgorithm.findViewById(R.id.sld_algo_avg_goal_difficulty_spread)).getValue());
+                editor.putFloat("goal_difficulty_tendency", ((Slider) bsdAdjustAlgorithm.findViewById(R.id.sld_algo_avg_goal_difficulty)).getValue());
+                editor.putBoolean("goal_difficulty_auto_adjust", ((SwitchCompat) bsdAdjustAlgorithm.findViewById(R.id.swt_auto_adjust_goal_diff)).isChecked());
+
+                editor.putFloat("goal_function_value_a", qfc.getA());
+                editor.putFloat("goal_function_value_b", qfc.getB());
+                editor.putFloat("goal_function_value_c", qfc.getC());
+                editor.putFloat("goal_difficulty_easy_value", easySld.getValue());
+                editor.putFloat("goal_difficulty_normal_value", normalSld.getValue());
+                editor.putFloat("goal_difficulty_hard_value", hardSld.getValue());
+                if(newGoalAmount != -1) {
+                    editor.putInt("goal_difficulty_count", newGoalAmount);
+                }
+                if(newSignificantDifficultyDigits != -1) {
+                    editor.putInt("goal_difficulty_accuracy", newSignificantDifficultyDigits);
+                }
+
+                try {
+                    EditText valVariance = (EditText) bsdAdjustAlgorithm.findViewById(R.id.txt_goal_valuation_variance_algo);
+                    editor.putFloat("goal_difficulty_value_variance", Float.valueOf(valVariance.getText().toString()));
+                }
+                catch(Exception ex){
+                    // TODO handle invalid input data
+                }
+
+                editor.apply();
+
+                algoDetailsDiffTend.setText(String.format(Locale.ENGLISH, "%.1f", preferences.getFloat("goal_difficulty_tendency", 1.8f)));
+                algoDetailsDiffSpread.setText(String.format(Locale.ENGLISH, "%.2f", preferences.getFloat("goal_difficulty_variance", 0.15f)));
+                algoDetailsAutoAdjust.setText(preferences.getBoolean("goal_difficulty_auto_adjust", true) ? "ENABLED" : "DISABLED"); // TODO: extract string resource
+
+                bsdAdjustAlgorithm.dismiss();
+            });
+
+            easySld.addOnChangeListener((slider, value, fromUser) -> updateQuadraticFunction(easySld, normalSld, hardSld, qfc));
+            normalSld.addOnChangeListener((slider, value, fromUser) -> updateQuadraticFunction(easySld, normalSld, hardSld, qfc));
+            hardSld.addOnChangeListener((slider, value, fromUser) -> updateQuadraticFunction(easySld, normalSld, hardSld, qfc));
+
+            ((MaterialButton) bsdAdjustAlgorithm.findViewById(R.id.btn_expander_advanced)).setOnClickListener(e2 -> {
+                LinearLayout expanded = bsdAdjustAlgorithm.findViewById(R.id.ll_advanced_adjustments);
+                int visibility = (expanded.getVisibility() + View.GONE) % (View.GONE * 2);
+                expanded.setVisibility(visibility);
+                switch (visibility){
+                    case View.VISIBLE:
+                        Drawable contract = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_keyboard_arrow_up_24, getContext().getTheme());
+                        ((MaterialButton) e2).setCompoundDrawablesWithIntrinsicBounds(null, null, contract, null);
+                        BottomSheetBehavior.from((FrameLayout)bsdAdjustAlgorithm.findViewById(com.google.android.material.R.id.design_bottom_sheet)).setState(BottomSheetBehavior.STATE_EXPANDED);
+                        BottomSheetBehavior.from((FrameLayout)bsdAdjustAlgorithm.findViewById(com.google.android.material.R.id.design_bottom_sheet)).setDraggable(false);
+                        break;
+                    case View.GONE:
+                        Drawable expand = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_keyboard_arrow_down_24, getContext().getTheme());
+                        ((MaterialButton) e2).setCompoundDrawablesWithIntrinsicBounds(null, null, expand, null);
+                        BottomSheetBehavior.from((FrameLayout)bsdAdjustAlgorithm.findViewById(com.google.android.material.R.id.design_bottom_sheet)).setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        BottomSheetBehavior.from((FrameLayout)bsdAdjustAlgorithm.findViewById(com.google.android.material.R.id.design_bottom_sheet)).setDraggable(true);
+                        break;
+                    default:
+                        break;
+                }
+            });
+
+            ((MaterialButton) bsdAdjustAlgorithm.findViewById(R.id.btn_change_goal_count)).setOnClickListener(e2 -> createNumberPickerDialog(NumberPickableFields.GOAL_COUNT, 1, 10, newGoalAmount == -1 ? preferences.getInt("goal_difficulty_count", 3) : newGoalAmount));
+            ((EditText) bsdAdjustAlgorithm.findViewById(R.id.txt_goal_valuation_variance_algo)).setText(String.format(Locale.ENGLISH, "%.1f", preferences.getFloat("goal_difficulty_value_variance", 10.0f)));
+            ((MaterialButton) bsdAdjustAlgorithm.findViewById(R.id.btn_change_difficulty_significant_digits)).setOnClickListener(e2 -> createNumberPickerDialog(NumberPickableFields.GOAL_SIGNIFICANT_DIGITS, 1, 6, newSignificantDifficultyDigits == -1 ? getPotency(preferences.getInt("goal_difficulty_accuracy", 100)) : getPotency(newSignificantDifficultyDigits)));
+            ((TextView) bsdAdjustAlgorithm.findViewById(R.id.txt_goal_difficulty_significant_algo)).setText(Integer.toString(getPotency(preferences.getInt("goal_difficulty_accuracy", 100))));
+            ((TextView) bsdAdjustAlgorithm.findViewById(R.id.txt_goal_count_algo)).setText(Integer.toString(preferences.getInt("goal_difficulty_count", 3)));
+
+            bsdAdjustAlgorithm.show();
+        });
 
         expLView.setOnGroupExpandListener(groupPosition -> {
             int height = Tools.dpToPx(getContext(), Math.max(50, Tools.pxToDp(getContext(), expLView.getMeasuredHeight()) - 36));
@@ -127,7 +251,6 @@ public class Goals extends Fragment {
         // TODO: replace with string resources
         goalsReachedYesterday.setData(3, 1, "GOALS REACHED", null, "1/3");
         averageDifficultyLevelYesterday.setData(3, 2.32f, "AVERAGE DIFFICULTY LEVEL", null, "2.32");
-        //difficultyLevel.setData(3, 100, -0.047038327526132406f, 2.416376306620209f, 10, 41);
 
         floatingEdit.setOnClickListener(e -> {
             Intent intent = new Intent(getContext(), EditGoals.class);
@@ -144,6 +267,98 @@ public class Goals extends Fragment {
         data.add(new DataValue(0, "Goal 2"));
         data.add(new DataValue(2, "Goal 3"));
         rg.setData(data, Tools.dpToPx(getContext(), 3f), Tools.dpToPx(getContext(), 24), null);
+    }
+
+    private int getPotency(int number) {
+        int i = 0;
+        int num = number;
+        while(num % 10 == 0 && num != 0) {
+            i++;
+            num = num / 10;
+        }
+        return i;
+    }
+
+    @NonNull
+    private View.OnTouchListener preventScrollOnTouch() {
+        return (v, event) -> {
+            int action = event.getAction();
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    v.getParent().requestDisallowInterceptTouchEvent(false);
+                    break;
+            }
+
+            v.onTouchEvent(event);
+            return true;
+        };
+    }
+
+    public void createNumberPickerDialog(NumberPickableFields field, int min, int max, int currValue)
+    {
+        final NumberPicker numberPicker = new NumberPicker(getActivity());
+        numberPicker.setMaxValue(max);
+        numberPicker.setMinValue(min);
+        numberPicker.setValue(currValue);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setView(numberPicker);
+        builder.setTitle("Change goal count");
+        builder.setMessage("Set an amount: ");
+        builder.setPositiveButton(getResources().getString(R.string.ok), (dialog, which) -> updateGoalCount(numberPicker.getValue(), field));
+        builder.setNegativeButton(getResources().getString(R.string.cancel), null);
+        builder.create();
+        builder.show();
+    }
+
+    public void updateGoalCount(int amount, NumberPickableFields field) {
+        switch (field){
+            case GOAL_COUNT:
+                newGoalAmount = amount;
+                ((TextView) bsdAdjustAlgorithm.findViewById(R.id.txt_goal_count_algo)).setText(Integer.toString(newGoalAmount));
+                break;
+            case GOAL_SIGNIFICANT_DIGITS:
+                newSignificantDifficultyDigits = (int) Math.pow(10, amount);
+                ((TextView) bsdAdjustAlgorithm.findViewById(R.id.txt_goal_difficulty_significant_algo)).setText(Integer.toString(amount));
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void updateQuadraticFunction(Slider easySlider, Slider normalSlider, Slider hardSlider, QuadraticFunctionCurve qfc) {
+        if (cachedGoals == null) {
+            db.getGoalDao().getAllSingle().subscribe((goals, throwable2) -> {
+                cachedGoals = goals;
+                calculateQuadraticCurve(easySlider, normalSlider, hardSlider, qfc);
+            });
+        }
+        else {
+            calculateQuadraticCurve(easySlider, normalSlider, hardSlider, qfc);
+        }
+    }
+
+    private void calculateQuadraticCurve(Slider easySlider, Slider normalSlider, Slider hardSlider, QuadraticFunctionCurve qfc) {
+        if (cachedUpToDiffCount == -1) {
+            cachedUpToDiffCount = getCountUpToDifficulty(2.0f);
+        }
+        PointF weight1 = new PointF(0f, easySlider.getValue());
+        PointF weight2 = new PointF(cachedUpToDiffCount - 1, normalSlider.getValue());
+        PointF weight3 = new PointF(cachedGoals.size() - 1, hardSlider.getValue());
+        double[] points = Tools.calculateQuadraticFunction(weight1, weight2, weight3);
+        qfc.setData(3, 120.5f, (float)points[0], (float)points[1], (float)points[2], cachedGoals.size());
+    }
+
+    private int getCountUpToDifficulty(float diff) {
+        for (int i = 0; i < cachedGoals.size(); i++) {
+            if (cachedGoals.get(i).difficulty > diff) {
+                return i;
+            }
+        }
+        return cachedGoals.size();
     }
 
     private void setGroupIndicatorToRight() {
@@ -273,5 +488,10 @@ public class Goals extends Fragment {
                 });
             });
         });
+    }
+
+    private enum NumberPickableFields {
+        GOAL_COUNT,
+        GOAL_SIGNIFICANT_DIGITS
     }
 }

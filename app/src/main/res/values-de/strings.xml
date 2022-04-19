@@ -83,6 +83,8 @@
     <string name="recording_delete_message">Soll diese Aufnahme wirklich endgültig gelöscht werden?</string>
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Abbrechen</string>
     <string name="pause_continue_recording">Aufnahme pausieren/fortsetzen</string>
     <string name="stop_recording">Aufnahme stoppen</string>
     <string name="recording_single">Aufnahme</string>

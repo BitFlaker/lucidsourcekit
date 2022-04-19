@@ -185,13 +185,14 @@ public class MainActivity extends AppCompatActivity {
                 float easyValue = 100.0f;
                 float normalValue = 100.0f;
                 float hardValue = 100.0f;
+                editor.putBoolean("goal_difficulty_auto_adjust", true);
                 editor.putFloat("goal_difficulty_easy_value", easyValue);
                 editor.putFloat("goal_difficulty_normal_value", normalValue);
                 editor.putFloat("goal_difficulty_hard_value", hardValue);
                 editor.putFloat("goal_difficulty_tendency", 1.8f);
+                editor.putFloat("goal_difficulty_variance", 0.15f);
                 editor.putInt("goal_difficulty_count", 3);
                 editor.putFloat("goal_difficulty_value_variance", 10.0f);
-                editor.putFloat("goal_difficulty_variance", 0.15f);
                 editor.putInt("goal_difficulty_accuracy", 100);
                 PointF weight1 = new PointF(0f, easyValue);
                 PointF weight2 = new PointF(amount-1, normalValue);
@@ -234,17 +235,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean anyGoalSettingMissing(SharedPreferences preferences) {
-        return preferences.getFloat("goal_difficulty_easy_value", -1.0f) == -1.0f ||
-                preferences.getFloat("goal_difficulty_normal_value", -1.0f) == -1.0f ||
-                preferences.getFloat("goal_difficulty_hard_value", -1.0f) == -1.0f ||
-                preferences.getFloat("goal_difficulty_tendency", -1.0f) == -1.0f ||
-                preferences.getInt("goal_difficulty_count", -1) == -1 ||
-                preferences.getInt("goal_difficulty_accuracy", -1) == -1 ||
-                preferences.getFloat("goal_difficulty_value_variance", -1.0f) == -1.0f ||
-                preferences.getFloat("goal_difficulty_difficulty_variance", -1.0f) == -1.0f ||
-                preferences.getFloat("goal_function_value_a", -1.0f) == -1.0f ||
-                preferences.getFloat("goal_function_value_b", -1.0f) == -1.0f ||
-                preferences.getFloat("goal_function_value_c", -1.0f) == -1.0f;
+        return !preferences.contains("goal_difficulty_easy_value") ||
+                !preferences.contains("goal_difficulty_normal_value") ||
+                !preferences.contains("goal_difficulty_hard_value") ||
+                !preferences.contains("goal_difficulty_tendency") ||
+                !preferences.contains("goal_difficulty_count") ||
+                !preferences.contains("goal_difficulty_accuracy") ||
+                !preferences.contains("goal_difficulty_value_variance") ||
+                !preferences.contains("goal_difficulty_variance") ||
+                !preferences.contains("goal_function_value_a") ||
+                !preferences.contains("goal_function_value_b") ||
+                !preferences.contains("goal_difficulty_auto_adjust") ||
+                !preferences.contains("goal_function_value_c");
     }
 
     private void setupPasswordAuthentication() {

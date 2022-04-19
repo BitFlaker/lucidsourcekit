@@ -82,6 +82,8 @@
     <string name="recording_delete_message">Are you sure you want to delete this recording?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
     <string name="pause_continue_recording">pause/continue recording</string>
     <string name="stop_recording">stop recording</string>
     <string name="recording_single">Recording</string>

@@ -367,7 +367,7 @@
                         <ExpandableListView
                             android:id="@+id/elv_suggestions"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content" />
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -414,42 +414,37 @@
                         android:textColor="?attr/secondaryTextColor"
                         android:textSize="14sp" />
 
-                    <!--<com.bitflaker.lucidsourcekit.charts.QuadraticFunctionCurve
-                        android:id="@+id/rp_difficulty_level"
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:layout_marginTop="15dp" />-->
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
-                        android:orientation="horizontal"
                         android:divider="@drawable/divider_large"
+                        android:orientation="horizontal"
                         android:showDividers="middle">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
+                            android:backgroundTint="?attr/colorSecondary"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="15dp"
-                            android:backgroundTint="?attr/colorSecondary">
+                            android:padding="15dp">
 
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/ic_baseline_vertical_align_top_24"/>
+                                android:src="@drawable/ic_baseline_vertical_align_top_24" />
 
                             <TextView
+                                android:id="@+id/txt_goal_algo_details_diff_tendency"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="7dp"
                                 android:text="1.5"
                                 android:textColor="?attr/primaryTextColor"
-                                android:textStyle="bold"
-                                android:textSize="16sp" />
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
 
                             <!--<TextView
                                 android:layout_width="wrap_content"
@@ -464,24 +459,25 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
+                            android:backgroundTint="?attr/colorSecondary"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="15dp"
-                            android:backgroundTint="?attr/colorSecondary">
+                            android:padding="15dp">
 
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/ic_baseline_auto_graph_24"/>
+                                android:src="@drawable/ic_baseline_auto_graph_24" />
 
                             <TextView
+                                android:id="@+id/txt_goal_algo_details_auto_adjust"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="7dp"
                                 android:text="ENABLED"
-                                android:textStyle="bold"
                                 android:textColor="?attr/primaryTextColor"
-                                android:textSize="16sp" />
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
 
                             <!--<TextView
                                 android:layout_width="wrap_content"
@@ -496,24 +492,25 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
+                            android:backgroundTint="?attr/colorSecondary"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="15dp"
-                            android:backgroundTint="?attr/colorSecondary">
+                            android:padding="15dp">
 
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/ic_baseline_multiple_stop_24"/>
+                                android:src="@drawable/ic_baseline_multiple_stop_24" />
 
                             <TextView
+                                android:id="@+id/txt_goal_algo_details_diff_spread"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="7dp"
                                 android:text="0.2"
-                                android:textStyle="bold"
                                 android:textColor="?attr/primaryTextColor"
-                                android:textSize="16sp" />
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
 
                             <!--<TextView
                                 android:layout_width="wrap_content"
@@ -526,6 +523,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_adjust_algorithm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"

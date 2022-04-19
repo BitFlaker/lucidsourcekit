@@ -71,6 +71,10 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/divider_large.xml" value="0.2421875" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/empty_divider.xml" value="0.35555555555555557" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/gradient_background.xml" value="0.246875" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/ic_baseline_arrow_drop_down_24.xml" value="0.24635416666666668" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/ic_baseline_arrow_drop_up_24.xml" value="0.24635416666666668" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/ic_baseline_arrow_forward_24.xml" value="0.24635416666666668" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/ic_baseline_auto_graph_24.xml" value="0.24635416666666668" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/ic_baseline_ballot_24.xml" value="0.3527777777777778" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/ic_baseline_brightness_5_24.xml" value="0.22291666666666668" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/ic_baseline_check_24.xml" value="0.3728205128205128" />
@@ -115,6 +119,7 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_main_viewer.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_setup_viewer.xml" value="0.3484375" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_view_journal_entry.xml" value="0.33" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/algorithm_adjustment_sheet.xml" value="0.22" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/auto_stop_duration_sheet.xml" value="0.25" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/background_noise_entry.xml" value="0.2874880611270296" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/background_noises_manager.xml" value="0.3333333333333333" />
