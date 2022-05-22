@@ -4,7 +4,7 @@
     android:id="@+id/cl_goal_container"
     android:layout_width="match_parent"
     android:layout_height="58dp"
-    android:background="@drawable/rectangle_ripple"
+    android:background="@drawable/ripple_rectangle"
     android:backgroundTint="?attr/backgroundColor">
 
     <LinearLayout

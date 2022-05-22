@@ -45,7 +45,7 @@ public class LineGraph extends View {
     private float gradientOpacity;
     private boolean scalePositions;
     private float padding_bottom;
-    private boolean drawProgressIndicator;
+    private boolean drawProgressIndicator, doNotIndicateProgress;
     private int[] colorsLineProgress, colorsPolyProgress;
     private float[] emptyProgressTwoFields;
     private LinearGradient lgradOpac, lgradPolyPaint, lgradDataLine;
@@ -89,13 +89,14 @@ public class LineGraph extends View {
         polyPath = new Path();
     }
 
-    public void setData(FrequencyList data, float maxValue, float lineWidth, float padding_bottom, int[] colors, double[] stages) {
+    public void setData(FrequencyList data, float maxValue, float lineWidth, float padding_bottom, boolean doNotIndicateProgress, int[] colors, double[] stages) {
         // TODO: setting a second time overlays with previous and makes shader opacity 100%
         yMax = maxValue;
         xMax = data.getDuration();
-        progress = 0;
+        progress = doNotIndicateProgress ? xMax : 0;
         this.colors = colors;
         this.data = data;
+        this.doNotIndicateProgress = doNotIndicateProgress;
         this.padding_bottom = Tools.dpToPx(getContext(), padding_bottom);
         dataLinePaint.setStrokeWidth(Tools.dpToPx(getContext(), lineWidth));
 
@@ -116,6 +117,14 @@ public class LineGraph extends View {
         }
         scalePositions = true;
         lgradOpac = new LinearGradient(0f, 0f, 1f, 0f, colorsLineProgress, emptyProgressTwoFields, Shader.TileMode.CLAMP);
+        /*
+        lgradPolyPaint = new LinearGradient(0f, 0f, 0f, 1f, manipulateAlphaArray(colors, gradientOpacity), positionsBuffer, Shader.TileMode.CLAMP);
+        lgradDataLine = new LinearGradient(0f, 0f, 0f, 1f, colors, positionsBuffer, Shader.TileMode.MIRROR);
+        csDataLine = new ComposeShader(lgradDataLine, lgradOpac, PorterDuff.Mode.SRC_ATOP);
+        csPolyPaint = new ComposeShader(lgradPolyPaint, lgradOpac, PorterDuff.Mode.SRC_ATOP);
+        dataLinePaint.setShader(csDataLine);
+        polyPaint.setShader(csPolyPaint);
+        */
         invalidate();
     }
 
@@ -151,29 +160,47 @@ public class LineGraph extends View {
                 }
             }
             positions = Arrays.copyOf(positionsBuffer, positionsBuffer.length);
-            scalePositions = false;
             //radiusReducedWidth = new Float(getWidth() - radiusMargin);
             //paddedVertHeight = new Float(getHeight() - padding_bottom);
-
+/*
+            // SCALE
             lgradOpac.getLocalMatrix(lgradOpacMatrix);
             lgradOpacMatrix.postScale(getWidth() - radiusMargin, getHeight() - padding_bottom);
             lgradOpac.setLocalMatrix(lgradOpacMatrix);
 
-            /*lgradPolyPaint.getLocalMatrix(lgradOpacMatrix2);
+            lgradPolyPaint.getLocalMatrix(lgradOpacMatrix2);
             lgradOpacMatrix2.postScale(getWidth() - radiusMargin, getHeight() - padding_bottom);
             lgradPolyPaint.setLocalMatrix(lgradOpacMatrix2);
 
             lgradDataLine.getLocalMatrix(lgradOpacMatrix3);
             lgradOpacMatrix3.postScale(getWidth() - radiusMargin, getHeight() - padding_bottom);
             lgradDataLine.setLocalMatrix(lgradOpacMatrix3);
-             */
+
+            // TRANSLATE
+            lgradPolyPaint.getLocalMatrix(lgradOpacMatrix2);
+            lgradOpacMatrix2.postTranslate(0, (1/xMax) * getHeight());
+            lgradPolyPaint.setLocalMatrix(lgradOpacMatrix2);
+
+            lgradDataLine.getLocalMatrix(lgradOpacMatrix3);
+            lgradOpacMatrix3.postTranslate(0, (1/xMax) * getHeight());
+            lgradDataLine.setLocalMatrix(lgradOpacMatrix3);
+*/
+
             // TODO find solution without allocation in draw
+
             lgradPolyPaint = new LinearGradient(0f, 0f, 0f, getHeight() - padding_bottom, manipulateAlphaArray(colors, gradientOpacity), positionsBuffer, Shader.TileMode.CLAMP);
             lgradDataLine = new LinearGradient(0f, 0f, 0f, getHeight() - padding_bottom, colors, positionsBuffer, Shader.TileMode.MIRROR);
+            //if(!doNotIndicateProgress) {
             csDataLine = new ComposeShader(lgradDataLine, lgradOpac, PorterDuff.Mode.SRC_ATOP);
             csPolyPaint = new ComposeShader(lgradPolyPaint, lgradOpac, PorterDuff.Mode.SRC_ATOP);
             dataLinePaint.setShader(csDataLine);
             polyPaint.setShader(csPolyPaint);
+            //}
+            //else {
+            //    dataLinePaint.setShader(lgradPolyPaint);
+            //    polyPaint.setShader(lgradDataLine);
+            //}
+            scalePositions = false;
         }
 
         float drawAreaHeight = (getHeight()-padding_bottom) - dataLinePaint.getStrokeWidth() - bottomLineSpacing;
@@ -184,7 +211,8 @@ public class LineGraph extends View {
         if(progress != lastSetProgress) {
             lastSetProgress = progress;
             lgradOpac.getLocalMatrix(lgradOpacMatrix);
-            lgradOpacMatrix.postTranslate((1/xMax) * getWidth(), 0);
+            if (!doNotIndicateProgress){ lgradOpacMatrix.postTranslate((1/xMax) * getWidth(), 0); }
+            else { lgradOpacMatrix.postTranslate(getWidth(), 0); }
             lgradOpac.setLocalMatrix(lgradOpacMatrix);
         }
 
@@ -299,6 +327,14 @@ public class LineGraph extends View {
 
     public void setBottomLinePadding(int padding) {
         this.padding_bottom = padding;
+        invalidate();
+    }
+
+    public void resetProgress() {
+        lgradOpac.getLocalMatrix(lgradOpacMatrix);
+        if (!doNotIndicateProgress){ lgradOpacMatrix.postTranslate(-(float)(((progress)/xMax) * getWidth()), 0); }
+        lgradOpac.setLocalMatrix(lgradOpacMatrix);
+        lastSetProgress = progress = 0;
         invalidate();
     }
 }

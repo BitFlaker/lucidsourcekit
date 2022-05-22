@@ -34,58 +34,13 @@
             android:layout_marginTop="15dp"
             app:cardElevation="@dimen/cardElevationRegular"
             app:cardCornerRadius="@dimen/cardRadius"
-            app:cardBackgroundColor="?attr/slightElevated">
+            app:cardBackgroundColor="?attr/slightElevated"
+            android:visibility="gone">
 
-            <!-- TODO add icon/text indicating, there is no beat selected -->
-
-            <RelativeLayout
-                android:id="@+id/rl_no_binaural_beat_selected"
+            <com.bitflaker.lucidsourcekit.charts.TextLegend
+                android:id="@+id/tl_binaural_legend"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible">
-
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="80dp"
-                    android:src="@drawable/frequency_symbol"
-                    app:tint="?attr/secondaryTextColor" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="40dp"
-                    android:text="No Binaural Beat selected"
-                    android:textAlignment="center"
-                    android:textColor="?attr/secondaryTextColor"
-                    android:textSize="16sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_playing_binaural_beat"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="13dp"
-                    android:layout_marginTop="10dp"
-                    android:drawableStart="@drawable/frequency_symbol"
-                    android:drawablePadding="8dp"
-                    android:drawableTint="?attr/primaryTextColor"
-                    android:gravity="center_vertical"
-                    android:text="Frequency" />
-
-                <com.bitflaker.lucidsourcekit.charts.TextLegend
-                    android:id="@+id/tl_binaural_legend"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"/>
-            </RelativeLayout>
+                android:layout_height="30dp"/>
         </com.google.android.material.card.MaterialCardView>
 
         <com.bitflaker.lucidsourcekit.charts.LineGraph

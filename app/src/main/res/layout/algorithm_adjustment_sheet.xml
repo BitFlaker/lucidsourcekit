@@ -76,22 +76,12 @@
             app:haloColor="@android:color/transparent"
             app:labelStyle="@style/Tooltip.Dark" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/swt_auto_adjust_goal_diff"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/sld_algo_avg_goal_difficulty_spread"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:checked="true"
-            android:text="Auto adjust goal difficulties" />
 
         <LinearLayout
             android:id="@+id/algo_goal_count_picker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/swt_auto_adjust_goal_diff"
+            android:layout_below="@+id/sld_algo_avg_goal_difficulty_spread"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="2dp"
             android:layout_marginRight="30dp"
@@ -122,38 +112,67 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:background="@drawable/rounded_ripple"
+                android:background="@drawable/ripple_round"
                 android:text="Change"
                 app:backgroundTint="?attr/slightElevated" />
         </LinearLayout>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swt_auto_adjust_goal_diff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/algo_goal_count_picker"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="-5dp"
+            android:layout_marginRight="30dp"
+            android:checked="true"
+            android:text="Auto adjust goal difficulties" />
 
         <LinearLayout
             android:id="@+id/ll_advanced_adjustments_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/algo_goal_count_picker"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="30dp"
+            android:layout_below="@id/swt_auto_adjust_goal_diff"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
             android:gravity="end"
             android:orientation="vertical">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_expander_advanced"
-                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_ripple"
-                android:drawableRight="@drawable/ic_baseline_keyboard_arrow_down_24"
-                android:text="Advanced"
-                android:textColor="?attr/secondaryTextColor"
-                app:backgroundTint="?attr/backgroundColor" />
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <View
+                    android:id="@+id/vw_divider_advanced_algo"
+                    android:layout_width="0dp"
+                    android:layout_height="2dp"
+                    android:background="@drawable/medium_rounded_rectangle"
+                    android:backgroundTint="?attr/slightElevated"
+                    android:layout_weight="1"
+                    android:visibility="gone"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_expander_advanced"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_spinner"
+                    android:drawableRight="@drawable/ic_baseline_keyboard_arrow_down_24"
+                    android:text="Advanced"
+                    android:textColor="?attr/secondaryTextColor"
+                    app:backgroundTint="?attr/backgroundColor" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_advanced_adjustments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="10dp"
                 android:visibility="gone">
 
                 <TextView
@@ -302,7 +321,7 @@
                         android:id="@+id/btn_change_difficulty_significant_digits"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/rounded_ripple"
+                        android:background="@drawable/ripple_round"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
                         android:text="Change"
@@ -350,7 +369,7 @@
             android:id="@+id/ll_algo_adjust_buttons_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
@@ -366,7 +385,7 @@
                 android:layout_weight="1"
                 android:layout_marginBottom="5dp"
                 android:text="Cancel"
-                android:background="@drawable/rounded_ripple"
+                android:background="@drawable/ripple_round"
                 app:backgroundTint="?attr/slightElevated" />
 
             <com.google.android.material.button.MaterialButton
@@ -376,7 +395,7 @@
                 android:layout_weight="1"
                 android:layout_marginBottom="5dp"
                 android:text="Save"
-                android:background="@drawable/rounded_ripple"
+                android:background="@drawable/ripple_round"
                 app:backgroundTint="?attr/slightElevated" />
         </LinearLayout>
     </RelativeLayout>

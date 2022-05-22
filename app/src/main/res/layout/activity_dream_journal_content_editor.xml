@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".main.dreamjournal.DreamJournalContentEditor">
+
+<!--    android:layout_above="@+id/btn_dj_continue_to_ratings"-->
+<!--    android:layout_marginBottom="15dp"-->
+    <ScrollView
+        android:id="@+id/scrl_editor_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="0dp"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/csl_dj_top_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/btn_dj_close_editor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/ripple_round"
+                    android:backgroundTint="?attr/backgroundColor"
+                    android:minWidth="48dp"
+                    android:minHeight="48dp"
+                    android:src="@drawable/ic_round_close_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_dj_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="13dp"
+                    android:background="@drawable/ripple_rounded"
+                    android:fontFamily="sans-serif"
+                    android:paddingStart="8dp"
+                    android:paddingTop="0dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="0dp"
+                    android:text="20.03.2022 03:45 AM"
+                    android:textAlignment="center"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="12sp"
+                    app:backgroundTint="?attr/slightElevated"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <EditText
+                android:id="@+id/txt_dj_title_dream"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/rectangle"
+                android:backgroundTint="?attr/backgroundColor"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical"
+                android:hint="@string/dream_title_hint"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:minHeight="54dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="24sp" />
+
+<!--            android:paddingBottom="70dp"-->
+            <EditText
+                android:id="@+id/txt_dj_description_dream"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/rectangle"
+                android:backgroundTint="?attr/backgroundColor"
+                android:fontFamily="sans-serif"
+                android:gravity="fill_horizontal"
+                android:hint="@string/dream_story_hint"
+                android:importantForAutofill="no"
+                android:inputType="textMultiLine"
+                android:isScrollContainer="false"
+                android:minHeight="150dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="16sp"
+                android:paddingBottom="70dp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <ImageButton
+        android:id="@+id/btn_dj_continue_to_ratings"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/ripple_round"
+        android:backgroundTint="?attr/colorPrimary"
+        android:contentDescription="continue to dream ratings"
+        android:elevation="2dp"
+        android:src="@drawable/ic_baseline_arrow_forward_24"
+        app:borderWidth="0dp"
+        app:tint="?attr/colorOnPrimary" />
+
+    <ImageButton
+        android:id="@+id/btn_dj_add_tag"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="15dp"
+        android:layout_toEndOf="@+id/btn_dj_add_recording"
+        android:background="@drawable/ripple_round"
+        android:backgroundTint="?attr/slightElevated"
+        android:contentDescription="continue to dream ratings"
+        android:elevation="2dp"
+        android:src="@drawable/ic_baseline_label_24"
+        app:tint="?attr/primaryTextColor"
+        app:borderWidth="0dp" />
+
+    <ImageButton
+        android:id="@+id/btn_dj_add_recording"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/ripple_round"
+        android:backgroundTint="?attr/slightElevated"
+        android:contentDescription="continue to dream ratings"
+        android:elevation="2dp"
+        android:src="@drawable/ic_baseline_mic_24"
+        app:tint="?attr/primaryTextColor"
+        app:borderWidth="0dp" />
+
+    <TextView
+        android:id="@+id/txt_dj_recordings_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="7dp"
+        android:drawableEnd="@drawable/ic_baseline_mic_24"
+        android:drawablePadding="-5dp"
+        android:drawableTint="?attr/tertiaryTextColor"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:minWidth="36dp"
+        android:minHeight="36dp"
+        android:text="0"
+        android:textColor="?attr/tertiaryTextColor"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/txt_dj_tags_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/ic_baseline_label_24"
+        android:gravity="center"
+        android:minWidth="36dp"
+        android:minHeight="36dp"
+        android:text="0"
+        android:textSize="18sp"
+        android:textColor="?attr/tertiaryTextColor"
+        android:fontFamily="sans-serif"
+        android:drawableTint="?attr/tertiaryTextColor"
+        android:layout_toEndOf="@+id/txt_dj_recordings_indicator"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="7dp"
+        android:visibility="gone" />
+</RelativeLayout>

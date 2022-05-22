@@ -41,7 +41,8 @@ public class RecyclerViewAdapterBinauralBeatsSelector extends RecyclerView.Adapt
         holder.binauralDescription.setText(binauralBeats.get(position).getDescription());
         holder.baseFrequency.setText(binauralBeats.get(position).getBaseFrequencyString());
 
-        holder.dataGraph.setData(binauralBeats.get(position).getFrequencyList(), 32, 3f, 0f, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
+        // TODO: no indicator somehow does not work quite properly (when scrolled down, getting the 0% progress on all unloaded)
+        holder.dataGraph.setData(binauralBeats.get(position).getFrequencyList(), 32, 3f, 0f, true, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
         holder.dataGraph.changeProgressIndicator(Color.TRANSPARENT, 0);
 
         holder.card.setOnClickListener(e -> {

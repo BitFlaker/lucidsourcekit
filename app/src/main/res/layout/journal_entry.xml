@@ -6,87 +6,112 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardCornerRadius="@dimen/cardRadius"
-        app:cardElevation="@dimen/cardElevationRegular"
-        android:layout_margin="10dp"
-        android:backgroundTint="?attr/slightElevated"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <TextView
+            android:id="@+id/txt_journal_entry_first_date_indicator_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Monday"
+            android:textSize="26sp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="14dp"
+            android:fontFamily="sans-serif-light"/>
+
+        <TextView
+            android:id="@+id/txt_journal_entry_first_date_indicator_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="01.01.1970"
+            android:textSize="14sp"
+            android:layout_marginStart="15dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/crd_journal_entry_card"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:backgroundTint="@android:color/transparent">
+            app:cardCornerRadius="@dimen/cardRadius"
+            app:cardElevation="@dimen/cardElevationRegular"
+            android:layout_margin="10dp"
+            android:backgroundTint="?attr/slightElevated">
 
-            <LinearLayout
-                android:id="@+id/ll_title_icons"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:backgroundTint="@android:color/transparent">
+
+                <LinearLayout
+                    android:id="@+id/ll_title_icons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/txt_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:text="Title"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/txt_title"
-                    android:layout_width="0dp"
+                    android:id="@+id/txt_description"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:text="Title"
-                    android:textColor="?attr/primaryTextColor"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
+                    android:maxHeight="36dp"
+                    android:text="Description"
+                    android:textSize="14sp"
+                    android:gravity="center_vertical"
+                    android:textColor="?attr/secondaryTextColor"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </LinearLayout>
+                    app:layout_constraintTop_toBottomOf="@+id/ll_title_icons" />
 
-            <TextView
-                android:id="@+id/txt_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxHeight="36dp"
-                android:text="Description"
-                android:textSize="14sp"
-                android:gravity="center_vertical"
-                android:textColor="?attr/secondaryTextColor"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ll_title_icons" />
+                <TextView
+                    android:id="@+id/txt_date_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="15.12.2021 at 04:16"
+                    android:textColor="?attr/tertiaryTextColor"
+                    android:textStyle="italic"
+                    android:visibility="visible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_description"  />
 
-            <TextView
-                android:id="@+id/txt_date_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_gravity="center_vertical"
-                android:text="15.12.2021 at 04:16"
-                android:textColor="?attr/tertiaryTextColor"
-                android:textStyle="italic"
-                android:visibility="visible"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_description"  />
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/ll_tags"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="18dp"
-                app:flexWrap="wrap"
-                app:justifyContent="flex_start"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_date_time" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/ll_tags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="18dp"
+                    app:flexWrap="wrap"
+                    app:justifyContent="flex_start"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_date_time" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

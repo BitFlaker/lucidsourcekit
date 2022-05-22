@@ -26,4 +26,5 @@
     <attr name="colorPrimaryTranslucent" format="reference"/>
     <attr name="colorSuccess" format="reference"/>
     <attr name="colorWarning" format="reference"/>
+    <attr name="colorDisabled" format="reference"/>
 </resources>

@@ -211,7 +211,7 @@
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:layout_gravity="center"
-                            android:background="@drawable/rounded_ripple"
+                            android:background="@drawable/ripple_round"
                             android:src="@drawable/ic_baseline_shuffle_24"
                             app:backgroundTint="?attr/slightElevated" />
                     </LinearLayout>
@@ -527,7 +527,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
-                        android:background="@drawable/rounded_ripple"
+                        android:background="@drawable/ripple_round"
                         android:src="@drawable/ic_baseline_shuffle_24"
                         android:text="adjust"
                         app:backgroundTint="?attr/slightElevated2x" />

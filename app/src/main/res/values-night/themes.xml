@@ -66,6 +66,7 @@
 
         <item name="slightElevated">@color/grayed_blue</item>
         <item name="slightElevated2x">@color/white_6p</item>
+        <item name="colorDisabled">@color/background_brighter</item>
         <item name="colorPrimaryTranslucent">@color/prim_30p</item>
         <item name="colorError">@color/lighter_red</item>
         <item name="colorOnError">@color/white</item>

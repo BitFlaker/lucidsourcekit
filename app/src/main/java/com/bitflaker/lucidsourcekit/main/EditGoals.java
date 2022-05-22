@@ -28,6 +28,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.slider.Slider;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class EditGoals extends AppCompatActivity {
@@ -104,15 +105,11 @@ public class EditGoals extends AppCompatActivity {
                 addGoalSheet.show();
             }
             else {
-                List<Integer> selectedGoals = editGoalsAdapter.getSelectedGoalIds();
-                List<Goal> selectedGoalss = editGoalsAdapter.getSelectedGoals();
-                new AlertDialog.Builder(EditGoals.this, Tools.getThemeDialog()).setTitle(selectedGoals.size() == 1 ? "Delete goal" : "Delete goals").setMessage("Do you really want to delete " + (selectedGoals.size() == 1 ? "this goal" : ("these " + selectedGoals.size() + " selected goals")) + "?") // TODO: extract string resources
+                List<Integer> selectedGoalIds = editGoalsAdapter.getSelectedGoalIds();
+                List<Goal> selectedGoals = editGoalsAdapter.getSelectedGoals();
+                new AlertDialog.Builder(EditGoals.this, Tools.getThemeDialog()).setTitle(selectedGoalIds.size() == 1 ? "Delete goal" : "Delete goals").setMessage("Do you really want to delete " + (selectedGoalIds.size() == 1 ? "this goal" : ("these " + selectedGoalIds.size() + " selected goals")) + "?") // TODO: extract string resources
                         .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-                            db.getGoalDao().deleteAll(selectedGoalss);
-                            //db.getGoalDao().delete(selectedGoalss.get(0));
-                            /*db.getGoalDao().delete(selectedGoalss.get(0)).subscribe(() -> {
-                                System.out.println("DELTED");
-                            });*/
+                            db.getGoalDao().deleteAll(selectedGoals);
                         })
                         .setNegativeButton(getResources().getString(R.string.no), null)
                         .show();
@@ -164,8 +161,19 @@ public class EditGoals extends AppCompatActivity {
             AtomicBoolean isLocked = new AtomicBoolean(goal.difficultyLocked);
 
             // TODO: check if this goal was on schedule at all
-            successRateInfo.setText(getResources().getString(R.string.goal_achievement_stats).replace("<COUNT>", "2").replace("<TOTAL>", "10").replace("<PERCENTAGE>", "20"));
-            //successRateInfo.setText("This goal has not been on your schedule yet");
+            successRateInfo.setVisibility(View.GONE);
+            db.getShuffleHasGoalDao().getAchieveStatsOfGoal(goal.goalId).subscribe((goalStats, throwable) -> {
+                if(goalStats.totalCount == 0){
+                    successRateInfo.setText("This goal has not been on your schedule yet");
+                }
+                else {
+                    successRateInfo.setText(getResources().getString(R.string.goal_achievement_stats)
+                            .replace("<COUNT>", Integer.toString(goalStats.achievedCount))
+                            .replace("<TOTAL>", Integer.toString(goalStats.totalCount))
+                            .replace("<PERCENTAGE>", String.format(Locale.ENGLISH, "%.1f", (100.0f * goalStats.achievedCount / (float)goalStats.totalCount))));
+                }
+                successRateInfo.setVisibility(View.VISIBLE);
+            });
             goalEditorTitle.setText("Edit goal");  // TODO extract string resource
             goalDescription.setText(goal.description);
             goalDifficultySlider.addOnChangeListener(this::changeSliderColor);

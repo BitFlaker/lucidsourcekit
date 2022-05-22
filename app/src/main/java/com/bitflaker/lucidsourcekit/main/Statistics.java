@@ -25,22 +25,21 @@ import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.chip.ChipGroup;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class Statistics extends Fragment {
-    public LinearLayout avgMoodsContainer, avgClaritiesContainer, avgQualitiesContainer, goalsContainer, mostUsedTagsContainer;
+    public LinearLayout avgMoodsContainer, avgClaritiesContainer, avgQualitiesContainer, goalsContainer, mostUsedTagsContainer, ldreamCountContainer, avgContainer, goalsReachedContainer;
     public ChipGroup chartTimeSpan;
     public CircleGraph lucidPercentage;
-    public TextView totalEntriesNotice, currentStreak, longestStreak;
-    public RangeProgress rpDreamMood, rpDreamClarity, rpSleepQuality, rpDreamsPerNight;
+    public TextView totalEntriesNotice, currentStreak, longestStreak, neLucidDreamCount, neAvgData, neAvgClarities, neAvgMoods, neAvgSQualities, neGoalsReached, neMostUsedTags;
+    public RangeProgress rpDreamMood, rpDreamClarity, rpSleepQuality, rpDreamsPerNight, rpGoalsReached, rpAvgDiff;
     private MainDatabase db;
     private List<Double> avgClarities = new ArrayList<>();
     private List<Double> avgMoods = new ArrayList<>();
@@ -78,6 +77,18 @@ public class Statistics extends Fragment {
         rpDreamClarity = getView().findViewById(R.id.rp_dream_clarity);
         rpSleepQuality = getView().findViewById(R.id.rp_sleep_quality);
         rpDreamsPerNight = getView().findViewById(R.id.rp_dreams_per_night);
+        neLucidDreamCount = getView().findViewById(R.id.txt_not_enough_data_ldream_count);
+        ldreamCountContainer = getView().findViewById(R.id.ll_stat_ldream_count_container);
+        avgContainer = getView().findViewById(R.id.ll_stat_avg_container);
+        neAvgData = getView().findViewById(R.id.txt_not_enough_data_avg_data);
+        neAvgClarities = getView().findViewById(R.id.txt_not_enough_data_avg_clarities);
+        neAvgMoods = getView().findViewById(R.id.txt_not_enough_data_avg_moods);
+        neAvgSQualities = getView().findViewById(R.id.txt_not_enough_data_avg_squality);
+        neGoalsReached = getView().findViewById(R.id.txt_not_enough_data_goals_reached);
+        neMostUsedTags = getView().findViewById(R.id.txt_not_enough_data_most_used_tags);
+        goalsReachedContainer = getView().findViewById(R.id.ll_goals_reached);
+        rpGoalsReached = getView().findViewById(R.id.rp_goals_reached);
+        rpAvgDiff = getView().findViewById(R.id.rp_avg_goal_diff);
         db = MainDatabase.getInstance(getContext());
 
         Drawable iconMood1 = getResources().getDrawable(R.drawable.ic_baseline_sentiment_very_dissatisfied_24, getContext().getTheme());
@@ -108,28 +119,69 @@ public class Statistics extends Fragment {
         getAveragesForLastNDays(selectedDaysCount, 0);
         gatheredNewTimeSpanStats.observe(getActivity(), aBoolean -> {
             if(gatheredNewTimeSpanStats.getValue()) {
-                generateRodChart(avgMoods.size(), Tools.dpToPx(getContext(), 3f), avgMoodsContainer, moodIcons, avgMoods);
-                generateRodChart(avgClarities.size(), Tools.dpToPx(getContext(), 3f), avgClaritiesContainer, clarityIcons, avgClarities);
-                generateRodChart(avgQualities.size(), Tools.dpToPx(getContext(), 3f), avgQualitiesContainer, qualityIcons, avgQualities);
+                // TODO: optimize code for less redundancy
+                if(!Tools.hasNoData(avgMoods)) {
+                    neAvgMoods.setVisibility(View.GONE);
+                    avgMoodsContainer.setVisibility(View.VISIBLE);
+                    generateRodChart(avgMoods.size(), Tools.dpToPx(getContext(), 3f), avgMoodsContainer, moodIcons, avgMoods);
+                }
+                else {
+                    neAvgMoods.setVisibility(View.VISIBLE);
+                    avgMoodsContainer.setVisibility(View.GONE);
+                }
 
-                DecimalFormat df = new DecimalFormat("#.#");
-                df.setRoundingMode(RoundingMode.HALF_UP);
-                float averageMood = calcAverage(avgMoods);
-                float averageClarity = calcAverage(avgClarities);
-                float averageQuality = calcAverage(avgQualities);
-                float averageDreamCount = calcAverage(dreamCounts);
-                // TODO: extract string resources
-                // TODO: check what happens with no entries
-                rpDreamMood.setData(4, averageMood, "DREAM MOOD", moodIcons[Math.round(averageMood)], null);
-                rpDreamClarity.setData(3, averageClarity, "DREAM CLARITY", clarityIcons[Math.round(averageClarity)], null);
-                rpSleepQuality.setData(3, averageQuality, "SLEEP QUALITY", qualityIcons[Math.round(averageQuality)], null);
-                rpDreamsPerNight.setData(Collections.max(dreamCounts).floatValue(), averageDreamCount, "DREAMS PER NIGHT", null, df.format(averageDreamCount));
+                if(!Tools.hasNoData(avgClarities)){
+                    neAvgClarities.setVisibility(View.GONE);
+                    avgClaritiesContainer.setVisibility(View.VISIBLE);
+                    generateRodChart(avgClarities.size(), Tools.dpToPx(getContext(), 3f), avgClaritiesContainer, clarityIcons, avgClarities);
+                }
+                else {
+                    neAvgClarities.setVisibility(View.VISIBLE);
+                    avgClaritiesContainer.setVisibility(View.GONE);
+                }
+
+                if(!Tools.hasNoData(avgQualities)){
+                    neAvgSQualities.setVisibility(View.GONE);
+                    avgQualitiesContainer.setVisibility(View.VISIBLE);
+                    generateRodChart(avgQualities.size(), Tools.dpToPx(getContext(), 3f), avgQualitiesContainer, qualityIcons, avgQualities);
+                }
+                else {
+                    neAvgSQualities.setVisibility(View.VISIBLE);
+                    avgQualitiesContainer.setVisibility(View.GONE);
+                }
+
+                if(Tools.hasNoData(avgMoods) && Tools.hasNoData(avgClarities) && Tools.hasNoData(avgQualities) && Tools.hasNoData(dreamCounts)){
+                    neAvgData.setVisibility(View.VISIBLE);
+                    avgContainer.setVisibility(View.GONE);
+                }
+                else {
+                    neAvgData.setVisibility(View.GONE);
+                    avgContainer.setVisibility(View.VISIBLE);
+
+                    float averageMood = calcAverage(avgMoods, true);
+                    float averageClarity = calcAverage(avgClarities, true);
+                    float averageQuality = calcAverage(avgQualities, true);
+                    float averageDreamCount = calcAverage(dreamCounts, false);
+                    // TODO: extract string resources
+                    rpDreamMood.setData(4, averageMood, "DREAM MOOD", moodIcons[Math.round(averageMood)], null);
+                    rpDreamClarity.setData(3, averageClarity, "DREAM CLARITY", clarityIcons[Math.round(averageClarity)], null);
+                    rpSleepQuality.setData(3, averageQuality, "SLEEP QUALITY", qualityIcons[Math.round(averageQuality)], null);
+                    rpDreamsPerNight.setData(Collections.max(dreamCounts).floatValue(), averageDreamCount, "DREAMS PER NIGHT", null, String.format(Locale.ENGLISH, "%.2f", averageDreamCount));
+                }
 
                 Pair<Long, Long> timeSpan = Tools.getTimeSpanFrom(selectedDaysCount - 1, true);
                 db.getJournalEntryDao().getLucidEntriesCount(timeSpan.first, timeSpan.second).subscribe((lucidEntriesCount, throwable) -> {
                     db.getJournalEntryDao().getEntriesCount(timeSpan.first, timeSpan.second).subscribe((totalEntriesCount, throwable2) -> {
                         // TODO: maybe display numbers as well?
-                        lucidPercentage.setData(lucidEntriesCount, totalEntriesCount-lucidEntriesCount, Tools.dpToPx(getContext(), 15), Tools.dpToPx(getContext(), 1.25));
+                        if(totalEntriesCount != 0) {
+                            neLucidDreamCount.setVisibility(View.GONE);
+                            ldreamCountContainer.setVisibility(View.VISIBLE);
+                            lucidPercentage.setData(lucidEntriesCount, totalEntriesCount-lucidEntriesCount, Tools.dpToPx(getContext(), 15), Tools.dpToPx(getContext(), 1.25));
+                        }
+                        else {
+                            ldreamCountContainer.setVisibility(View.GONE);
+                            neLucidDreamCount.setVisibility(View.VISIBLE);
+                        }
                         totalEntriesNotice.setText(getResources().getString(R.string.total_entries_count).replace("<TOTAL_COUNT>", totalEntriesCount.toString()));
                     });
                 });
@@ -138,6 +190,8 @@ public class Statistics extends Fragment {
                     // TODO: only make 1 object that draws all of the graphs
                     mostUsedTagsContainer.removeAllViews();
                     if(tagCounts.size() > 0){
+                        mostUsedTagsContainer.setVisibility(View.VISIBLE);
+                        neMostUsedTags.setVisibility(View.GONE);
                         int maxCount = tagCounts.get(0).getCount();
                         for (TagCount p : tagCounts) {
                             RangeProgress rngProg = new RangeProgress(getContext());
@@ -150,19 +204,31 @@ public class Statistics extends Fragment {
                         }
                     }
                     else {
-                        // TODO: give note that no tags were assigned yet
+                        mostUsedTagsContainer.setVisibility(View.GONE);
+                        neMostUsedTags.setVisibility(View.VISIBLE);
+                    }
+                });
+
+                db.getShuffleHasGoalDao().getShufflesFromBetween(timeSpan.first, timeSpan.second).subscribe((shuffleHasGoalStats, throwable) -> {
+                    if(shuffleHasGoalStats.goalCount == 0) {
+                        neGoalsReached.setVisibility(View.VISIBLE);
+                        goalsReachedContainer.setVisibility(View.GONE);
+                    }
+                    else {
+                        neGoalsReached.setVisibility(View.GONE);
+                        goalsReachedContainer.setVisibility(View.VISIBLE);
+                        rpGoalsReached.setData(shuffleHasGoalStats.goalCount, shuffleHasGoalStats.achievedCount, "ACHIEVED", null, String.format(Locale.ENGLISH, "%d/%d", shuffleHasGoalStats.achievedCount, shuffleHasGoalStats.goalCount));
+                        rpAvgDiff.setData(3, (float)shuffleHasGoalStats.avgDifficulty, "AVERAGE DIFFICULTY LEVEL", null, String.format(Locale.ENGLISH, "%.2f", shuffleHasGoalStats.avgDifficulty));
                     }
                 });
             }
         });
-        //generateRodChart(7, Tools.dpToPx(getContext(), 3f), goalsContainer, null);
 
         chartTimeSpan.setOnCheckedChangeListener((chipGroup, i) -> {
             avgMoodsContainer.removeAllViews();
             avgClaritiesContainer.removeAllViews();
             avgQualitiesContainer.removeAllViews();
-            goalsContainer.removeAllViews();
-            switch (i){
+            switch (i) {
                 case R.id.chp_last_7_days:
                     selectedDaysCount = 7;
                     getAveragesForLastNDays(selectedDaysCount, 0);
@@ -172,26 +238,28 @@ public class Statistics extends Fragment {
                     getAveragesForLastNDays(selectedDaysCount, 0);
                     break;
                 case R.id.chp_all_time:
-                    selectedDaysCount = 5000;
+                    selectedDaysCount = 250;
                     getAveragesForLastNDays(selectedDaysCount, 0);
                     break;
             }
         });
     }
 
-    private float calcAverage(List<Double> vals) {
+    private float calcAverage(List<Double> vals, boolean ignoreMissedDays) {
         if(vals.size() == 0){ return 0; }
         double sum = 0;
         int i = 0;
         for (Double d : vals) {
-            sum += d;
+            if(ignoreMissedDays && d == -1.0) {
+                continue;
+            }
+            sum += d == -1 ? 0 : d;
             i++;
         }
         return (float)(sum / (double)i);
     }
 
     private void generateRodChart(int amount, float lineWidth, ViewGroup container, Drawable[] icons, List<Double> averageValues) {
-        // TODO: maybe hide days with no ratings/entries completely?
         RodGraph rg = new RodGraph(getContext());
         LinearLayout.LayoutParams lParamsw = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
         lParamsw.weight = 1;
@@ -235,16 +303,24 @@ public class Statistics extends Fragment {
             endTimeSpan = timeSpan.second;
         }
         db.getJournalEntryDao().getAverageEntryInTimeSpan(timeSpan.first, timeSpan.second).subscribe((averageEntryValues, throwable) -> {
-            avgQualities.add(averageEntryValues.getAvgQualities());
-            avgMoods.add(averageEntryValues.getAvgMoods());
-            avgClarities.add(averageEntryValues.getAvgClarities());
-            dreamCounts.add(averageEntryValues.getDreamCount());
+            if(averageEntryValues.getDreamCount() > 0){
+                avgQualities.add(averageEntryValues.getAvgQualities());
+                avgMoods.add(averageEntryValues.getAvgMoods());
+                avgClarities.add(averageEntryValues.getAvgClarities());
+                dreamCounts.add(averageEntryValues.getDreamCount());
+            }
+            else {
+                avgQualities.add(-1.0);
+                avgMoods.add(-1.0);
+                avgClarities.add(-1.0);
+                dreamCounts.add(-1.0);
+            }
             if(daysBeforeToday == amount-1) {
                 startTimeSpan = timeSpan.first;
                 gatheredNewTimeSpanStats.setValue(true);
             }
             else {
-                getAveragesForLastNDays(amount, daysBeforeToday +1);
+                getAveragesForLastNDays(amount, daysBeforeToday + 1);
             }
         });
     }

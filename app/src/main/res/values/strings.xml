@@ -45,9 +45,9 @@
     <string name="dream_time_field">Time</string>
     <string name="dream_story_header">Dream story</string>
     <string name="dream_title">Title</string>
-    <string name="dream_title_hint">enter a title for the dream</string>
+    <string name="dream_title_hint">Enter a dream title</string>
     <string name="dream_story">Story</string>
-    <string name="dream_story_hint">describe your dream as detailed as possible</string>
+    <string name="dream_story_hint">Describe your dream as detailed as possible</string>
     <string name="tags">Tags</string>
     <string name="alt_tags">Add tags button</string>
     <string name="ratings_header">Ratings</string>
@@ -101,6 +101,7 @@
     <string name="goals_reached_description">This number indicates how many goals you have reached in total. These goals guide you at becoming more conscious throughout the day and therefore improving your awareness.</string>
     <string name="total_entries_count"><![CDATA[This data is based on a total of <TOTAL_COUNT> dream journal entries.]]></string>
     <string name="goal_achievement_stats"><![CDATA[You achieved this goal <COUNT> out of <TOTAL> times. Your success rate is <PERCENTAGE>%]]></string>
+    <string name="not_enough_data_available">Not enough data available!</string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>

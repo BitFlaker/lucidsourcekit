@@ -1,0 +1,842 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".main.dreamjournal.DreamJournalRatingEditor">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="70dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_dj_close_editor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/ripple_round"
+                    android:backgroundTint="?attr/backgroundColor"
+                    android:minWidth="48dp"
+                    android:minHeight="48dp"
+                    android:src="@drawable/ic_round_close_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-thin"
+                    android:text="Rate your dream"
+                    android:textAlignment="center"
+                    android:textFontWeight="300"
+                    android:textSize="18sp"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_marginStart="15dp">
+
+                    <androidx.legacy.widget.Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
+
+                    <ImageView
+                        android:layout_width="@dimen/rating_point_size"
+                        android:layout_height="@dimen/rating_point_size"
+                        android:layout_marginTop="@dimen/rating_point_space"
+                        android:src="@drawable/rounded_spinner"
+                        app:tint="?attr/colorPrimary" />
+
+                    <View
+                        android:id="@+id/vw_line_dj_bottom_dream_mood"
+                        android:layout_width="1dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/rectangle"
+                        android:backgroundTint="?attr/tertiaryTextColor"
+                        android:layout_marginTop="@dimen/rating_point_space"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcv_dj_dream_mood"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginBottom="7dp"
+                    android:padding="20dp"
+                    android:backgroundTint="?attr/colorPrimary"
+                    app:cardCornerRadius="@dimen/cardRadius"
+                    app:cardElevation="@dimen/cardElevationRegular">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_weight="1"
+                        android:padding="15dp"
+                        android:gravity="center_vertical">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="top"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Dream mood"
+                                android:textSize="18sp"
+                                android:fontFamily="sans-serif-thin"
+                                android:textStyle="bold"
+                                android:textColor="?attr/primaryTextColor"/>
+
+                            <TextView
+                                android:id="@+id/txt_dj_dream_mood_selection_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Terrible"
+                                android:textSize="14sp"
+                                android:fontFamily="sans-serif"
+                                android:textColor="?attr/secondaryTextColor"/>
+
+                            <com.google.android.material.slider.Slider
+                                android:id="@+id/sld_dj_dream_mood"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:stepSize="1"
+                                android:valueTo="4"
+                                android:visibility="visible"
+                                app:trackColorActive="@color/white"
+                                app:thumbColor="@color/white"
+                                app:trackColorInactive="?attr/tertiaryTextColor"
+                                app:tickColor="@color/white"
+                                app:labelBehavior="gone" />
+
+                            <LinearLayout
+                                android:id="@+id/ll_dj_dream_mood"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="-10dp"
+                                android:orientation="horizontal"
+                                android:visibility="visible"
+                                app:layout_constraintEnd_toEndOf="parent">
+
+                                <ImageView
+                                    android:id="@+id/img_very_dissatisfied"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:contentDescription="@string/alt_very_dissatisfied_smiley_rating"
+                                    android:src="@drawable/ic_baseline_sentiment_very_dissatisfied_24"
+                                    app:tint="?attr/primaryTextColor" />
+
+                                <ImageView
+                                    android:id="@+id/img_dissatisfied"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="10"
+                                    android:contentDescription="@string/alt_dissatisfied_smiley_rating"
+                                    android:src="@drawable/ic_baseline_sentiment_dissatisfied_24"
+                                    app:tint="?attr/tertiaryTextColor" />
+
+                                <ImageView
+                                    android:id="@+id/img_neutral_satisfied"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:contentDescription="@string/alt_neutral_smiley_rating"
+                                    android:src="@drawable/ic_baseline_sentiment_neutral_24"
+                                    app:tint="?attr/tertiaryTextColor" />
+
+                                <ImageView
+                                    android:id="@+id/img_satisfied"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="10"
+                                    android:contentDescription="@string/alt_satisfied_smiley_rating"
+                                    android:src="@drawable/ic_baseline_sentiment_satisfied_24"
+                                    app:tint="?attr/tertiaryTextColor" />
+
+                                <ImageView
+                                    android:id="@+id/img_very_satisfied"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:contentDescription="@string/alt_very_satisfied_smiley_rating"
+                                    android:src="@drawable/ic_baseline_sentiment_very_satisfied_24"
+                                    app:tint="?attr/tertiaryTextColor" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/img_dj_selection_dream_mood"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_baseline_sentiment_very_dissatisfied_24"
+                            android:visibility="gone"
+                            app:tint="?attr/secondaryTextColor"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_marginStart="15dp">
+
+                    <View
+                        android:id="@+id/vw_line_dj_top_sleep_quality"
+                        android:layout_width="1dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/rectangle"
+                        android:backgroundTint="?attr/tertiaryTextColor"
+                        android:layout_weight="1"/>
+
+                    <ImageView
+                        android:id="@+id/vw_dot_dj_sleep_quality"
+                        android:layout_width="@dimen/rating_point_size"
+                        android:layout_height="@dimen/rating_point_size"
+                        android:layout_marginTop="@dimen/rating_point_space"
+                        android:src="@drawable/rounded_spinner"
+                        app:tint="?attr/tertiaryTextColor" />
+
+                    <View
+                        android:id="@+id/vw_line_dj_bottom_sleep_quality"
+                        android:layout_width="1dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/rectangle"
+                        android:backgroundTint="?attr/colorDisabled"
+                        android:layout_marginTop="@dimen/rating_point_space"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcv_dj_sleep_quality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginBottom="7dp"
+                    android:padding="20dp"
+                    android:backgroundTint="?attr/slightElevated"
+                    app:cardCornerRadius="@dimen/cardRadius"
+                    app:cardElevation="@dimen/cardElevationRegular">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_weight="1"
+                        android:padding="15dp"
+                        android:gravity="center_vertical">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sleep quality"
+                                android:textSize="18sp"
+                                android:fontFamily="sans-serif-thin"
+                                android:textStyle="bold"
+                                android:textColor="?attr/primaryTextColor"/>
+
+                            <TextView
+                                android:id="@+id/txt_dj_sleep_quality_selection_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Terrible"
+                                android:textSize="14sp"
+                                android:fontFamily="sans-serif"
+                                android:textColor="?attr/secondaryTextColor"
+                                android:visibility="gone"/>
+
+                            <com.google.android.material.slider.Slider
+                                android:id="@+id/sld_dj_sleep_quality"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:stepSize="1"
+                                android:valueTo="3"
+                                app:trackColorActive="@color/white"
+                                app:thumbColor="@color/white"
+                                app:trackColorInactive="?attr/tertiaryTextColor"
+                                app:tickColor="@color/white"
+                                app:labelBehavior="gone"
+                                android:visibility="gone" />
+
+                            <LinearLayout
+                                android:id="@+id/ll_dj_sleep_quality"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="-10dp"
+                                android:orientation="horizontal"
+                                android:visibility="gone"
+                                app:layout_constraintEnd_toEndOf="parent">
+
+                                <ImageView
+                                    android:id="@+id/img_very_bad_quality"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:contentDescription="@string/alt_very_bad_quality"
+                                    android:src="@drawable/ic_baseline_star_border_24"
+                                    app:tint="?attr/primaryTextColor" />
+
+                                <androidx.legacy.widget.Space
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="5" />
+
+                                <ImageView
+                                    android:id="@+id/img_bad_quality"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="10"
+                                    android:contentDescription="@string/alt_bad_quality"
+                                    android:src="@drawable/ic_baseline_star_half_24"
+                                    app:tint="?attr/tertiaryTextColor" />
+
+                                <ImageView
+                                    android:id="@+id/img_good_quality"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="10"
+                                    android:contentDescription="@string/alt_good_quality"
+                                    android:src="@drawable/ic_baseline_star_24"
+                                    app:tint="?attr/tertiaryTextColor" />
+
+                                <androidx.legacy.widget.Space
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="5" />
+
+                                <ImageView
+                                    android:id="@+id/img_very_good_quality"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:contentDescription="@string/alt_very_good_quality"
+                                    android:src="@drawable/ic_baseline_stars_24"
+                                    app:tint="?attr/tertiaryTextColor" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/img_dj_selection_sleep_quality"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_baseline_star_border_24"
+                            app:tint="?attr/secondaryTextColor"
+                            android:visibility="gone"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_marginStart="15dp">
+
+                    <View
+                        android:id="@+id/vw_line_dj_top_dream_clarity"
+                        android:layout_width="1dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/rectangle"
+                        android:backgroundTint="?attr/colorDisabled"
+                        android:layout_weight="1"/>
+
+                    <ImageView
+                        android:id="@+id/vw_dot_dj_dream_clarity"
+                        android:layout_width="@dimen/rating_point_size"
+                        android:layout_height="@dimen/rating_point_size"
+                        android:layout_marginTop="@dimen/rating_point_space"
+                        android:src="@drawable/rounded_spinner"
+                        app:tint="?attr/colorDisabled" />
+
+                    <View
+                        android:id="@+id/vw_line_dj_bottom_dream_clarity"
+                        android:layout_width="1dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/rectangle"
+                        android:backgroundTint="?attr/colorDisabled"
+                        android:layout_marginTop="@dimen/rating_point_space"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcv_dj_dream_clarity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginBottom="7dp"
+                    android:padding="20dp"
+                    android:clickable="false"
+                    android:backgroundTint="?attr/colorDisabled"
+                    app:cardCornerRadius="@dimen/cardRadius"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_weight="1"
+                        android:padding="15dp"
+                        android:gravity="center_vertical">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="top"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Dream clarity"
+                                android:textSize="18sp"
+                                android:fontFamily="sans-serif-thin"
+                                android:textStyle="bold"
+                                android:textColor="?attr/primaryTextColor"/>
+
+                            <TextView
+                                android:id="@+id/txt_dj_dream_clarity_selection_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Very Cloudy"
+                                android:textSize="14sp"
+                                android:fontFamily="sans-serif"
+                                android:textColor="?attr/secondaryTextColor"
+                                android:visibility="gone"/>
+
+                            <com.google.android.material.slider.Slider
+                                android:id="@+id/sld_dj_dream_clarity"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:stepSize="1"
+                                android:valueTo="3"
+                                app:trackColorActive="@color/white"
+                                app:thumbColor="@color/white"
+                                app:trackColorInactive="?attr/tertiaryTextColor"
+                                app:tickColor="@color/white"
+                                app:labelBehavior="gone"
+                                android:visibility="gone" />
+
+                            <LinearLayout
+                                android:id="@+id/ll_dj_dream_clarity"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="-10dp"
+                                android:orientation="horizontal"
+                                android:visibility="gone"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/sld_clarity">
+
+                                <ImageView
+                                    android:id="@+id/img_very_unclear"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:contentDescription="@string/alt_very_unclear"
+                                    android:src="@drawable/ic_baseline_brightness_4_24"
+                                    app:tint="?attr/primaryTextColor" />
+
+                                <androidx.legacy.widget.Space
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="5" />
+
+                                <ImageView
+                                    android:id="@+id/img_unclear"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="10"
+                                    android:contentDescription="@string/alt_unclear"
+                                    android:src="@drawable/ic_baseline_brightness_5_24"
+                                    app:tint="?attr/tertiaryTextColor" />
+
+                                <ImageView
+                                    android:id="@+id/img_clear"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="10"
+                                    android:contentDescription="@string/alt_clear"
+                                    android:src="@drawable/ic_baseline_brightness_6_24"
+                                    app:tint="?attr/tertiaryTextColor" />
+
+                                <androidx.legacy.widget.Space
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="5" />
+
+                                <ImageView
+                                    android:id="@+id/img_very_clear"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:contentDescription="@string/alt_very_clear"
+                                    android:src="@drawable/ic_baseline_brightness_7_24"
+                                    app:tint="?attr/tertiaryTextColor" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/img_dj_selection_dream_clarity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_baseline_brightness_4_24"
+                            app:tint="?attr/secondaryTextColor"
+                            android:visibility="gone"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_marginStart="15dp">
+
+                    <View
+                        android:id="@+id/vw_line_dj_top_dream_characteristics"
+                        android:layout_width="1dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/rectangle"
+                        android:backgroundTint="?attr/colorDisabled"
+                        android:layout_weight="1"/>
+
+                    <ImageView
+                        android:id="@+id/vw_dot_dj_dream_characteristics"
+                        android:layout_width="@dimen/rating_point_size"
+                        android:layout_height="@dimen/rating_point_size"
+                        android:layout_marginTop="@dimen/rating_point_space"
+                        android:src="@drawable/rounded_spinner"
+                        app:tint="?attr/colorDisabled" />
+
+                    <androidx.legacy.widget.Space
+                        android:layout_width="1dp"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="@dimen/rating_point_space"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcv_dj_dream_characteristics"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginBottom="7dp"
+                    android:padding="20dp"
+                    android:backgroundTint="?attr/colorDisabled"
+                    app:cardCornerRadius="@dimen/cardRadius"
+                    app:cardElevation="@dimen/cardElevationRegular">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_weight="1"
+                        android:padding="15dp"
+                        android:gravity="center_vertical">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="top"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Dream characteristics"
+                                android:textSize="18sp"
+                                android:fontFamily="sans-serif-thin"
+                                android:textStyle="bold"
+                                android:textColor="?attr/primaryTextColor"/>
+
+                            <LinearLayout
+                                android:id="@+id/ll_dj_dream_characteristics"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:visibility="gone"
+                                android:showDividers="middle"
+                                android:divider="@drawable/divider_small">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:text="Choose all suitable characteristics"
+                                    android:textSize="14sp"
+                                    android:fontFamily="sans-serif"
+                                    android:textColor="?attr/secondaryTextColor"
+                                    android:visibility="gone"/>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:layout_marginTop="15dp"
+                                    android:showDividers="middle"
+                                    android:divider="@drawable/divider_small">
+
+                                    <ToggleButton
+                                        android:id="@+id/tgl_dj_nightmare"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/toggle_button"
+                                        android:drawableTop="@drawable/ic_baseline_priority_high_24"
+                                        android:drawableTint="@drawable/toggle_button_color"
+                                        android:padding="15dp"
+                                        android:textColor="@drawable/toggle_button_color"
+                                        android:textOff="@string/dream_nightmare"
+                                        android:textOn="@string/dream_nightmare" />
+
+                                    <ToggleButton
+                                        android:id="@+id/tgl_dj_paralysis"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/toggle_button"
+                                        android:drawableTop="@drawable/ic_baseline_accessibility_new_24"
+                                        android:drawableTint="@drawable/toggle_button_color"
+                                        android:padding="15dp"
+                                        android:textColor="@drawable/toggle_button_color"
+                                        android:textOff="@string/dream_paralysis"
+                                        android:textOn="@string/dream_paralysis" />
+                                </LinearLayout>
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:showDividers="middle"
+                                    android:divider="@drawable/divider_small">
+
+                                    <ToggleButton
+                                        android:id="@+id/tgl_dj_lucid"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/toggle_button"
+                                        android:drawableTop="@drawable/ic_baseline_deblur_24"
+                                        android:drawableTint="@drawable/toggle_button_color"
+                                        android:padding="15dp"
+                                        android:textColor="@drawable/toggle_button_color"
+                                        android:textOff="@string/dream_lucid"
+                                        android:textOn="@string/dream_lucid" />
+
+                                    <ToggleButton
+                                        android:id="@+id/tgl_dj_recurring"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/toggle_button"
+                                        android:drawableTop="@drawable/ic_round_loop_24"
+                                        android:drawableTint="@drawable/toggle_button_color"
+                                        android:padding="15dp"
+                                        android:textColor="@drawable/toggle_button_color"
+                                        android:textOff="@string/recurring"
+                                        android:textOn="@string/recurring" />
+                                </LinearLayout>
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:showDividers="middle"
+                                    android:divider="@drawable/divider_small">
+
+                                    <ToggleButton
+                                        android:id="@+id/tgl_dj_false_awakening"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/toggle_button"
+                                        android:drawableTop="@drawable/ic_baseline_airline_seat_individual_suite_24"
+                                        android:drawableTint="@drawable/toggle_button_color"
+                                        android:padding="15dp"
+                                        android:textColor="@drawable/toggle_button_color"
+                                        android:textOff="@string/dream_false_awakening"
+                                        android:textOn="@string/dream_false_awakening" />
+
+                                    <androidx.legacy.widget.Space
+                                        android:layout_width="0dp"
+                                        android:layout_height="0dp"
+                                        android:layout_weight="1" />
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_dj_dream_characteristics_icons"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:visibility="visible">
+
+                            <ImageView
+                                android:id="@+id/img_dj_character_nightmare"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_baseline_priority_high_24"
+                                app:tint="?attr/secondaryTextColor"
+                                android:visibility="gone"/>
+
+                            <ImageView
+                                android:id="@+id/img_dj_character_paralysis"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_baseline_accessibility_new_24"
+                                app:tint="?attr/secondaryTextColor"
+                                android:visibility="gone"/>
+
+                            <ImageView
+                                android:id="@+id/img_dj_character_lucid"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_baseline_deblur_24"
+                                app:tint="?attr/secondaryTextColor"
+                                android:visibility="gone"/>
+
+                            <ImageView
+                                android:id="@+id/img_dj_character_recurring"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_round_loop_24"
+                                app:tint="?attr/secondaryTextColor"
+                                android:visibility="gone"/>
+
+                            <ImageView
+                                android:id="@+id/img_dj_character_false_awakening"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_baseline_airline_seat_individual_suite_24"
+                                app:tint="?attr/secondaryTextColor"
+                                android:visibility="gone"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_dj_done_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/ripple_round"
+        android:drawableLeft="@drawable/ic_baseline_check_24"
+        android:drawableTint="?attr/colorOnPrimary"
+        android:text="Done" />
+
+    <ImageButton
+        android:id="@+id/btn_dj_back_to_text"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/ripple_round"
+        android:backgroundTint="?attr/slightElevated"
+        android:contentDescription="back to dream journal editor"
+        android:elevation="2dp"
+        android:src="@drawable/ic_baseline_arrow_back_24"
+        app:borderWidth="0dp"
+        app:tint="?attr/primaryTextColor" />
+</RelativeLayout>

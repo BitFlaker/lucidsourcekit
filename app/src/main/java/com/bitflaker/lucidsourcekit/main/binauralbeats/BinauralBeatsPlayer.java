@@ -64,7 +64,9 @@ public class BinauralBeatsPlayer {
     public void stop() {
         binauralAudioTrack.pause();
         binauralAudioTrack.flush();
+        trackThread.interrupt();
         playing = false;
+        System.gc();
     }
 
     public boolean isPlaying() {
@@ -114,7 +116,7 @@ public class BinauralBeatsPlayer {
             }
         });
         if(!isPaused){
-            if(currentPosition == null){
+            if(currentPosition == null) {
                 currentPosition = new AudioBufferPosition();
             }
             currentPosition = NextBufferGenerator.generateSamples(binauralBeat, sampleRate, fst, buffer, normalSineWave, currentPosition);

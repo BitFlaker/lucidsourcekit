@@ -30,14 +30,14 @@ import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntriesList;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntry;
-import com.bitflaker.lucidsourcekit.main.createjournalentry.AddTextEntry;
+import com.bitflaker.lucidsourcekit.main.dreamjournal.DreamJournalEntryEditor;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class DreamJournal extends Fragment {
 
     RecyclerView recyclerView;
     private TextView noEntryFound;
-    private FloatingActionButton fabAdd, fabText, fabForms, fabAudio;
+    private FloatingActionButton fabAdd, fabText, fabForms;
     private Animation fabOpen, fabClose, rotateForward, rotateBackward;
     private boolean isOpen = false;
     private RecyclerViewAdapterDreamJournal recyclerViewAdapterDreamJournal = null;
@@ -155,7 +155,7 @@ public class DreamJournal extends Fragment {
     private void setupFAB() {
         fabAdd.setOnClickListener(view13 -> animateFab());
         fabText.setOnClickListener(view12 -> showJournalCreator(JournalTypes.Text));
-        fabAudio.setOnClickListener(view1 -> showJournalCreator(JournalTypes.Audio));
+//        fabAudio.setOnClickListener(view1 -> showJournalCreator(JournalTypes.Audio));
         fabForms.setOnClickListener(view1 -> showJournalCreator(JournalTypes.Forms));
     }
 
@@ -165,7 +165,7 @@ public class DreamJournal extends Fragment {
             isFirstInit = true;
             fabAdd = getView().findViewById(R.id.btn_add_journal_entry);
             fabText = getView().findViewById(R.id.fab_text);
-            fabAudio = getView().findViewById(R.id.fab_audio);
+//            fabAudio = getView().findViewById(R.id.fab_audio);
             fabForms = getView().findViewById(R.id.fab_forms);
             sortEntries = getView().findViewById(R.id.btn_sort);
             filterEntries = getView().findViewById(R.id.btn_filter);
@@ -203,7 +203,7 @@ public class DreamJournal extends Fragment {
                 availableTags[i] = journalEntryTags.get(i).description;
             }
 
-            Intent intent = new Intent(getContext(), AddTextEntry.class);
+            Intent intent = new Intent(getContext(), DreamJournalEntryEditor.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("type", forms.ordinal());
             intent.putExtra("availableTags", availableTags);
@@ -215,20 +215,20 @@ public class DreamJournal extends Fragment {
         if (isOpen){
             fabAdd.startAnimation(rotateForward);
             fabText.startAnimation(fabClose);
-            fabAudio.startAnimation(fabClose);
+//            fabAudio.startAnimation(fabClose);
             fabForms.startAnimation(fabClose);
             fabText.setClickable(false);
-            fabAudio.setClickable(false);
+//            fabAudio.setClickable(false);
             fabForms.setClickable(false);
             isOpen=false;
         }
         else {
             fabAdd.startAnimation(rotateBackward);
             fabText.startAnimation(fabOpen);
-            fabAudio.startAnimation(fabOpen);
+//            fabAudio.startAnimation(fabOpen);
             fabForms.startAnimation(fabOpen);
             fabText.setClickable(true);
-            fabAudio.setClickable(true);
+//            fabAudio.setClickable(true);
             fabForms.setClickable(true);
             isOpen=true;
         }

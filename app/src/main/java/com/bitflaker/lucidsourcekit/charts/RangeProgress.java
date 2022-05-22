@@ -42,6 +42,7 @@ public class RangeProgress extends View {
     private float lastWidth = 0;
     private LinearGradient lineShader;
     private LinearGradient textShader;
+    private boolean initialized;
 
     public RangeProgress(Context context){
         super(context);
@@ -76,11 +77,23 @@ public class RangeProgress extends View {
         this.value = value;
         this.label = label;
         this.text = text;
+        if(this.text != null && this.text.equals("NaN")){
+            this.text = "-";
+        }
         this.xMax = maxValue;
         this.iconDrawable = icon;
         this.textHeight = 0;
         percentage = value / xMax;
+        if(maxValue == 0 || Float.isNaN(value)){
+            percentage = 0;
+            this.text = "-";
+        }
+        initialized = true;
         invalidate();
+    }
+
+    public boolean isInitialized() {
+        return initialized;
     }
 
     @Override

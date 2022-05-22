@@ -79,7 +79,7 @@
         android:layout_height="48dp"
         android:layout_marginStart="30dp"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/rounded_ripple"
+        android:background="@drawable/ripple_round"
         android:backgroundTint="?attr/backgroundColor"
         android:layout_below="@id/sld_goal_difficulty"
         android:src="@drawable/ic_baseline_lock_open_24"/>
@@ -120,7 +120,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Delete"
-            android:background="@drawable/rounded_ripple"
+            android:background="@drawable/ripple_round"
             app:backgroundTint="?attr/slightElevated" />
 
         <com.google.android.material.button.MaterialButton
@@ -129,7 +129,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Save"
-            android:background="@drawable/rounded_ripple"
+            android:background="@drawable/ripple_round"
             app:backgroundTint="?attr/slightElevated" />
     </LinearLayout>
 </RelativeLayout>

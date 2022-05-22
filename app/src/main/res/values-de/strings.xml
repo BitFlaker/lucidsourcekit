@@ -102,6 +102,7 @@
     <string name="goals_reached_description">Diese Zahl gibt die Anzahl an bisher erreichten Zielen an. Diese Ziele unterstützen dich dabei, den ganzen Tag über bewusster und aufmerksamer zu sein.</string>
     <string name="total_entries_count"><![CDATA[This data is based on a total of <TOTAL_COUNT> dream journal entries.]]></string>
     <string name="goal_achievement_stats"><![CDATA[You achieved this goal <COUNT> out of <TOTAL> times. Your success rate is <PERCENTAGE>%]]></string>
+    <string name="not_enough_data_available">Not enough data available!</string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>

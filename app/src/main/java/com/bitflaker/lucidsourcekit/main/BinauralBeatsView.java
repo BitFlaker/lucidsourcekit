@@ -1,8 +1,5 @@
 package com.bitflaker.lucidsourcekit.main;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +27,7 @@ import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.main.binauralbeats.BinauralBeatsPlayer;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,9 +41,9 @@ public class BinauralBeatsView extends Fragment {
     private List<BackgroundNoise> noises;
     private boolean repeatBeat;
     private Date autoStopTime;
-    private RelativeLayout noBeatSelected, beatSelected;
     private TextView currentTrackName, currentTrackDescription, binauralTimeline, binauralTimeTotal, binauralFrequency;
     private TextLegend binauralLegend;
+    private MaterialCardView legendCard;
     private BinauralBeatsPlayer binBeatPlayer;
     private LinearLayout controlsContainer;
 
@@ -67,12 +64,11 @@ public class BinauralBeatsView extends Fragment {
 
         getView().findViewById(R.id.txt_binaural_beats_heading).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
         progressLineGraph = getView().findViewById(R.id.lg_binaural_time_progress);
+        legendCard = getView().findViewById(R.id.crd_legend);
         displayAllBeats = getView().findViewById(R.id.btn_display_all_beats);
         backgroundNoises = getView().findViewById(R.id.btn_add_background_noise);
         repeatButton = getView().findViewById(R.id.btn_loop_track);
         autoStopButton = getView().findViewById(R.id.btn_auto_stop);
-        noBeatSelected = getView().findViewById(R.id.rl_no_binaural_beat_selected);
-        beatSelected = getView().findViewById(R.id.rl_playing_binaural_beat);
         currentTrackName = getView().findViewById(R.id.txt_curr_track_name);
         currentTrackDescription = getView().findViewById(R.id.txt_curr_track_description);
         playTrack = getView().findViewById(R.id.btn_play_track);
@@ -136,16 +132,18 @@ public class BinauralBeatsView extends Fragment {
             RecyclerViewAdapterBinauralBeatsSelector rvabbs = new RecyclerViewAdapterBinauralBeatsSelector(getContext(), beats);
             rvabbs.setOnEntryClickedListener((binauralBeat, position) -> {
                 bottomSheetDialog.dismiss();
-                System.out.println(binauralBeat.getTitle());
-                noBeatSelected.setVisibility(GONE);
-                beatSelected.setVisibility(VISIBLE);
+                legendCard.setVisibility(View.VISIBLE);
                 currentTrackName.setText(binauralBeat.getTitle());
                 currentTrackDescription.setText(binauralBeat.getDescription());
                 binauralTimeTotal.setText(String.format(" / %s", getTimeStringFromSeconds((int) binauralBeat.getFrequencyList().getDuration())));
                 binauralTimeline.setText(getTimeStringFromSeconds(0));
                 binauralFrequency.setText("0,00 Hz");
+                if(binBeatPlayer != null){
+                    binBeatPlayer.stop();
+                    progressLineGraph.resetProgress();
+                }
                 binBeatPlayer = new BinauralBeatsPlayer(binauralBeat);
-                progressLineGraph.setData(binauralBeat.getFrequencyList(), 32, 4f, 0f, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
+                progressLineGraph.setData(binauralBeat.getFrequencyList(), 32, 4f, 0f, false, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
                 binBeatPlayer.setOnTrackProgressListener(((currentBinauralBeat, progress) -> {
                     progressLineGraph.updateProgress(progress);
                     getActivity().runOnUiThread(() -> {

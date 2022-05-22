@@ -13,6 +13,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LucidSourceKit.Dark">
         <activity
+            android:name=".main.dreamjournal.DreamJournalEntryEditor"
+            android:exported="false" />
+        <activity
+            android:name=".main.dreamjournal.DreamJournalRatingEditor"
+            android:exported="false" />
+        <activity
+            android:name=".main.dreamjournal.DreamJournalContentEditor"
+            android:exported="false" />
+        <activity
             android:name=".main.EditGoals"
             android:exported="false" />
         <activity

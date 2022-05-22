@@ -151,6 +151,12 @@ public class Tools {
         return lParams;
     }
 
+    public static RelativeLayout.LayoutParams getRelativeLayoutParamsTopStatusbarNoSpacing(Context context) {
+        RelativeLayout.LayoutParams lParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lParams.setMargins(0, getStatusBarHeight(context), 0, 0);
+        return lParams;
+    }
+
     public static int getStatusBarHeight(Context context) {
         // TODO: maybe find a better way of getting this data
         int result = 0;
@@ -337,5 +343,14 @@ public class Tools {
             }
         }
         return m[n][W];
+    }
+
+    public static boolean hasNoData(List<Double> data) {
+        for (Double dataPoint : data) {
+            if (dataPoint.doubleValue() != -1.0) {
+                return false;
+            }
+        }
+        return true;
     }
 }

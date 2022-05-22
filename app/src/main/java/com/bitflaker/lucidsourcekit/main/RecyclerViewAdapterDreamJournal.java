@@ -18,10 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AssignedTags;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasType;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AssignedTags;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.SortOrders;
 import com.bitflaker.lucidsourcekit.general.Tools;
@@ -32,9 +32,11 @@ import com.bitflaker.lucidsourcekit.general.database.values.DreamMoods;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamTypes;
 import com.bitflaker.lucidsourcekit.general.database.values.SleepQuality;
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.material.card.MaterialCardView;
 
 import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -48,6 +50,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     private AppliedFilter currentFilter;
     private MainDatabase db;
     private RecyclerView mRecyclerView;
+    private DateFormat fullDayInWeekNameFormatter;
 
     public RecyclerViewAdapterDreamJournal(DreamJournal journalList, Context context, DreamJournalEntriesList entries) {
         this.journalList = journalList;
@@ -56,6 +59,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         db = MainDatabase.getInstance(context);
         filteredEntries = null;
         currentFilter = null;
+        fullDayInWeekNameFormatter = new SimpleDateFormat("EEEE");
     }
 
     public void addEntry(JournalEntry entry, List<AssignedTags> tags, List<JournalEntryHasType> types, List<AudioLocation> audioLocations) {
@@ -103,10 +107,30 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         if(filteredEntries != null){ current = filteredEntries; }
         else { current = entries; }
 
-        Calendar cldr = current.getTimestamps()[position];
+        Calendar cldrCurrent = current.getTimestamps()[position];
+        Calendar cldrPast = current.getTimestamps()[Math.max(position - 1, 0)];
         DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
         DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
-        holder.dateTime.setText(MessageFormat.format("~ {0} {1} {2}", dateFormat.format(cldr.getTime()), context.getResources().getString(R.string.journal_time_at), timeFormat.format(cldr.getTime())));
+        holder.dateTime.setText(MessageFormat.format("~ {0} {1} {2}", dateFormat.format(cldrCurrent.getTime()), context.getResources().getString(R.string.journal_time_at), timeFormat.format(cldrCurrent.getTime())));
+        cldrCurrent.set(Calendar.HOUR_OF_DAY, 0);
+        cldrCurrent.set(Calendar.MINUTE, 0);
+        cldrCurrent.set(Calendar.SECOND, 0);
+        cldrCurrent.set(Calendar.MILLISECOND, 0);
+        cldrPast.set(Calendar.HOUR_OF_DAY, 0);
+        cldrPast.set(Calendar.MINUTE, 0);
+        cldrPast.set(Calendar.SECOND, 0);
+        cldrPast.set(Calendar.MILLISECOND, 0);
+        if(cldrCurrent.getTime().equals(cldrPast.getTime()) && position - 1 >= 0) {
+            holder.firstDateIndicatorName.setVisibility(View.GONE);
+            holder.firstDateIndicatorDate.setVisibility(View.GONE);
+        }
+        else {
+            holder.firstDateIndicatorName.setText(fullDayInWeekNameFormatter.format(cldrCurrent.getTime()));
+            holder.firstDateIndicatorDate.setText(dateFormat.format(cldrCurrent.getTime()));
+            holder.firstDateIndicatorName.setVisibility(View.VISIBLE);
+            holder.firstDateIndicatorDate.setVisibility(View.VISIBLE);
+        }
+
         holder.title.setText(current.getTitles()[position]);
         if(current.getDescriptions()[position] == null){
             holder.description.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_mic_24, 0, 0, 0);
@@ -198,7 +222,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             case VeryCloudy: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_4_24)); break;
         }
 
-        holder.entry.setOnClickListener(e -> {
+        holder.entryCard.setOnClickListener(e -> {
             // TODO start loading animation
             Intent intent = new Intent(context, ViewJournalEntry.class);
 
@@ -414,10 +438,11 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     }
 
     public class MainViewHolder extends RecyclerView.ViewHolder{
-        TextView title, description, dateTime;
+        TextView title, description, dateTime, firstDateIndicatorName, firstDateIndicatorDate;
         LinearLayout titleIcons;
         FlexboxLayout tags;
         ConstraintLayout entry;
+        MaterialCardView entryCard;
 
         public MainViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -427,6 +452,9 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             titleIcons = itemView.findViewById(R.id.ll_title_icons);
             tags = itemView.findViewById(R.id.ll_tags);
             entry = itemView.findViewById(R.id.csl_entry);
+            entryCard = itemView.findViewById(R.id.crd_journal_entry_card);
+            firstDateIndicatorName = itemView.findViewById(R.id.txt_journal_entry_first_date_indicator_name);
+            firstDateIndicatorDate = itemView.findViewById(R.id.txt_journal_entry_first_date_indicator_date);
         }
     }
 }
