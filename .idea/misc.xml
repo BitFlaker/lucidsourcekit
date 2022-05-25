@@ -115,6 +115,7 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/top_rounded_rectangle.xml" value="0.2375" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout-v28/journal_entry.xml" value="0.2359375" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_add_text_entry.xml" value="0.33" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_dream_journal_content_editor.xml" value="0.3625" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_dream_journal_editor.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_dream_journal_entry_editor.xml" value="0.3625" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_dream_journal_rating_editor.xml" value="0.33" />
@@ -137,6 +138,7 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/expandable_suggestions_group.xml" value="0.2" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/filter_dialog.xml" value="0.28396739130434784" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_binaural_beats.xml" value="0.25" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_date_change.xml" value="0.3625" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_dream_audio_story.xml" value="0.626984126984127" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_dream_forms_story.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_dream_journal.xml" value="0.25" />
@@ -144,11 +146,13 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_goals.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_item_list.xml" value="0.2817028985507246" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_main_overview.xml" value="0.33" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_recording.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_setup_auth_data.xml" value="0.20677083333333332" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_setup_consent.xml" value="0.26222826086956524" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_setup_language.xml" value="0.3120471014492754" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_setup_open_source.xml" value="0.24166666666666667" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_statistics.xml" value="0.2857142857142857" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/fragment_tags_editor.xml" value="0.37447916666666664" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/goal_entry.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/goals_editor_sheet.xml" value="0.25" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/icon_spinner_row.xml" value="0.3120471014492754" />

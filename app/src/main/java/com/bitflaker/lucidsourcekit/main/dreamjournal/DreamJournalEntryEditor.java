@@ -38,6 +38,7 @@ public class DreamJournalEntryEditor extends AppCompatActivity {
         vwDreamContentEditor.setOnContinueButtonClicked(() -> {
             tabLayout.selectTab(tabLayout.getTabAt(1));
         });
+        vwDreamContentEditor.setOnCloseButtonClicked(this::finish);
 
         vwDreamRatingsEditor.setOnBackButtonClicked(() -> {
             tabLayout.selectTab(tabLayout.getTabAt(0));
@@ -45,6 +46,7 @@ public class DreamJournalEntryEditor extends AppCompatActivity {
         vwDreamRatingsEditor.setOnDoneButtonClicked(() -> {
             // TODO: store data
         });
+        vwDreamRatingsEditor.setOnCloseButtonClicked(this::finish);
 
         vpAdapter.addFragment(vwDreamContentEditor, "");
         vpAdapter.addFragment(vwDreamRatingsEditor, "");

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_recording"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:backgroundTint="?attr/backgroundColor"
+    android:paddingBottom="50dp"
+    android:paddingTop="15dp">
+
+    <LinearLayout
+        android:id="@+id/ll_dj_recs_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_recordings_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:textAlignment="center"
+            android:text="Recordings"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/txt_dj_no_recs_found"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAlignment="center"
+            android:text="No recordings found yet\n¯\\_(ツ)_/¯"
+            android:fontFamily="sans-serif"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="16sp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="5dp"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/ll_dj_recs_entry_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="15dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/rounded_spinner"
+                android:backgroundTint="?attr/slightElevated"
+                android:gravity="center_vertical"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:visibility="gone"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp">
+
+                <ImageButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_baseline_play_arrow_24"
+                    android:background="@drawable/ripple_round"
+                    android:backgroundTint="?attr/slightElevated"
+                    android:layout_marginStart="8dp"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Recording"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="23.05.2022 • 12:05"
+                        android:fontFamily="sans-serif"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="16sp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12:05"
+                    android:fontFamily="sans-serif"
+                    android:textColor="?attr/secondaryTextColor"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="10dp"/>
+
+                <ImageButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_baseline_cross_24"
+                    android:background="@drawable/ripple_round"
+                    android:backgroundTint="?attr/slightElevated"
+                    android:layout_marginEnd="8dp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_dj_record_audio"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/ripple_round"
+            android:src="@drawable/ic_baseline_mic_24"
+            android:layout_marginTop="15dp"
+            app:backgroundTint="?attr/slightElevated" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_dj_recording_audio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/txt_dj_recording"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            android:drawablePadding="8dp"
+            android:gravity="center_horizontal"
+            android:text="@string/recording"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="22sp"
+            app:drawableLeftCompat="@drawable/ic_baseline_mic_24"
+            app:drawableTint="?attr/colorError" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_dj_recording"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:orientation="horizontal"
+            android:divider="@drawable/divider_large"
+            android:showDividers="middle">
+
+            <ImageButton
+                android:id="@+id/btn_dj_pause_continue_recording"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/ripple_round"
+                android:backgroundTint="?attr/slightElevated"
+                android:contentDescription="@string/pause_continue_recording"
+                android:src="@drawable/ic_baseline_pause_24" />
+
+            <ImageButton
+                android:id="@+id/btn_dj_stop_recording"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/ripple_round"
+                android:backgroundTint="?attr/slightElevated"
+                android:contentDescription="@string/stop_recording"
+                android:src="@drawable/ic_baseline_stop_24" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

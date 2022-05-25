@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_recording"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:backgroundTint="?attr/backgroundColor"
+    android:paddingBottom="50dp"
+    android:paddingTop="15dp">
+
+    <TextView
+        android:id="@+id/txt_recordings_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:textAlignment="center"
+        android:text="When did the dream occur?"
+        android:textColor="?attr/primaryTextColor"
+        android:textSize="22sp" />
+
+    <LinearLayout
+        android:id="@+id/ll_dj_recs_entry_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="25dp"
+        android:gravity="center_horizontal"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:showDividers="middle"
+        android:divider="@drawable/divider_medium">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_dj_change_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/ic_baseline_play_arrow_24"
+            android:background="@drawable/ripple_round"
+            android:layout_marginStart="8dp"
+            android:text="Wednesday, 29.05.2022"
+            app:backgroundTint="?attr/slightElevated"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_dj_change_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/ic_baseline_cross_24"
+            android:background="@drawable/ripple_round"
+            android:layout_marginEnd="8dp"
+            android:text="03:59 AM"
+            app:backgroundTint="?attr/slightElevated"/>
+    </LinearLayout>
+</LinearLayout>

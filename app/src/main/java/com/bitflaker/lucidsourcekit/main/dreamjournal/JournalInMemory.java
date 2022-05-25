@@ -8,7 +8,7 @@ public class JournalInMemory {
     private Calendar time;
     private String title;
     private String description;
-    private List<String> audioRecordingFiles;
+    private List<RecordingData> audioRecordings;
     private List<String> tags;
     private int dreamMood;
     private int sleepQuality;
@@ -19,11 +19,11 @@ public class JournalInMemory {
     private boolean isRecurring;
     private boolean isFalseAwakening;
 
-    public JournalInMemory(){
+    public JournalInMemory() {
         time = Calendar.getInstance();
         title = "";
         description = "";
-        audioRecordingFiles = new ArrayList<>();
+        audioRecordings = new ArrayList<>();
         tags = new ArrayList<>();
         dreamMood = 0;
         sleepQuality = 0;
@@ -59,12 +59,16 @@ public class JournalInMemory {
         this.description = description;
     }
 
-    public List<String> getAudioRecordingFiles() {
-        return audioRecordingFiles;
+    public List<RecordingData> getAudioRecordings() {
+        return audioRecordings;
     }
 
-    public void setAudioRecordingFiles(List<String> audioRecordingFiles) {
-        this.audioRecordingFiles = audioRecordingFiles;
+    public void setAudioRecordings(List<RecordingData> audioRecordings) {
+        this.audioRecordings = audioRecordings;
+    }
+
+    public void addAudioRecording(RecordingData audioRecording) {
+        this.audioRecordings.add(audioRecording);
     }
 
     public List<String> getTags() {

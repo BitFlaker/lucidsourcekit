@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -352,5 +353,16 @@ public class Tools {
             }
         }
         return true;
+    }
+
+    public static String formatDuration(Duration duration) {
+        long seconds = duration.toSeconds();
+        long absSeconds = Math.abs(seconds);
+        String positive = String.format(
+                "%d:%02d:%02d",
+                absSeconds / 3600,
+                (absSeconds % 3600) / 60,
+                absSeconds % 60);
+        return seconds < 0 ? "-" + positive : positive;
     }
 }

@@ -1,5 +1,6 @@
 package com.bitflaker.lucidsourcekit.main.dreamjournal;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -44,5 +45,21 @@ public class JournalInMemoryManager {
             return true;
         }
         return false;
+    }
+
+    public void discardEntry(String id) {
+        if(loadedJournalEntryIds.contains(id)) {
+            int index = loadedJournalEntryIds.indexOf(id);
+            JournalInMemory jim = loadedJournalEntries.get(index);
+            List<RecordingData> recData = jim.getAudioRecordings();
+            for (RecordingData rec : recData) {
+                File file = new File(rec.getFilepath());
+                if(file.exists()) {
+                    file.delete();
+                }
+            }
+            loadedJournalEntryIds.remove(index);
+            loadedJournalEntries.remove(index);
+        }
     }
 }

@@ -13,6 +13,7 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.bitflaker.lucidsourcekit.R;
@@ -22,9 +23,10 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.slider.Slider;
 
 public class DreamJournalRatingEditor extends Fragment {
+    private OnCloseButtonClicked mCloseButtonClicked;
     OnBackButtonClicked mBackButtonListener;
     OnDoneButtonClicked mDoneButtonListener;
-    ImageButton backToDreamEditor;
+    ImageButton backToDreamEditor, closeEditor;
     MaterialButton doneRatingBtn;
     MaterialCardView cardDreamMood, cardSleepQuality, cardDreamClarity, cardDreamCharacteristics;
     SelectedRating selectedRating = SelectedRating.DREAM_MOOD;
@@ -94,6 +96,7 @@ public class DreamJournalRatingEditor extends Fragment {
         characterLucid = getView().findViewById(R.id.img_dj_character_lucid);
         characterRecurring = getView().findViewById(R.id.img_dj_character_recurring);
         characterFalseAwakening = getView().findViewById(R.id.img_dj_character_false_awakening);
+        closeEditor = getView().findViewById(R.id.btn_dj_close_editor);
 
         dreamMoods[0] = getView().findViewById(R.id.img_very_dissatisfied);
         dreamMoods[1] = getView().findViewById(R.id.img_dissatisfied);
@@ -116,6 +119,16 @@ public class DreamJournalRatingEditor extends Fragment {
         toggleLucid.setOnClickListener(e -> characterLucid.setVisibility(toggleLucid.isChecked() ? View.VISIBLE : View.GONE));
         toggleRecurring.setOnClickListener(e -> characterRecurring.setVisibility(toggleRecurring.isChecked() ? View.VISIBLE : View.GONE));
         toggleFalseAwakening.setOnClickListener(e -> characterFalseAwakening.setVisibility(toggleFalseAwakening.isChecked() ? View.VISIBLE : View.GONE));
+
+        closeEditor.setOnClickListener(e -> new AlertDialog.Builder(getContext(), Tools.getThemeDialog()).setTitle("Discard changes").setMessage("Do you really want to discard all changes")
+                .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
+                    journalManger.discardEntry(journalEntryId);
+                    if(mCloseButtonClicked != null){
+                        mCloseButtonClicked.onEvent();
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.no), null)
+                .show());
 
         sliderDreamMood.addOnChangeListener((slider, value, fromUser) -> {
             deselectAllDreamMoodIcons();
@@ -296,6 +309,7 @@ public class DreamJournalRatingEditor extends Fragment {
 
     public void setJournalEntryId(String id) {
         journalEntryId = id;
+        journalManger = JournalInMemoryManager.getInstance();
     }
 
     public interface OnBackButtonClicked {
@@ -312,6 +326,14 @@ public class DreamJournalRatingEditor extends Fragment {
 
     public void setOnDoneButtonClicked(OnDoneButtonClicked eventListener) {
         mDoneButtonListener = eventListener;
+    }
+
+    public interface OnCloseButtonClicked {
+        void onEvent();
+    }
+
+    public void setOnCloseButtonClicked(OnCloseButtonClicked eventListener) {
+        mCloseButtonClicked = eventListener;
     }
 
     private enum SelectedRating {
