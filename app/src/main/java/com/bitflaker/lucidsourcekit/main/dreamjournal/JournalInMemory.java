@@ -142,4 +142,17 @@ public class JournalInMemory {
     public void setFalseAwakening(boolean falseAwakening) {
         isFalseAwakening = falseAwakening;
     }
+
+    public void removeTag(String tag) {
+        // TODO object reference ?
+        tags.remove(tag);
+    }
+
+    public void addTag(String tag) {
+        tags.add(tag);
+    }
+
+    public void removeAudioRecording(RecordingData audioRecording) {
+        this.audioRecordings.remove(audioRecording);
+    }
 }

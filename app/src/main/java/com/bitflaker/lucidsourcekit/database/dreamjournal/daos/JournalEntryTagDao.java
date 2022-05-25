@@ -19,6 +19,9 @@ public interface JournalEntryTagDao {
     @Query("SELECT * FROM JournalEntryTag")
     Single<List<JournalEntryTag>> getAll();
 
+    @Query("SELECT description FROM JournalEntryTag")
+    Single<List<String>> getAllTagTexts();
+
     @Query("SELECT * FROM JournalEntryTag WHERE description IN (:descriptions)")
     Single<List<JournalEntryTag>> getIdsByDescription(List<String> descriptions);
 

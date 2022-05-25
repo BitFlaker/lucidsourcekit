@@ -34,7 +34,7 @@
             android:textAlignment="center"
             android:text="No recordings found yet\n¯\\_(ツ)_/¯"
             android:fontFamily="sans-serif"
-            android:textColor="?attr/primaryTextColor"
+            android:textColor="?attr/secondaryTextColor"
             android:textSize="16sp"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="5dp"

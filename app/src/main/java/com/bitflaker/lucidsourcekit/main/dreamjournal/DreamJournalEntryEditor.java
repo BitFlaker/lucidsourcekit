@@ -28,21 +28,16 @@ public class DreamJournalEntryEditor extends AppCompatActivity {
         tabLayout = findViewById(R.id.tl_dj_editor_layout);
         viewPager2 = findViewById(R.id.vp_dj_editor);
         viewPager2.setOnTouchListener((v, event) -> true);
-        vwDreamContentEditor = new DreamJournalContentEditor();
-        vwDreamRatingsEditor = new DreamJournalRatingEditor();
-
         String entryID = JournalInMemoryManager.getInstance().newEntry();
-        vwDreamContentEditor.setJournalEntryId(entryID);
-        vwDreamRatingsEditor.setJournalEntryId(entryID);
 
-        vwDreamContentEditor.setOnContinueButtonClicked(() -> {
-            tabLayout.selectTab(tabLayout.getTabAt(1));
-        });
+        vwDreamContentEditor = new DreamJournalContentEditor();
+        vwDreamContentEditor.setJournalEntryId(entryID);
+        vwDreamContentEditor.setOnContinueButtonClicked(() -> tabLayout.selectTab(tabLayout.getTabAt(1)));
         vwDreamContentEditor.setOnCloseButtonClicked(this::finish);
 
-        vwDreamRatingsEditor.setOnBackButtonClicked(() -> {
-            tabLayout.selectTab(tabLayout.getTabAt(0));
-        });
+        vwDreamRatingsEditor = new DreamJournalRatingEditor();
+        vwDreamRatingsEditor.setJournalEntryId(entryID);
+        vwDreamRatingsEditor.setOnBackButtonClicked(() -> tabLayout.selectTab(tabLayout.getTabAt(0)));
         vwDreamRatingsEditor.setOnDoneButtonClicked(() -> {
             // TODO: store data
         });

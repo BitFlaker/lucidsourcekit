@@ -90,6 +90,12 @@
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
     </style>
 
+    <style name="ThemedChipEntry.Dark" parent="Widget.MaterialComponents.Chip.Entry">
+        <item name="slightElevated">@color/white_40p</item>
+        <item name="android:background">@color/white_40p</item>
+        <item name="android:textColor">?attr/primaryTextColor</item>
+    </style>
+
     <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/blue_500</item>
     </style>
