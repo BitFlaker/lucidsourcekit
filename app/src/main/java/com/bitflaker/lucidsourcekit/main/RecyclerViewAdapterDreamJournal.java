@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasType;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AssignedTags;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
@@ -31,7 +30,6 @@ import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntry;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamMoods;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamTypes;
 import com.bitflaker.lucidsourcekit.general.database.values.SleepQuality;
-import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.card.MaterialCardView;
 
 import java.text.DateFormat;
@@ -62,37 +60,6 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         fullDayInWeekNameFormatter = new SimpleDateFormat("EEEE");
     }
 
-    public void addEntry(JournalEntry entry, List<AssignedTags> tags, List<JournalEntryHasType> types, List<AudioLocation> audioLocations) {
-        DreamJournalEntry entryToAdd = new DreamJournalEntry(entry, tags, types, audioLocations);
-        entries.addFirst(entryToAdd);
-        if (filteredEntries != null && DreamJournalEntriesList.entryCompliesWithFilter(entryToAdd, currentFilter)) {
-            filteredEntries.addFirst(entryToAdd);
-        }
-        sortEntries(currentSort);
-    }
-
-    public void changeEntryAt(int position, JournalEntry entry, List<AssignedTags> tags, List<JournalEntryHasType> types, List<AudioLocation> audioLocations) {
-        if(filteredEntries == null){
-            entries.changeAt(position, entry, tags, types, audioLocations);
-        }
-        else{
-            DreamJournalEntry oldEntry = filteredEntries.get(position);
-            filteredEntries.changeAt(position, entry, tags, types, audioLocations);
-            entries.change(oldEntry, filteredEntries.get(position));
-        }
-    }
-
-    public void removeEntryAt(int position) {
-        if(filteredEntries == null){
-            entries.removeAt(position);
-        }
-        else {
-            DreamJournalEntry entryToBeRemoved = filteredEntries.get(position);
-            filteredEntries.removeAt(position);
-            entries.remove(entryToBeRemoved);
-        }
-    }
-
     @NonNull
     @Override
     public MainViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -107,11 +74,21 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         if(filteredEntries != null){ current = filteredEntries; }
         else { current = entries; }
 
+        if(position == 0){
+            LinearLayout.LayoutParams lParams = ((LinearLayout.LayoutParams) holder.firstDateIndicatorName.getLayoutParams());
+            lParams.topMargin = 0;
+            holder.firstDateIndicatorName.setLayoutParams(lParams);
+        }
+        else {
+            LinearLayout.LayoutParams lParams = ((LinearLayout.LayoutParams) holder.firstDateIndicatorName.getLayoutParams());
+            lParams.topMargin = Tools.dpToPx(context, 14);
+            holder.firstDateIndicatorName.setLayoutParams(lParams);
+        }
         Calendar cldrCurrent = current.getTimestamps()[position];
         Calendar cldrPast = current.getTimestamps()[Math.max(position - 1, 0)];
         DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
         DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
-        holder.dateTime.setText(MessageFormat.format("~ {0} {1} {2}", dateFormat.format(cldrCurrent.getTime()), context.getResources().getString(R.string.journal_time_at), timeFormat.format(cldrCurrent.getTime())));
+        holder.dateTime.setText(MessageFormat.format("{0} • {1}", dateFormat.format(cldrCurrent.getTime()), timeFormat.format(cldrCurrent.getTime())));
         cldrCurrent.set(Calendar.HOUR_OF_DAY, 0);
         cldrCurrent.set(Calendar.MINUTE, 0);
         cldrCurrent.set(Calendar.SECOND, 0);
@@ -161,15 +138,16 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             holder.titleIcons.removeViewAt(skip);
         }
 
-        if(current.getTags().get(position).size() == 0){
-            holder.tags.setVisibility(View.GONE);
+        if(current.getTags().get(position).size() == 0) {
+            holder.tagsHolder.setVisibility(View.GONE);
         }
         else {
-            holder.tags.setVisibility(View.VISIBLE);
+            holder.tagsHolder.setVisibility(View.VISIBLE);
         }
         holder.tags.removeAllViews();
         for (int i = 0; i < current.getTags().get(position).size(); i++){
             TextView tag = new TextView(context);
+            tag.setSingleLine(true);
             tag.setText(current.getTags().get(position).get(i).description);
             tag.setTextColor(Tools.getAttrColorStateList(R.attr.primaryTextColor, context.getTheme()));
             int dpLarger = Tools.dpToPx(context, 8);
@@ -177,10 +155,10 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             int dpSmall = Tools.dpToPx(context, 2);
             tag.setPadding(dpLarger,dpSmaller,dpLarger,dpSmaller);
             tag.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
-            tag.setBackground(context.getResources().getDrawable(R.drawable.rounded_spinner));
+            tag.setBackground(context.getResources().getDrawable(R.drawable.small_rounded_rectangle));
             tag.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated2x, context.getTheme()));
             LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            llParams.setMargins(dpSmall, dpSmall, dpSmall, dpSmall);
+            llParams.setMargins(0, dpSmall, dpSmall*2, dpSmall);
             tag.setLayoutParams(llParams);
             holder.tags.addView(tag);
         }
@@ -198,6 +176,9 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
                     break;
                 case SleepParalysis:
                     holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_accessibility_new_24));
+                    break;
+                case Recurring:
+                    holder.titleIcons.addView(generateIcon(R.drawable.ic_round_loop_24));
                     break;
             }
         }
@@ -286,14 +267,6 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         return icon;
     }
 
-    public int getLucidDreamsCount() {
-        return entries.getLucidDreamsCount();
-    }
-
-    public int getTotalDreamsCount() {
-        return entries.getTotalDreamsCount();
-    }
-
     public DreamJournalEntriesList getEntries() {
         if(filteredEntries == null){
             return entries;
@@ -306,12 +279,19 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             Pair<Operation, Integer> changes = getChanges(entries);
             this.entries = entries;
             int index;
-            switch (changes.first){
+            switch (changes.first) {
                 case ADDED:
                     index = changes.second;
                     mRecyclerView.scrollToPosition(index);
-                    notifyItemInserted(index);
-                    notifyItemRangeChanged(index, entries.size());
+                    int entryId = entries.get(changes.second).getEntry().entryId;
+                    db.getJournalEntryHasTagDao().getAllFromEntryId(entryId).subscribe((assignedTags, throwable1) -> {
+                        db.getAudioLocationDao().getAllFromEntryId(entryId).subscribe((audioLocations, throwable3) -> {
+                            entries.get(index).setTags(assignedTags);
+                            entries.get(index).setAudioLocations(audioLocations);
+                            notifyItemInserted(index);
+                            notifyItemRangeChanged(index, entries.size());
+                        });
+                    });
                     break;
                 case DELETED:
                     index = changes.second;
@@ -321,6 +301,14 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
                 case CHANGED:
                     // TODO: when timestamp changed and therefore entry moved in list => old one still there => duplicate entries
                     // TODO: get index of changed item
+//                    index = changes.second;
+//                    db.getJournalEntryHasTagDao().getAllFromEntryId(entryId).subscribe((assignedTags, throwable1) -> {
+//                        db.getAudioLocationDao().getAllFromEntryId(entryId).subscribe((audioLocations, throwable3) -> {
+//                            entries.get(index).setTags(assignedTags);
+//                            entries.get(index).setAudioLocations(audioLocations);
+//                            notifyDataSetChanged();
+//                        });
+//                    });
                     notifyDataSetChanged();
                     break;
             }
@@ -328,7 +316,6 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         else {
             this.filteredEntries = entries;
         }
-        //notifyDataSetChanged();
     }
 
     private Pair<Operation, Integer> getChanges(DreamJournalEntriesList entries) {
@@ -420,14 +407,22 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         return currentFilter;
     }
 
-    public List<List<AssignedTags>> getAllTags() {
-        return entries.getTags();
-    }
-
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         mRecyclerView = recyclerView;
+    }
+
+    public void updateDataForEntry(int entryId, List<AssignedTags> assignedTags, List<JournalEntryHasType> journalEntryHasTypes, List<AudioLocation> audioLocations) {
+        for (int i = 0; i < entries.size(); i++) {
+            if(entries.get(i).getEntry().entryId == entryId) {
+                entries.get(i).setAudioLocations(audioLocations);
+                entries.get(i).setTags(assignedTags);
+                entries.get(i).setTypes(journalEntryHasTypes);
+                notifyItemChanged(i);
+                break;
+            }
+        }
     }
 
     public enum Operation {
@@ -438,23 +433,56 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     }
 
     public class MainViewHolder extends RecyclerView.ViewHolder{
-        TextView title, description, dateTime, firstDateIndicatorName, firstDateIndicatorDate;
-        LinearLayout titleIcons;
-        FlexboxLayout tags;
+        TextView title, description, dateTime, firstDateIndicatorName, firstDateIndicatorDate, wrappedTags;
+        LinearLayout titleIcons, tags, tagsHolder;
         ConstraintLayout entry;
         MaterialCardView entryCard;
 
         public MainViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.txt_title);
+            wrappedTags = itemView.findViewById(R.id.txt_wrapped_tags);
             description = itemView.findViewById(R.id.txt_description);
             dateTime = itemView.findViewById(R.id.txt_date_time);
             titleIcons = itemView.findViewById(R.id.ll_title_icons);
             tags = itemView.findViewById(R.id.ll_tags);
+            tagsHolder = itemView.findViewById(R.id.ll_tags_holder);
             entry = itemView.findViewById(R.id.csl_entry);
             entryCard = itemView.findViewById(R.id.crd_journal_entry_card);
             firstDateIndicatorName = itemView.findViewById(R.id.txt_journal_entry_first_date_indicator_name);
             firstDateIndicatorDate = itemView.findViewById(R.id.txt_journal_entry_first_date_indicator_date);
+
+            View.OnLayoutChangeListener listener = (view, i, i1, i2, i3, i4, i5, i6, i7) -> {
+                int wd = tags.getMeasuredWidth();
+                int totalChildCount = tags.getChildCount();
+                int childWidth = 0;
+                int margin = Tools.dpToPx(context, 2)*2;
+                for (int j = 0; j < totalChildCount; j++) {
+                    childWidth += tags.getChildAt(j).getMeasuredWidth() + margin;
+                }
+                int diff = wd - childWidth;
+                int removeCounter = 0;
+                while(diff < 0) {
+                    View child = tags.getChildAt(totalChildCount - 1 - removeCounter);
+                    int removeWidth = child.getMeasuredWidth() == 0 ? 0 : -diff; //child.getMeasuredWidth() + margin;
+                    tags.removeView(child);
+                    removeCounter++;
+                    diff += removeWidth;
+                }
+
+                if(removeCounter > 0) {
+                    wrappedTags.setText("+" + removeCounter);
+                }
+                else {
+                    wrappedTags.setText("");
+                }
+                tags.invalidate();
+                wrappedTags.invalidate();
+            };
+
+            // TODO check if removing is actually necessary and if there is a case where multiple listeners are on there at the same time
+            tags.removeOnLayoutChangeListener(listener);
+            tags.addOnLayoutChangeListener(listener);
         }
     }
 }

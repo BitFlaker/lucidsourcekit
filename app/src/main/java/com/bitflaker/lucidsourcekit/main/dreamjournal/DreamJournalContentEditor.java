@@ -6,6 +6,7 @@ import static java.util.UUID.randomUUID;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
@@ -17,6 +18,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -96,6 +98,8 @@ public class DreamJournalContentEditor extends Fragment {
         JournalInMemory entry = journalManger.getEntry(journalEntryId);
         dateTime.setText(dtf.format(entry.getTime().getTime()));
 
+//        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
 //        RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams) editorScroller.getLayoutParams();
 //        lParams.setMargins(0, Tools.getStatusBarHeight(this), 0, 0);
 //        editorScroller.setLayoutParams(lParams);
@@ -112,6 +116,8 @@ public class DreamJournalContentEditor extends Fragment {
 
     private void setupContinueButton() {
         continueButton.setOnClickListener(e -> {
+            InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
             if(mContinueButtonClicked != null){
                 mContinueButtonClicked.onEvent();
             }
@@ -122,7 +128,7 @@ public class DreamJournalContentEditor extends Fragment {
         closeEditor.setOnClickListener(e -> new AlertDialog.Builder(getContext(), Tools.getThemeDialog()).setTitle("Discard changes").setMessage("Do you really want to discard all changes")
                 .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                     journalManger.discardEntry(journalEntryId);
-                    if(mCloseButtonClicked != null){
+                    if(mCloseButtonClicked != null) {
                         mCloseButtonClicked.onEvent();
                     }
                 })
@@ -132,7 +138,7 @@ public class DreamJournalContentEditor extends Fragment {
 
     private void setupRecordingsEditor(JournalInMemory entry) {
         addRecording.setOnClickListener(e -> {
-            final BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialog_Dark);
+            final BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
             bsd.setContentView(R.layout.fragment_recording);
 
             ImageButton recordAudio = bsd.findViewById(R.id.btn_dj_record_audio);
@@ -209,7 +215,7 @@ public class DreamJournalContentEditor extends Fragment {
 
     private void setupDateTimePicker(DateFormat df, DateFormat dtf, DateFormat tf, JournalInMemory entry) {
         dateTime.setOnClickListener(e -> {
-            final BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialog_Dark);
+            final BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
             bsd.setContentView(R.layout.fragment_date_change);
 
             MaterialButton changeDate = bsd.findViewById(R.id.btn_dj_change_date);
@@ -258,7 +264,7 @@ public class DreamJournalContentEditor extends Fragment {
         });
 
         addTags.setOnClickListener(e -> {
-            final BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialog_Dark);
+            final BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
             bsd.setContentView(R.layout.fragment_tags_editor);
 
             FlexboxLayout tagsContainer = bsd.findViewById(R.id.flx_dj_tags_to_add);
@@ -540,6 +546,20 @@ public class DreamJournalContentEditor extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
             mPlayer = null;
+        }
+    }
+
+    public String getTitle() {
+        return title.getText().toString();
+    }
+
+    public String getDescription() {
+        if(journalManger.getEntry(journalEntryId).getEntryType() == JournalInMemory.EntryType.PLAIN_TEXT){
+            return description.getText().toString();
+        }
+        else {
+            // TODO handle forms text description
+            return "";
         }
     }
 

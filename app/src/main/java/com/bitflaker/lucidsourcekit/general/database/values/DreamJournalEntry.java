@@ -10,9 +10,9 @@ import java.util.List;
 
 public class DreamJournalEntry {
     private final JournalEntry entry;
-    private final List<AssignedTags> tags;
-    private final List<JournalEntryHasType> types;
-    private final List<AudioLocation> audioLocations;
+    private List<AssignedTags> tags;
+    private List<JournalEntryHasType> types;
+    private List<AudioLocation> audioLocations;
     private boolean visibleWithFilter;
 
     public DreamJournalEntry(JournalEntry entry, List<AssignedTags> tags, List<JournalEntryHasType> types, List<AudioLocation> audioLocations){
@@ -29,6 +29,14 @@ public class DreamJournalEntry {
 
     public List<AssignedTags> getTags() {
         return tags;
+    }
+
+    public void setTags(List<AssignedTags> tags) {
+        this.tags = tags;
+    }
+
+    public void setAudioLocations(List<AudioLocation> audioLocations) {
+        this.audioLocations = audioLocations;
     }
 
     public List<String> getTagStrings() {
@@ -61,5 +69,9 @@ public class DreamJournalEntry {
 
     public boolean isVisibleWithFilter() {
         return visibleWithFilter;
+    }
+
+    public void setTypes(List<JournalEntryHasType> types) {
+        this.types = types;
     }
 }

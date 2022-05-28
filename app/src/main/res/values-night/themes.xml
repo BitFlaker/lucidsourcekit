@@ -73,7 +73,7 @@
         <item name="colorWarning">@color/lighter_orange</item>
         <item name="colorSuccess">@color/lighter_green</item>
         <item name="main_overview_graphic">@drawable/deep_night_mountains_new_dark</item>
-        <item name="bottomSheetDialogTheme">@style/BottomSheetDialog.Dark</item>
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDialogStyle</item>
     </style>
 
     <style name="PopupMenu.Dark" parent="Widget.AppCompat.PopupMenu">
@@ -110,12 +110,14 @@
 
     <!-- Bottom Sheet styles -->
 
-    <style name="BottomSheetDialog.Dark" parent="Theme.MaterialComponents.BottomSheetDialog">
+    <style name="BottomSheetDialogStyle" parent="Theme.MaterialComponents.BottomSheetDialog">
         <item name="android:backgroundTint">@color/background</item>
         <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
         <item name="android:theme">@style/Theme.LucidSourceKit.Dark</item>
     </style>
-
 
     <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>

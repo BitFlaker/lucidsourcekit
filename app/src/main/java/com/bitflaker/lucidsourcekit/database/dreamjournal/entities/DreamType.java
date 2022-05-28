@@ -18,7 +18,7 @@ public class DreamType {
     }
 
     public static DreamType[] populateData(){
-        return new DreamType[]{
+        return new DreamType[] {
                 new DreamType("NTM", "Nightmare"),
                 new DreamType("SPL", "SleepParalysis"),
                 new DreamType("FAW", "FalseAwakening"),

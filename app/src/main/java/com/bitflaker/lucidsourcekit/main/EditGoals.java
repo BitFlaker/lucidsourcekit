@@ -70,7 +70,7 @@ public class EditGoals extends AppCompatActivity {
 
         addGoal.setOnClickListener(e -> {
             if(!isInSelectionMode) {
-                final BottomSheetDialog addGoalSheet = new BottomSheetDialog(EditGoals.this, R.style.BottomSheetDialog_Dark);
+                final BottomSheetDialog addGoalSheet = new BottomSheetDialog(EditGoals.this, R.style.BottomSheetDialogStyle);
                 addGoalSheet.setContentView(R.layout.goals_editor_sheet);
                 MaterialButton deleteButton = addGoalSheet.findViewById(R.id.btn_delete_goal);
                 MaterialButton saveButton = addGoalSheet.findViewById(R.id.btn_save_goal);
@@ -149,7 +149,7 @@ public class EditGoals extends AppCompatActivity {
             isInSelectionMode = false;
         });
         editGoalsAdapter.setOnEntryClickedListener((goal, position) -> {
-            final BottomSheetDialog editGoalSheet = new BottomSheetDialog(EditGoals.this, R.style.BottomSheetDialog_Dark);
+            final BottomSheetDialog editGoalSheet = new BottomSheetDialog(EditGoals.this, R.style.BottomSheetDialogStyle);
             editGoalSheet.setContentView(R.layout.goals_editor_sheet);
             MaterialButton deleteButton = editGoalSheet.findViewById(R.id.btn_delete_goal);
             MaterialButton saveButton = editGoalSheet.findViewById(R.id.btn_save_goal);

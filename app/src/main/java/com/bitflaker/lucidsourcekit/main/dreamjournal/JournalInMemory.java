@@ -1,38 +1,52 @@
 package com.bitflaker.lucidsourcekit.main.dreamjournal;
 
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasTag;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasType;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryTag;
+import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
+import com.bitflaker.lucidsourcekit.general.database.values.DreamMoods;
+import com.bitflaker.lucidsourcekit.general.database.values.DreamTypes;
+import com.bitflaker.lucidsourcekit.general.database.values.SleepQuality;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 public class JournalInMemory {
+    private int entryId;
     private Calendar time;
     private String title;
     private String description;
     private List<RecordingData> audioRecordings;
     private List<String> tags;
-    private int dreamMood;
-    private int sleepQuality;
-    private int dreamClarity;
+    private String dreamMood;
+    private String sleepQuality;
+    private String dreamClarity;
     private boolean isNightmare;
     private boolean isParalysis;
     private boolean isLucid;
     private boolean isRecurring;
     private boolean isFalseAwakening;
+    private EditMode editMode;
+    private EntryType entryType;
 
     public JournalInMemory() {
+        entryId = 0;
         time = Calendar.getInstance();
         title = "";
         description = "";
         audioRecordings = new ArrayList<>();
         tags = new ArrayList<>();
-        dreamMood = 0;
-        sleepQuality = 0;
-        dreamClarity = 0;
+        dreamMood = DreamMoods.values()[0].getId();
+        sleepQuality = SleepQuality.values()[0].getId();
+        dreamClarity = DreamClarity.values()[0].getId();
         isNightmare = false;
         isParalysis = false;
         isLucid = false;
         isRecurring = false;
         isFalseAwakening = false;
+        editMode = EditMode.CREATE;
+        entryType = EntryType.PLAIN_TEXT;
     }
 
     public Calendar getTime() {
@@ -79,27 +93,27 @@ public class JournalInMemory {
         this.tags = tags;
     }
 
-    public int getDreamMood() {
+    public String getDreamMood() {
         return dreamMood;
     }
 
-    public void setDreamMood(int dreamMood) {
+    public void setDreamMood(String dreamMood) {
         this.dreamMood = dreamMood;
     }
 
-    public int getSleepQuality() {
+    public String getSleepQuality() {
         return sleepQuality;
     }
 
-    public void setSleepQuality(int sleepQuality) {
+    public void setSleepQuality(String sleepQuality) {
         this.sleepQuality = sleepQuality;
     }
 
-    public int getDreamClarity() {
+    public String getDreamClarity() {
         return dreamClarity;
     }
 
-    public void setDreamClarity(int dreamClarity) {
+    public void setDreamClarity(String dreamClarity) {
         this.dreamClarity = dreamClarity;
     }
 
@@ -144,7 +158,6 @@ public class JournalInMemory {
     }
 
     public void removeTag(String tag) {
-        // TODO object reference ?
         tags.remove(tag);
     }
 
@@ -154,5 +167,69 @@ public class JournalInMemory {
 
     public void removeAudioRecording(RecordingData audioRecording) {
         this.audioRecordings.remove(audioRecording);
+    }
+
+    public List<JournalEntryHasType> getDreamTypes(int entryId) {
+        List<String> dreamTypes = new ArrayList<>();
+        if(isNightmare) { dreamTypes.add(DreamTypes.Nightmare.getId()); }
+        if(isParalysis) { dreamTypes.add(DreamTypes.SleepParalysis.getId()); }
+        if(isFalseAwakening) { dreamTypes.add(DreamTypes.FalseAwakening.getId()); }
+        if(isLucid) { dreamTypes.add(DreamTypes.Lucid.getId()); }
+        if(isRecurring) { dreamTypes.add(DreamTypes.Recurring.getId()); }
+        List<JournalEntryHasType> jeht = new ArrayList<>();
+        for (String type : dreamTypes) {
+            jeht.add(new JournalEntryHasType(entryId, type));
+        }
+        return jeht;
+    }
+
+    public List<JournalEntryTag> getJournalEntryTag() {
+        List<JournalEntryTag> jet = new ArrayList<>();
+        for (String tag : tags) {
+            jet.add(new JournalEntryTag(tag));
+        }
+        return jet;
+    }
+
+    public List<JournalEntryHasTag> getJournalEntryHasTag(int entryId, List<JournalEntryTag> journalEntryTags) {
+        List<JournalEntryHasTag> journalEntryHasTags = new ArrayList<>();
+        for (int i = 0; i < journalEntryTags.size(); i++) {
+            journalEntryHasTags.add(new JournalEntryHasTag(entryId, journalEntryTags.get(i).tagId));
+        }
+        return journalEntryHasTags;
+    }
+
+    public int getEntryId() {
+        return entryId;
+    }
+
+    public void setEntryId(int entryId) {
+        this.entryId = entryId;
+    }
+
+    public EntryType getEntryType() {
+        return entryType;
+    }
+
+    public void setEntryType(EntryType entryType) {
+        this.entryType = entryType;
+    }
+
+    public EditMode getEditMode() {
+        return editMode;
+    }
+
+    public void setEditMode(EditMode editMode) {
+        this.editMode = editMode;
+    }
+
+    public enum EditMode {
+        CREATE,
+        EDIT
+    }
+
+    public enum EntryType {
+        PLAIN_TEXT,
+        FORMS_TEXT
     }
 }

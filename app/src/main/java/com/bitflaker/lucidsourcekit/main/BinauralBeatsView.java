@@ -108,7 +108,7 @@ public class BinauralBeatsView extends Fragment {
         */
 
         displayAllBeats.setOnClickListener(e -> {
-            final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialog_Dark);
+            final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
             bottomSheetDialog.setContentView(R.layout.binaural_beats_selector_sheet);
             RecyclerView rcv = bottomSheetDialog.findViewById(R.id.rcv_list_binaural_beats);
 
@@ -168,7 +168,7 @@ public class BinauralBeatsView extends Fragment {
         });
 
         backgroundNoises.setOnClickListener(e -> {
-            final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialog_Dark);
+            final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
             bottomSheetDialog.setContentView(R.layout.background_noises_manager);
             RecyclerView rcv = bottomSheetDialog.findViewById(R.id.rcv_list_background_noises);
 
@@ -208,7 +208,7 @@ public class BinauralBeatsView extends Fragment {
                         .show();
             }
             else {
-                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialog_Dark);
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
                 bottomSheetDialog.setContentView(R.layout.auto_stop_duration_sheet);
                 MaterialButton applyAutoStop = bottomSheetDialog.findViewById(R.id.btn_apply_auto_stop);
                 NumberPicker autoStopHours = bottomSheetDialog.findViewById(R.id.np_hours_auto_stop);

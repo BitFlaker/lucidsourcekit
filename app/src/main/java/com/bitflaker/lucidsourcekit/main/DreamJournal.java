@@ -42,6 +42,7 @@ public class DreamJournal extends Fragment {
     private boolean isOpen = false;
     private RecyclerViewAdapterDreamJournal recyclerViewAdapterDreamJournal = null;
     public ActivityResultLauncher<Intent> viewEntryActivityResultLauncher;
+    public ActivityResultLauncher<Intent> dreamJournalEditorActivityResultLauncher;
     private ImageButton sortEntries, filterEntries, resetFilterEntries;
     private int sortBy = 0;
     private MainDatabase db;
@@ -64,6 +65,7 @@ public class DreamJournal extends Fragment {
         db = MainDatabase.getInstance(getContext());
 
         Context context = getContext();
+
         db.getJournalEntryDao().getAll().subscribe(journalEntries -> {
             // TODO gather all data in a more efficient way!
             DreamJournalEntriesList djel = new DreamJournalEntriesList();
@@ -207,7 +209,8 @@ public class DreamJournal extends Fragment {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("type", forms.ordinal());
             intent.putExtra("availableTags", availableTags);
-            startActivity(intent);
+            dreamJournalEditorActivityResultLauncher.launch(intent);
+//            startActivity(intent);
         });
     }
 
@@ -251,6 +254,25 @@ public class DreamJournal extends Fragment {
                             if(action.equals("EDIT")) {
                                 int entryId = data.getIntExtra("entryId", -1);
                                 //recyclerViewAdapterDreamJournal.notifyEntryChanged(entryId);
+                            }
+                        }
+                    }
+                });
+        dreamJournalEditorActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+
+                        if(data.hasExtra("entryId")) {
+                            int entryId = data.getIntExtra("entryId", -1);
+                            if(entryId != -1) {
+                                db.getJournalEntryHasTagDao().getAllFromEntryId(entryId).subscribe((assignedTags, throwable1) -> {
+                                    db.getJournalEntryIsTypeDao().getAllFromEntryId(entryId).subscribe((journalEntryHasTypes, throwable2) -> {
+                                        db.getAudioLocationDao().getAllFromEntryId(entryId).subscribe((audioLocations, throwable3) -> {
+                                            recyclerViewAdapterDreamJournal.updateDataForEntry(entryId, assignedTags, journalEntryHasTypes, audioLocations);
+                                        });
+                                    });
+                                });
                             }
                         }
                     }

@@ -822,7 +822,8 @@
         android:background="@drawable/ripple_round"
         android:drawableLeft="@drawable/ic_baseline_check_24"
         android:drawableTint="?attr/colorOnPrimary"
-        android:text="Done" />
+        android:text="Done"
+        android:enabled="false"/>
 
     <ImageButton
         android:id="@+id/btn_dj_back_to_text"

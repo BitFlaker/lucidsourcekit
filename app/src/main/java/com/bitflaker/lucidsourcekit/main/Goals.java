@@ -166,7 +166,7 @@ public class Goals extends Fragment {
     }
 
     private void setupAdjustAlgorithmSheet(SharedPreferences preferences) {
-        bsdAdjustAlgorithm = new BottomSheetDialog(getContext(), R.style.BottomSheetDialog_Dark);
+        bsdAdjustAlgorithm = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
         bsdAdjustAlgorithm.setContentView(R.layout.algorithm_adjustment_sheet);
 
         Slider easySld = bsdAdjustAlgorithm.findViewById(R.id.sld_algo_diff_easy);

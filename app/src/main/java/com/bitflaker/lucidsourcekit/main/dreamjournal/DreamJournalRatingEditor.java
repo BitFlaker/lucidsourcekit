@@ -17,15 +17,27 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasTag;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasType;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryTag;
 import com.bitflaker.lucidsourcekit.general.Tools;
+import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
+import com.bitflaker.lucidsourcekit.general.database.values.DreamMoods;
+import com.bitflaker.lucidsourcekit.general.database.values.SleepQuality;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.slider.Slider;
+
+import java.util.List;
 
 public class DreamJournalRatingEditor extends Fragment {
     private OnCloseButtonClicked mCloseButtonClicked;
     OnBackButtonClicked mBackButtonListener;
     OnDoneButtonClicked mDoneButtonListener;
+    OnDreamJournalEntrySaved mDreamJournalEntrySaved;
     ImageButton backToDreamEditor, closeEditor;
     MaterialButton doneRatingBtn;
     MaterialCardView cardDreamMood, cardSleepQuality, cardDreamClarity, cardDreamCharacteristics;
@@ -47,6 +59,7 @@ public class DreamJournalRatingEditor extends Fragment {
     ImageView characterNightmare, characterParalysis, characterLucid, characterRecurring, characterFalseAwakening;
     private JournalInMemoryManager journalManger;
     private String journalEntryId;
+    private MainDatabase db;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -97,6 +110,7 @@ public class DreamJournalRatingEditor extends Fragment {
         characterRecurring = getView().findViewById(R.id.img_dj_character_recurring);
         characterFalseAwakening = getView().findViewById(R.id.img_dj_character_false_awakening);
         closeEditor = getView().findViewById(R.id.btn_dj_close_editor);
+        db = MainDatabase.getInstance(getContext());
 
         dreamMoods[0] = getView().findViewById(R.id.img_very_dissatisfied);
         dreamMoods[1] = getView().findViewById(R.id.img_dissatisfied);
@@ -114,11 +128,27 @@ public class DreamJournalRatingEditor extends Fragment {
         dreamClarities[2] = getView().findViewById(R.id.img_clear);
         dreamClarities[3] = getView().findViewById(R.id.img_very_clear);
 
-        toggleNightmare.setOnClickListener(e -> characterNightmare.setVisibility(toggleNightmare.isChecked() ? View.VISIBLE : View.GONE));
-        toggleParalysis.setOnClickListener(e -> characterParalysis.setVisibility(toggleParalysis.isChecked() ? View.VISIBLE : View.GONE));
-        toggleLucid.setOnClickListener(e -> characterLucid.setVisibility(toggleLucid.isChecked() ? View.VISIBLE : View.GONE));
-        toggleRecurring.setOnClickListener(e -> characterRecurring.setVisibility(toggleRecurring.isChecked() ? View.VISIBLE : View.GONE));
-        toggleFalseAwakening.setOnClickListener(e -> characterFalseAwakening.setVisibility(toggleFalseAwakening.isChecked() ? View.VISIBLE : View.GONE));
+        JournalInMemory jim = journalManger.getEntry(journalEntryId);
+        toggleNightmare.setOnClickListener(e -> {
+            characterNightmare.setVisibility(toggleNightmare.isChecked() ? View.VISIBLE : View.GONE);
+            jim.setNightmare(toggleNightmare.isChecked());
+        });
+        toggleParalysis.setOnClickListener(e -> {
+            characterParalysis.setVisibility(toggleParalysis.isChecked() ? View.VISIBLE : View.GONE);
+            jim.setParalysis(toggleParalysis.isChecked());
+        });
+        toggleLucid.setOnClickListener(e -> {
+            characterLucid.setVisibility(toggleLucid.isChecked() ? View.VISIBLE : View.GONE);
+            jim.setLucid(toggleLucid.isChecked());
+        });
+        toggleRecurring.setOnClickListener(e -> {
+            characterRecurring.setVisibility(toggleRecurring.isChecked() ? View.VISIBLE : View.GONE);
+            jim.setRecurring(toggleRecurring.isChecked());
+        });
+        toggleFalseAwakening.setOnClickListener(e -> {
+            characterFalseAwakening.setVisibility(toggleFalseAwakening.isChecked() ? View.VISIBLE : View.GONE);
+            jim.setFalseAwakening(toggleFalseAwakening.isChecked());
+        });
 
         closeEditor.setOnClickListener(e -> new AlertDialog.Builder(getContext(), Tools.getThemeDialog()).setTitle("Discard changes").setMessage("Do you really want to discard all changes")
                 .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
@@ -136,8 +166,9 @@ public class DreamJournalRatingEditor extends Fragment {
             previewSelectionDreamMood.setImageDrawable(dreamMoods[(int)value].getDrawable());
             dreamMoods[(int)value].setImageTintList(Tools.getAttrColorStateList(R.attr.primaryTextColor, getContext().getTheme()));
             dreamMoods[(int)value].invalidate();
+            jim.setDreamMood(DreamMoods.values()[((int) sliderDreamMood.getValue())].getId());
         });
-        sliderDreamMood.setOnTouchListener((View.OnTouchListener) (view1, motionEvent) -> {
+        sliderDreamMood.setOnTouchListener((view1, motionEvent) -> {
             int action = motionEvent.getAction();
             if (action==MotionEvent.ACTION_UP) { focusCardSleepQuality(); }
             return false;
@@ -148,8 +179,9 @@ public class DreamJournalRatingEditor extends Fragment {
             previewSelectionSleepQuality.setImageDrawable(sleepQualities[(int)value].getDrawable());
             sleepQualities[(int)value].setImageTintList(Tools.getAttrColorStateList(R.attr.primaryTextColor, getContext().getTheme()));
             sleepQualities[(int)value].invalidate();
+            jim.setSleepQuality(SleepQuality.values()[((int) sliderSleepQuality.getValue())].getId());
         });
-        sliderSleepQuality.setOnTouchListener((View.OnTouchListener) (view1, motionEvent) -> {
+        sliderSleepQuality.setOnTouchListener((view1, motionEvent) -> {
             int action = motionEvent.getAction();
             if (action==MotionEvent.ACTION_UP) { focusCardDreamClarity(); }
             return false;
@@ -160,8 +192,9 @@ public class DreamJournalRatingEditor extends Fragment {
             previewSelectionDreamClarity.setImageDrawable(dreamClarities[(int)value].getDrawable());
             dreamClarities[(int)value].setImageTintList(Tools.getAttrColorStateList(R.attr.primaryTextColor, getContext().getTheme()));
             dreamClarities[(int)value].invalidate();
+            jim.setDreamClarity(DreamClarity.values()[((int) sliderDreamClarity.getValue())].getId());
         });
-        sliderDreamClarity.setOnTouchListener((View.OnTouchListener) (view1, motionEvent) -> {
+        sliderDreamClarity.setOnTouchListener((view1, motionEvent) -> {
             int action = motionEvent.getAction();
             if (action==MotionEvent.ACTION_UP) { focusCardDreamCharacteristics(); }
             return false;
@@ -173,8 +206,13 @@ public class DreamJournalRatingEditor extends Fragment {
             }
         });
         doneRatingBtn.setOnClickListener(e -> {
-            if(mDoneButtonListener != null) {
-                mDoneButtonListener.onEvent();
+            if(!jim.getDescription().equals("") && !jim.getTitle().equals("")) {
+                storeEntry();
+            }
+            else {
+                new AlertDialog.Builder(getContext(), Tools.getThemeDialog()).setTitle("No title/description").setMessage("The fields for title and description must not be empty!")
+                        .setPositiveButton(getResources().getString(R.string.ok), null)
+                        .show();
             }
         });
 
@@ -255,6 +293,7 @@ public class DreamJournalRatingEditor extends Fragment {
             lineTopDreamCharacteristics.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
             containerDreamCharacteristics.setVisibility(View.VISIBLE);
             dreamCharacteristicsIcons.setVisibility(View.GONE);
+            doneRatingBtn.setEnabled(true);
         }
     }
 
@@ -305,6 +344,48 @@ public class DreamJournalRatingEditor extends Fragment {
                 dreamCharacteristicsIcons.setVisibility(View.VISIBLE);
                 break;
         }
+    }
+
+    private void storeEntry() {
+        // TODO start loading animation
+        JournalInMemory jim = journalManger.getEntry(journalEntryId);
+        JournalEntry entry = new JournalEntry(jim.getTime().getTimeInMillis(), jim.getTitle(), jim.getDescription(), jim.getSleepQuality(), jim.getDreamClarity(), jim.getDreamMood());
+
+        if(jim.getEntryId() != -1) {
+            entry.setEntryId(jim.getEntryId());
+            db.getJournalEntryHasTagDao().deleteAll(jim.getEntryId());
+            db.getJournalEntryIsTypeDao().deleteAll(jim.getEntryId());
+        }
+
+        db.getJournalEntryDao().insert(entry).subscribe((insertedIds, throwable) -> {
+            int currentEntryId = insertedIds.intValue();
+            List<JournalEntryHasType> journalEntryHasTypes = jim.getDreamTypes(currentEntryId);
+            db.getJournalEntryIsTypeDao().insertAll(journalEntryHasTypes).subscribe(() -> {
+                List<JournalEntryTag> journalEntryTagsToInsert = jim.getJournalEntryTag();
+                db.getJournalEntryTagDao().insertAll(journalEntryTagsToInsert).subscribe((insertedTagIds, throwable1) -> {
+                    db.getJournalEntryTagDao().getIdsByDescription(jim.getTags()).subscribe((journalEntryTags, throwable2) -> {
+                        List<JournalEntryHasTag> journalEntryHasTags = jim.getJournalEntryHasTag(currentEntryId, journalEntryTags);
+                        db.getJournalEntryHasTagDao().insertAll(journalEntryHasTags).subscribe((integers, throwable3) -> {
+                            List<AudioLocation> audioLocations = AudioLocation.parse(currentEntryId, jim.getAudioRecordings());
+                            db.getAudioLocationDao().insertAll(audioLocations).subscribe((integers1, throwable4) -> {
+                                // TODO hide loading animation
+                                if(mDreamJournalEntrySaved != null) {
+                                    mDreamJournalEntrySaved.onEvent(currentEntryId);
+                                }
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    }
+
+    public interface OnDreamJournalEntrySaved {
+        void onEvent(int entryId);
+    }
+
+    public void setOnDreamJournalEntrySavedListener(OnDreamJournalEntrySaved eventListener) {
+        mDreamJournalEntrySaved = eventListener;
     }
 
     public void setJournalEntryId(String id) {
