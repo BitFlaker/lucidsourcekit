@@ -17,7 +17,7 @@ public class DreamType {
         this.description = description;
     }
 
-    public static DreamType[] populateData(){
+    public static DreamType[] populateData() {
         return new DreamType[] {
                 new DreamType("NTM", "Nightmare"),
                 new DreamType("SPL", "SleepParalysis"),

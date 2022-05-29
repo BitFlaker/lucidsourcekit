@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -21,7 +22,6 @@ import androidx.annotation.NonNull;
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -355,14 +355,28 @@ public class Tools {
         return true;
     }
 
-    public static String formatDuration(Duration duration) {
-        long seconds = duration.toSeconds();
-        long absSeconds = Math.abs(seconds);
-        String positive = String.format(
-                "%d:%02d:%02d",
-                absSeconds / 3600,
-                (absSeconds % 3600) / 60,
-                absSeconds % 60);
-        return seconds < 0 ? "-" + positive : positive;
+    public static Drawable[] getIconsDreamMood(Context context) {
+        Drawable iconMood1 = context.getResources().getDrawable(R.drawable.ic_baseline_sentiment_very_dissatisfied_24, context.getTheme());
+        Drawable iconMood2 = context.getResources().getDrawable(R.drawable.ic_baseline_sentiment_dissatisfied_24, context.getTheme());
+        Drawable iconMood3 = context.getResources().getDrawable(R.drawable.ic_baseline_sentiment_neutral_24, context.getTheme());
+        Drawable iconMood4 = context.getResources().getDrawable(R.drawable.ic_baseline_sentiment_satisfied_24, context.getTheme());
+        Drawable iconMood5 = context.getResources().getDrawable(R.drawable.ic_baseline_sentiment_very_satisfied_24, context.getTheme());
+        return new Drawable[] { iconMood1, iconMood2, iconMood3, iconMood4, iconMood5 };
+    }
+
+    public static Drawable[] getIconsDreamClarity(Context context) {
+        Drawable iconClarity1 = context.getResources().getDrawable(R.drawable.ic_baseline_brightness_4_24, context.getTheme());
+        Drawable iconClarity2 = context.getResources().getDrawable(R.drawable.ic_baseline_brightness_5_24, context.getTheme());
+        Drawable iconClarity3 = context.getResources().getDrawable(R.drawable.ic_baseline_brightness_6_24, context.getTheme());
+        Drawable iconClarity4 = context.getResources().getDrawable(R.drawable.ic_baseline_brightness_7_24, context.getTheme());
+        return new Drawable[] { iconClarity1, iconClarity2, iconClarity3, iconClarity4 };
+    }
+
+    public static Drawable[] getIconsSleepQuality(Context context) {
+        Drawable iconQuality1 = context.getResources().getDrawable(R.drawable.ic_baseline_star_border_24, context.getTheme());
+        Drawable iconQuality2 = context.getResources().getDrawable(R.drawable.ic_baseline_star_half_24, context.getTheme());
+        Drawable iconQuality3 = context.getResources().getDrawable(R.drawable.ic_baseline_star_24, context.getTheme());
+        Drawable iconQuality4 = context.getResources().getDrawable(R.drawable.ic_baseline_stars_24, context.getTheme());
+        return new Drawable[] { iconQuality1, iconQuality2, iconQuality3, iconQuality4 };
     }
 }

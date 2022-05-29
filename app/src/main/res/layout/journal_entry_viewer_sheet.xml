@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="35dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="15dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp">
+
+            <TextView
+                android:id="@+id/txt_entry_timestamp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="01.01.1970 • 10:50"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="14sp"
+                android:layout_marginStart="10dp"/>
+
+            <ImageButton
+                android:id="@+id/btn_delete_entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_baseline_delete_24"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/ripple_round"
+                android:backgroundTint="?attr/backgroundColor"/>
+
+            <ImageButton
+                android:id="@+id/btn_edit_entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_round_mode_edit_24"
+                android:background="@drawable/ripple_round"
+                android:backgroundTint="?attr/backgroundColor"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_entry_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:text="Some title of some dream"
+            android:textAlignment="textStart"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txt_entry_dream_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:text="Some description for some dream that occurred at some point in time and was then written into this TextView."
+            android:textAlignment="textStart"
+            android:textColor="?attr/secondaryTextColor"
+            android:textSize="16sp" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/fbl_tags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="13dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            app:flexWrap="wrap"
+            app:justifyContent="flex_start" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <ImageButton
+                android:id="@+id/btn_icon_recurring"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_round_loop_24"
+                android:background="@drawable/ripple_round"
+                android:backgroundTint="?attr/backgroundColor"
+                app:tint="?attr/secondaryTextColor" />
+
+            <ImageButton
+                android:id="@+id/btn_icon_lucid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_baseline_deblur_24"
+                android:background="@drawable/ripple_round"
+                android:backgroundTint="?attr/backgroundColor"
+                app:tint="?attr/secondaryTextColor" />
+
+            <ImageButton
+                android:id="@+id/btn_icon_sleep_paralysis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_baseline_accessibility_new_24"
+                android:background="@drawable/ripple_round"
+                android:backgroundTint="?attr/backgroundColor"
+                app:tint="?attr/secondaryTextColor" />
+
+            <ImageButton
+                android:id="@+id/btn_icon_false_awakening"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_baseline_airline_seat_individual_suite_24"
+                android:background="@drawable/ripple_round"
+                android:backgroundTint="?attr/backgroundColor"
+                app:tint="?attr/secondaryTextColor" />
+
+            <ImageButton
+                android:id="@+id/btn_icon_nightmare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_baseline_priority_high_24"
+                android:background="@drawable/ripple_round"
+                android:backgroundTint="?attr/backgroundColor"
+                app:tint="?attr/secondaryTextColor" />
+        </LinearLayout>
+
+        <com.bitflaker.lucidsourcekit.charts.RangeProgress
+            android:id="@+id/rp_dream_mood"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp" />
+
+        <com.bitflaker.lucidsourcekit.charts.RangeProgress
+            android:id="@+id/rp_dream_clarity"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="8dp" />
+
+        <com.bitflaker.lucidsourcekit.charts.RangeProgress
+            android:id="@+id/rp_sleep_quality"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

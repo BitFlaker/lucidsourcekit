@@ -91,24 +91,9 @@ public class Statistics extends Fragment {
         rpAvgDiff = getView().findViewById(R.id.rp_avg_goal_diff);
         db = MainDatabase.getInstance(getContext());
 
-        Drawable iconMood1 = getResources().getDrawable(R.drawable.ic_baseline_sentiment_very_dissatisfied_24, getContext().getTheme());
-        Drawable iconMood2 = getResources().getDrawable(R.drawable.ic_baseline_sentiment_dissatisfied_24, getContext().getTheme());
-        Drawable iconMood3 = getResources().getDrawable(R.drawable.ic_baseline_sentiment_neutral_24, getContext().getTheme());
-        Drawable iconMood4 = getResources().getDrawable(R.drawable.ic_baseline_sentiment_satisfied_24, getContext().getTheme());
-        Drawable iconMood5 = getResources().getDrawable(R.drawable.ic_baseline_sentiment_very_satisfied_24, getContext().getTheme());
-        moodIcons = new Drawable[] { iconMood1, iconMood2, iconMood3, iconMood4, iconMood5 };
-
-        Drawable iconClarity1 = getResources().getDrawable(R.drawable.ic_baseline_brightness_4_24, getContext().getTheme());
-        Drawable iconClarity2 = getResources().getDrawable(R.drawable.ic_baseline_brightness_5_24, getContext().getTheme());
-        Drawable iconClarity3 = getResources().getDrawable(R.drawable.ic_baseline_brightness_6_24, getContext().getTheme());
-        Drawable iconClarity4 = getResources().getDrawable(R.drawable.ic_baseline_brightness_7_24, getContext().getTheme());
-        clarityIcons = new Drawable[] { iconClarity1, iconClarity2, iconClarity3, iconClarity4 };
-
-        Drawable iconQuality1 = getResources().getDrawable(R.drawable.ic_baseline_star_border_24, getContext().getTheme());
-        Drawable iconQuality2 = getResources().getDrawable(R.drawable.ic_baseline_star_half_24, getContext().getTheme());
-        Drawable iconQuality3 = getResources().getDrawable(R.drawable.ic_baseline_star_24, getContext().getTheme());
-        Drawable iconQuality4 = getResources().getDrawable(R.drawable.ic_baseline_stars_24, getContext().getTheme());
-        qualityIcons = new Drawable[] { iconQuality1, iconQuality2, iconQuality3, iconQuality4 };
+        moodIcons = Tools.getIconsDreamMood(getContext());
+        clarityIcons = Tools.getIconsDreamClarity(getContext());
+        qualityIcons = Tools.getIconsSleepQuality(getContext());
 
         currentStreak.setText(Long.toString(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong("app_open_streak", 0)));
         longestStreak.setText(Long.toString(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong("longest_app_open_streak", 0)));

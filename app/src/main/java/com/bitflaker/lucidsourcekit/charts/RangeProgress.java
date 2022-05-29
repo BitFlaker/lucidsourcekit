@@ -73,6 +73,12 @@ public class RangeProgress extends View {
         positions = new float[] { 0f, 0f };
     }
 
+    public void setBackgroundAttrColor(int color){
+        dataLinePaintBackground.setColor(Tools.getAttrColor(color, getContext().getTheme()));
+        progressColors = new int[] {Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), Tools.getAttrColor(color, getContext().getTheme())};
+        invalidate();
+    }
+
     public void setData(float maxValue, float value, String label, Drawable icon, String text) {
         this.value = value;
         this.label = label;
@@ -100,6 +106,7 @@ public class RangeProgress extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         float minRadMargin = getHeight() / 2.0f;
+        float textMargin = 27;
 
         if(lineShader == null || textShader == null || positions[0] != percentage || positions[1] != percentage || lastWidth != getWidth()){
             positions[0] = percentage;
@@ -127,11 +134,11 @@ public class RangeProgress extends View {
         if(label != null && label.length() > 0) {
             dataLabelPaint.getTextBounds(label, 0, label.length(), textBounds);
             dataLabelPaint.setShader(textShader);
-            canvas.drawText(label, minRadMargin, getHeight() / 2.0f - textBounds.exactCenterY(), dataLabelPaint);
+            canvas.drawText(label, textMargin, getHeight() / 2.0f - textBounds.exactCenterY(), dataLabelPaint);
         }
 
         if(icon != null) {
-            float begin = getWidth() - 2 * minRadMargin - iconSize / 5.0f;
+            float begin = getWidth() - iconSize - getHeight() / 10.0f - 5; // margin of 5 to the right in order to see the end a bit better if the bar is not totally filled
             float end = begin + iconSize;
             float current = percentage * getWidth();
             float iconFillPercentage = 1;
@@ -146,7 +153,7 @@ public class RangeProgress extends View {
         }
         else if(text != null && text.length() > 0) {
             dataLabelPaint.getTextBounds(text, 0, text.length(), textBounds);
-            canvas.drawText(text, getWidth() - minRadMargin - textBounds.width(), getHeight()/2.0f - textBounds.exactCenterY(), dataLabelPaint);
+            canvas.drawText(text, getWidth() - textMargin - textBounds.width(), getHeight()/2.0f - textBounds.exactCenterY(), dataLabelPaint);
         }
 
         lastWidth = getWidth();
@@ -166,7 +173,7 @@ public class RangeProgress extends View {
             return ((BitmapDrawable)drawable).getBitmap();
         }
 
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         drawable.setBounds(0, 0, size, size);
         drawable.draw(canvas);

@@ -8,6 +8,7 @@ import com.bitflaker.lucidsourcekit.general.database.values.DreamMoods;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamTypes;
 import com.bitflaker.lucidsourcekit.general.database.values.SleepQuality;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -18,6 +19,7 @@ public class JournalInMemory {
     private String title;
     private String description;
     private List<RecordingData> audioRecordings;
+    private List<RecordingData> audioRecordingsToRemove;
     private List<String> tags;
     private String dreamMood;
     private String sleepQuality;
@@ -29,13 +31,16 @@ public class JournalInMemory {
     private boolean isFalseAwakening;
     private EditMode editMode;
     private EntryType entryType;
+    private int position;
 
     public JournalInMemory() {
         entryId = 0;
+        position = -1;
         time = Calendar.getInstance();
         title = "";
         description = "";
         audioRecordings = new ArrayList<>();
+        audioRecordingsToRemove = new ArrayList<>();
         tags = new ArrayList<>();
         dreamMood = DreamMoods.values()[0].getId();
         sleepQuality = SleepQuality.values()[0].getId();
@@ -165,8 +170,17 @@ public class JournalInMemory {
         tags.add(tag);
     }
 
-    public void removeAudioRecording(RecordingData audioRecording) {
+    public void markAudioRecordingToRemove(RecordingData audioRecording) {
+        this.audioRecordingsToRemove.add(audioRecording);
         this.audioRecordings.remove(audioRecording);
+    }
+
+    public void deleteMarkedAudioRecordings() {
+        for (RecordingData recData : audioRecordingsToRemove) {
+            File audio = new File(recData.getFilepath());
+            audio.delete();
+        }
+        this.audioRecordingsToRemove.clear();
     }
 
     public List<JournalEntryHasType> getDreamTypes(int entryId) {
@@ -221,6 +235,14 @@ public class JournalInMemory {
 
     public void setEditMode(EditMode editMode) {
         this.editMode = editMode;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public int getPosition() {
+        return this.position;
     }
 
     public enum EditMode {

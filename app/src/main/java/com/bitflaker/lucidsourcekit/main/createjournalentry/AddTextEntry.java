@@ -295,7 +295,7 @@ public class AddTextEntry extends AppCompatActivity {
                         db.getJournalEntryHasTagDao().insertAll(journalEntryHasTags).subscribe((integers, throwable3) -> {
                             List<AudioLocation> audioLocations = new ArrayList<>();
                             for (String location : recordedAudios){
-                                audioLocations.add(new AudioLocation(currentEntryId, location));
+//                                audioLocations.add(new AudioLocation(currentEntryId, location));
                             }
                             db.getAudioLocationDao().insertAll(audioLocations).subscribe((integers1, throwable4) -> {
                                 // TODO hide loading animation

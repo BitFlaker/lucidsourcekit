@@ -45,7 +45,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -110,6 +109,8 @@ public class DreamJournalContentEditor extends Fragment {
         setupRecordingsEditor(entry);
         setupContinueButton();
 
+        title.setText(entry.getTitle());
+        description.setText(entry.getDescription());
         title.requestFocus();
         // TODO: description has to lose focus and then clicked in again in order to fully get rid of the edittext scrolling => CHANGE!
     }
@@ -159,6 +160,9 @@ public class DreamJournalContentEditor extends Fragment {
                 if(isRecordingRunning) {
                     storeRecording(recsEntryList, recsList, recNow, noRecordingsFound);
                     isRecordingRunning = false;
+                }
+                if(mPlayer != null && mPlayer.isPlaying()) {
+                    stopCurrentPlayback();
                 }
             });
 
@@ -259,9 +263,7 @@ public class DreamJournalContentEditor extends Fragment {
     }
 
     private void setupTagsEditor(JournalInMemory entry) {
-        db.getJournalEntryTagDao().getAllTagTexts().subscribe((tagsTexts, throwable) -> {
-            allAvailableTags = tagsTexts;
-        });
+        db.getJournalEntryTagDao().getAllTagTexts().subscribe((tagsTexts, throwable) -> allAvailableTags = tagsTexts);
 
         addTags.setOnClickListener(e -> {
             final BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
@@ -331,7 +333,9 @@ public class DreamJournalContentEditor extends Fragment {
     }
 
     private void stopCurrentPlayback() {
-        currentPlayingImageButton.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+        if(currentPlayingImageButton != null){
+            currentPlayingImageButton.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+        }
         mPlayer.stop();
         mPlayer.release();
         mPlayer = null;
@@ -500,14 +504,11 @@ public class DreamJournalContentEditor extends Fragment {
         new AlertDialog.Builder(getContext(), Tools.getThemeDialog()).setTitle(getResources().getString(R.string.recording_delete_header)).setMessage(getResources().getString(R.string.recording_delete_message))
                 .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                     if(currentPlayingImageButton == playButton){ stopCurrentPlayback(); }
-                    File audio = new File(currentRecording.getFilepath());
-                    if(audio.delete()) {
-                        ((LinearLayout) entryContainer.getParent()).removeView(entryContainer);
-                        JournalInMemory journalInMemory = journalManger.getEntry(journalEntryId);
-                        journalInMemory.removeAudioRecording(currentRecording);
-                        if(journalInMemory.getAudioRecordings().size() == 0) {
-                            noRecordingsFound.setVisibility(View.VISIBLE);
-                        }
+                    ((LinearLayout) entryContainer.getParent()).removeView(entryContainer);
+                    JournalInMemory journalInMemory = journalManger.getEntry(journalEntryId);
+                    journalInMemory.markAudioRecordingToRemove(currentRecording);
+                    if(journalInMemory.getAudioRecordings().size() == 0) {
+                        noRecordingsFound.setVisibility(View.VISIBLE);
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.no), null)

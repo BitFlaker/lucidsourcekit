@@ -51,11 +51,13 @@ public class JournalInMemoryManager {
         if(loadedJournalEntryIds.contains(id)) {
             int index = loadedJournalEntryIds.indexOf(id);
             JournalInMemory jim = loadedJournalEntries.get(index);
-            List<RecordingData> recData = jim.getAudioRecordings();
-            for (RecordingData rec : recData) {
-                File file = new File(rec.getFilepath());
-                if(file.exists()) {
-                    file.delete();
+            if(jim.getEditMode() == JournalInMemory.EditMode.CREATE){
+                List<RecordingData> recData = jim.getAudioRecordings();
+                for (RecordingData rec : recData) {
+                    File file = new File(rec.getFilepath());
+                    if(file.exists()) {
+                        file.delete();
+                    }
                 }
             }
             loadedJournalEntryIds.remove(index);

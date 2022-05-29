@@ -1,6 +1,7 @@
 package com.bitflaker.lucidsourcekit.database.dreamjournal.entities;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
@@ -26,16 +27,19 @@ public class AudioLocation {
 
     public int entryId;
     public String audioPath;
+    @ColumnInfo(defaultValue = "0")
+    public long recordingTimestamp;
 
-    public AudioLocation(int entryId, String audioPath) {
+    public AudioLocation(int entryId, String audioPath, long recordingTimestamp) {
         this.entryId = entryId;
         this.audioPath = audioPath;
+        this.recordingTimestamp = recordingTimestamp;
     }
 
     public static List<AudioLocation> parse(int currentEntryId, List<RecordingData> audioRecordings) {
         List<AudioLocation> audioLocations = new ArrayList<>();
-        for (RecordingData recData : audioRecordings){
-            audioLocations.add(new AudioLocation(currentEntryId, recData.getFilepath()));
+        for (RecordingData recData : audioRecordings) {
+            audioLocations.add(new AudioLocation(currentEntryId, recData.getFilepath(), recData.getRecordingTime().getTimeInMillis()));
         }
         return audioLocations;
     }

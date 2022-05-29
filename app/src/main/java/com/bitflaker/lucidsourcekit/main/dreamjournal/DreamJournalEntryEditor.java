@@ -24,7 +24,7 @@ public class DreamJournalEntryEditor extends AppCompatActivity {
 
     private DreamJournalContentEditor vwDreamContentEditor;
     private DreamJournalRatingEditor vwDreamRatingsEditor;
-    private String entryID;
+    private String journalInMemoryEntryID;
     private boolean isSaved;
     private JournalInMemory jim;
 
@@ -37,17 +37,22 @@ public class DreamJournalEntryEditor extends AppCompatActivity {
         tabLayout = findViewById(R.id.tl_dj_editor_layout);
         viewPager2 = findViewById(R.id.vp_dj_editor);
         viewPager2.setOnTouchListener((v, event) -> true);
-        entryID = JournalInMemoryManager.getInstance().newEntry();
-        jim = JournalInMemoryManager.getInstance().getEntry(entryID);
+        if(getIntent().hasExtra("journal_in_memory_id")) {
+            journalInMemoryEntryID = getIntent().getStringExtra("journal_in_memory_id");
+        }
+        else {
+            journalInMemoryEntryID = JournalInMemoryManager.getInstance().newEntry();
+        }
+        jim = JournalInMemoryManager.getInstance().getEntry(journalInMemoryEntryID);
         isSaved = false;
 
         vwDreamContentEditor = new DreamJournalContentEditor();
-        vwDreamContentEditor.setJournalEntryId(entryID);
+        vwDreamContentEditor.setJournalEntryId(journalInMemoryEntryID);
         vwDreamContentEditor.setOnContinueButtonClicked(() -> tabLayout.selectTab(tabLayout.getTabAt(1)));
         vwDreamContentEditor.setOnCloseButtonClicked(this::finish);
 
         vwDreamRatingsEditor = new DreamJournalRatingEditor();
-        vwDreamRatingsEditor.setJournalEntryId(entryID);
+        vwDreamRatingsEditor.setJournalEntryId(journalInMemoryEntryID);
         vwDreamRatingsEditor.setOnBackButtonClicked(() -> tabLayout.selectTab(tabLayout.getTabAt(0)));
         vwDreamRatingsEditor.setOnDoneButtonClicked(() -> {
             // TODO: store data
@@ -56,6 +61,7 @@ public class DreamJournalEntryEditor extends AppCompatActivity {
             isSaved = true;
             Intent data = new Intent();
             data.putExtra("entryId", entryId);
+            data.putExtra("journal_in_memory_id", journalInMemoryEntryID);
             setResult(RESULT_OK, data);
             finish();
         });
@@ -86,7 +92,7 @@ public class DreamJournalEntryEditor extends AppCompatActivity {
             for (RecordingData recData : jim.getAudioRecordings()) {
                 File audio = new File(recData.getFilepath());
                 if(audio.delete()) {
-                    jim.removeAudioRecording(recData);
+                    jim.markAudioRecordingToRemove(recData);
                 }
             }
         }
