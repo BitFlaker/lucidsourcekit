@@ -110,24 +110,12 @@ public class DreamJournalEntriesList {
         return audioLocations;
     }
 
-    public List<Boolean> getVisibleWithFilter() {
-        List<Boolean> visibleWithFilter = new ArrayList<>();
-        for (int i = 0; i < entries.size(); i++) {
-            visibleWithFilter.add(entries.get(i).isVisibleWithFilter());
-        }
-        return visibleWithFilter;
-    }
-
     public void add(JournalEntry entry, List<AssignedTags> assignedTags, List<AudioLocation> assignedAudioLocations, List<JournalEntryHasType> assignedTypes){
         entries.add(new DreamJournalEntry(entry, assignedTags, assignedTypes, assignedAudioLocations));
     }
 
     public void add(DreamJournalEntry entry){
         entries.add(entry);
-    }
-
-    public void addFirst(DreamJournalEntry entryToAdd) {
-        entries.add(0, entryToAdd);
     }
 
     public void changeAt(int position, JournalEntry entry, List<AssignedTags> assignedTags, List<JournalEntryHasType> assignedTypes, List<AudioLocation> assignedAudioLocations) {

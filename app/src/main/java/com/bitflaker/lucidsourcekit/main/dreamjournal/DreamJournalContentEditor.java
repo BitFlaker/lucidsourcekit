@@ -9,12 +9,10 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +37,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.general.RecordingObjectTools;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -49,7 +48,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 public class DreamJournalContentEditor extends Fragment {
     private OnContinueButtonClicked mContinueButtonClicked;
@@ -421,79 +419,21 @@ public class DreamJournalContentEditor extends Fragment {
     }
 
     private LinearLayout generateAudioEntry(RecordingData currentRecording, TextView noRecordingsFound) {
-        int dp48 = Tools.dpToPx(getContext(), 48);
-        int dp20 = Tools.dpToPx(getContext(), 20);
-        int dp10 = Tools.dpToPx(getContext(), 10);
-        int dp8 = Tools.dpToPx(getContext(), 8);
-        int dp5 = Tools.dpToPx(getContext(), 5);
+        RecordingObjectTools rot = RecordingObjectTools.getInstance(getContext());
+        LinearLayout entryContainer = rot.generateContainerLayout();
 
-        LinearLayout entryContainer = new LinearLayout(getContext());
-        LinearLayout.LayoutParams lParamsEntryContainer = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        lParamsEntryContainer.setMargins(dp20, dp5, dp20, dp5);
-        entryContainer.setLayoutParams(lParamsEntryContainer);
-        entryContainer.setOrientation(LinearLayout.HORIZONTAL);
-        entryContainer.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_spinner, getContext().getTheme()));
-        entryContainer.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getContext().getTheme()));
-        entryContainer.setGravity(Gravity.CENTER_VERTICAL);
-
-        ImageButton playButton = new ImageButton(getContext());
-        LinearLayout.LayoutParams lParamsPlayButton = new LinearLayout.LayoutParams(dp48, dp48);
-        lParamsPlayButton.setMargins(dp8, 0, 0, 0);
-        playButton.setLayoutParams(lParamsPlayButton);
-        playButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_play_arrow_24, getContext().getTheme()));
-        playButton.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_spinner, getContext().getTheme()));
-        playButton.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getContext().getTheme()));
+        ImageButton playButton = rot.generatePlayButton();
         playButton.setOnClickListener(e -> handlePlayPauseMediaPlayer(currentRecording, playButton));
         entryContainer.addView(playButton);
 
-        LinearLayout labelsContainer = new LinearLayout(getContext());
-        LinearLayout.LayoutParams lParamsLabelsContainer = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
-        lParamsLabelsContainer.setMargins(dp10, dp8, 0, dp8);
-        lParamsLabelsContainer.weight = 1;
-        labelsContainer.setLayoutParams(lParamsLabelsContainer);
-        labelsContainer.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout labelsContainer = rot.generateLabelsContrainer();
         entryContainer.addView(labelsContainer);
 
-        TextView heading = new TextView(getContext());
-        heading.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        heading.setText("Recording");
-        heading.setTextColor(Tools.getAttrColorStateList(R.attr.primaryTextColor, getContext().getTheme()));
-        heading.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-        heading.setTypeface(null, Typeface.BOLD);
-        labelsContainer.addView(heading);
+        labelsContainer.addView(rot.generateHeading());
+        labelsContainer.addView(rot.generateTimestamp(currentRecording));
+        entryContainer.addView(rot.generateDuration(currentRecording, false));
 
-        TextView timestamp = new TextView(getContext());
-        timestamp.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-        DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
-        timestamp.setText(df.format(currentRecording.getRecordingTime().getTime()) + " • " + tf.format(currentRecording.getRecordingTime().getTime()));
-        timestamp.setTextColor(Tools.getAttrColorStateList(R.attr.secondaryTextColor, getContext().getTheme()));
-        timestamp.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-        labelsContainer.addView(timestamp);
-
-        TextView duration = new TextView(getContext());
-        LinearLayout.LayoutParams lParamsDuration = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        lParamsDuration.setMargins(0, 0, dp10, 0);
-        duration.setLayoutParams(lParamsDuration);
-        int seconds = (int)(currentRecording.getRecordingLength() / 1000);
-        int sec = seconds % 60;
-        int min = (seconds / 60)%60;
-        int hours = (seconds/60)/60;
-        String secS = String.format(Locale.ENGLISH, "%02d" , sec);
-        String minS = String.format(Locale.ENGLISH, "%02d" , min);
-        String hoursS = String.format(Locale.ENGLISH, "%02d" , hours);
-        duration.setText(hours > 0 ? hoursS + ":" : "" + minS + ":" + secS);
-        duration.setTextColor(Tools.getAttrColorStateList(R.attr.secondaryTextColor, getContext().getTheme()));
-        duration.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-        entryContainer.addView(duration);
-
-        ImageButton deleteButton = new ImageButton(getContext());
-        LinearLayout.LayoutParams lParamsDeleteButton = new LinearLayout.LayoutParams(dp48, dp48);
-        lParamsDeleteButton.setMargins(0, 0, dp8, 0);
-        deleteButton.setLayoutParams(lParamsDeleteButton);
-        deleteButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_cross_24, getContext().getTheme()));
-        deleteButton.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_spinner, getContext().getTheme()));
-        deleteButton.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getContext().getTheme()));
+        ImageButton deleteButton = rot.generateDeleteButton();
         deleteButton.setOnClickListener(e -> setupRecordingsDeleteDialog(currentRecording, entryContainer, playButton, noRecordingsFound));
         entryContainer.addView(deleteButton);
 

@@ -28,6 +28,7 @@ import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamType;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasType;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AssignedTags;
+import com.bitflaker.lucidsourcekit.general.RecordingObjectTools;
 import com.bitflaker.lucidsourcekit.general.SortOrders;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
@@ -63,6 +64,8 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     private MainDatabase db;
     private RecyclerView mRecyclerView;
     private DateFormat fullDayInWeekNameFormatter;
+    private MediaPlayer mPlayer;
+    private ImageButton currentPlayingImageButton;
 
     public RecyclerViewAdapterDreamJournal(DreamJournal journalList, Context context, DreamJournalEntriesList entries) {
         this.journalList = journalList;
@@ -241,6 +244,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             TextView title = bsd.findViewById(R.id.txt_entry_title);
             TextView content = bsd.findViewById(R.id.txt_entry_dream_content);
             FlexboxLayout tagsLayout = bsd.findViewById(R.id.fbl_tags);
+            LinearLayout recordingsLayout = bsd.findViewById(R.id.ll_recordings_container);
             ImageButton iconRecurring = bsd.findViewById(R.id.btn_icon_recurring);
             ImageButton iconLucid = bsd.findViewById(R.id.btn_icon_lucid);
             ImageButton iconSleepParalysis = bsd.findViewById(R.id.btn_icon_sleep_paralysis);
@@ -261,6 +265,11 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             iconFalseAwakening.setVisibility(jim.isFalseAwakening() ? View.VISIBLE : View.GONE);
             iconNightmare.setVisibility(jim.isNightmare() ? View.VISIBLE : View.GONE);
 
+            if(jim.getAudioRecordings().size() == 0) { recordingsLayout.setVisibility(View.GONE); }
+            for (RecordingData recData : jim.getAudioRecordings()) {
+                recordingsLayout.addView(generateRecordingsPlayer(recData));
+            }
+            if(jim.getTags().size() == 0) { tagsLayout.setVisibility(View.GONE); }
             for (String tag : jim.getTags()) {
                 tagsLayout.addView(generateTagView(tag, R.attr.slightElevated));
             }
@@ -302,6 +311,69 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
 
             bsd.show();
         });
+    }
+
+    private View generateRecordingsPlayer(RecordingData recData) {
+        RecordingObjectTools rot = RecordingObjectTools.getInstance(context);
+        LinearLayout entryContainer = rot.generateContainerLayout();
+
+        ImageButton playButton = rot.generatePlayButton();
+        playButton.setOnClickListener(e -> handlePlayPauseMediaPlayer(recData, playButton));
+        entryContainer.addView(playButton);
+
+        LinearLayout labelsContainer = rot.generateLabelsContrainer();
+        entryContainer.addView(labelsContainer);
+
+        labelsContainer.addView(rot.generateHeading());
+        labelsContainer.addView(rot.generateTimestamp(recData));
+        entryContainer.addView(rot.generateDuration(recData, true));
+
+        return entryContainer;
+    }
+
+    private void handlePlayPauseMediaPlayer(RecordingData currentRecording, ImageButton playButton) {
+        if(mPlayer != null && mPlayer.isPlaying() && currentPlayingImageButton == playButton) {
+            mPlayer.pause();
+            currentPlayingImageButton.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+        }
+        else if(mPlayer != null && !mPlayer.isPlaying() && currentPlayingImageButton == playButton) {
+            mPlayer.start();
+            currentPlayingImageButton.setImageResource(R.drawable.ic_baseline_pause_24);
+        }
+        else if(mPlayer != null && mPlayer.isPlaying()) {
+            stopCurrentPlayback();
+            playButton.setImageResource(R.drawable.ic_baseline_pause_24);
+            setupAudioPlayer(currentRecording.getFilepath());
+            currentPlayingImageButton = playButton;
+        }
+        else {
+            playButton.setImageResource(R.drawable.ic_baseline_pause_24);
+            setupAudioPlayer(currentRecording.getFilepath());
+            currentPlayingImageButton = playButton;
+        }
+    }
+
+    private void setupAudioPlayer(String audioFile) {
+        mPlayer = new MediaPlayer();
+        try {
+            mPlayer.setDataSource(audioFile);
+            mPlayer.setOnCompletionListener(e -> stopCurrentPlayback());
+            mPlayer.prepare();
+            mPlayer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mPlayer = null;
+        }
+    }
+
+    private void stopCurrentPlayback() {
+        if(currentPlayingImageButton != null){
+            currentPlayingImageButton.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+        }
+        mPlayer.stop();
+        mPlayer.release();
+        mPlayer = null;
+        currentPlayingImageButton = null;
     }
 
     @NonNull
