@@ -29,6 +29,9 @@ public class BinauralBeatsPlayer {
     private short[] buffer = new short[NextBufferGenerator.MAX_SAMPLE_COUNT];
     private float[] normalSineWave = new float[buffer.length];
     private boolean isPaused = false;
+    private int frameCounter = 0;
+    private int lastSecUpdate = 0;
+    private int preStopCount = 0;
     NextBufferGenerator nbg = null;
     Thread nextBufferGenThread = null;
 
@@ -51,7 +54,6 @@ public class BinauralBeatsPlayer {
     public void pause() {
         playing = false;
         trackThread.interrupt();
-        binauralAudioTrack.pause();
         System.gc();
     }
 
@@ -62,8 +64,10 @@ public class BinauralBeatsPlayer {
     }
 
     public void stop() {
-        binauralAudioTrack.pause();
-        binauralAudioTrack.flush();
+        if (binauralAudioTrack != null)  {
+            binauralAudioTrack.pause();
+            binauralAudioTrack.flush();
+        }
         trackThread.interrupt();
         playing = false;
         System.gc();
@@ -82,7 +86,6 @@ public class BinauralBeatsPlayer {
         int channelConfig = AudioFormat.CHANNEL_OUT_STEREO;
         int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
         int bufferSize = AudioTrack.getMinBufferSize(sampleRate, channelConfig, audioFormat);
-        //return new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate, channelConfig, audioFormat, bufferSize, AudioTrack.MODE_STREAM);
         return new AudioTrack.Builder()
                 .setAudioAttributes(new AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_MEDIA)
@@ -100,22 +103,7 @@ public class BinauralBeatsPlayer {
 
     private void playAndBufferBeats(AudioTrack track) {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_AUDIO);
-        if(mProgressListener != null) {
-            mProgressListener.onEvent(binauralBeat, (int) (track.getPlaybackHeadPosition() / (double) sampleRate));
-        }
-        track.setPositionNotificationPeriod(sampleRate);    // getting an update every second
-        track.setPlaybackPositionUpdateListener(new AudioTrack.OnPlaybackPositionUpdateListener() {
-            @Override
-            public void onMarkerReached(AudioTrack audioTrack) {}
-
-            @Override
-            public void onPeriodicNotification(AudioTrack audioTrack) {
-                if(mProgressListener != null){
-                    mProgressListener.onEvent(binauralBeat, (int)(track.getPlaybackHeadPosition()/(double)sampleRate));
-                }
-            }
-        });
-        if(!isPaused){
+        if(!isPaused) {
             if(currentPosition == null) {
                 currentPosition = new AudioBufferPosition();
             }
@@ -138,7 +126,20 @@ public class BinauralBeatsPlayer {
             }
             track.play();
             playerWrittenCount = track.write(buffer, 0, buffer.length, AudioTrack.WRITE_BLOCKING);
+
+            frameCounter = track.getPlaybackHeadPosition() + preStopCount;
+            if((int)((frameCounter / (float)sampleRate)) > lastSecUpdate){
+                lastSecUpdate = (int)((frameCounter / (float)sampleRate));
+                if(mProgressListener != null){
+                    mProgressListener.onEvent(binauralBeat, lastSecUpdate);
+                }
+            }
+
             if(Thread.interrupted()) {
+                preStopCount += track.getPlaybackHeadPosition();
+                playerWrittenCount = preStopCount % NextBufferGenerator.MAX_SAMPLE_COUNT;
+                track.pause();
+                track.flush();
                 isPaused = true;
                 return;
             }
@@ -157,8 +158,11 @@ public class BinauralBeatsPlayer {
                 currentPosition = nbg.getCurrentNextStartAfter();
             }
         }
+        System.out.println(track.getPlaybackHeadPosition());     // 3.324.256 | 3.309.616 | 3.323.280
+        System.out.println(track.getPlaybackHeadPosition() + preStopCount);     // 3.282.468 | 3.324.256
         playing = false;
         playerWrittenCount = 0;
+        preStopCount = 0;
         buffer = new short[NextBufferGenerator.MAX_SAMPLE_COUNT];
         normalSineWave = new float[buffer.length];
         currentPosition = new AudioBufferPosition();
@@ -192,7 +196,7 @@ class NextBufferGenerator implements Runnable {
     private FastSineTable fst;
     private AudioBufferPosition nextStartAfter;
     private AudioBufferPosition currentNextStartAfter;
-    public static final int MAX_SAMPLE_COUNT = 50000;
+    public static final int MAX_SAMPLE_COUNT = 44100/6;
     private final AtomicBoolean terminateOperation = new AtomicBoolean(false);
 
     public NextBufferGenerator(int sampleRate, BinauralBeat binauralBeat, FastSineTable fst, int bufferSize, AudioBufferPosition nextStartAfter) {

@@ -34,6 +34,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_form_header">
-    </com.google.android.flexbox.FlexboxLayout>
+        app:layout_constraintTop_toBottomOf="@+id/txt_form_header"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

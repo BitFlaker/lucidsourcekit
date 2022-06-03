@@ -124,7 +124,7 @@ public class RangeProgress extends View {
         }
 
         if(icon == null && iconDrawable != null){
-            iconSize = (int) (getHeight() / 5.0f * 4);
+            iconSize = (int) (getHeight() / 5.0f * 3.25);
             icon = drawableToBitmap(iconDrawable, iconSize);
         }
 
@@ -138,7 +138,7 @@ public class RangeProgress extends View {
         }
 
         if(icon != null) {
-            float begin = getWidth() - iconSize - getHeight() / 10.0f - 5; // margin of 5 to the right in order to see the end a bit better if the bar is not totally filled
+            float begin = getWidth() - iconSize - (getHeight() - iconSize) / 2.0f - 5; // margin of 5 to the right in order to see the end a bit better if the bar is not totally filled
             float end = begin + iconSize;
             float current = percentage * getWidth();
             float iconFillPercentage = 1;

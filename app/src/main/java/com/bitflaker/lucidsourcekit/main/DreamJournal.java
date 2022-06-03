@@ -197,13 +197,13 @@ public class DreamJournal extends Fragment {
         }
     }
 
-    private void showJournalCreator(JournalTypes forms) {
+    private void showJournalCreator(JournalTypes type) {
         // TODO migrate available tags from extra to load in journal entry creator!
         // TODO start loading animation
         animateFab();
         Intent intent = new Intent(getContext(), DreamJournalEntryEditor.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("type", forms.ordinal());
+        intent.putExtra("type", type.ordinal());
         dreamJournalEditorActivityResultLauncher.launch(intent);
     }
 
@@ -211,20 +211,16 @@ public class DreamJournal extends Fragment {
         if (isOpen){
             fabAdd.startAnimation(rotateForward);
             fabText.startAnimation(fabClose);
-//            fabAudio.startAnimation(fabClose);
             fabForms.startAnimation(fabClose);
             fabText.setClickable(false);
-//            fabAudio.setClickable(false);
             fabForms.setClickable(false);
             isOpen=false;
         }
         else {
             fabAdd.startAnimation(rotateBackward);
             fabText.startAnimation(fabOpen);
-//            fabAudio.startAnimation(fabOpen);
             fabForms.startAnimation(fabOpen);
             fabText.setClickable(true);
-//            fabAudio.setClickable(true);
             fabForms.setClickable(true);
             isOpen=true;
         }

@@ -58,9 +58,13 @@ public class FormsJournalEditorFrag extends Fragment {
     }
 
     private EditText generateEditText() {
+        int dpm5 = 0;//Tools.dpToPx(getContext(), -5);
         EditText et = new EditText(getContext());
-        et.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        lParams.setMargins(0, dpm5, 0, dpm5);
+        et.setLayoutParams(lParams);
         et.setMinWidth(Tools.dpToPx(getContext(), 70));
+        et.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         return et;
     }
 

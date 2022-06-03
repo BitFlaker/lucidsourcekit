@@ -96,12 +96,29 @@
                 android:importantForAutofill="no"
                 android:inputType="textMultiLine"
                 android:isScrollContainer="false"
-                android:minHeight="150dp"
                 android:paddingStart="15dp"
                 android:paddingEnd="15dp"
                 android:textColor="?attr/secondaryTextColor"
                 android:textSize="16sp"
-                android:paddingBottom="70dp" />
+                android:paddingBottom="70dp"/>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/flx_dj_form_dream"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/rectangle"
+                android:backgroundTint="?attr/backgroundColor"
+                android:gravity="fill_horizontal"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:paddingBottom="70dp"
+                app:alignItems="center"
+                app:flexDirection="row"
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 

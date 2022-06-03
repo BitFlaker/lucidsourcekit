@@ -128,7 +128,7 @@ public class LineGraph extends View {
         invalidate();
     }
 
-    public void updateProgress(double progress){
+    public void updateProgress(double progress) {
         this.progress = progress;
         invalidate();
     }

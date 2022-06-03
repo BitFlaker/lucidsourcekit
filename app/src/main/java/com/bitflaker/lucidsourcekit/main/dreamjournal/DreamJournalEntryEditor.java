@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
@@ -44,6 +45,9 @@ public class DreamJournalEntryEditor extends AppCompatActivity {
             journalInMemoryEntryID = JournalInMemoryManager.getInstance().newEntry();
         }
         jim = JournalInMemoryManager.getInstance().getEntry(journalInMemoryEntryID);
+        if(getIntent().hasExtra("type") && getIntent().getIntExtra("type", JournalTypes.Text.ordinal()) == JournalTypes.Forms.ordinal()){
+            jim.setEntryType(JournalInMemory.EntryType.FORMS_TEXT);
+        }
         isSaved = false;
 
         vwDreamContentEditor = new DreamJournalContentEditor();
