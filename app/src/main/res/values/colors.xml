@@ -60,4 +60,8 @@
     <color name="white_6p">#43444A</color>
     <color name="prim_30p">#0D2196F3</color>
     <color name="background_brighter">#292a2f</color>
+    <color name="wave_color_beta">#3B90E8</color>
+    <color name="wave_color_alpha">#5A5FDF</color>
+    <color name="wave_color_theta">#887949CF</color>
+    <color name="wave_color_delta">#74329F</color>
 </resources>

@@ -34,14 +34,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 public class BinauralBeatsView extends Fragment {
     private LineGraph progressLineGraph;
     private ImageButton displayAllBeats, backgroundNoises, repeatButton, autoStopButton, playTrack;
     private List<BackgroundNoise> noises;
-    private boolean repeatBeat;
+    private boolean repeatBeat, playingFinished;
     private Date autoStopTime;
-    private TextView currentTrackName, currentTrackDescription, binauralTimeline, binauralTimeTotal, binauralFrequency;
+    private TextView currentTrackName, currentTrackDescription, binauralTimeline, binauralTimeTotal, binauralFrequency, freqGreekLetterName, freqGreekLetter, freqCarrierFreq;
     private TextLegend binauralLegend;
     private MaterialCardView legendCard;
     private BinauralBeatsPlayer binBeatPlayer;
@@ -55,7 +56,7 @@ public class BinauralBeatsView extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_binaural_beats, container, false);
+        return inflater.inflate(R.layout.fragment_binaural_beats_new, container, false);
     }
 
     @Override
@@ -77,9 +78,13 @@ public class BinauralBeatsView extends Fragment {
         binauralTimeTotal = getView().findViewById(R.id.txt_binaural_beats_total_time);
         binauralFrequency = getView().findViewById(R.id.txt_current_binaural_frequency);
         controlsContainer = getView().findViewById(R.id.ll_binaural_controls_container);
+        freqGreekLetterName = getView().findViewById(R.id.txt_current_frequency_name);
+        freqGreekLetter = getView().findViewById(R.id.txt_current_frequency_greek_letter);
+        freqCarrierFreq = getView().findViewById(R.id.txt_carrier_frequency);
 
         repeatBeat = false;
         autoStopTime = null;
+        playingFinished = false;
 
         generateNoises();
 
@@ -90,13 +95,13 @@ public class BinauralBeatsView extends Fragment {
         //freqs.add(new FrequencyData(13, 10));
         //freqs.add(new FrequencyData(13, 8, 20));
         //freqs.add(new FrequencyData(8, 10));
-        freqs.add(new FrequencyData(30, 5, 15));
-        freqs.add(new FrequencyData(5, 5));         // 4 & 5 = no crack ???
-        freqs.add(new FrequencyData(5, 2, 5));      // jump = no crack ???
-        freqs.add(new FrequencyData(2, 5));
-        freqs.add(new FrequencyData(2, 3, 5));      // jump = no crack ???
-        freqs.add(new FrequencyData(3, 5));      // jump = no crack ???
-        freqs.add(new FrequencyData(3, 32, 35));
+        freqs.add(new FrequencyData(30, 5, 4));
+        freqs.add(new FrequencyData(5, 2));         // 4 & 5 = no crack ???
+        freqs.add(new FrequencyData(5, 2, 1));      // jump = no crack ???
+        freqs.add(new FrequencyData(2, 1));
+        freqs.add(new FrequencyData(2, 3, 2));      // jump = no crack ???
+        freqs.add(new FrequencyData(3, 1));      // jump = no crack ???
+        freqs.add(new FrequencyData(3, 30, 5));
 
         /*
         freqs.add(new FrequencyData(30, 4, 5));
@@ -131,13 +136,17 @@ public class BinauralBeatsView extends Fragment {
             beats.add(new BinauralBeat("sample dd d d  d d dd", "sample description with some length to it", 455, "NULL", freqs));
             RecyclerViewAdapterBinauralBeatsSelector rvabbs = new RecyclerViewAdapterBinauralBeatsSelector(getContext(), beats);
             rvabbs.setOnEntryClickedListener((binauralBeat, position) -> {
+                playingFinished = false;
                 bottomSheetDialog.dismiss();
                 legendCard.setVisibility(View.VISIBLE);
                 currentTrackName.setText(binauralBeat.getTitle());
                 currentTrackDescription.setText(binauralBeat.getDescription());
                 binauralTimeTotal.setText(String.format(" / %s", getTimeStringFromSeconds((int) binauralBeat.getFrequencyList().getDuration())));
                 binauralTimeline.setText(getTimeStringFromSeconds(0));
-                binauralFrequency.setText("0,00 Hz");
+                binauralFrequency.setText("0.00");
+                freqCarrierFreq.setText(String.format(Locale.ENGLISH, "%.0f Hz", binauralBeat.getBaseFrequency()));
+                playTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
+                setDataForProgress(binauralBeat, 0);
                 if(binBeatPlayer != null){
                     binBeatPlayer.stop();
                     progressLineGraph.resetProgress();
@@ -145,20 +154,20 @@ public class BinauralBeatsView extends Fragment {
                 binBeatPlayer = new BinauralBeatsPlayer(binauralBeat);
                 progressLineGraph.setData(binauralBeat.getFrequencyList(), 32, 4f, 0f, false, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
                 binBeatPlayer.setOnTrackProgressListener(((currentBinauralBeat, progress) -> {
-                    progressLineGraph.updateProgress(progress);
-                    getActivity().runOnUiThread(() -> {
-                        binauralTimeline.setText(getTimeStringFromSeconds(progress));
-                        binauralFrequency.setText(String.format("%.2f Hz", currentBinauralBeat.getFrequencyList().getFrequencyAtDuration(progress)));
-                    });
+                    setDataForProgress(currentBinauralBeat, progress);
+                    getActivity().runOnUiThread(() -> progressLineGraph.updateProgress(progress));
                 }));
                 binBeatPlayer.setOnTrackFinishedListener(currentBinauralBeat -> {
-                    progressLineGraph.updateProgress(currentBinauralBeat.getFrequencyList().getDuration());
-                    getActivity().runOnUiThread(() -> {
-                        int finishProgress = (int)currentBinauralBeat.getFrequencyList().getDuration();
-                        binauralTimeline.setText(getTimeStringFromSeconds(finishProgress));
-                        binauralFrequency.setText(String.format("%.2f Hz", currentBinauralBeat.getFrequencyList().getFrequencyAtDuration(finishProgress)));
-                    });
-                    playTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
+                    playingFinished = true;
+                    setEndValues(currentBinauralBeat);
+                    if(repeatBeat) {
+                        playingFinished = false;
+                        progressLineGraph.resetProgress();
+                        binBeatPlayer.play();
+                    }
+                    else {
+                        playTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
+                    }
                 });
             });
             rcv.setAdapter(rvabbs);
@@ -242,6 +251,10 @@ public class BinauralBeatsView extends Fragment {
 
         playTrack.setOnClickListener(e -> {
             if(binBeatPlayer != null){
+                if(playingFinished) {
+                    progressLineGraph.resetProgress();
+                    playingFinished = false;
+                }
                 if(!binBeatPlayer.isPlaying()){
                     playTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_pause_24));
                     binBeatPlayer.play();
@@ -260,10 +273,9 @@ public class BinauralBeatsView extends Fragment {
         progressLineGraph.setDrawGradient(true);
         progressLineGraph.setGradientOpacity(0.35f);
         progressLineGraph.setDrawProgressIndicator(false);
-        controlsContainer.addOnLayoutChangeListener((view1, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> progressLineGraph.setBottomLinePadding(controlsContainer.getMeasuredHeight()));
 
-        String[] labels = new String[] { "beta", "alpha", "theta", "delta" };
-        binauralLegend.setData(labels, Brainwaves.getStageColors(), Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()), 12);
+        String[] labels = new String[] { "β", "α", "θ", "δ" };
+        binauralLegend.setData(labels, Brainwaves.getStageColors(), Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme()), Tools.getAttrColor(R.attr.tertiaryTextColor, getContext().getTheme()), 18);
 
         Thread newThread2 = new Thread(() -> {
             for (int i = 0; i < freqs.getDuration(); i++){
@@ -280,6 +292,29 @@ public class BinauralBeatsView extends Fragment {
             }
         });
         newThread2.start();
+    }
+
+    private void setEndValues(BinauralBeat currentBinauralBeat) {
+        progressLineGraph.updateProgress(currentBinauralBeat.getFrequencyList().getDuration());
+        getActivity().runOnUiThread(() -> {
+            int finishProgress = (int) currentBinauralBeat.getFrequencyList().getDuration();
+            binauralTimeline.setText(getTimeStringFromSeconds(finishProgress));
+            binauralFrequency.setText(String.format(Locale.ENGLISH, "%.2f", currentBinauralBeat.getFrequencyList().getFrequencyAtDuration(finishProgress)));
+        });
+    }
+
+    private void setDataForProgress(BinauralBeat binauralBeat, int progress) {
+        double currFreq = binauralBeat.getFrequencyList().getFrequencyAtDuration(progress);
+        int stageIndex = Brainwaves.getStageIndex(currFreq);
+        String greekLetter = Brainwaves.getStageFrequencyGreekLetters()[stageIndex];
+        String greekLetterName = Brainwaves.getStageFrequencyGreekLetterNames()[stageIndex];
+        getActivity().runOnUiThread(() -> {
+            freqGreekLetter.setText(greekLetter);
+            freqGreekLetterName.setText(greekLetterName);
+            binauralLegend.setCurrentSelectedIndex(stageIndex);
+            binauralFrequency.setText(String.format(Locale.ENGLISH, "%.2f", currFreq));
+            binauralTimeline.setText(getTimeStringFromSeconds(progress));
+        });
     }
 
     private String getTimeStringFromSeconds(int totalSeconds) {

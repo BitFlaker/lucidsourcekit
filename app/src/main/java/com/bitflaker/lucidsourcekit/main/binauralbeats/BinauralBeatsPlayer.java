@@ -35,8 +35,6 @@ public class BinauralBeatsPlayer {
     NextBufferGenerator nbg = null;
     Thread nextBufferGenThread = null;
 
-    // TODO: when changing beat => stop previous one !
-
     public BinauralBeatsPlayer(BinauralBeat binauralBeat) {
         this.binauralBeat = binauralBeat;
         binauralAudioTrack = null;
@@ -68,7 +66,9 @@ public class BinauralBeatsPlayer {
             binauralAudioTrack.pause();
             binauralAudioTrack.flush();
         }
-        trackThread.interrupt();
+        if(trackThread != null){
+            trackThread.interrupt();
+        }
         playing = false;
         System.gc();
     }
@@ -158,11 +158,13 @@ public class BinauralBeatsPlayer {
                 currentPosition = nbg.getCurrentNextStartAfter();
             }
         }
-        System.out.println(track.getPlaybackHeadPosition());     // 3.324.256 | 3.309.616 | 3.323.280
-        System.out.println(track.getPlaybackHeadPosition() + preStopCount);     // 3.282.468 | 3.324.256
+//        System.out.println(track.getPlaybackHeadPosition());     // 3.324.256 | 3.309.616 | 3.323.280
+//        System.out.println(track.getPlaybackHeadPosition() + preStopCount);     // 3.282.468 | 3.324.256
         playing = false;
         playerWrittenCount = 0;
         preStopCount = 0;
+        frameCounter = 0;
+        lastSecUpdate = 0;
         buffer = new short[NextBufferGenerator.MAX_SAMPLE_COUNT];
         normalSineWave = new float[buffer.length];
         currentPosition = new AudioBufferPosition();

@@ -1,10 +1,15 @@
 package com.bitflaker.lucidsourcekit.charts;
 
+import static com.bitflaker.lucidsourcekit.charts.LineGraph.manipulateAlphaArray;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -19,16 +24,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TextLegend extends View {
+    private final Paint randomBackgroundPaint = new Paint();
     private final Paint dataPainter = new Paint();
     private final Paint axisLinePaint = new Paint();
     private final Paint dataLinePaint = new Paint();
     private final Paint progressPainter = new Paint();
+    private LinearGradient backgroundGradient;
     private final Paint dataLabelPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-    private List<Paint> legendPaints;
+    private List<Paint> legendPaints, legendBackgroundPaints;
+    private int secondaryTextColor, primaryTextColor;
     private float xMax;
     private float yMax;
+    private int[] colors;
     private String[] labels;
     private RectF currentRectPos = new RectF(-1, -1, -1, -1);
+    private Rect textBounds;
+    private int currentSelectedIndex = 2;
 
     public TextLegend(Context context) {
         super(context);
@@ -50,16 +61,22 @@ public class TextLegend extends View {
         dataLinePaint.setColor(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()));
         dataLinePaint.setStrokeCap(Paint.Cap.ROUND);
         dataLinePaint.setAntiAlias(true);
+        randomBackgroundPaint.setColor(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()));
+//        randomBackgroundPaint.setStrokeCap(Paint.Cap.SQUARE);
+        randomBackgroundPaint.setAntiAlias(true);
         dataLabelPaint.setTextAlign(Paint.Align.CENTER);
         dataLabelPaint.setAntiAlias(true);
         dataLabelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+        textBounds = new Rect();
     }
 
-    public void setData(String[] labels, int[] colors, int textColor, int textSize) {
+    public void setData(String[] labels, int[] colors, int primaryTextColor, int secondaryTextColor, int textSize) {
         yMax = getHeight();
         xMax = labels.length;
+        this.colors = colors;
         this.labels = labels;
-        dataLabelPaint.setColor(manipulateAlpha(textColor, 0.6f));
+        this.primaryTextColor = primaryTextColor;
+        this.secondaryTextColor = secondaryTextColor;
         dataLabelPaint.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, textSize, getResources().getDisplayMetrics()));
         legendPaints = new ArrayList<>();
         for (int color : colors) {
@@ -67,6 +84,13 @@ public class TextLegend extends View {
             p.setColor(color);
             p.setAntiAlias(true);
             legendPaints.add(p);
+        }
+        legendBackgroundPaints = new ArrayList<>();
+        for (int color : colors) {
+            Paint p = new Paint();
+            p.setColor(manipulateAlpha(color, 0.3f));
+            p.setAntiAlias(true);
+            legendBackgroundPaints.add(p);
         }
         invalidate();
     }
@@ -85,13 +109,29 @@ public class TextLegend extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        if(backgroundGradient == null){
+            backgroundGradient = new LinearGradient(0f, 0f, getWidth(), 0f, manipulateAlphaArray(colors, 0.3f), new float[] { 0.0f, 0.33f, 0.66f, 1f }, Shader.TileMode.CLAMP);
+            randomBackgroundPaint.setShader(backgroundGradient);
+        }
+        canvas.drawRect(0, 0, getWidth(), getHeight(), randomBackgroundPaint);
+
+        dataLabelPaint.setColor(secondaryTextColor);
         for (int i = 0; i < labels.length; i++){
             float xFrom = i/xMax * getWidth();
             float xTo = (i+1)/xMax * getWidth();
             currentRectPos.set(xFrom, 0, xTo, getHeight());
-            canvas.drawRect(currentRectPos, legendPaints.get(i % legendPaints.size()));
-            Paint.FontMetrics metric = dataLabelPaint.getFontMetrics();
-            canvas.drawText(labels[i], currentRectPos.centerX(), currentRectPos.centerY()+metric.descent, dataLabelPaint);
+            if(i != currentSelectedIndex) {
+                dataLabelPaint.getTextBounds(labels[i], 0, labels[i].length(), textBounds);
+                canvas.drawText(labels[i], currentRectPos.centerX(), currentRectPos.centerY() - textBounds.exactCenterY(), dataLabelPaint);
+            }
+            else {
+                dataLabelPaint.setColor(primaryTextColor);
+                float rad = getHeight()/2.0f;
+                canvas.drawRoundRect(currentRectPos, rad, rad, legendPaints.get(i % legendPaints.size()));
+                dataLabelPaint.getTextBounds(labels[i], 0, labels[i].length(), textBounds);
+                canvas.drawText(labels[i], currentRectPos.centerX(), currentRectPos.centerY() - textBounds.exactCenterY(), dataLabelPaint);
+                dataLabelPaint.setColor(secondaryTextColor);
+            }
         }
     }
 
@@ -102,6 +142,15 @@ public class TextLegend extends View {
         int green = Color.green(color);
         int blue = Color.blue(color);
         return Color.argb(alpha, red, green, blue);
+    }
+
+    public int getCurrentSelectedIndex() {
+        return currentSelectedIndex;
+    }
+
+    public void setCurrentSelectedIndex(int currentSelectedIndex) {
+        this.currentSelectedIndex = currentSelectedIndex;
+        invalidate();
     }
 }
 
