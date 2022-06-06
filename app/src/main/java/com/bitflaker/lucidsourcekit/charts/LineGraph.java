@@ -102,7 +102,7 @@ public class LineGraph extends View {
         dataLinePaint.setStrokeWidth(Tools.dpToPx(getContext(), lineWidth));
 
         colorsLineProgress = new int[] { Color.argb(0,0,0,0), Color.argb(185, 30, 30, 30) };
-        colorsFadeProgress = new int[] { Color.argb(255,255,255,255), Color.argb(0, 255, 255, 255) };
+        colorsFadeProgress = new int[] { Color.argb(255,255,255,255), Color.argb(100, 255, 255, 255) };
         colorsPolyProgress = new int[] {  Color.argb(0,0,0,0), Color.argb(200, 25, 25, 25) };
         emptyProgressTwoFields = new float[2];
         emptyProgressTwoFields2 = new float[2];
@@ -156,9 +156,11 @@ public class LineGraph extends View {
                 }
             }
             positions = Arrays.copyOf(positionsBuffer, positionsBuffer.length);
+            int[] colorsNew = new int[] { Color.rgb(45, 45, 55), Color.rgb(45, 45, 55) };
+//            lgradPolyPaint = new LinearGradient(0f, 0f, 0f, getHeight() - padding_bottom, manipulateAlphaArray(colorsNew, 0.9f), new float[] { 0, 1 }, Shader.TileMode.CLAMP);
             lgradPolyPaint = new LinearGradient(0f, 0f, 0f, getHeight() - padding_bottom, manipulateAlphaArray(colors, gradientOpacity), positionsBuffer, Shader.TileMode.CLAMP);
             lgradDataLine = new LinearGradient(0f, 0f, 0f, getHeight() - padding_bottom, colors, positionsBuffer, Shader.TileMode.MIRROR);
-            lgradOpacVert = new LinearGradient(0f, 0f, 0f, getHeight(), colorsFadeProgress, new float[] { 1-bottomLineSpacing/getHeight(), 1.0f }, Shader.TileMode.CLAMP);
+            lgradOpacVert = new LinearGradient(0f, 0f, 0f, getHeight(), colorsFadeProgress, new float[] { 0, 1.0f }, Shader.TileMode.CLAMP);
             csDataLine = new ComposeShader(lgradDataLine, lgradOpac, PorterDuff.Mode.SRC_ATOP);
             csPolyPaint = new ComposeShader(lgradPolyPaint, lgradOpac, PorterDuff.Mode.SRC_ATOP);
             csPolyPaint = new ComposeShader(csPolyPaint, lgradOpacVert, PorterDuff.Mode.MULTIPLY);
@@ -276,7 +278,7 @@ public class LineGraph extends View {
     public static int[] manipulateAlphaArray(int[] colors, float factor){
         int[] newColors = new int[colors.length];
         for (int i = 0; i < colors.length; i++) {
-            newColors[i] = manipulateAlpha(colors[i], factor);
+            newColors[i] = manipulateAlpha(/*Color.rgb(15,15,32)*/colors[i], factor);
         }
         return newColors;
     }

@@ -269,9 +269,9 @@ public class BinauralBeatsView extends Fragment {
             }
         });
 
-        progressLineGraph.setBottomLineSpacing(20);
+        progressLineGraph.setBottomLineSpacing(10);
         progressLineGraph.setDrawGradient(true);
-        progressLineGraph.setGradientOpacity(0.35f);
+        progressLineGraph.setGradientOpacity(0.25f);
         progressLineGraph.setDrawProgressIndicator(false);
 
         String[] labels = new String[] { "β", "α", "θ", "δ" };

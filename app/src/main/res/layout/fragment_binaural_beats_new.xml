@@ -120,14 +120,79 @@
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-        <com.bitflaker.lucidsourcekit.charts.LineGraph
-            android:id="@+id/lg_binaural_time_progress"
+<!--        272730-->
+
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginTop="55dp"
+            android:layout_marginBottom="55dp"
             android:layout_above="@+id/ll_binaural_controls_container"
             android:layout_below="@+id/ll_current_binaural_freq"
-            android:layout_marginTop="35dp"
-            android:layout_marginBottom="35dp" />
+            app:strokeColor="#2C2C35"
+            app:strokeWidth="2dp"
+            app:cardElevation="1dp"
+            app:cardBackgroundColor="?attr/backgroundColor"
+            app:cardCornerRadius="@dimen/cardRadius">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_marginTop="15dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="36dp"
+                        android:minWidth="36dp"
+                        android:padding="8dp"
+                        android:src="@drawable/frequency_symbol"
+                        android:background="@drawable/rounded_spinner"
+                        app:tint="#218DD5"
+                        app:backgroundTint="#1A008EFF"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/txt_carrier_frequency"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:text="445 Hz"
+                            android:fontFamily="sans-serif-medium"
+                            android:textColor="?attr/primaryTextColor"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12sp"
+                            android:text="Carrier frequency"
+                            android:textColor="?attr/secondaryTextColor"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <com.bitflaker.lucidsourcekit.charts.LineGraph
+                    android:id="@+id/lg_binaural_time_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="-26dp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
             android:id="@+id/ll_binaural_controls_container"
@@ -139,7 +204,7 @@
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="45dp"
                 android:layout_weight="1"
                 app:flexDirection="column"
                 app:justifyContent="space_evenly">
@@ -167,7 +232,7 @@
                         android:id="@+id/txt_curr_track_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="3dp"
                         android:text="This is an example description of an example title for a binaural beat that was selected and is being played"
                         android:textAlignment="center"
                         android:textColor="?attr/secondaryTextColor"
@@ -193,20 +258,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/txt_carrier_frequency"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="3dp"
-                    android:text="865 Hz"
-                    android:textColor="?attr/secondaryTextColor" />
-
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="15dp"
+                    android:layout_marginBottom="10dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -229,7 +285,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:layout_marginBottom="35dp"
+                    android:layout_marginBottom="30dp"
                     android:gravity="center"
                     android:orientation="horizontal">
 
