@@ -379,4 +379,21 @@ public class Tools {
         Drawable iconQuality4 = context.getResources().getDrawable(R.drawable.ic_baseline_stars_24, context.getTheme());
         return new Drawable[] { iconQuality1, iconQuality2, iconQuality3, iconQuality4 };
     }
+
+    public static void runResourceStatsPrinter() {
+        new Thread(() -> {
+            while(true) {
+                final Runtime runtime = Runtime.getRuntime();
+                final long usedMemInMB=(runtime.totalMemory() - runtime.freeMemory()) / 1048576L;
+                final long maxHeapSizeInMB=runtime.maxMemory() / 1048576L;
+                final long availHeapSizeInMB = maxHeapSizeInMB - usedMemInMB;
+                System.out.printf(Locale.ENGLISH, "Resource-Usage: [%d] [%d] [%d]%n", usedMemInMB, maxHeapSizeInMB, availHeapSizeInMB);
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 }

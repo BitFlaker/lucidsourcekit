@@ -39,7 +39,7 @@ public class TextLegend extends View {
     private String[] labels;
     private RectF currentRectPos = new RectF(-1, -1, -1, -1);
     private Rect textBounds;
-    private int currentSelectedIndex = 2;
+    private int currentSelectedIndex = -1;
 
     public TextLegend(Context context) {
         super(context);

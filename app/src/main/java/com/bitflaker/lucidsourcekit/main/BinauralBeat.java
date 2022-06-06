@@ -3,15 +3,14 @@ package com.bitflaker.lucidsourcekit.main;
 import com.bitflaker.lucidsourcekit.charts.FrequencyList;
 
 public class BinauralBeat {
-    private final String title, description, location;
+    private final String title, description;
     private final FrequencyList frequencies;
     private final float baseFrequency;
 
-    public BinauralBeat(String title, String description, float baseFrequency, String location, FrequencyList frequencies) {
+    public BinauralBeat(String title, String description, float baseFrequency, FrequencyList frequencies) {
         this.title = title;
         this.description = description;
         this.baseFrequency = baseFrequency;
-        this.location = location;
         this.frequencies = frequencies;
     }
 
@@ -21,10 +20,6 @@ public class BinauralBeat {
 
     public String getDescription() {
         return description;
-    }
-
-    public String getLocation() {
-        return location;
     }
 
     public FrequencyList getFrequencyList() {

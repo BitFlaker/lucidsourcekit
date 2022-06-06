@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
@@ -23,7 +21,6 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.slider.Slider;
 
@@ -33,15 +30,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class EditGoals extends AppCompatActivity {
     private RecyclerView editGoals;
-    private RelativeLayout editGoalsDialog;
-    private ImageButton goalsEditTappedOutside;
-    private MaterialButton storeGoal, removeGoal;
-    private Chip diffEasy, diffModerate, diffHard;
-    private EditText goalText;
     private FloatingActionButton addGoal;
     private RecyclerViewAdapterEditGoals editGoalsAdapter;
-    private ImageView backgroundUnfocus;
-    private TextView goalsEditAddTitle;
     private MainDatabase db;
     private boolean isInSelectionMode;
 
@@ -54,17 +44,7 @@ public class EditGoals extends AppCompatActivity {
         db = MainDatabase.getInstance(this);
 
         editGoals = findViewById(R.id.rcv_edit_goals);
-        editGoalsDialog = findViewById(R.id.rl_edit_goals);
-        goalsEditTappedOutside = findViewById(R.id.btn_goals_edit_tapped_outside);
-        goalText = findViewById(R.id.txt_goal_text_enter);
-        diffEasy = findViewById(R.id.chp_diff_easy);
-        diffModerate = findViewById(R.id.chp_diff_moderate);
-        diffHard = findViewById(R.id.chp_diff_hard);
-        removeGoal = findViewById(R.id.btn_remove_goal);
-        storeGoal = findViewById(R.id.btn_store_goal);
         addGoal = findViewById(R.id.btn_add_goal);
-        goalsEditAddTitle = findViewById(R.id.txt_goal_edit_add);
-        backgroundUnfocus = findViewById(R.id.img_goals_edit_background_unfocus);
 
         setupRecycleView();
 

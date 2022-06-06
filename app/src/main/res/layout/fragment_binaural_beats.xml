@@ -26,42 +26,189 @@
         android:layout_height="match_parent"
         android:layout_below="@id/txt_binaural_beats_heading">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/crd_legend"
-            android:layout_width="280dp"
-            android:layout_height="30dp"
+        <LinearLayout
+            android:id="@+id/ll_current_binaural_freq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
-            app:cardElevation="@dimen/cardElevationRegular"
-            app:cardCornerRadius="@dimen/cardRadius"
-            app:cardBackgroundColor="?attr/slightElevated"
-            android:visibility="gone">
+            android:divider="@drawable/divider_medium"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:showDividers="middle">
 
-            <com.bitflaker.lucidsourcekit.charts.TextLegend
-                android:id="@+id/tl_binaural_legend"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"/>
-        </com.google.android.material.card.MaterialCardView>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <com.bitflaker.lucidsourcekit.charts.LineGraph
-            android:id="@+id/lg_binaural_time_progress"
+                <TextView
+                    android:id="@+id/txt_current_frequency_greek_letter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTintMode="src_in"
+                    android:fontFamily="sans-serif-thin"
+                    android:gravity="center"
+                    android:text="δ"
+                    android:textAlignment="center"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="48sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:minWidth="110dp"
+                    android:layout_marginStart="12dp"
+                    android:gravity="start"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="4"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txt_current_binaural_frequency"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-thin"
+                            android:gravity="center"
+                            android:text="0.00"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="32sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:fontFamily="sans-serif"
+                            android:gravity="bottom"
+                            android:text="Hz"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txt_current_frequency_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="2"
+                        android:fontFamily="sans-serif"
+                        android:paddingStart="4dp"
+                        android:text="Delta"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/crd_legend"
+                android:layout_width="180dp"
+                android:layout_height="30dp"
+                android:visibility="visible"
+                app:cardBackgroundColor="?attr/slightElevated"
+                app:cardCornerRadius="@dimen/cardRadius"
+                app:cardElevation="@dimen/cardElevationRegular">
+
+                <com.bitflaker.lucidsourcekit.charts.TextLegend
+                    android:id="@+id/tl_binaural_legend"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp" />
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+<!--        272730-->
+
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/crd_legend"
-            android:layout_marginTop="30dp" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginTop="55dp"
+            android:layout_marginBottom="55dp"
+            android:layout_above="@+id/ll_binaural_controls_container"
+            android:layout_below="@+id/ll_current_binaural_freq"
+            app:strokeColor="#2C2C35"
+            app:strokeWidth="2dp"
+            app:cardElevation="1dp"
+            app:cardBackgroundColor="?attr/backgroundColor"
+            app:cardCornerRadius="@dimen/cardRadius">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/ll_bbp_carrier_freq_heading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="36dp"
+                        android:minWidth="36dp"
+                        android:padding="8dp"
+                        android:src="@drawable/frequency_symbol"
+                        android:background="@drawable/rounded_spinner"
+                        app:tint="#218DD5"
+                        app:backgroundTint="#1A008EFF"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/txt_carrier_frequency"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:text="No beat selected"
+                            android:fontFamily="sans-serif-medium"
+                            android:textColor="?attr/primaryTextColor"/>
+
+                        <TextView
+                            android:id="@+id/txt_bbp_carrier_freq_heading"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12sp"
+                            android:text="Carrier frequency"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:visibility="gone"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <com.bitflaker.lucidsourcekit.charts.LineGraph
+                    android:id="@+id/lg_binaural_time_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="-26dp"
+                    android:visibility="gone"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
             android:id="@+id/ll_binaural_controls_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="45dp"
                 android:layout_weight="1"
                 app:flexDirection="column"
                 app:justifyContent="space_evenly">
@@ -79,18 +226,19 @@
                         android:id="@+id/txt_curr_track_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text=""
+                        android:text="No binaural beat selected"
                         android:textAlignment="center"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/txt_curr_track_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text=""
+                        android:layout_marginTop="3dp"
+                        android:text="Click the playlist button down below in order to select a binaural beat"
                         android:textAlignment="center"
                         android:textColor="?attr/secondaryTextColor"
                         android:textSize="15sp" />
@@ -110,38 +258,19 @@
                 android:visibility="gone"
                 app:backgroundTint="?attr/slightElevated" />
 
-            <!--<TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="5dp"
-                android:drawableLeft="@drawable/ic_outline_info_24"
-                android:drawablePadding="15dp"
-                android:gravity="start"
-                android:text="To get the best experience from binaural beats, use headphones with a relatively good quality."
-                android:textColor="?attr/secondaryTextColor" />-->
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/txt_current_binaural_frequency"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="3dp"
-                    android:text="0,00 Hz"
-                    android:textColor="?attr/secondaryTextColor" />
-
                 <LinearLayout
+                    android:id="@+id/ll_bbp_time_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="15dp"
-                    android:orientation="horizontal">
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/txt_binaural_beats_timeline"
@@ -163,7 +292,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:layout_marginBottom="35dp"
+                    android:layout_marginBottom="30dp"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -220,6 +349,18 @@
                         android:src="@drawable/ic_baseline_queue_music_24"
                         app:tint="?attr/primaryTextColor" />
                 </LinearLayout>
+
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginLeft="10dp"-->
+<!--                    android:layout_marginRight="10dp"-->
+<!--                    android:layout_marginBottom="5dp"-->
+<!--                    android:drawableLeft="@drawable/ic_outline_info_24"-->
+<!--                    android:drawablePadding="15dp"-->
+<!--                    android:gravity="start"-->
+<!--                    android:text="To get the best experience from binaural beats, use headphones with a relatively good quality."-->
+<!--                    android:textColor="?attr/secondaryTextColor" />-->
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

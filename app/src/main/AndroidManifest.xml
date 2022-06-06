@@ -20,14 +20,6 @@
             android:name=".main.EditGoals"
             android:exported="false" />
         <activity
-            android:name=".main.ViewJournalEntry"
-            android:configChanges="orientation|screenSize"
-            android:exported="false" />
-        <activity
-            android:name=".main.createjournalentry.AddTextEntry"
-            android:configChanges="orientation|screenSize"
-            android:exported="false" />
-        <activity
             android:name=".setup.SetupViewer"
             android:configChanges="orientation"
             android:exported="true"
