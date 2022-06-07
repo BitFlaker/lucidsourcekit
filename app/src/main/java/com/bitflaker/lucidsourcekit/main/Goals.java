@@ -3,11 +3,12 @@ package com.bitflaker.lucidsourcekit.main;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.PointF;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.DisplayMetrics;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -15,7 +16,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -30,10 +31,12 @@ import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.charts.QuadraticFunctionCurve;
-import com.bitflaker.lucidsourcekit.charts.RangeProgress;
 import com.bitflaker.lucidsourcekit.charts.Speedometer;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
@@ -47,32 +50,37 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.slider.Slider;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Goals extends Fragment {
     private FloatingActionButton floatingEdit;
-    private RangeProgress goalsReachedYesterday, averageDifficultyLevelYesterday;
-    private QuadraticFunctionCurve difficultyLevel;
     private Speedometer difficultySpeedometer;
     private LinearLayout currentGoalsContainer;
     private MainDatabase db;
-    private TextView currentSelectionDiff, currentOccurrenceFreq, algoDetailsDiffTend, algoDetailsDiffSpread, algoDetailsAutoAdjust;
+    private TextView currentSelectionDiff, currentOccurrenceFreq, currentSelectionDiffPart, currentOccurrenceFreqPart, yGoalsAchieved, yGoalsAchievedPart, yGoalsDiff, yGoalsDiffPart, yGoalsOccFreq, yGoalsOccFreqPart, yGoalsSelDiff, yGoalsSelDiffPart;
     private ImageView selectionDiffComparison, occFreqComparison;
     private ImageButton reshuffle;
     private List<Goal> cachedGoals;
     private int cachedUpToDiffCount = -1;
-    private ExpandableListView expLView;
-    private ExpandableListViewAdapter expLViewAdapter;
     private MaterialButton adjustAlgorithm;
     private int newGoalAmount = -1, newSignificantDifficultyDigits = -1;
     private BottomSheetDialog bsdAdjustAlgorithm;
+    private RecyclerView quickScrollAdjustmentsContainer;
+    private ViewPager2 mainViewPager;
+
+    public Goals() {
+
+    }
+
+    public Goals(ViewPager2 mainViewPager) {
+        this.mainViewPager = mainViewPager;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_goals, container, false);
+        return inflater.inflate(R.layout.fragment_goals_new, container, false);
     }
 
     @Override
@@ -80,44 +88,40 @@ public class Goals extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         getView().findViewById(R.id.txt_goals_heading).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
-        goalsReachedYesterday = getView().findViewById(R.id.rp_goals_reached_yesterday);
-        averageDifficultyLevelYesterday = getView().findViewById(R.id.rp_goals_average_difficulty_yesterday);
         floatingEdit = getView().findViewById(R.id.btn_add_journal_entry);
         difficultySpeedometer = getView().findViewById(R.id.som_difficulty);
         currentGoalsContainer = getView().findViewById(R.id.ll_current_goals_container);
-        currentSelectionDiff = getView().findViewById(R.id.txt_current_selection_diff);
-        currentOccurrenceFreq = getView().findViewById(R.id.txt_occurrence_freq);
+        currentSelectionDiff = getView().findViewById(R.id.txt_current_selection_diff_full);
+        currentOccurrenceFreq = getView().findViewById(R.id.txt_occurrence_freq_full);
+        currentSelectionDiffPart = getView().findViewById(R.id.txt_current_selection_diff_part);
+        currentOccurrenceFreqPart = getView().findViewById(R.id.txt_occurrence_freq_part);
         selectionDiffComparison = getView().findViewById(R.id.img_selection_diff_comparison);
         occFreqComparison = getView().findViewById(R.id.img_occ_freq_comparison);
         reshuffle = getView().findViewById(R.id.btn_reshuffle_goals);
-        expLView = getView().findViewById(R.id.elv_suggestions);
         adjustAlgorithm = getView().findViewById(R.id.btn_adjust_algorithm);
-        algoDetailsDiffTend = getView().findViewById(R.id.txt_goal_algo_details_diff_tendency);
-        algoDetailsDiffSpread = getView().findViewById(R.id.txt_goal_algo_details_diff_spread);
-        algoDetailsAutoAdjust = getView().findViewById(R.id.txt_goal_algo_details_auto_adjust);
+        quickScrollAdjustmentsContainer = getView().findViewById(R.id.rcv_goal_advices);
+        yGoalsAchieved = getView().findViewById(R.id.txt_ygoals_achieved);
+        yGoalsAchievedPart = getView().findViewById(R.id.txt_ygoals_achieved_part);
+        yGoalsDiff = getView().findViewById(R.id.txt_ygoals_difficulty);
+        yGoalsDiffPart = getView().findViewById(R.id.txt_ygoals_difficulty_part);
+        yGoalsOccFreq = getView().findViewById(R.id.txt_ygoals_occ_freq);
+        yGoalsOccFreqPart = getView().findViewById(R.id.txt_ygoals_occ_freq_part);
+        yGoalsSelDiff = getView().findViewById(R.id.txt_ygoals_sel_difficulty);
+        yGoalsSelDiffPart = getView().findViewById(R.id.txt_ygoals_sel_difficulty_part);
+
+        @ColorInt int primVar = Tools.getAttrColor(R.attr.colorPrimaryVariant, getContext().getTheme());
+        List<GoalAdvice> advices = new ArrayList<>();
+        advices.add(new GoalAdvice("GOAL COUNT", "Increase Count", "Increase the goal count to 4 for more difficulty", R.drawable.ic_round_plus_one_24, Color.TRANSPARENT));
+        advices.add(new GoalAdvice("NOTIFICATIONS", "Notifications", "Enable notifications to be reminded to look out for the targets", R.drawable.ic_baseline_notifications_active_24, Color.TRANSPARENT));
+        advices.add(new GoalAdvice("SHUFFLE", "Shuffle Goals", "Shuffle the goals again to get new and possibly better ones", R.drawable.ic_baseline_shuffle_24, Color.TRANSPARENT));
+        advices.add(new GoalAdvice("DIFFICULTY", "Increase Difficulty", "Increase the target goal difficulty to 2.3 for a bigger challenge", R.drawable.ic_baseline_vertical_align_top_24, Color.TRANSPARENT));
+        RecyclerViewAdapterGoalAdvice goalAdvice = new RecyclerViewAdapterGoalAdvice(getContext(), advices);
+        quickScrollAdjustmentsContainer.setAdapter(goalAdvice);
+        quickScrollAdjustmentsContainer.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        quickScrollAdjustmentsContainer.addOnItemTouchListener(horizontalScrollViewPger);
+
         db = MainDatabase.getInstance(getContext());
-        List<String> headings = new ArrayList<>();
-        headings.add("");//Suggestions for improving");
-        HashMap<String, List<GoalSuggestion>> entries = new HashMap<>();
-        expLViewAdapter = new ExpandableListViewAdapter(getContext(), headings, entries);
-        expLView.setAdapter(expLViewAdapter);
-
-        List<GoalSuggestion> suggs = new ArrayList<>();
-        suggs.add(new GoalSuggestion(R.drawable.ic_baseline_notifications_active_24, "Activate notifications"));
-        suggs.add(new GoalSuggestion(R.drawable.ic_baseline_arrow_drop_up_24, "Increase goal count"));
-        suggs.add(new GoalSuggestion(R.drawable.ic_baseline_access_alarm_24, "Set recurring alarm"));
-
-        entries.put(headings.get(0), suggs);
-        expLView.deferNotifyDataSetChanged();
-        expLView.setDividerHeight(0);
-        setGroupIndicatorToRight();
-
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        algoDetailsDiffTend.setText(String.format(Locale.ENGLISH, "%.1f", preferences.getFloat("goal_difficulty_tendency", 1.8f)));
-        algoDetailsDiffSpread.setText(String.format(Locale.ENGLISH, "%.2f", preferences.getFloat("goal_difficulty_variance", 0.15f)));
-        algoDetailsAutoAdjust.setText(preferences.getBoolean("goal_difficulty_auto_adjust", true) ? "ENABLED" : "DISABLED"); // TODO: extract string resource
-
         adjustAlgorithm.setOnClickListener(e -> {
             if (cachedGoals == null) {
                 db.getGoalDao().getAllSingle().subscribe((goals, throwable2) -> {
@@ -129,16 +133,6 @@ public class Goals extends Fragment {
                 setupAdjustAlgorithmSheet(preferences);
             }
         });
-
-        expLView.setOnGroupExpandListener(groupPosition -> {
-            int height = Tools.dpToPx(getContext(), Math.max(50, Tools.pxToDp(getContext(), expLView.getMeasuredHeight()) - 36));
-            for (int i = 0; i < expLViewAdapter.getChildrenCount(groupPosition); i++) {
-                height += Tools.dpToPx(getContext(), 58)+2; // TODO remove hardcoded height of entries (58dp)
-                height += expLView.getDividerHeight();
-            }
-            expLView.getLayoutParams().height = height;
-        });
-        expLView.setOnGroupCollapseListener(groupPosition -> expLView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT);
 
         Pair<Long, Long> todayTimeSpan = Tools.getTimeSpanFrom(0, false);
         updateStats(todayTimeSpan);
@@ -220,11 +214,6 @@ public class Goals extends Fragment {
             }
 
             editor.apply();
-
-            algoDetailsDiffTend.setText(String.format(Locale.ENGLISH, "%.1f", preferences.getFloat("goal_difficulty_tendency", 1.8f)));
-            algoDetailsDiffSpread.setText(String.format(Locale.ENGLISH, "%.2f", preferences.getFloat("goal_difficulty_variance", 0.15f)));
-            algoDetailsAutoAdjust.setText(preferences.getBoolean("goal_difficulty_auto_adjust", true) ? "ENABLED" : "DISABLED"); // TODO: extract string resource
-
             bsdAdjustAlgorithm.dismiss();
         });
 
@@ -236,7 +225,6 @@ public class Goals extends Fragment {
             LinearLayout expanded = bsdAdjustAlgorithm.findViewById(R.id.ll_advanced_adjustments);
             int visibility = (expanded.getVisibility() + View.GONE) % (View.GONE * 2);
             expanded.setVisibility(visibility);
-//            bsdAdjustAlgorithm.findViewById(R.id.vw_divider_advanced_algo).setVisibility(visibility);
             switch (visibility){
                 case View.VISIBLE:
                     Drawable contract = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_keyboard_arrow_up_24, getContext().getTheme());
@@ -284,6 +272,21 @@ public class Goals extends Fragment {
                     break;
                 case MotionEvent.ACTION_UP:
                     v.getParent().requestDisallowInterceptTouchEvent(false);
+                    break;
+            }
+
+            v.onTouchEvent(event);
+            return true;
+        };
+    }
+
+    @NonNull
+    private View.OnTouchListener preventScrollOnTouchScroll() {
+        return (v, event) -> {
+            int action = event.getAction();
+            switch (action) {
+                case MotionEvent.ACTION_MOVE:
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
                     break;
             }
 
@@ -348,22 +351,14 @@ public class Goals extends Fragment {
         return cachedGoals.size();
     }
 
-    private void setGroupIndicatorToRight() {
-        DisplayMetrics dm = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-        expLView.setIndicatorBounds(dm.widthPixels - getDipsFromPixel(35), dm.widthPixels - getDipsFromPixel(5));
-    }
-
-    public int getDipsFromPixel(float pixels) {
-        return (int) (pixels * getResources().getDisplayMetrics().density + 250.5f);
-    }
-
    private void updateStats(Pair<Long, Long> todayTimeSpan) {
        Pair<Long, Long> pastTimeSpan = Tools.getTimeSpanFrom(1, false);
        db.getShuffleHasGoalDao().getShuffleFrom(todayTimeSpan.first, todayTimeSpan.second).subscribe((detailedShuffleHasGoals, throwable) -> {
            List<AppCompatCheckBox> goalChecks = new ArrayList<>();
            float currentDifficulty;
            AtomicReference<Float> strAvgDiff = new AtomicReference<>((float) 0);
+           AtomicReference<Integer> yesterdayCountAtmc = new AtomicReference<>(0);
+           AtomicReference<Integer> achievedCountAtmc = new AtomicReference<>(0);
            AtomicReference<Float> yesterdaysDifficulty = new AtomicReference<>((float) 0);
            AtomicReference<Float> currentOccFreq = new AtomicReference<>((float) 0);
            AtomicReference<Float> pastOccFreq = new AtomicReference<>((float) 0);
@@ -377,13 +372,17 @@ public class Goals extends Fragment {
                chk.setCompoundDrawablesRelativeWithIntrinsicBounds(circle, circle, null, circle);
                chk.setCompoundDrawableTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), android.R.color.transparent, getContext().getTheme())));
                chk.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
+               chk.setHighlightColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
                chk.setCompoundDrawablePadding(Tools.dpToPx(getContext(), 15));
                chk.setText(detailedShuffleHasGoal.description);
                chk.setChecked(detailedShuffleHasGoal.achieved);
+               chk.setTextColor(Tools.getAttrColor(detailedShuffleHasGoal.achieved ? R.attr.tertiaryTextColor : R.attr.primaryTextColor, getContext().getTheme()));
+               chk.setTypeface(Typeface.create(chk.getTypeface(), detailedShuffleHasGoal.achieved ? Typeface.ITALIC : Typeface.NORMAL));
                chk.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
                chk.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-                   System.out.println(detailedShuffleHasGoal.shuffleId + " | " + detailedShuffleHasGoal.goalId + " | " + isChecked);
                    db.getShuffleHasGoalDao().setAchievedState(detailedShuffleHasGoal.shuffleId, detailedShuffleHasGoal.goalId, isChecked);
+                   chk.setTextColor(Tools.getAttrColor(isChecked ? R.attr.tertiaryTextColor : R.attr.primaryTextColor, getContext().getTheme()));
+                   chk.setTypeface(Typeface.create(chk.getTypeface(), isChecked ? Typeface.ITALIC : Typeface.NORMAL));
                });
                goalChecks.add(chk);
                totalDifficultySum += detailedShuffleHasGoal.difficulty;
@@ -404,13 +403,9 @@ public class Goals extends Fragment {
                        yesterdayCount++;
                    }
                    float yesterdayDiff = yesterdaysTotalDifficultySum / yesterdayCount;
+                   yesterdayCountAtmc.set(yesterdayCount);
+                   achievedCountAtmc.set(achievedCount);
                    yesterdaysDifficulty.set(yesterdayDiff);
-                   if(!goalsReachedYesterday.isInitialized() || !averageDifficultyLevelYesterday.isInitialized()) {
-                       // TODO: replace with string resources
-                       goalsReachedYesterday.setData(pastShuffleGoals.size(), achievedCount, "GOALS REACHED", null, String.format(Locale.ENGLISH, "%d/%d", achievedCount, pastShuffleGoals.size()));
-                       averageDifficultyLevelYesterday.setData(3, yesterdayDiff, "AVERAGE DIFFICULTY LEVEL", null, String.format(Locale.ENGLISH, "%.2f", yesterdayDiff));
-                       setAdviceData(pastShuffleGoals.size(), yesterdayDiff, achievedCount);
-                   }
                    db.getShuffleHasGoalDao().getAmountOfTotalDrawnGoals().subscribe((shuffleCount, throwable3) -> {
                        List<Integer> currentGoalIds = new ArrayList<>();
                        List<Integer> pastGoalIds = new ArrayList<>();
@@ -445,32 +440,58 @@ public class Goals extends Fragment {
            });
            getActivity().runOnUiThread(() -> {
                // TODO: hide loading indicators
-               currentGoalsContainer.removeViews(1, currentGoalsContainer.getChildCount() - 1);
+               currentGoalsContainer.removeAllViews();
                for (AppCompatCheckBox chk : goalChecks) {
                    currentGoalsContainer.addView(chk);
                }
                difficultySpeedometer.setData(25, currentDifficulty, 3);
-               currentSelectionDiff.setText(String.format("%.1f %%", 100 * currentDifficulty / strAvgDiff.get()));
+
+               String[] numParts = getDecimalNumParts(100 * (float)achievedCountAtmc.get() / yesterdayCountAtmc.get(), 2);
+               yGoalsDiff.setText(String.format(Locale.ENGLISH, "%.1f", yesterdaysDifficulty.get()));
+               yGoalsDiffPart.setText(String.format(Locale.ENGLISH, "%s%s", "/", yesterdayCountAtmc.get()));
+               yGoalsAchieved.setText(numParts[0]);
+               yGoalsAchievedPart.setText(String.format(Locale.ENGLISH, "%s%s", numParts[1], "%"));
+
+               // #### selection difficulty setup
+               numParts = getDecimalNumParts(100 * currentDifficulty / strAvgDiff.get(), 1);
+               currentSelectionDiff.setText(numParts[0]);
+               currentSelectionDiffPart.setText(String.format(Locale.ENGLISH, "%s%s", numParts[1], "%"));
                if(yesterdaysDifficulty.get() < currentDifficulty) {
-                   selectionDiffComparison.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_arrow_drop_up_24, getContext().getTheme()));
-                   selectionDiffComparison.setImageTintList(Tools.getAttrColorStateList(R.attr.colorSuccess, getContext().getTheme()));
+                   selectionDiffComparison.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_arrow_downward_24, getContext().getTheme()));
                }
                else {
-                   selectionDiffComparison.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_arrow_drop_down_24, getContext().getTheme()));
-                   selectionDiffComparison.setImageTintList(Tools.getAttrColorStateList(R.attr.colorError, getContext().getTheme()));
+                   selectionDiffComparison.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_arrow_upward_24, getContext().getTheme()));
                }
-               currentOccurrenceFreq.setText(String.format("%.2f %%", currentOccFreq.get()));
+               selectionDiffComparison.setImageTintList(Tools.getAttrColorStateList(R.attr.colorSecondaryVariant, getContext().getTheme()));
+               numParts = getDecimalNumParts(100 * yesterdaysDifficulty.get() / strAvgDiff.get(), 1);
+               yGoalsSelDiff.setText(numParts[0]);
+               yGoalsSelDiffPart.setText(String.format(Locale.ENGLISH, "%s%s", numParts[1], "%"));
+
+               // #### occurrence frequency setup
+               numParts = getDecimalNumParts(currentOccFreq.get(), 2);
+               currentOccurrenceFreq.setText(numParts[0]);
+               currentOccurrenceFreqPart.setText(String.format(Locale.ENGLISH, "%s%s", numParts[1], "%"));
                if(pastOccFreq.get() < currentOccFreq.get()) {
-                   occFreqComparison.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_arrow_drop_up_24, getContext().getTheme()));
-                   occFreqComparison.setImageTintList(Tools.getAttrColorStateList(R.attr.colorSuccess, getContext().getTheme()));
+                   occFreqComparison.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_arrow_downward_24, getContext().getTheme()));
                }
                else {
-                   occFreqComparison.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_arrow_drop_down_24, getContext().getTheme()));
-                   occFreqComparison.setImageTintList(Tools.getAttrColorStateList(R.attr.colorError, getContext().getTheme()));
+                   occFreqComparison.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_arrow_upward_24, getContext().getTheme()));
                }
+               occFreqComparison.setImageTintList(Tools.getAttrColorStateList(R.attr.colorSecondaryVariant, getContext().getTheme()));
+               numParts = getDecimalNumParts(pastOccFreq.get(), 2);
+               yGoalsOccFreq.setText(numParts[0]);
+               yGoalsOccFreqPart.setText(String.format(Locale.ENGLISH, "%s%s", numParts[1], "%"));
            });
        });
    }
+
+    private String[] getDecimalNumParts(float value, int decimals) {
+        String[] numParts = new String[2];
+        int fullSelDiff = (int)value;
+        numParts[0] = String.format(Locale.ENGLISH, "%d", fullSelDiff);
+        numParts[1] = Float.isNaN(value % fullSelDiff) ? "" : String.format(Locale.ENGLISH, "%." + decimals + "f", value % fullSelDiff).substring(1);
+        return numParts;
+    }
 
     private void setAdviceData(int pastGoalCount, float pastDifficulty, int achievedCount) {
         // TODO: check values and give appropriate advice in shortcut form of dropdown menu
@@ -492,6 +513,38 @@ public class Goals extends Fragment {
             });
         });
     }
+
+    private RecyclerView.OnItemTouchListener horizontalScrollViewPger = new RecyclerView.OnItemTouchListener() {
+        int lastX = 0;
+        @Override
+        public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+            switch (e.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    lastX = (int) e.getX();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    boolean isScrollingRight = e.getX() < lastX;
+                    if ((isScrollingRight && ((LinearLayoutManager) quickScrollAdjustmentsContainer.getLayoutManager()).findLastCompletelyVisibleItemPosition() == quickScrollAdjustmentsContainer.getAdapter().getItemCount() - 1) ||
+                            (!isScrollingRight && ((LinearLayoutManager) quickScrollAdjustmentsContainer.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0)) {
+                        mainViewPager.setUserInputEnabled(true);
+                    } else {
+                        mainViewPager.setUserInputEnabled(false);
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    lastX = 0;
+                    mainViewPager.setUserInputEnabled(true);
+                    break;
+            }
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) { }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) { }
+    };
 
     private enum NumberPickableFields {
         GOAL_COUNT,

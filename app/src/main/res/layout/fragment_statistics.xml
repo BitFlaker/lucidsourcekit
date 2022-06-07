@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/txt_stats_heading"
-        android:layout_marginTop="10dp">
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -294,12 +294,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="35dp"
                         android:layout_marginBottom="35dp"
-                        android:text="@string/not_enough_data_available"
-                        android:fontFamily="sans-serif-medium"
-                        android:textSize="14sp"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textAlignment="center"
                         android:drawablePadding="10dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/not_enough_data_available"
+                        android:textAlignment="center"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="14sp"
                         android:visibility="gone"
                         app:drawableTopCompat="@drawable/ic_baseline_stream_24" />
                 </LinearLayout>
@@ -338,9 +338,9 @@
                         android:id="@+id/ll_stat_avg_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
                         android:divider="@drawable/divider_medium"
                         android:gravity="top"
-                        android:layout_marginTop="15dp"
                         android:orientation="vertical"
                         android:showDividers="middle">
 
@@ -371,12 +371,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="35dp"
                         android:layout_marginBottom="35dp"
-                        android:text="@string/not_enough_data_available"
-                        android:fontFamily="sans-serif-medium"
-                        android:textSize="14sp"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textAlignment="center"
                         android:drawablePadding="10dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/not_enough_data_available"
+                        android:textAlignment="center"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="14sp"
                         android:visibility="gone"
                         app:drawableTopCompat="@drawable/ic_baseline_stream_24" />
                 </LinearLayout>
@@ -423,12 +423,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="35dp"
                         android:layout_marginBottom="35dp"
-                        android:text="@string/not_enough_data_available"
-                        android:fontFamily="sans-serif-medium"
-                        android:textSize="14sp"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textAlignment="center"
                         android:drawablePadding="10dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/not_enough_data_available"
+                        android:textAlignment="center"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="14sp"
                         android:visibility="gone"
                         app:drawableTopCompat="@drawable/ic_baseline_stream_24" />
                 </LinearLayout>
@@ -475,12 +475,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="35dp"
                         android:layout_marginBottom="35dp"
-                        android:text="@string/not_enough_data_available"
-                        android:fontFamily="sans-serif-medium"
-                        android:textSize="14sp"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textAlignment="center"
                         android:drawablePadding="10dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/not_enough_data_available"
+                        android:textAlignment="center"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="14sp"
                         android:visibility="gone"
                         app:drawableTopCompat="@drawable/ic_baseline_stream_24" />
                 </LinearLayout>
@@ -527,12 +527,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="35dp"
                         android:layout_marginBottom="35dp"
-                        android:text="@string/not_enough_data_available"
-                        android:fontFamily="sans-serif-medium"
-                        android:textSize="14sp"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textAlignment="center"
                         android:drawablePadding="10dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/not_enough_data_available"
+                        android:textAlignment="center"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="14sp"
                         android:visibility="gone"
                         app:drawableTopCompat="@drawable/ic_baseline_stream_24" />
                 </LinearLayout>
@@ -571,10 +571,10 @@
                         android:id="@+id/ll_goals_reached"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:showDividers="middle"
                         android:layout_marginTop="15dp"
-                        android:divider="@drawable/divider_medium">
+                        android:divider="@drawable/divider_medium"
+                        android:orientation="vertical"
+                        android:showDividers="middle">
 
                         <com.bitflaker.lucidsourcekit.charts.RangeProgress
                             android:id="@+id/rp_avg_goal_diff"
@@ -593,12 +593,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="35dp"
                         android:layout_marginBottom="35dp"
-                        android:text="@string/not_enough_data_available"
-                        android:fontFamily="sans-serif-medium"
-                        android:textSize="14sp"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textAlignment="center"
                         android:drawablePadding="10dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/not_enough_data_available"
+                        android:textAlignment="center"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="14sp"
                         android:visibility="gone"
                         app:drawableTopCompat="@drawable/ic_baseline_stream_24" />
                 </LinearLayout>
@@ -637,8 +637,8 @@
                         android:id="@+id/ll_most_used_tags"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginTop="15dp">
+                        android:layout_marginTop="15dp"
+                        android:orientation="vertical">
 
                     </LinearLayout>
 
@@ -648,12 +648,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="35dp"
                         android:layout_marginBottom="35dp"
-                        android:text="@string/not_enough_data_available"
-                        android:fontFamily="sans-serif-medium"
-                        android:textSize="14sp"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textAlignment="center"
                         android:drawablePadding="10dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/not_enough_data_available"
+                        android:textAlignment="center"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="14sp"
                         android:visibility="gone"
                         app:drawableTopCompat="@drawable/ic_baseline_stream_24" />
                 </LinearLayout>

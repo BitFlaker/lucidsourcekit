@@ -3,6 +3,6 @@
 
     <item
         android:drawable="@drawable/ic_baseline_circle_24"
-        android:width="12dp"
-        android:height="12dp" />
+        android:width="3dp"
+        android:height="3dp" />
 </layer-list >

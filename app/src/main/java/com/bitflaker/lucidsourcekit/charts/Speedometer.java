@@ -19,6 +19,7 @@ import java.util.Locale;
 
 public class Speedometer extends View {
     private final Paint dataLabelPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+    private final Paint dataLabelPaintOf = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
     private final Paint dataLinePaint = new Paint();
     private final Paint dataLinePaintCap = new Paint();
     private float lineWidth;
@@ -27,12 +28,13 @@ public class Speedometer extends View {
     private float percentage;
     private float circlePercentage;
     private SweepGradient gradientShader = null;
-    private Rect textBounds;
+    private Rect textBounds, textBoundsOf;
     private int fontSizeLarge;
     private int fontSizeMedium;
     private int fontSizeSmall;
     @ColorInt private int primaryTextColor;
     @ColorInt private int secondaryTextColor;
+    @ColorInt private int trackColor;
 
     public Speedometer(Context context) {
         super(context);
@@ -53,16 +55,23 @@ public class Speedometer extends View {
         dataLinePaintCap.setStyle(Paint.Style.FILL);
         primaryTextColor = Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme());
         secondaryTextColor = Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme());
+        trackColor = Tools.getAttrColor(R.attr.slightElevated, getContext().getTheme());
         dataLinePaintCap.setColor(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()));
-        dataLabelPaint.setColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
-        fontSizeLarge = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 26, getResources().getDisplayMetrics());
+        fontSizeLarge = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 28, getResources().getDisplayMetrics());
         fontSizeMedium = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 16, getResources().getDisplayMetrics());
         fontSizeSmall = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics());
+        dataLabelPaint.setColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
         dataLabelPaint.setTextSize(fontSizeLarge);
         dataLabelPaint.setTextAlign(Paint.Align.LEFT);
         dataLabelPaint.setFakeBoldText(true);
         dataLabelPaint.setAntiAlias(true);
+        dataLabelPaintOf.setColor(Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme()));
+        dataLabelPaintOf.setTextSize(fontSizeMedium);
+        dataLabelPaintOf.setTextAlign(Paint.Align.LEFT);
+        dataLabelPaintOf.setFakeBoldText(false);
+        dataLabelPaintOf.setAntiAlias(true);
         textBounds = new Rect();
+        textBoundsOf = new Rect();
     }
 
     public void setData(float lineWidth, float value, float maxValue) {
@@ -86,7 +95,7 @@ public class Speedometer extends View {
         float topOffset = (paddedHeight - smallestRadius);
 
         if(gradientShader == null) {
-            gradientShader = new SweepGradient(getWidth() / 2.0f, paddedHeight, new int[] { Tools.getAttrColor(R.attr.slightElevated, getContext().getTheme()), Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), Tools.getAttrColor(R.attr.slightElevated, getContext().getTheme()) }, new float[] { 0.5f, 0.5f, circlePercentage, circlePercentage });
+            gradientShader = new SweepGradient(getWidth() / 2.0f, paddedHeight, new int[] { trackColor, Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), trackColor }, new float[] { 0.5f, 0.5f, circlePercentage, circlePercentage });
             dataLinePaint.setShader(gradientShader);
         }
 
@@ -101,7 +110,8 @@ public class Speedometer extends View {
         canvas.drawCircle(leftOffset, paddedHeight, lineWidth/2.0f, dataLinePaintCap);
         canvas.drawCircle((float)xVal, (float)yVal, lineWidth/2.0f, dataLinePaintCap);
 
-        String text = String.format(Locale.ENGLISH, "%.1f",value) + " / " + maxValue;   // TODO: , and . as separators have to be taken into consideration
+        String text = String.format(Locale.ENGLISH, "%.1f",value);   // TODO: , and . as separators have to be taken into consideration
+        String textOf = " / " + maxValue;
         String[] descriptions = "Today's goals combined\ndifficulty rating".split("\n");    // TODO: extract string resource
         int accHeight = 0;
 
@@ -109,9 +119,11 @@ public class Speedometer extends View {
         dataLabelPaint.setFakeBoldText(true);
         dataLabelPaint.setColor(primaryTextColor);
         dataLabelPaint.getTextBounds(text, 0, text.length(), textBounds);
+        dataLabelPaintOf.getTextBounds(textOf, 0, textOf.length(), textBoundsOf);
 
         float bigLabelPos = paddedHeight - textBounds.height() - 30;
-        canvas.drawText(text, getWidth()/2.0f - textBounds.exactCenterX(), bigLabelPos, dataLabelPaint);
+        canvas.drawText(text, getWidth()/2.0f - textBounds.exactCenterX() - textBoundsOf.exactCenterX(), bigLabelPos, dataLabelPaint);
+        canvas.drawText(textOf, getWidth()/2.0f + textBounds.exactCenterX() - textBoundsOf.exactCenterX(), bigLabelPos, dataLabelPaintOf);
 
         dataLabelPaint.setTextSize(fontSizeSmall);
         dataLabelPaint.setFakeBoldText(false);
@@ -120,7 +132,7 @@ public class Speedometer extends View {
         accHeight += textBounds.height() / 2.0f;
         for (String description : descriptions) {
             dataLabelPaint.getTextBounds(description, 0, description.length(), textBounds);
-            canvas.drawText(description, getWidth() / 2.0f - textBounds.exactCenterX(), bigLabelPos + accHeight + 28, dataLabelPaint);
+            canvas.drawText(description, getWidth() / 2.0f - textBounds.exactCenterX(), bigLabelPos + accHeight + 36, dataLabelPaint);
             accHeight += textBounds.height() + 10;
         }
     }

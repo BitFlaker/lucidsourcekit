@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -122,7 +123,14 @@ public class BinauralBeatsView extends Fragment {
                 progressLineGraph.setData(binauralBeat.getFrequencyList(), 32, 4f, 0f, false, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
                 binBeatPlayer.setOnTrackProgressListener(((currentBinauralBeat, progress) -> {
                     setDataForProgress(currentBinauralBeat, progress);
-                    getActivity().runOnUiThread(() -> progressLineGraph.updateProgress(progress));
+                    FragmentActivity fragAct = getActivity();
+                    if (fragAct != null) {
+                        fragAct.runOnUiThread(() -> progressLineGraph.updateProgress(progress));
+                        fragAct.runOnUiThread(() -> progressLineGraph.updateProgress(progress));
+                    }
+                    else {
+                        binBeatPlayer.stop();
+                    }
                 }));
                 binBeatPlayer.setOnTrackFinishedListener(currentBinauralBeat -> {
                     playingFinished = true;
@@ -269,13 +277,19 @@ public class BinauralBeatsView extends Fragment {
         int stageIndex = Brainwaves.getStageIndex(currFreq);
         String greekLetter = Brainwaves.getStageFrequencyGreekLetters()[stageIndex];
         String greekLetterName = Brainwaves.getStageFrequencyGreekLetterNames()[stageIndex];
-        getActivity().runOnUiThread(() -> {
-            freqGreekLetter.setText(greekLetter);
-            freqGreekLetterName.setText(greekLetterName);
-            binauralLegend.setCurrentSelectedIndex(stageIndex);
-            binauralFrequency.setText(String.format(Locale.ENGLISH, "%.2f", currFreq));
-            binauralTimeline.setText(getTimeStringFromSeconds(progress));
-        });
+        FragmentActivity fragAct = getActivity();
+        if (fragAct != null) {
+            fragAct.runOnUiThread(() -> {
+                freqGreekLetter.setText(greekLetter);
+                freqGreekLetterName.setText(greekLetterName);
+                binauralLegend.setCurrentSelectedIndex(stageIndex);
+                binauralFrequency.setText(String.format(Locale.ENGLISH, "%.2f", currFreq));
+                binauralTimeline.setText(getTimeStringFromSeconds(progress));
+            });
+        }
+        else {
+            binBeatPlayer.stop();
+        }
     }
 
     private String getTimeStringFromSeconds(int totalSeconds) {

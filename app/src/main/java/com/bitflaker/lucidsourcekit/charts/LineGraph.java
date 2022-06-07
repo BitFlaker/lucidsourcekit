@@ -156,8 +156,6 @@ public class LineGraph extends View {
                 }
             }
             positions = Arrays.copyOf(positionsBuffer, positionsBuffer.length);
-            int[] colorsNew = new int[] { Color.rgb(45, 45, 55), Color.rgb(45, 45, 55) };
-//            lgradPolyPaint = new LinearGradient(0f, 0f, 0f, getHeight() - padding_bottom, manipulateAlphaArray(colorsNew, 0.9f), new float[] { 0, 1 }, Shader.TileMode.CLAMP);
             lgradPolyPaint = new LinearGradient(0f, 0f, 0f, getHeight() - padding_bottom, manipulateAlphaArray(colors, gradientOpacity), positionsBuffer, Shader.TileMode.CLAMP);
             lgradDataLine = new LinearGradient(0f, 0f, 0f, getHeight() - padding_bottom, colors, positionsBuffer, Shader.TileMode.MIRROR);
             lgradOpacVert = new LinearGradient(0f, 0f, 0f, getHeight(), colorsFadeProgress, new float[] { 0, 1.0f }, Shader.TileMode.CLAMP);
@@ -176,10 +174,10 @@ public class LineGraph extends View {
         float realXProgress = (float)progress / xMax * (getWidth()-radiusMargin);
 
         if(progress != lastSetProgress) {
-            lastSetProgress = progress;
             lgradOpac.getLocalMatrix(lgradOpacMatrix);
-            if (!doNotIndicateProgress){ lgradOpacMatrix.postTranslate((1/xMax) * getWidth(), 0); }
+            if (!doNotIndicateProgress){ lgradOpacMatrix.postTranslate(((float)(progress-lastSetProgress)/xMax) * getWidth(), 0); }
             else { lgradOpacMatrix.postTranslate(getWidth(), 0); }
+            lastSetProgress = progress;
             lgradOpac.setLocalMatrix(lgradOpacMatrix);
         }
 

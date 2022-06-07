@@ -24,6 +24,7 @@ public class BinauralBeatsCollection {
     private void fillList() {
         binauralBeats.add(new BinauralBeat("Quick Nap Lucidity", "Great for supporting the induction of lucid dreams during a quick nap", 425, BinauralBeatStages.getQuickNapStages()));
         binauralBeats.add(new BinauralBeat("Nap Spike Lucidity", "Great for supporting the induction of lucid dreams during a longer nap with spikes in theta stage to slightly raise awareness", 425, BinauralBeatStages.getNapSpikeStages()));
+        binauralBeats.add(new BinauralBeat("Test", "This one is just for testing purpose and can be ignored for normal use", 425, BinauralBeatStages.getTestStages()));
     }
 
     public List<BinauralBeat> getBinauralBeats() {
