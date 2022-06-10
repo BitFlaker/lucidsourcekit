@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -27,7 +28,9 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
@@ -64,7 +67,7 @@ public class Goals extends Fragment {
     private ImageButton reshuffle;
     private List<Goal> cachedGoals;
     private int cachedUpToDiffCount = -1;
-    private MaterialButton adjustAlgorithm;
+    private ImageButton adjustAlgorithm;
     private int newGoalAmount = -1, newSignificantDifficultyDigits = -1;
     private BottomSheetDialog bsdAdjustAlgorithm;
     private RecyclerView quickScrollAdjustmentsContainer;
@@ -137,25 +140,32 @@ public class Goals extends Fragment {
         Pair<Long, Long> todayTimeSpan = Tools.getTimeSpanFrom(0, false);
         updateStats(todayTimeSpan);
 
-        reshuffle.setOnClickListener(view1 -> {
-            // TODO show loading indicator
-            Thread t = new Thread(() -> {
-                // TODO reset cached goals if entering the goal editor
-                if (cachedGoals == null) {
-                    db.getGoalDao().getAllSingle().subscribe((goals, throwable2) -> {
-                        cachedGoals = goals;
-                        storeNewShuffle(goals, todayTimeSpan);
-                    });
-                } else {
-                    storeNewShuffle(cachedGoals, todayTimeSpan);
-                }
-            });
-            t.start();
-        });
+        reshuffle.setOnClickListener(e -> {
+            PopupMenu popup = new PopupMenu(new ContextThemeWrapper(getContext(), Tools.getPopupTheme()), reshuffle);
 
-        floatingEdit.setOnClickListener(e -> {
-            Intent intent = new Intent(getContext(), EditGoals.class);
-            startActivity(intent);
+            popup.getMenuInflater().inflate(R.menu.more_goals_options, popup.getMenu());
+            popup.setOnMenuItemClickListener(item -> {
+                if(item.getItemId() == R.id.itm_shuffle) {
+                    // TODO show loading indicator
+                    Thread t = new Thread(() -> {
+                        // TODO reset cached goals if entering the goal editor
+                        if (cachedGoals == null) {
+                            db.getGoalDao().getAllSingle().subscribe((goals, throwable2) -> {
+                                cachedGoals = goals;
+                                storeNewShuffle(goals, todayTimeSpan);
+                            });
+                        } else {
+                            storeNewShuffle(cachedGoals, todayTimeSpan);
+                        }
+                    });
+                    t.start();
+                }
+                else if (item.getItemId() == R.id.itm_edit_goals) {
+                    startActivity(new Intent(getContext(), EditGoals.class));
+                }
+                return true;
+            });
+            popup.show();
         });
     }
 
@@ -280,21 +290,6 @@ public class Goals extends Fragment {
         };
     }
 
-    @NonNull
-    private View.OnTouchListener preventScrollOnTouchScroll() {
-        return (v, event) -> {
-            int action = event.getAction();
-            switch (action) {
-                case MotionEvent.ACTION_MOVE:
-                    v.getParent().requestDisallowInterceptTouchEvent(true);
-                    break;
-            }
-
-            v.onTouchEvent(event);
-            return true;
-        };
-    }
-
     public void createNumberPickerDialog(NumberPickableFields field, int min, int max, int currValue)
     {
         final NumberPicker numberPicker = new NumberPicker(getActivity());
@@ -368,21 +363,32 @@ public class Goals extends Fragment {
                AppCompatCheckBox chk = new AppCompatCheckBox(getContext());
                chk.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                chk.setButtonDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.checkbox_button, getContext().getTheme()));
-               Drawable circle = ResourcesCompat.getDrawable(getResources(), R.drawable.small_circle, getContext().getTheme());
-               chk.setCompoundDrawablesRelativeWithIntrinsicBounds(circle, circle, null, circle);
                chk.setCompoundDrawableTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), android.R.color.transparent, getContext().getTheme())));
                chk.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
                chk.setHighlightColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
-               chk.setCompoundDrawablePadding(Tools.dpToPx(getContext(), 15));
+               int dp20 = Tools.dpToPx(getContext(), 20);
+               int dp15 = Tools.dpToPx(getContext(), 15);
+               chk.setPadding(dp15, dp20,0, dp20);
+               chk.setPaintFlags(detailedShuffleHasGoal.achieved ? chk.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG : chk.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                chk.setText(detailedShuffleHasGoal.description);
                chk.setChecked(detailedShuffleHasGoal.achieved);
                chk.setTextColor(Tools.getAttrColor(detailedShuffleHasGoal.achieved ? R.attr.tertiaryTextColor : R.attr.primaryTextColor, getContext().getTheme()));
-               chk.setTypeface(Typeface.create(chk.getTypeface(), detailedShuffleHasGoal.achieved ? Typeface.ITALIC : Typeface.NORMAL));
-               chk.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+               chk.setTypeface(Typeface.create(chk.getTypeface(), detailedShuffleHasGoal.achieved ? Typeface.NORMAL : Typeface.BOLD));
+               chk.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17);
                chk.setOnCheckedChangeListener((compoundButton, isChecked) -> {
                    db.getShuffleHasGoalDao().setAchievedState(detailedShuffleHasGoal.shuffleId, detailedShuffleHasGoal.goalId, isChecked);
                    chk.setTextColor(Tools.getAttrColor(isChecked ? R.attr.tertiaryTextColor : R.attr.primaryTextColor, getContext().getTheme()));
-                   chk.setTypeface(Typeface.create(chk.getTypeface(), isChecked ? Typeface.ITALIC : Typeface.NORMAL));
+                   chk.setTypeface(Typeface.create(chk.getTypeface(), isChecked ? Typeface.NORMAL : Typeface.BOLD));
+                   chk.setPaintFlags(isChecked ? chk.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG : chk.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+//                   LinearLayout parent = ((LinearLayout) chk.getParent());
+//                   if(isChecked) {
+//                       parent.removeView(chk);
+//                       parent.addView(chk);
+//                   }
+//                   else if (parent.indexOfChild(chk) != 0 && ((AppCompatCheckBox) parent.getChildAt(parent.indexOfChild(chk) - 1)).isChecked()) {
+//                       parent.removeView(chk);
+//                       parent.addView(chk, 0);
+//                   }
                });
                goalChecks.add(chk);
                totalDifficultySum += detailedShuffleHasGoal.difficulty;

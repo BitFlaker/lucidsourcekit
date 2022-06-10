@@ -1,7 +1,6 @@
 package com.bitflaker.lucidsourcekit.main;
 
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +32,9 @@ public class MainOverview extends Fragment {
         totalLucidEntries = getView().findViewById(R.id.txt_lucid_journal_entries);
         totalGoalsReached = getView().findViewById(R.id.txt_total_goals_reached);
         streak = getView().findViewById(R.id.txt_days_streak);
+
+        getView().findViewById(R.id.crd_alarm1).setOnClickListener(e -> { });
+        getView().findViewById(R.id.crd_alarm2).setOnClickListener(e -> { });
     }
 
     private void fillStats() {
@@ -41,7 +43,7 @@ public class MainOverview extends Fragment {
         //totalLucidEntries
         //totalGoalsReached
         //streak
-        ((TextView) getView().findViewById(R.id.txt_alarm1)).setText(Html.fromHtml("<span><big><big><strong>03:12</strong></big></big></span><br /><span>first night timer</span>", Html.FROM_HTML_MODE_COMPACT));
-        ((TextView) getView().findViewById(R.id.txt_alarm2)).setText(Html.fromHtml("<span><big><big><strong>06:24</strong></big></big></span><br /><span>last night timer</span>", Html.FROM_HTML_MODE_COMPACT));
+//        ((TextView) getView().findViewById(R.id.txt_alarm1)).setText(Html.fromHtml("<span><big><big><strong>03:12</strong></big></big></span><br /><span>first night timer</span>", Html.FROM_HTML_MODE_COMPACT));
+//        ((TextView) getView().findViewById(R.id.txt_alarm2)).setText(Html.fromHtml("<span><big><big><strong>06:24</strong></big></big></span><br /><span>last night timer</span>", Html.FROM_HTML_MODE_COMPACT));
     }
 }

@@ -78,7 +78,10 @@
 
     <style name="PopupMenu.Dark" parent="Widget.AppCompat.PopupMenu">
         <item name="android:textColor">?attr/primaryTextColor</item>
-        <item name="android:itemBackground">@color/background_paper</item>
+        <item name="popupMenuBackground">@drawable/medium_rounded_rectangle_padded</item>
+        <item name="android:backgroundTint">?attr/backgroundColor</item>
+<!--        <item name="android:itemBackground">@drawable/ripple_rounded</item>-->
+<!--        <item name="android:colorControlHighlight">@android:color/transparent</item>-->
     </style>
 
     <style name="ThemedDialog.Dark" parent="Theme.AppCompat.DayNight.Dialog.Alert">

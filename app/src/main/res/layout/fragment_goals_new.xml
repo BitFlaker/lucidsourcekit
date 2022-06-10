@@ -35,6 +35,7 @@
         android:background="@drawable/rounded_spinner"
         android:backgroundTint="?attr/colorPrimary"
         android:src="@drawable/ic_round_mode_edit_24"
+        android:visibility="gone"
         app:borderWidth="0dp"
         app:tint="?attr/colorOnPrimary" />
 
@@ -77,23 +78,24 @@
 
                     <!--                    Look out for the following situations throughout the day to train your awareness -->
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginTop="40dp"
-                        android:layout_marginEnd="15dp"
-                        android:layout_marginBottom="40dp"
-                        android:background="@drawable/small_rounded_rectangle"
-                        android:backgroundTint="#1A4DB6AC"
-                        android:padding="8dp"
-                        android:text="Below are some metrics that compare today's goals to the average of the past few days"
-                        android:textColor="?attr/colorSecondary" />
+                    <!--                    <TextView-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginStart="15dp"-->
+                    <!--                        android:layout_marginTop="40dp"-->
+                    <!--                        android:layout_marginEnd="15dp"-->
+                    <!--                        android:layout_marginBottom="40dp"-->
+                    <!--                        android:background="@drawable/small_rounded_rectangle"-->
+                    <!--                        android:backgroundTint="#1A4DB6AC"-->
+                    <!--                        android:padding="8dp"-->
+                    <!--                        android:text="Below are some metrics that compare today's goals to the average of the past few days"-->
+                    <!--                        android:textColor="?attr/colorSecondary" />-->
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
+                        android:layout_marginTop="75dp"
                         android:layout_marginRight="15dp"
                         android:layout_marginBottom="15dp"
                         android:divider="@drawable/divider_medium"
@@ -234,133 +236,169 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginRight="20dp"
-                android:backgroundTint="?attr/slightElevated"
-                app:cardCornerRadius="@dimen/cardRadius"
-                app:cardElevation="1dp"
-                app:strokeColor="?attr/slightElevated"
-                app:strokeWidth="0dp">
+                android:layout_height="wrap_content">
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="24dp"
+                    android:backgroundTint="?attr/slightElevated"
+                    app:cardCornerRadius="@dimen/cardRadius"
+                    app:cardElevation="1dp"
+                    app:strokeColor="?attr/slightElevated"
+                    app:strokeWidth="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/rectangle"
-                        android:backgroundTint="?attr/slightElevated"
-                        android:orientation="horizontal"
-                        android:paddingStart="20dp"
-                        android:paddingTop="6dp"
-                        android:paddingEnd="6dp"
-                        android:paddingBottom="10dp">
+                        android:orientation="vertical"
+                        android:paddingBottom="40dp">
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginTop="-0dp"
-                            android:layout_marginRight="-48dp"
-                            android:layout_weight="1"
-                            android:gravity="start"
-                            android:text="Toady's goals"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="18sp" />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-                        <ImageButton
-                            android:id="@+id/btn_reshuffle_goals"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/ripple_round"
-                            android:src="@drawable/ic_baseline_shuffle_24"
-                            app:backgroundTint="?attr/slightElevated" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginTop="15dp"
+                                android:layout_marginStart="15dp"
+                                android:textAllCaps="true"
+                                android:text="Toady's goals"
+                                android:textColor="?attr/tertiaryTextColor"
+                                android:textSize="12sp" />
+
+                            <ImageButton
+                                android:id="@+id/btn_reshuffle_goals"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_gravity="end"
+                                android:layout_marginTop="6dp"
+                                android:layout_marginEnd="6dp"
+                                android:background="@drawable/ripple_round"
+                                android:src="@drawable/ic_baseline_more_vert_24"
+                                app:backgroundTint="?attr/slightElevated" />
+
+                            <!--                        <View-->
+                            <!--                            android:layout_width="match_parent"-->
+                            <!--                            android:layout_height="1dp"-->
+                            <!--                            android:background="@drawable/rectangle"-->
+                            <!--                            android:backgroundTint="?attr/slightElevated" />-->
+
+                            <LinearLayout
+                                android:id="@+id/ll_current_goals_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginTop="50dp"
+                                android:layout_marginEnd="20dp"
+                                android:orientation="vertical">
+
+                                <androidx.appcompat.widget.AppCompatCheckBox
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:button="@drawable/checkbox_button"
+                                    android:layout_weight="1"
+                                    android:drawableLeft="@android:color/transparent"
+                                    android:drawableTop="@drawable/small_circle"
+                                    android:drawableBottom="@drawable/small_circle"
+                                    android:drawablePadding="15dp"
+                                    android:drawableTint="@color/transparent"
+                                    android:text="I see a yellow car"
+                                    android:textColor="@color/checkbox_text_check_change"
+                                    android:textSize="17sp" />
+
+                                <androidx.appcompat.widget.AppCompatCheckBox
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:button="@drawable/checkbox_button"
+                                    android:text="I turn off a light"
+                                    android:drawableLeft="@android:color/transparent"
+                                    android:drawableTop="@drawable/small_circle"
+                                    android:drawableBottom="@drawable/small_circle"
+                                    android:drawablePadding="15dp"
+                                    android:drawableTint="@color/transparent"
+                                    android:textColor="@color/checkbox_text_check_change"
+                                    android:textSize="17sp" />
+
+                                <androidx.appcompat.widget.AppCompatCheckBox
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="I feel tired"
+                                    android:button="@drawable/checkbox_button"
+                                    android:drawableLeft="@android:color/transparent"
+                                    android:drawableTop="@drawable/small_circle"
+                                    android:drawableBottom="@drawable/small_circle"
+                                    android:drawablePadding="15dp"
+                                    android:drawableTint="@color/transparent"
+                                    android:textColor="@color/checkbox_text_check_change"
+                                    android:textSize="17sp" />
+                            </LinearLayout>
+                        </RelativeLayout>
+
+<!--                        <TextView-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="15dp"-->
+<!--                            android:layout_marginTop="20dp"-->
+<!--                            android:layout_marginEnd="15dp"-->
+<!--                            android:layout_marginBottom="50dp"-->
+<!--                            android:background="@drawable/small_rounded_rectangle"-->
+<!--                            android:backgroundTint="#1A4DB6AC"-->
+<!--                            android:padding="8dp"-->
+<!--                            android:text="Look out for these situations throughout the day and perform a reality check to train your awareness"-->
+<!--                            android:textColor="?attr/colorSecondary" />-->
+
+                        <!--                        <View-->
+                        <!--                            android:layout_width="match_parent"-->
+                        <!--                            android:layout_height="1dp"-->
+                        <!--                            android:layout_marginStart="0dp"-->
+                        <!--                            android:layout_marginTop="15dp"-->
+                        <!--                            android:layout_marginEnd="0dp"-->
+                        <!--                            android:background="@drawable/medium_rounded_rectangle"-->
+                        <!--                            android:backgroundTint="?attr/slightElevated2x" />-->
+
+                        <!--                        <com.google.android.material.button.MaterialButton-->
+                        <!--                            android:id="@+id/btn_adjust_algorithm"-->
+                        <!--                            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"-->
+                        <!--                            android:layout_width="match_parent"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:backgroundTint="?attr/slightElevated"-->
+                        <!--                            android:drawableEnd="@drawable/ic_round_keyboard_arrow_right_24"-->
+                        <!--                            android:drawableTint="?attr/secondaryTextColor"-->
+                        <!--                            android:fontFamily="sans-serif"-->
+                        <!--                            android:insetTop="0dp"-->
+                        <!--                            android:insetBottom="0dp"-->
+                        <!--                            android:minHeight="58dp"-->
+                        <!--                            android:paddingStart="20dp"-->
+                        <!--                            android:text="Adjust Algorithm"-->
+                        <!--                            android:textAlignment="textStart"-->
+                        <!--                            android:textAllCaps="false"-->
+                        <!--                            app:cornerRadius="0dp" />-->
                     </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@drawable/rectangle"
-                        android:backgroundTint="?attr/slightElevated" />
-
-                    <LinearLayout
-                        android:id="@+id/ll_current_goals_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="20dp"
-                        android:orientation="vertical">
-
-                        <androidx.appcompat.widget.AppCompatCheckBox
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:button="@drawable/checkbox_button"
-                            android:drawableLeft="@android:color/transparent"
-                            android:drawablePadding="15dp"
-                            android:drawableTint="@color/transparent"
-                            android:text="I see a yellow car"
-                            android:textColor="@color/checkbox_text_check_change"
-                            android:textSize="14sp" />
-
-                        <androidx.appcompat.widget.AppCompatCheckBox
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:button="@drawable/checkbox_button"
-                            android:drawableLeft="@android:color/transparent"
-                            android:drawablePadding="15dp"
-                            android:drawableTint="@color/transparent"
-                            android:text="I turn off a light"
-                            android:textColor="@color/checkbox_text_check_change"
-                            android:textSize="14sp" />
-
-                        <androidx.appcompat.widget.AppCompatCheckBox
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:button="@drawable/checkbox_button"
-                            android:drawableLeft="@android:color/transparent"
-                            android:drawablePadding="15dp"
-                            android:drawableTint="@color/transparent"
-                            android:text="I feel tired"
-                            android:textColor="@color/checkbox_text_check_change"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginStart="0dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginEnd="0dp"
-                        android:background="@drawable/medium_rounded_rectangle"
-                        android:backgroundTint="?attr/slightElevated2x" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_adjust_algorithm"
-                        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="?attr/slightElevated"
-                        android:drawableEnd="@drawable/ic_round_keyboard_arrow_right_24"
-                        android:drawableTint="?attr/secondaryTextColor"
-                        android:fontFamily="sans-serif"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
-                        android:minHeight="58dp"
-                        android:paddingStart="20dp"
-                        android:text="Adjust Algorithm"
-                        android:textAlignment="textStart"
-                        android:textAllCaps="false"
-                        app:cornerRadius="0dp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                <ImageButton
+                    android:id="@+id/btn_adjust_algorithm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/ripple_round"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:minWidth="48dp"
+                    android:minHeight="48dp"
+                    android:src="@drawable/ic_baseline_auto_graph_24"
+                    android:translationZ="1dp"
+                    app:tint="?attr/colorOnPrimary" />
+            </RelativeLayout>
 
             <!-- TODO: probably hide if it's the first day of using this tool -->
 

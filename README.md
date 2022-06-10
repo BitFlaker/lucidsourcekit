@@ -17,7 +17,13 @@ Currently the following main features are implemented:
 * Many more features in the future...
 
 ## Privacy
-It is being tried to ensure that all the data you store in the app stays in the app as long as you do not export it. Everything is saved locally on the phone in a folder that only this app has access to. The app does not have the permission for using the Internet. Because of this you can't log in with any account and it is very unlikely that your data will be shared with others. Exceptions would be data automatically processed by Android devices and other data transfers that I am not aware of. If you notice any kind of privacy issue, feel free to report it in the [Issues](https://github.com/BitFlaker/lucidsourcekit/issues) section.
+It is being tried to ensure that all the data you store in the app stays in the app as long as you do not export it. Everything is saved locally on the phone in a folder that only this app has access to (at least if the phone is not rooted). The app does not have the permission for using the Internet. Because of this you can't log in with any account and it is highly unlikely that your data will be shared with others. Exceptions would be data automatically processed by Android devices and other data transfers that I am not aware of. If you notice any kind of privacy issue, feel free to report it in the [Issues](https://github.com/BitFlaker/lucidsourcekit/issues) section.
+
+## Disclaimer
+This application is not intended for medical treatment. The application could contain errors and lead to unexpected consequences. The app contains a binaural beats generator that outputs frequencies that replicate brain wave cycles. By listening to these binaural beats, your state of consciousness will be altered. Due to the strong and repetitive pulsating rhythms, people who are prone to seizures, epilepsy, suffer from mental illnesses, are pregnant or are chilldren are strongly advised not to use this binaural beats generator. I recommend that you seek professional medical advice before use of this app.
+I am not liable in any way for damages resulting from injury to life, body or health.
+Use the app at your own risk.<br/>
+By using the app you are agreeing to accept this disclaimer.
 
 ## Supported languages
 * English

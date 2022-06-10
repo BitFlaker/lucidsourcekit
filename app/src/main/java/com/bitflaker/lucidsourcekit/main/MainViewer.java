@@ -3,7 +3,6 @@ package com.bitflaker.lucidsourcekit.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
-import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,7 +53,7 @@ public class MainViewer extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(tabSelected());
         viewPager2.registerOnPageChangeCallback(changeTab());
         moreOptions.setOnClickListener(e -> {
-            PopupMenu popup = new PopupMenu(new ContextThemeWrapper(this, Tools.getPopupTheme()), moreOptions);
+            androidx.appcompat.widget.PopupMenu popup = new androidx.appcompat.widget.PopupMenu(new ContextThemeWrapper(this, Tools.getPopupTheme()), moreOptions);
             popup.getMenuInflater().inflate(R.menu.more_options_popup_menu, popup.getMenu());
             popup.setOnMenuItemClickListener(item -> {
                 String itemTitle = item.getTitle().toString();

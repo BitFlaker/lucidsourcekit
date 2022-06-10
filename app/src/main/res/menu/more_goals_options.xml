@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/itm_shuffle"
+        android:title="Shuffle again"/>
+    <item
+        android:id="@+id/itm_edit_goals"
+        android:title="Edit goals"/>
+</menu>

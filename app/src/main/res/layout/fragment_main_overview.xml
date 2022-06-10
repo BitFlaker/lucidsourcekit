@@ -50,9 +50,9 @@
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="15dp"
-                android:layout_marginRight="25dp"
+                android:layout_marginRight="20dp"
                 android:columnCount="2"
                 android:useDefaultMargins="true">
 
@@ -61,8 +61,8 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_gravity="fill"
-                    android:gravity="center_vertical"
                     android:backgroundTint="?attr/slightElevated"
+                    android:gravity="center_vertical"
                     app:cardCornerRadius="@dimen/cardRadius_Var2"
                     app:cardElevation="@dimen/cardElevationRegular">
 
@@ -85,8 +85,8 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_gravity="fill"
-                    android:gravity="center_vertical"
                     android:backgroundTint="?attr/slightElevated"
+                    android:gravity="center_vertical"
                     app:cardCornerRadius="@dimen/cardRadius_Var2"
                     app:cardElevation="@dimen/cardElevationRegular">
 
@@ -109,8 +109,8 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_gravity="fill"
-                    android:gravity="center_vertical"
                     android:backgroundTint="?attr/slightElevated"
+                    android:gravity="center_vertical"
                     app:cardCornerRadius="@dimen/cardRadius_Var2"
                     app:cardElevation="@dimen/cardElevationRegular">
 
@@ -134,8 +134,8 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_gravity="fill"
-                    android:gravity="center_vertical"
                     android:backgroundTint="?attr/slightElevated"
+                    android:gravity="center_vertical"
                     app:cardCornerRadius="@dimen/cardRadius_Var2"
                     app:cardElevation="@dimen/cardElevationRegular">
 
@@ -154,79 +154,355 @@
                 </com.google.android.material.card.MaterialCardView>
             </GridLayout>
 
-            <TextView
-                android:id="@+id/txt_alarms_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="30dp"
-                android:text="@string/active_alarms"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="23sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txt_alarms_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:text="@string/active_tonight"
-                android:textColor="?attr/secondaryTextColor"
-                android:textSize="14sp" />
-
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="25dp"
-                android:padding="20dp"
-                android:backgroundTint="?attr/slightElevated"
-                app:cardCornerRadius="@dimen/cardRadius"
-                app:cardElevation="@dimen/cardElevationRegular">
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="top"
+                android:orientation="horizontal">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/txt_alarms_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/active_alarms"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="23sp"
+                    android:textStyle="bold" />
+
+                <!--                <com.google.android.material.card.MaterialCardView-->
+                <!--                    android:id="@+id/crd_show_all_alarms"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="32dp"-->
+                <!--                    android:padding="0dp"-->
+                <!--                    android:text="Show All"-->
+                <!--                    android:textColor="?attr/primaryTextColor"-->
+                <!--                    android:textSize="12sp"-->
+                <!--                    app:cardBackgroundColor="?attr/backgroundColor"-->
+                <!--                    app:cardCornerRadius="32dp">-->
+
+                <!--                    <TextView-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_gravity="center_vertical"-->
+                <!--                        android:layout_marginStart="15dp"-->
+                <!--                        android:layout_marginEnd="5dp"-->
+                <!--                        android:gravity="center_vertical"-->
+                <!--                        android:drawableEnd="@drawable/ic_round_keyboard_arrow_right_24"-->
+                <!--                        android:text="More"-->
+                <!--                        android:textAllCaps="true"-->
+                <!--                        android:textColor="?attr/secondaryTextColor"-->
+                <!--                        android:textSize="12sp"-->
+                <!--                        android:textStyle="bold" />-->
+                <!--                </com.google.android.material.card.MaterialCardView>-->
+            </LinearLayout>
+
+            <!--            <TextView-->
+            <!--                android:id="@+id/txt_alarms_description"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginStart="20dp"-->
+            <!--                android:text="@string/active_tonight"-->
+            <!--                android:textColor="?attr/secondaryTextColor"-->
+            <!--                android:textSize="14sp" />-->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:elevation="2dp"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="24dp"
+                    android:backgroundTint="?attr/slightElevated"
+                    app:cardCornerRadius="@dimen/cardRadius"
+                    app:cardElevation="@dimen/cardElevationRegular">
 
-                    <TextView
-                        android:id="@+id/txt_alarm1"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginEnd="15dp"
-                        android:layout_weight="1"
-                        android:includeFontPadding="false"
-                        android:text="03:12\u000Afirst night timer"
-                        android:textColor="?attr/primaryTextColor"
-                        app:drawableRightCompat="@drawable/ic_round_mode_edit_24" />
+                        android:layout_marginBottom="50dp"
+                        android:paddingTop="@dimen/cardRadius"
+                        android:elevation="2dp"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/txt_alarm2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginTop="25dp"
-                        android:layout_marginEnd="15dp"
-                        android:layout_weight="1"
-                        android:includeFontPadding="false"
-                        android:text="03:12\u000Afirst night timer"
-                        android:textColor="?attr/primaryTextColor"
-                        app:drawableEndCompat="@drawable/ic_round_mode_edit_24" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/crd_alarm1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="?attr/slightElevated"
+                            app:cardElevation="0dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingStart="20dp"
+                                android:paddingTop="13dp"
+                                android:paddingBottom="13dp"
+                                android:paddingEnd="20dp">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif"
+                                        android:text="First REM-Period Alarm"
+                                        android:textColor="?attr/secondaryTextColor"
+                                        android:textSize="12sp" />
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:divider="@drawable/divider_small"
+                                        android:orientation="horizontal"
+                                        android:showDividers="middle">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="02:15"
+                                            android:textColor="?attr/primaryTextColor"
+                                            android:textSize="28sp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="AM"
+                                            android:textColor="?attr/secondaryTextColor"
+                                            android:textSize="12sp" />
+                                    </LinearLayout>
+
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:alpha="0.5"
+                                        android:divider="@drawable/divider_small"
+                                        android:orientation="horizontal"
+                                        android:showDividers="middle"
+                                        android:visibility="visible">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Mo"
+                                            android:textColor="?attr/tertiaryTextColor"
+                                            android:textSize="12sp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Tu"
+                                            android:textColor="?attr/tertiaryTextColor"
+                                            android:textSize="12sp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="We"
+                                            android:textColor="?attr/secondaryTextColor"
+                                            android:textSize="12sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Th"
+                                            android:textColor="?attr/secondaryTextColor"
+                                            android:textSize="12sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Fr"
+                                            android:textColor="?attr/tertiaryTextColor"
+                                            android:textSize="12sp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Sa"
+                                            android:textColor="?attr/secondaryTextColor"
+                                            android:textSize="12sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Su"
+                                            android:textColor="?attr/tertiaryTextColor"
+                                            android:textSize="12sp" />
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <com.google.android.material.switchmaterial.SwitchMaterial
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:checked="true"/>
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/crd_alarm2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="?attr/slightElevated"
+                            app:cardElevation="0dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingStart="20dp"
+                                android:paddingTop="13dp"
+                                android:paddingBottom="13dp"
+                                android:paddingEnd="20dp">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif"
+                                        android:text="Second REM-Period Alarm"
+                                        android:textColor="?attr/secondaryTextColor"
+                                        android:textSize="12sp" />
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:divider="@drawable/divider_small"
+                                        android:orientation="horizontal"
+                                        android:showDividers="middle">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="04:42"
+                                            android:textColor="?attr/primaryTextColor"
+                                            android:textSize="28sp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="AM"
+                                            android:textColor="?attr/secondaryTextColor"
+                                            android:textSize="14sp" />
+                                    </LinearLayout>
+
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:alpha="0.5"
+                                        android:divider="@drawable/divider_small"
+                                        android:orientation="horizontal"
+                                        android:showDividers="middle"
+                                        android:visibility="visible">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Mo"
+                                            android:textColor="?attr/tertiaryTextColor"
+                                            android:textSize="12sp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Tu"
+                                            android:textColor="?attr/tertiaryTextColor"
+                                            android:textSize="12sp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="We"
+                                            android:textColor="?attr/secondaryTextColor"
+                                            android:textSize="12sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Th"
+                                            android:textColor="?attr/secondaryTextColor"
+                                            android:textSize="12sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Fr"
+                                            android:textColor="?attr/tertiaryTextColor"
+                                            android:textSize="12sp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Sa"
+                                            android:textColor="?attr/secondaryTextColor"
+                                            android:textSize="12sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Su"
+                                            android:textColor="?attr/tertiaryTextColor"
+                                            android:textSize="12sp" />
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <com.google.android.material.switchmaterial.SwitchMaterial
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:checked="true"/>
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <ImageButton
+                    android:id="@+id/btn_adjust_algorithm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/ripple_round"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:minWidth="48dp"
+                    android:minHeight="48dp"
+                    android:src="@drawable/ic_baseline_access_alarm_24"
+                    android:translationZ="6dp"
+                    app:tint="?attr/colorOnPrimary" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/txt_journal_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="40dp"
                 android:text="@string/collection"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="23sp"
@@ -247,8 +523,8 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="25dp"
-                android:padding="15dp"
                 android:backgroundTint="?attr/slightElevated"
+                android:padding="15dp"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="@dimen/cardElevationRegular">
 
@@ -301,8 +577,8 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="25dp"
-                android:padding="15dp"
                 android:backgroundTint="?attr/slightElevated"
+                android:padding="15dp"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="@dimen/cardElevationRegular">
 
@@ -355,8 +631,8 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="25dp"
-                android:padding="15dp"
                 android:backgroundTint="?attr/slightElevated"
+                android:padding="15dp"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="@dimen/cardElevationRegular">
 
@@ -410,8 +686,8 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="25dp"
                 android:layout_marginBottom="25dp"
-                android:padding="15dp"
                 android:backgroundTint="?attr/slightElevated"
+                android:padding="15dp"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="@dimen/cardElevationRegular">
 
