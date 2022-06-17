@@ -253,19 +253,12 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif"
-                                        android:text="First REM-Period Alarm"
-                                        android:textColor="?attr/secondaryTextColor"
-                                        android:textSize="12sp" />
+                                    android:orientation="horizontal">
 
                                     <LinearLayout
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
                                         android:divider="@drawable/divider_small"
                                         android:orientation="horizontal"
                                         android:showDividers="middle">
@@ -275,7 +268,7 @@
                                             android:layout_height="wrap_content"
                                             android:text="02:15"
                                             android:textColor="?attr/primaryTextColor"
-                                            android:textSize="28sp" />
+                                            android:textSize="24sp" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -285,74 +278,89 @@
                                             android:textSize="12sp" />
                                     </LinearLayout>
 
-
                                     <LinearLayout
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:alpha="0.5"
-                                        android:divider="@drawable/divider_small"
-                                        android:orientation="horizontal"
-                                        android:showDividers="middle"
-                                        android:visibility="visible">
+                                        android:layout_weight="1"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_marginStart="20dp"
+                                        android:gravity="center"
+                                        android:orientation="vertical">
 
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Mo"
-                                            android:textColor="?attr/tertiaryTextColor"
-                                            android:textSize="12sp" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Tu"
-                                            android:textColor="?attr/tertiaryTextColor"
-                                            android:textSize="12sp" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="We"
+                                            android:fontFamily="sans-serif"
+                                            android:text="First REM-Period Alarm"
+                                            android:layout_marginBottom="3dp"
                                             android:textColor="?attr/secondaryTextColor"
-                                            android:textSize="12sp"
-                                            android:textStyle="bold" />
+                                            android:textSize="14sp" />
 
-                                        <TextView
+                                        <LinearLayout
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Th"
-                                            android:textColor="?attr/secondaryTextColor"
-                                            android:textSize="12sp"
-                                            android:textStyle="bold" />
+                                            android:alpha="0.5"
+                                            android:divider="@drawable/divider_small"
+                                            android:orientation="horizontal"
+                                            android:showDividers="middle"
+                                            android:visibility="visible">
 
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Fr"
-                                            android:textColor="?attr/tertiaryTextColor"
-                                            android:textSize="12sp" />
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:fontFamily="sans-serif-thin"
+                                                android:text="Mo"
+                                                android:textColor="?attr/tertiaryTextColor"
+                                                android:textSize="12sp" />
 
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Sa"
-                                            android:textColor="?attr/secondaryTextColor"
-                                            android:textSize="12sp"
-                                            android:textStyle="bold" />
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:fontFamily="sans-serif-thin"
+                                                android:text="Tu"
+                                                android:textColor="?attr/tertiaryTextColor"
+                                                android:textSize="12sp" />
 
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Su"
-                                            android:textColor="?attr/tertiaryTextColor"
-                                            android:textSize="12sp" />
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="We"
+                                                android:textColor="?attr/secondaryTextColor"
+                                                android:textSize="12sp" />
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="Th"
+                                                android:textColor="?attr/secondaryTextColor"
+                                                android:textSize="12sp" />
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:fontFamily="sans-serif-thin"
+                                                android:text="Fr"
+                                                android:textColor="?attr/tertiaryTextColor"
+                                                android:textSize="12sp" />
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="Sa"
+                                                android:textColor="?attr/secondaryTextColor"
+                                                android:textSize="12sp" />
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:fontFamily="sans-serif-thin"
+                                                android:text="Su"
+                                                android:textColor="?attr/tertiaryTextColor"
+                                                android:textSize="12sp" />
+                                        </LinearLayout>
                                     </LinearLayout>
                                 </LinearLayout>
 
-                                <com.google.android.material.switchmaterial.SwitchMaterial
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:checked="true"/>
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
 
@@ -377,19 +385,12 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif"
-                                        android:text="Second REM-Period Alarm"
-                                        android:textColor="?attr/secondaryTextColor"
-                                        android:textSize="12sp" />
+                                    android:orientation="horizontal">
 
                                     <LinearLayout
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
                                         android:divider="@drawable/divider_small"
                                         android:orientation="horizontal"
                                         android:showDividers="middle">
@@ -399,7 +400,7 @@
                                             android:layout_height="wrap_content"
                                             android:text="04:42"
                                             android:textColor="?attr/primaryTextColor"
-                                            android:textSize="28sp" />
+                                            android:textSize="24sp" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -409,81 +410,96 @@
                                             android:textSize="14sp" />
                                     </LinearLayout>
 
-
                                     <LinearLayout
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:alpha="0.5"
-                                        android:divider="@drawable/divider_small"
-                                        android:orientation="horizontal"
-                                        android:showDividers="middle"
-                                        android:visibility="visible">
+                                        android:layout_weight="1"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_marginStart="20dp"
+                                        android:gravity="center"
+                                        android:orientation="vertical">
 
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Mo"
-                                            android:textColor="?attr/tertiaryTextColor"
-                                            android:textSize="12sp" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Tu"
-                                            android:textColor="?attr/tertiaryTextColor"
-                                            android:textSize="12sp" />
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="We"
+                                            android:layout_marginBottom="3dp"
+                                            android:fontFamily="sans-serif"
+                                            android:text="Second REM-Period Alarm"
                                             android:textColor="?attr/secondaryTextColor"
-                                            android:textSize="12sp"
-                                            android:textStyle="bold" />
+                                            android:textSize="14sp" />
 
-                                        <TextView
+                                        <LinearLayout
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Th"
-                                            android:textColor="?attr/secondaryTextColor"
-                                            android:textSize="12sp"
-                                            android:textStyle="bold" />
+                                            android:alpha="0.5"
+                                            android:divider="@drawable/divider_small"
+                                            android:orientation="horizontal"
+                                            android:showDividers="middle"
+                                            android:visibility="visible">
 
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Fr"
-                                            android:textColor="?attr/tertiaryTextColor"
-                                            android:textSize="12sp" />
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:fontFamily="sans-serif-thin"
+                                                android:text="Mo"
+                                                android:textColor="?attr/tertiaryTextColor"
+                                                android:textSize="12sp" />
 
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Sa"
-                                            android:textColor="?attr/secondaryTextColor"
-                                            android:textSize="12sp"
-                                            android:textStyle="bold" />
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:fontFamily="sans-serif-thin"
+                                                android:text="Tu"
+                                                android:textColor="?attr/tertiaryTextColor"
+                                                android:textSize="12sp" />
 
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Su"
-                                            android:textColor="?attr/tertiaryTextColor"
-                                            android:textSize="12sp" />
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="We"
+                                                android:textColor="?attr/secondaryTextColor"
+                                                android:textSize="12sp" />
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="Th"
+                                                android:textColor="?attr/secondaryTextColor"
+                                                android:textSize="12sp" />
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:fontFamily="sans-serif-thin"
+                                                android:text="Fr"
+                                                android:textColor="?attr/tertiaryTextColor"
+                                                android:textSize="12sp" />
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="Sa"
+                                                android:textColor="?attr/secondaryTextColor"
+                                                android:textSize="12sp" />
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:fontFamily="sans-serif-thin"
+                                                android:text="Su"
+                                                android:textColor="?attr/tertiaryTextColor"
+                                                android:textSize="12sp" />
+                                        </LinearLayout>
                                     </LinearLayout>
                                 </LinearLayout>
 
-                                <com.google.android.material.switchmaterial.SwitchMaterial
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:checked="true"/>
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
                 <ImageButton
-                    android:id="@+id/btn_adjust_algorithm"
+                    android:id="@+id/btn_manage_alarms"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"

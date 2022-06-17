@@ -124,7 +124,9 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/toggle_on.xml" value="0.3728205128205128" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/drawable/top_rounded_rectangle.xml" value="0.2375" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout-v28/journal_entry.xml" value="0.2359375" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout-v31/activity_alarms_manager.xml" value="0.22760416666666666" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_add_text_entry.xml" value="0.33" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_alarms_manager.xml" value="0.25" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_dream_journal_content_editor.xml" value="0.3625" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_dream_journal_editor.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_dream_journal_entry_editor.xml" value="0.3625" />
@@ -136,6 +138,7 @@
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_main_viewer.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_setup_viewer.xml" value="0.3484375" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/activity_view_journal_entry.xml" value="0.33" />
+        <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/alarm_entry.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/algorithm_adjustment_sheet.xml" value="0.33" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/auto_stop_duration_sheet.xml" value="0.25" />
         <entry key="..\:/8_AndroidStudioProjects/lucidsourcekit/app/src/main/res/layout/background_noise_entry.xml" value="0.2874880611270296" />

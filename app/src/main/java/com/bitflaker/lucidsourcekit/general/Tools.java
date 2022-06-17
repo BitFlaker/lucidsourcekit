@@ -14,6 +14,7 @@ import android.util.Pair;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.ColorInt;
@@ -152,9 +153,14 @@ public class Tools {
         return lParams;
     }
 
-    public static RelativeLayout.LayoutParams getRelativeLayoutParamsTopStatusbarNoSpacing(Context context) {
-        RelativeLayout.LayoutParams lParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lParams.setMargins(0, getStatusBarHeight(context), 0, 0);
+    public static LinearLayout.LayoutParams getLinearLayoutParamsTopStatusbar(Context context) {
+        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lParams.setMargins(dpToPx(context, 15), getStatusBarHeight(context) + dpToPx(context, 10), 0, 0);
+        return lParams;
+    }
+
+    public static RelativeLayout.LayoutParams addRelativeLayoutParamsTopStatusbarSpacing(Context context, RelativeLayout.LayoutParams lParams) {
+        lParams.topMargin = lParams.topMargin + getStatusBarHeight(context);
         return lParams;
     }
 

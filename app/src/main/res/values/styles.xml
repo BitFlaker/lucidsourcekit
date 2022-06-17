@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Switch.Dark" parent="">
+        <item name="colorControlActivated">?attr/colorPrimaryVariant</item>
+        <item name="android:colorForeground">?attr/tertiaryTextColor</item>
+        <item name="colorSwitchThumbNormal">?attr/slightElevated2x</item>
+    </style>
+</resources>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/crd_alarm"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTint="?attr/backgroundColor"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingTop="18dp"
+        android:paddingBottom="18dp"
+        android:paddingEnd="20dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txt_alarms_time_prim"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="02:15"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="26sp" />
+
+                <TextView
+                    android:id="@+id/txt_alarms_time_sec"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="AM"
+                    android:textColor="?attr/secondaryTextColor"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txt_alarms_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:fontFamily="sans-serif"
+                        android:text="First REM-Period Alarm"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.5"
+                        android:divider="@drawable/divider_small"
+                        android:orientation="horizontal"
+                        android:showDividers="middle"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:id="@+id/txt_alarms_week_mo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-thin"
+                            android:text="Mo"
+                            android:textColor="?attr/tertiaryTextColor"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/txt_alarms_week_tu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-thin"
+                            android:text="Tu"
+                            android:textColor="?attr/tertiaryTextColor"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/txt_alarms_week_we"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="We"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/txt_alarms_week_th"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Th"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/txt_alarms_week_fr"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-thin"
+                            android:text="Fr"
+                            android:textColor="?attr/tertiaryTextColor"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/txt_alarms_week_sa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sa"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/txt_alarms_week_su"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-thin"
+                            android:text="Su"
+                            android:textColor="?attr/tertiaryTextColor"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/swt_alarm_active"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:theme="@style/Switch.Dark"
+            app:useMaterialThemeColors="false" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

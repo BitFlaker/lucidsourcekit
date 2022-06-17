@@ -1,5 +1,6 @@
 package com.bitflaker.lucidsourcekit.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bitflaker.lucidsourcekit.AlarmsManager;
 import com.bitflaker.lucidsourcekit.R;
 
 public class MainOverview extends Fragment {
@@ -35,6 +37,7 @@ public class MainOverview extends Fragment {
 
         getView().findViewById(R.id.crd_alarm1).setOnClickListener(e -> { });
         getView().findViewById(R.id.crd_alarm2).setOnClickListener(e -> { });
+        getView().findViewById(R.id.btn_manage_alarms).setOnClickListener(e -> startActivity(new Intent(getContext(), AlarmsManager.class)));
     }
 
     private void fillStats() {

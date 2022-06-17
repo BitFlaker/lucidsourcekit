@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LucidSourceKit.Dark">
         <activity
+            android:name=".AlarmsManager"
+            android:exported="false" />
+        <activity
             android:name=".main.dreamjournal.DreamJournalEntryEditor"
             android:configChanges="orientation|screenSize"
             android:exported="false" />

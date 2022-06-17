@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AlarmsManager">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_alarms_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:text="Alarms"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <AnalogClock
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="3dp"
+            android:text="Next alarm in 15h 34m"
+            android:textColor="?attr/tertiaryTextColor" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/txt_current_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-thin"
+                android:text="03:05 PM"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/txt_current_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="06.06.2022"
+                android:textColor="?attr/tertiaryTextColor"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:divider="@drawable/divider_small"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:showDividers="middle">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="14sp" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ripple_round"
+                android:backgroundTint="?attr/backgroundColor"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_round_bolt_24"
+                app:tint="?attr/secondaryTextColor" />
+
+            <ImageButton
+                android:id="@+id/btn_settings_clock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/ripple_round"
+                android:backgroundTint="?attr/backgroundColor"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_round_settings_24"
+                app:tint="?attr/secondaryTextColor" />
+
+            <!--            <ImageButton-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:background="@drawable/ripple_round"-->
+            <!--                android:backgroundTint="?attr/backgroundColor"-->
+            <!--                android:minWidth="48dp"-->
+            <!--                android:minHeight="48dp"-->
+            <!--                android:src="@drawable/ic_round_settings_24" />-->
+        </LinearLayout>
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:orientation="vertical"-->
+        <!--            android:layout_marginTop="30dp"-->
+        <!--            android:layout_marginStart="18dp"-->
+        <!--            android:layout_marginEnd="18dp">-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:text="Quick alarm in"-->
+        <!--                android:textColor="?attr/secondaryTextColor"-->
+        <!--                android:textSize="14sp"-->
+        <!--                android:textAlignment="center"/>-->
+
+        <!--            <LinearLayout-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:orientation="horizontal"-->
+        <!--                android:gravity="center_horizontal"-->
+        <!--                android:divider="@drawable/divider_small"-->
+        <!--                android:showDividers="middle">-->
+
+        <!--                <com.google.android.material.button.MaterialButton-->
+        <!--                    android:layout_width="wrap_content"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:text="1,5h"-->
+        <!--                    app:cornerRadius="48dp"-->
+        <!--                    app:backgroundTint="?attr/slightElevated"/>-->
+
+        <!--                <com.google.android.material.button.MaterialButton-->
+        <!--                    android:layout_width="wrap_content"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:text="3h"-->
+        <!--                    app:cornerRadius="48dp"-->
+        <!--                    app:backgroundTint="?attr/slightElevated"/>-->
+
+        <!--                <com.google.android.material.button.MaterialButton-->
+        <!--                    android:layout_width="wrap_content"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:text="4,5h"-->
+        <!--                    app:cornerRadius="48dp"-->
+        <!--                    app:backgroundTint="?attr/slightElevated"/>-->
+
+        <!--                <com.google.android.material.button.MaterialButton-->
+        <!--                    android:layout_width="wrap_content"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:text="6h"-->
+        <!--                    app:cornerRadius="48dp"-->
+        <!--                    app:backgroundTint="?attr/slightElevated"/>-->
+        <!--            </LinearLayout>-->
+        <!--        </LinearLayout>-->
+
+        <!--        <View-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="1dp"-->
+        <!--            android:layout_marginTop="8dp"-->
+        <!--            android:background="@drawable/medium_rounded_rectangle"-->
+        <!--            android:backgroundTint="?attr/slightElevated" />-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcv_list_alarms"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_round_add_24"
+        android:backgroundTint="?attr/colorPrimary"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        app:borderWidth="0dp"/>
+</RelativeLayout>
