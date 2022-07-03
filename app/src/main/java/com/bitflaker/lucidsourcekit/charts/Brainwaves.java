@@ -1,6 +1,7 @@
 package com.bitflaker.lucidsourcekit.charts;
 
 import android.graphics.Color;
+import android.util.Pair;
 
 public class Brainwaves {
     /**
@@ -80,5 +81,24 @@ public class Brainwaves {
             }
         }
         return stages.length - 1;
+    }
+
+    public static int[] remAfterMinutes = new int[] { 103, 81, 88, 72, 77 };
+    public static int[] remDuration = new int[] { 7, 23, 33, 36, 40 };
+    public static int remDurationTolerance = 15;
+
+    public static Pair<Integer, Integer> getRemStageAfterAndDuration(int stageNumber) {
+        if(remAfterMinutes.length != remDuration.length || remAfterMinutes.length <= stageNumber){
+            return null;
+        }
+        return new Pair<>(sumRemAftersUpTo(stageNumber), remDuration[stageNumber]+remDurationTolerance);
+    }
+
+    private static Integer sumRemAftersUpTo(int stageNumber) {
+        int totalCount = 0;
+        for (int i = 0; i <= stageNumber; i++){
+            totalCount += remAfterMinutes[i];
+        }
+        return totalCount;
     }
 }

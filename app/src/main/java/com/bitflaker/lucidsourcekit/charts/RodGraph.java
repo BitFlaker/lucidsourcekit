@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -82,7 +81,7 @@ public class RodGraph extends View {
         if(icons == null){ return null; }
         Bitmap[] bitmaps = new Bitmap[icons.length];
         for (int i = 0; i < bitmaps.length; i++){
-            bitmaps[i] = drawableToBitmap(icons[i], iconSize);
+            bitmaps[i] = Tools.drawableToBitmap(icons[i], iconSize);
         }
         return bitmaps;
     }
@@ -162,16 +161,4 @@ public class RodGraph extends View {
         return yText;
     }
 
-    public static Bitmap drawableToBitmap (Drawable drawable, int size) {
-        if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable)drawable).getBitmap();
-        }
-
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, size, size);
-        drawable.draw(canvas);
-
-        return bitmap;
-    }
 }

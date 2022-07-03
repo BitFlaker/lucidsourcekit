@@ -13,15 +13,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LucidSourceKit.Dark">
         <activity
+            android:name=".AlarmCreator"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".AlarmsManager"
-            android:exported="false" />
+            android:configChanges="orientation"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".main.dreamjournal.DreamJournalEntryEditor"
             android:configChanges="orientation|screenSize"
             android:exported="false" />
         <activity
             android:name=".main.EditGoals"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".setup.SetupViewer"
             android:configChanges="orientation"

@@ -49,15 +49,18 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         holder.active.setChecked(alarmData.get(position).isActive());
         Typeface tfThin = FontHandler.getInstance().getFontByName("sans-serif-thin");
         Typeface tfNormal = FontHandler.getInstance().getFontByName("sans-serif");
+        // TODO: enable toggle for either not showing disabled days or showing them only slightly
         for (int i = 0; i < holder.weekdays.size(); i++) {
             TextView dayT = holder.weekdays.get(i);
             dayT.setTypeface(tfThin);
             dayT.setTextColor(Tools.getAttrColor(R.attr.secondaryTextColor, context.getTheme()));
+            dayT.setVisibility(View.GONE);
         }
         for (AlarmData.ActiveDays day : alarmData.get(position).getActiveDays()) {
             TextView dayT = holder.weekdays.get(day.ordinal());
             dayT.setTypeface(tfNormal);
             dayT.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, context.getTheme()));
+            dayT.setVisibility(View.VISIBLE);
         }
         holder.card.setOnClickListener(e -> {
             // TODO open editor

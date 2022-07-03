@@ -1,16 +1,20 @@
 package com.bitflaker.lucidsourcekit;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bitflaker.lucidsourcekit.clock.SleepClock;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.main.AlarmData;
 import com.bitflaker.lucidsourcekit.main.RecyclerViewAdapterAlarms;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -29,14 +33,18 @@ public class AlarmsManager extends AppCompatActivity {
         setContentView(R.layout.activity_alarms_manager);
 
         Tools.makeStatusBarTransparent(AlarmsManager.this);
-        TextView heading = findViewById(R.id.txt_alarms_heading);
-        ImageButton settings = findViewById(R.id.btn_settings_clock);
-        heading.setLayoutParams(Tools.getLinearLayoutParamsTopStatusbar(AlarmsManager.this));
-//        settings.setLayoutParams(Tools.addRelativeLayoutParamsTopStatusbarSpacing(AlarmsManager.this, ((RelativeLayout.LayoutParams) settings.getLayoutParams())));
+        LinearLayout topContainer = findViewById(R.id.ll_top_heading);
+        SleepClock clock = findViewById(R.id.slp_clock);
+        FloatingActionButton addAlarm = findViewById(R.id.fab_add_alarm);
+        topContainer.setLayoutParams(Tools.addRelativeLayoutParamsTopStatusbarSpacing(AlarmsManager.this, ((RelativeLayout.LayoutParams) topContainer.getLayoutParams())));
+
+        clock.startClock();
+        addAlarm.setOnClickListener(e -> startActivity(new Intent(this, AlarmCreator.class)));
 
         RecyclerView recyclerView = findViewById(R.id.rcv_list_alarms);
         time = findViewById(R.id.txt_current_time);
         date = findViewById(R.id.txt_current_date);
+
         DateFormat tf = DateFormat.getTimeInstance(DateFormat.MEDIUM);
         DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
         time.setText(tf.format(Calendar.getInstance().getTime()));
