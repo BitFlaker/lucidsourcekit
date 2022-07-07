@@ -128,6 +128,12 @@ public class DreamJournalRatingEditor extends Fragment {
         dreamClarities[2] = getView().findViewById(R.id.img_clear);
         dreamClarities[3] = getView().findViewById(R.id.img_very_clear);
 
+        characterNightmare.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme()));
+        characterParalysis.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme()));
+        characterLucid.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme()));
+        characterRecurring.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme()));
+        characterFalseAwakening.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme()));
+
         JournalInMemory jim = journalManger.getEntry(journalEntryId);
 
         restoreStoredEntry(jim);
@@ -208,7 +214,7 @@ public class DreamJournalRatingEditor extends Fragment {
             if(selectedRating != SelectedRating.DREAM_MOOD) {
                 deselectLast();
                 selectedRating = SelectedRating.DREAM_MOOD;
-                setSelectionRatingSliderCard(cardDreamMood, R.attr.colorPrimary, sliderDreamMood, View.VISIBLE, indicatorsDreamMood, previewSelectionDreamMood, View.GONE);
+                setSelectionRatingSliderCard(cardDreamMood, R.attr.colorPrimary, sliderDreamMood, View.VISIBLE, indicatorsDreamMood, previewSelectionDreamMood, View.VISIBLE);
             }
         });
         cardSleepQuality.setOnClickListener(e -> focusCardSleepQuality());
@@ -260,7 +266,7 @@ public class DreamJournalRatingEditor extends Fragment {
         int value = (int)sliderDreamClarity.getValue();
         textDreamClarity.setText(dreamClarityLabels[value]);
         previewSelectionDreamClarity.setImageDrawable(dreamClarities[value].getDrawable());
-        dreamClarities[value].setImageTintList(Tools.getAttrColorStateList(R.attr.primaryTextColor, getContext().getTheme()));
+        dreamClarities[value].setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme()));
         dreamClarities[value].invalidate();
         if(jim != null) {
             jim.setDreamClarity(DreamClarity.values()[((int) sliderDreamClarity.getValue())].getId());
@@ -272,7 +278,7 @@ public class DreamJournalRatingEditor extends Fragment {
         int value = (int)sliderSleepQuality.getValue();
         textSleepQuality.setText(sleepQualityLabels[value]);
         previewSelectionSleepQuality.setImageDrawable(sleepQualities[value].getDrawable());
-        sleepQualities[value].setImageTintList(Tools.getAttrColorStateList(R.attr.primaryTextColor, getContext().getTheme()));
+        sleepQualities[value].setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme()));
         sleepQualities[value].invalidate();
         if(jim != null) {
             jim.setSleepQuality(SleepQuality.values()[((int) sliderSleepQuality.getValue())].getId());
@@ -284,7 +290,7 @@ public class DreamJournalRatingEditor extends Fragment {
         int value = (int)sliderDreamMood.getValue();
         textDreamMood.setText(dreamMoodLabels[value]);
         previewSelectionDreamMood.setImageDrawable(dreamMoods[value].getDrawable());
-        dreamMoods[value].setImageTintList(Tools.getAttrColorStateList(R.attr.primaryTextColor, getContext().getTheme()));
+        dreamMoods[value].setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme()));
         dreamMoods[value].invalidate();
         if(jim != null) {
             jim.setDreamMood(DreamMoods.values()[((int) sliderDreamMood.getValue())].getId());
@@ -308,7 +314,7 @@ public class DreamJournalRatingEditor extends Fragment {
             }
             sliderSleepQuality.setVisibility(View.VISIBLE);
             indicatorsSleepQuality.setVisibility(View.VISIBLE);
-            previewSelectionSleepQuality.setVisibility(View.GONE);
+            previewSelectionSleepQuality.setVisibility(View.VISIBLE);
             textSleepQuality.setVisibility(View.VISIBLE);
 
             if(!cardDreamClarity.isClickable()) {
@@ -335,7 +341,7 @@ public class DreamJournalRatingEditor extends Fragment {
             }
             sliderDreamClarity.setVisibility(View.VISIBLE);
             indicatorsDreamClarity.setVisibility(View.VISIBLE);
-            previewSelectionDreamClarity.setVisibility(View.GONE);
+            previewSelectionDreamClarity.setVisibility(View.VISIBLE);
             textDreamClarity.setVisibility(View.VISIBLE);
 
             if(!cardDreamCharacteristics.isClickable()) {
@@ -354,7 +360,7 @@ public class DreamJournalRatingEditor extends Fragment {
             lineBottomDreamClarity.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
             lineTopDreamCharacteristics.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
             containerDreamCharacteristics.setVisibility(View.VISIBLE);
-            dreamCharacteristicsIcons.setVisibility(View.GONE);
+            dreamCharacteristicsIcons.setVisibility(View.VISIBLE);
             doneRatingBtn.setEnabled(true);
         }
     }
