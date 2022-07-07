@@ -17,6 +17,7 @@ import android.util.Pair;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -163,6 +164,11 @@ public class Tools {
     }
 
     public static RelativeLayout.LayoutParams addRelativeLayoutParamsTopStatusbarSpacing(Context context, RelativeLayout.LayoutParams lParams) {
+        lParams.topMargin = lParams.topMargin + getStatusBarHeight(context);
+        return lParams;
+    }
+
+    public static FrameLayout.LayoutParams addFrameLayoutLayoutParamsTopStatusbarSpacing(Context context, FrameLayout.LayoutParams lParams) {
         lParams.topMargin = lParams.topMargin + getStatusBarHeight(context);
         return lParams;
     }
@@ -436,5 +442,9 @@ public class Tools {
         drawable.draw(canvas);
 
         return bitmap;
+    }
+
+    public static float roundToDigits(float value, int digits) {
+        return (float)(Math.round(value * Math.pow(10, digits)) / Math.pow(10, digits));
     }
 }

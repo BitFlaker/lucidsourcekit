@@ -67,11 +67,11 @@
         android:layout_marginLeft="30dp"
         android:layout_marginTop="5dp"
         android:layout_marginRight="30dp"
-        app:labelStyle="@style/Tooltip.Dark"
         android:value="1.25"
         android:valueFrom="1"
         android:valueTo="3"
-        app:haloColor="@android:color/transparent" />
+        app:haloColor="@android:color/transparent"
+        app:labelStyle="@style/Tooltip.Dark" />
 
     <ImageButton
         android:id="@+id/btn_toggle_lock_difficulty"
