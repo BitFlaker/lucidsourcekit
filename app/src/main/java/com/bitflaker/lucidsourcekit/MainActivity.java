@@ -20,6 +20,8 @@ import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.alarms.entities.AlarmToneTypes;
+import com.bitflaker.lucidsourcekit.database.alarms.entities.Weekdays;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamClarity;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamType;
@@ -122,16 +124,19 @@ public class MainActivity extends AppCompatActivity {
                     db.getDreamMoodDao().insertAll(DreamMood.populateData()).subscribe(() -> {
                         db.getDreamClarityDao().insertAll(DreamClarity.populateData()).subscribe(() -> {
                             db.getSleepQualityDao().insertAll(SleepQuality.populateData()).subscribe(() -> {
-                                db.getGoalDao().getGoalCount().subscribe((count) -> {
-                                    if(count == 0) {
-                                        DefaultGoals defaultGoals = new DefaultGoals(this);
-                                        db.getGoalDao().insertAll(defaultGoals.getGoalsList()).subscribe(() -> {
-                                            dataSetupHandler(db, preferences, count);
+                                db.getWeekdaysDao().insertAll(Weekdays.populateData()).subscribe(() -> {
+                                    db.getAlarmToneTypesDao().insertAll(AlarmToneTypes.populateData()).subscribe(() -> {
+                                        db.getGoalDao().getGoalCount().subscribe((count) -> {
+                                            if (count == 0) {
+                                                DefaultGoals defaultGoals = new DefaultGoals(this);
+                                                db.getGoalDao().insertAll(defaultGoals.getGoalsList()).subscribe(() -> {
+                                                    dataSetupHandler(db, preferences, count);
+                                                });
+                                            } else {
+                                                dataSetupHandler(db, preferences, count);
+                                            }
                                         });
-                                    }
-                                    else {
-                                        dataSetupHandler(db, preferences, count);
-                                    }
+                                    });
                                 });
                             });
                         });

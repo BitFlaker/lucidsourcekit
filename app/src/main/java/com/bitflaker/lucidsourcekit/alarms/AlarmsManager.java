@@ -1,4 +1,4 @@
-package com.bitflaker.lucidsourcekit;
+package com.bitflaker.lucidsourcekit.alarms;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.clock.SleepClock;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.main.AlarmData;
@@ -38,6 +39,7 @@ public class AlarmsManager extends AppCompatActivity {
         FloatingActionButton addAlarm = findViewById(R.id.fab_add_alarm);
         topContainer.setLayoutParams(Tools.addRelativeLayoutParamsTopStatusbarSpacing(AlarmsManager.this, ((RelativeLayout.LayoutParams) topContainer.getLayoutParams())));
 
+        AlarmStorage.getInstance(this);
         clock.startClock();
         addAlarm.setOnClickListener(e -> startActivity(new Intent(this, AlarmCreator.class)));
 

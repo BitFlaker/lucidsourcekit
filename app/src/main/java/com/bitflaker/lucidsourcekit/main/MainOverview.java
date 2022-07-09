@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.bitflaker.lucidsourcekit.AlarmsManager;
+import com.bitflaker.lucidsourcekit.alarms.AlarmsManager;
 import com.bitflaker.lucidsourcekit.R;
 
 public class MainOverview extends Fragment {

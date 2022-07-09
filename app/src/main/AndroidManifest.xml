@@ -14,12 +14,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LucidSourceKit.Dark">
         <activity
-            android:name=".AlarmCreator"
+            android:name=".alarms.AlarmCreator"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".AlarmsManager"
+            android:name=".alarms.AlarmsManager"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait" />

@@ -9,6 +9,14 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.bitflaker.lucidsourcekit.database.alarms.daos.AlarmDao;
+import com.bitflaker.lucidsourcekit.database.alarms.daos.AlarmIsOnWeekdayDao;
+import com.bitflaker.lucidsourcekit.database.alarms.daos.AlarmToneTypesDao;
+import com.bitflaker.lucidsourcekit.database.alarms.daos.WeekdaysDao;
+import com.bitflaker.lucidsourcekit.database.alarms.entities.Alarm;
+import com.bitflaker.lucidsourcekit.database.alarms.entities.AlarmIsOnWeekday;
+import com.bitflaker.lucidsourcekit.database.alarms.entities.AlarmToneTypes;
+import com.bitflaker.lucidsourcekit.database.alarms.entities.Weekdays;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.daos.AudioLocationDao;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.daos.DreamClarityDao;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.daos.DreamMoodDao;
@@ -37,7 +45,8 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal;
 @Database(entities = {JournalEntryTag.class, DreamType.class, SleepQuality.class,
         DreamMood.class, DreamClarity.class, AudioLocation.class, JournalEntry.class,
         JournalEntryHasTag.class, JournalEntryHasType.class, Goal.class, Shuffle.class,
-        ShuffleHasGoal.class}, version = 8, exportSchema = false)
+        ShuffleHasGoal.class, Alarm.class, AlarmIsOnWeekday.class, AlarmToneTypes.class,
+        Weekdays.class}, version = 10, exportSchema = false)
 public abstract class MainDatabase extends RoomDatabase {
     // Dream Journal tables
     public abstract JournalEntryTagDao getJournalEntryTagDao();
@@ -54,6 +63,12 @@ public abstract class MainDatabase extends RoomDatabase {
     public abstract GoalDao getGoalDao();
     public abstract ShuffleDao getShuffleDao();
     public abstract ShuffleHasGoalDao getShuffleHasGoalDao();
+
+    // Alarm tables
+    public abstract AlarmDao getAlarmDao();
+    public abstract AlarmIsOnWeekdayDao getAlarmIsOnWeekdayDao();
+    public abstract AlarmToneTypesDao getAlarmToneTypesDao();
+    public abstract WeekdaysDao getWeekdaysDao();
 
     // Database
     private static volatile MainDatabase instance;
@@ -78,6 +93,8 @@ public abstract class MainDatabase extends RoomDatabase {
                 .addMigrations(MIGRATION_5_6)
                 .addMigrations(MIGRATION_6_7)
                 .addMigrations(MIGRATION_7_8)
+                .addMigrations(MIGRATION_8_9)
+                .addMigrations(MIGRATION_9_10)
                 .build();
     }
 
@@ -136,5 +153,56 @@ public abstract class MainDatabase extends RoomDatabase {
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE AudioLocation ADD recordingTimestamp INTEGER DEFAULT 0 NOT NULL");
         }
+    };
+
+    static final Migration MIGRATION_8_9 = new Migration(8, 9) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            database.execSQL("CREATE TABLE Weekdays (" +
+                    "weekdayId INTEGER PRIMARY KEY NOT NULL," +
+                    "description TEXT);");
+            database.execSQL("CREATE TABLE AlarmToneTypes (" +
+                    "alarmToneTypeId INTEGER PRIMARY KEY NOT NULL," +
+                    "description TEXT);");
+            database.execSQL("CREATE TABLE Alarm (" +
+                    "alarmId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "bedtimeHour INTEGER NOT NULL," +
+                    "bedtimeMinute INTEGER NOT NULL," +
+                    "alarmHour INTEGER NOT NULL," +
+                    "alarmMinute INTEGER NOT NULL," +
+                    "alarmToneType INTEGER NOT NULL," +
+                    "alarmUri TEXT NOT NULL," +
+                    "alarmVolume INTEGER NOT NULL," +
+                    "alarmVolumeIncreaseMinutes INTEGER NOT NULL," +
+                    "alarmVolumeIncreaseSeconds INTEGER NOT NULL," +
+                    "vibrate INTEGER NOT NULL," +
+                    "useFlashlight INTEGER NOT NULL," +
+                    "isActive INTEGER NOT NULL," +
+                    "FOREIGN KEY (alarmToneType)" +
+                    "REFERENCES AlarmToneTypes (alarmToneTypeId)" +
+                    "ON DELETE CASCADE " +
+                    "ON UPDATE NO ACTION);");
+            database.execSQL("CREATE TABLE AlarmIsOnWeekday (" +
+                    "alarmId INTEGER NOT NULL," +
+                    "weekdayId INTEGER NOT NULL," +
+                    "PRIMARY KEY (alarmId, weekdayId)," +
+                    "FOREIGN KEY (alarmId) " +
+                    "REFERENCES Alarm (alarmId) " +
+                    "ON DELETE CASCADE " +
+                    "ON UPDATE NO ACTION," +
+                    "FOREIGN KEY (weekdayId) " +
+                    "REFERENCES Weekdays (weekdayId) " +
+                    "ON DELETE CASCADE " +
+                    "ON UPDATE NO ACTION);");
+
+            database.execSQL("CREATE INDEX index_Alarm_alarmToneType ON Alarm (alarmToneType);");
+            database.execSQL("CREATE INDEX index_AlarmIsOnWeekday_weekdayId ON AlarmIsOnWeekday (weekdayId);");
+        }
+    };
+
+    static final Migration MIGRATION_9_10 = new Migration(9, 10) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) { }
     };
 }
