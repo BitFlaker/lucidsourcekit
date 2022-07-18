@@ -7,6 +7,7 @@ import java.util.List;
 
 public class AlarmItem {
     private int alarmId;
+    private String title;
 
     private int bedtimeHour;
     private int bedtimeMinute;
@@ -24,7 +25,8 @@ public class AlarmItem {
     private boolean useFlashlight;
     private boolean isActive;
 
-    public AlarmItem(int bedtimeHour, int bedtimeMinute, int alarmHour, int alarmMinute, List<Integer> alarmRepeatWeekdays, AlarmToneType alarmToneType, Uri alarmUri, int alarmVolume, int alarmVolumeIncreaseMinutes, int alarmVolumeIncreaseSeconds, boolean vibrate, boolean useFlashlight) {
+    public AlarmItem(String title, int bedtimeHour, int bedtimeMinute, int alarmHour, int alarmMinute, List<Integer> alarmRepeatWeekdays, AlarmToneType alarmToneType, Uri alarmUri, int alarmVolume, int alarmVolumeIncreaseMinutes, int alarmVolumeIncreaseSeconds, boolean vibrate, boolean useFlashlight) {
+        this.title = title;
         this.bedtimeHour = bedtimeHour;
         this.bedtimeMinute = bedtimeMinute;
         this.alarmHour = alarmHour;
@@ -40,6 +42,7 @@ public class AlarmItem {
     }
 
     public AlarmItem() {
+        this.title = "";
         this.bedtimeHour = 0;
         this.bedtimeMinute = 0;
         this.alarmHour = 6;
@@ -172,6 +175,14 @@ public class AlarmItem {
 
     public void setAlarmId(int alarmId) {
         this.alarmId = alarmId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public enum AlarmToneType {

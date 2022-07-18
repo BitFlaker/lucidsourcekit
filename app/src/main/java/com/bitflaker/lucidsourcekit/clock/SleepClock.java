@@ -206,14 +206,14 @@ public class SleepClock extends View {
         }
 
         if(drawAnalogClock && currentTime != null) {
-            float minuteHandRadius = radius - Tools.dpToPx(getContext(), innerRadiusOffset) - Tools.dpToPx(getContext(), 16);
-            float hourHandRadius = radius - Tools.dpToPx(getContext(), innerRadiusOffset) - Tools.dpToPx(getContext(), 38);
+            float minuteHandRadius = radius - Tools.dpToPx(getContext(), innerRadiusOffset) - Tools.dpToPx(getContext(), 9);
+            float hourHandRadius = radius - Tools.dpToPx(getContext(), innerRadiusOffset) - Tools.dpToPx(getContext(), 25);
             float secondsHandRadius = radius - Tools.dpToPx(getContext(), innerRadiusOffset) - Tools.dpToPx(getContext(), 5);
 
             float angleMinute = (float)(startAngle + ((currentTime.get(Calendar.MINUTE)/5.0) * currentAngleOffset));
             float angleHour = (float)(startAngle + (currentTime.get(Calendar.HOUR) + (currentTime.get(Calendar.MINUTE)/60.0)) * currentAngleOffset);
             float angleSeconds = (float)(startAngle + ((currentTime.get(Calendar.SECOND)/5.0) * currentAngleOffset));
-            canvas.drawLine(radius, radius, radius + (float)Math.cos(angleMinute) * minuteHandRadius, radius + (float)Math.sin(angleMinute) * minuteHandRadius, dataHandPaintMinute);
+            canvas.drawLine(radius, radius, radius + (float)Math.cos(angleMinute) * minuteHandRadius, radius + (float)Math.sin(angleMinute) * minuteHandRadius, dataHandPaintHour);
             canvas.drawLine(radius, radius, radius + (float)Math.cos(angleHour) * hourHandRadius, radius + (float)Math.sin(angleHour) * hourHandRadius, dataHandPaintHour);
             canvas.drawLine(radius, radius, radius + (float)Math.cos(angleSeconds) * secondsHandRadius, radius + (float)Math.sin(angleSeconds) * secondsHandRadius, dataHandPaintSeconds);
             float radiusCenter = Tools.dpToPx(getContext(), 5);

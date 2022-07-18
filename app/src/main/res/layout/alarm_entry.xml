@@ -5,9 +5,11 @@
     android:id="@+id/crd_alarm"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:backgroundTint="?attr/backgroundColor"
     app:cardCornerRadius="0dp"
-    app:cardElevation="0dp">
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp"
+    app:strokeColor="?attr/slightElevated"
+    app:cardBackgroundColor="?attr/backgroundColor">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -71,14 +73,24 @@
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp" />
 
+                    <TextView
+                        android:id="@+id/txt_alarms_weekdays_active"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Mo, Tu, Fr, Su"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="12sp" />
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:alpha="0.5"
+                        android:layout_gravity="center_horizontal"
                         android:divider="@drawable/divider_small"
                         android:orientation="horizontal"
                         android:showDividers="middle"
-                        android:visibility="visible">
+                        android:visibility="gone">
 
                         <TextView
                             android:id="@+id/txt_alarms_week_mo"

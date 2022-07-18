@@ -2,5 +2,5 @@
 <resources>
     <dimen name="cardRadius">15dp</dimen>
     <dimen name="cardRadius_Var2">30dp</dimen>
-    <dimen name="cardElevationRegular">4dp</dimen>
+    <dimen name="cardElevationRegular">2dp</dimen>
 </resources>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AlarmDisplayer">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:weightSum="10">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="2"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-thin"
+            android:text="12:24"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="54sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clean night's alarm"
+            android:textColor="?attr/secondaryTextColor"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        app:justifyContent="space_around">
+
+        <ImageButton
+            android:id="@+id/btn_stop_alarm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="64dp"
+            android:minWidth="64dp"
+            android:background="@drawable/ripple_round"
+            android:backgroundTint="?attr/colorPrimary"
+            android:src="@drawable/ic_baseline_check_24"
+            app:tint="?attr/colorOnPrimary"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="64dp"
+            android:minWidth="64dp"
+            android:background="@drawable/ripple_round"
+            android:backgroundTint="?attr/colorPrimary"
+            android:src="@drawable/ic_baseline_snooze_24"
+            app:tint="?attr/colorOnPrimary"/>
+    </com.google.android.flexbox.FlexboxLayout>
+</LinearLayout>

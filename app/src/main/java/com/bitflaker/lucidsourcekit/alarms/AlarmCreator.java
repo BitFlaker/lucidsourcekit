@@ -1,22 +1,36 @@
 package com.bitflaker.lucidsourcekit.alarms;
 
+import static android.app.AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED;
+
+import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.clock.SleepClock;
@@ -28,19 +42,34 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class AlarmCreator extends AppCompatActivity {
     MaterialButton setAlarm;
-    MaterialCardView tone, volume, volumeIncrease, vibrate, flashlight;
+    MaterialCardView tone, volume, volumeIncrease, vibrate, flashlight, alarmTimeCard, bedtimeTimeCard;
     ChipGroup alarmToneGroup;
     Chip ringtoneChip, customFileChip;
-    TextView selectedToneText, incVolumeFor, currAlarmVolume;
+    TextView selectedToneText, incVolumeFor, currAlarmVolume, repeatPatternText;
     Slider alarmVolume;
     SwitchMaterial vibrateAlarm, useFlashlight;
     LinearLayout weekdaysContainer;
+    EditText alarmTitle;
+    private final static int PERMISSION_REQUEST_CODE = 776;
+    private final static boolean[] everydayRepeatPattern = new boolean[] { true, true, true, true, true, true, true };
+    private final static boolean[] allWeekdaysRepeatPattern = new boolean[] { true, true, true, true, true, false, false };
+    private final static boolean[] allWeekendsRepeatPattern = new boolean[] { false, false, false, false, false, true, true };
+    private final static boolean[] noRepeatPattern = new boolean[] { false, false, false, false, false, false, false };
+    private final static String[] supportedAudioFiles = new String[] { "3gp", "m4a", "aac", "ts", "amr", "flac", "mid", "xmf", "mxmf", "rtttl", "rtx", "ota", "imy", "mp3", "mkv", "ogg", "wav" };
+    private Chip[] weekdayChips;
+    private AlarmManager alarmManager;
+    private PendingIntent alarmIntent;
     private Integer[] weekdays = new Integer[] { Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY, Calendar.SATURDAY, Calendar.SUNDAY };
+    private final static String[] weekdayShorts = new String[] { "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" };
     private int currentVolIncMin = 2, currentVolIncSec = 30;
     private Uri ringtoneUri;
     private AlarmItem alarmItem = new AlarmItem();
@@ -50,7 +79,35 @@ public class AlarmCreator extends AppCompatActivity {
                 String title = ringtone.getTitle(this);
                 selectedToneText.setText(title);
                 alarmItem.setAlarmUri(ringtoneUri);
-        System.out.println(ringtoneUri);
+            });
+    ActivityResultLauncher<Intent> customFileSelectorLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if(result.getData() != null){
+                    Uri uri = result.getData().getData();
+                    File file = new File(uri.getPath());
+                    String filename = file.getName();
+                    String extension = filename.substring(filename.lastIndexOf(".")+1);
+                    if(Arrays.asList(supportedAudioFiles).contains(extension)){
+                        ringtoneUri = uri;
+                        String title = filename.substring(0, filename.lastIndexOf("."));
+                        selectedToneText.setText(title);
+                        alarmItem.setAlarmUri(ringtoneUri);
+                    }
+                    else {
+                        Toast.makeText(this, "Unsupported audio file type", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+    ActivityResultLauncher<Intent> scheduleAlarmSettingsLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if(result.getData() == null || !result.getData().getAction().equals(ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED)) {
+                    Toast.makeText(this, "Permission required to schedule alarms", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            });
+    ActivityResultLauncher<Intent> drawOverOtherAppsSettingsLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if(!Settings.canDrawOverlays(this)) {
+                    Toast.makeText(this, "Permission required to display alarms", Toast.LENGTH_LONG).show();
+                    finish();
+                }
             });
 
     @Override
@@ -80,9 +137,39 @@ public class AlarmCreator extends AppCompatActivity {
         useFlashlight = findViewById(R.id.swt_alarm_use_flashlight);
         setAlarm = findViewById(R.id.btn_create_alarm);
         weekdaysContainer = findViewById(R.id.ll_weekdays_container);
+        bedtimeTimeCard = findViewById(R.id.crd_bedtime_time);
+        alarmTimeCard = findViewById(R.id.crd_alarm_time);
+        repeatPatternText = findViewById(R.id.txt_repeat_pattern_text);
+        alarmTitle = findViewById(R.id.txt_alarm_name);
 
-        for (int i = 0; i < weekdaysContainer.getChildCount(); i++) {
-            Chip currentButton = (Chip) weekdaysContainer.getChildAt(i);
+        weekdayChips = new Chip[] {
+            findViewById(R.id.chp_monday),
+            findViewById(R.id.chp_tuesday),
+            findViewById(R.id.chp_wednesday),
+            findViewById(R.id.chp_thursday),
+            findViewById(R.id.chp_friday),
+            findViewById(R.id.chp_saturday),
+            findViewById(R.id.chp_sunday)
+        };
+
+        useFlashlight.setOnTouchListener((v, event) -> {
+            View par = ((View) v.getParent().getParent());
+            par.onTouchEvent(event);
+            return true;
+        });
+        vibrateAlarm.setOnTouchListener((v, event) -> {
+            View par = ((View) v.getParent().getParent());
+            par.onTouchEvent(event);
+            return true;
+        });
+
+        if (!Settings.canDrawOverlays(this)) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+            drawOverOtherAppsSettingsLauncher.launch(intent);
+        }
+
+        for (int i = 0; i < weekdayChips.length; i++) {
+            Chip currentButton = weekdayChips[i];
             int finalI = i;
             currentButton.setOnClickListener(view -> {
                 if(currentButton.isChecked()){
@@ -91,6 +178,7 @@ public class AlarmCreator extends AppCompatActivity {
                 else {
                     alarmItem.removeAlarmRepeatWeekdays(weekdays[finalI]);
                 }
+                updateAlarmRepeatText();
             });
         }
 
@@ -114,8 +202,8 @@ public class AlarmCreator extends AppCompatActivity {
             alarmTime.setText(String.format(Locale.ENGLISH, "%02d:%02d", hours, minutes));
         });
 
-        bedtime.setOnClickListener((view) -> new TimePickerDialog(this, (timePickerFrom, hourFrom, minuteFrom) -> sleepClock.setBedTime(hourFrom, minuteFrom), sleepClock.getHoursToBedTime(), sleepClock.getMinutesToBedTime(), true).show());
-        alarmTime.setOnClickListener((view) -> new TimePickerDialog(this, (timePickerFrom, hourFrom, minuteFrom) -> sleepClock.setAlarmTime(hourFrom, minuteFrom), sleepClock.getHoursToAlarm(), sleepClock.getMinutesToAlarm(), true).show());
+        bedtimeTimeCard.setOnClickListener((view) -> new TimePickerDialog(this, (timePickerFrom, hourFrom, minuteFrom) -> sleepClock.setBedTime(hourFrom, minuteFrom), sleepClock.getHoursToBedTime(), sleepClock.getMinutesToBedTime(), true).show());
+        alarmTimeCard.setOnClickListener((view) -> new TimePickerDialog(this, (timePickerFrom, hourFrom, minuteFrom) -> sleepClock.setAlarmTime(hourFrom, minuteFrom), sleepClock.getHoursToAlarm(), sleepClock.getMinutesToAlarm(), true).show());
         sleepClock.setDrawHours(true);
         sleepClock.setDrawTimeSetterButtons(true);
 
@@ -124,9 +212,16 @@ public class AlarmCreator extends AppCompatActivity {
         alarmToneGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if(ringtoneChip.isChecked()) {
                 alarmItem.setAlarmToneType(AlarmItem.AlarmToneType.RINGTONE);
+                selectedToneText.setText(RingtoneManager.getRingtone(this, ringtoneUri).getTitle(this));
+                alarmItem.setAlarmUri(ringtoneUri);
             }
-            else if (customFileChip.isChecked()){
+            else if (customFileChip.isChecked()) {
+                if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_EXTERNAL_STORAGE }, PERMISSION_REQUEST_CODE);
+                }
                 alarmItem.setAlarmToneType(AlarmItem.AlarmToneType.CUSTOM_FILE);
+                selectedToneText.setText("- NONE -");
+                alarmItem.setAlarmUri(Uri.EMPTY);
             }
         });
         tone.setOnClickListener(e -> {
@@ -139,6 +234,10 @@ public class AlarmCreator extends AppCompatActivity {
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
                 ringtoneSelectorLauncher.launch(intent);
+            }
+            else {
+                Intent audioPicker = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+                customFileSelectorLauncher.launch(audioPicker);
             }
         });
         alarmVolume.addOnChangeListener((slider, value, fromUser) -> {
@@ -188,8 +287,22 @@ public class AlarmCreator extends AppCompatActivity {
 
         setAlarm.setOnClickListener(e -> {
             // TODO: make checks (like no tone selected with custom file)
+            alarmItem.setTitle(alarmTitle.getText().toString());
             alarmItem.setActive(true);
             AlarmStorage.getInstance(this).addAlarm(alarmItem);
+
+            Intent intent = new Intent(this, AlarmReceiverManager.class);
+            alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+//            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10 * 1000, alarmIntent);
+
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.setTimeInMillis(System.currentTimeMillis());
+//            calendar.set(Calendar.HOUR_OF_DAY, alarmItem.getAlarmHour());
+//            calendar.set(Calendar.MINUTE, alarmItem.getAlarmMinute());
+//             setRepeating() lets you specify a precise custom interval -- in this case, 20 minutes.
+//            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 3, alarmIntent);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (10 * 1000L), alarmIntent);
+
             finish();
         });
         setAlarm.setOnLongClickListener(e -> {
@@ -198,6 +311,56 @@ public class AlarmCreator extends AppCompatActivity {
             finish();
             return true;
         });
+
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if(!alarmManager.canScheduleExactAlarms()){
+                scheduleAlarmSettingsLauncher.launch(new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM));
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                ringtoneChip.setChecked(true);
+            }
+        }
+    }
+
+    private void updateAlarmRepeatText() {
+        boolean[] activePattern = getCurrentRepeatPattern();
+        if (Arrays.equals(activePattern, everydayRepeatPattern)) {
+            repeatPatternText.setText("Repeat every day");
+        }
+        else if (Arrays.equals(activePattern, allWeekdaysRepeatPattern)) {
+            repeatPatternText.setText("Repeat every weekday");
+        }
+        else if (Arrays.equals(activePattern, allWeekendsRepeatPattern)) {
+            repeatPatternText.setText("Repeat every weekend");
+        }
+        else if (Arrays.equals(activePattern, noRepeatPattern)) {
+            repeatPatternText.setText("Repeat only once");
+        }
+        else {
+            List<String> activeWeekdays = new ArrayList<>();
+            for (int i = 0; i < activePattern.length; i++) {
+                if(activePattern[i] == true){
+                    activeWeekdays.add(weekdayShorts[i]);
+                }
+            }
+            repeatPatternText.setText(String.format(Locale.ENGLISH, "Repeat every %s", String.join(", ", activeWeekdays)));
+        }
+    }
+
+    private boolean[] getCurrentRepeatPattern() {
+        boolean[] activePattern = new boolean[7];
+        for (int i = 0; i < weekdayChips.length; i++) {
+            activePattern[i] = weekdayChips[i].isChecked();
+        }
+        return activePattern;
     }
 
     private void setCurrentAlarmValues(SleepClock sleepClock) {
@@ -217,6 +380,7 @@ public class AlarmCreator extends AppCompatActivity {
         alarmItem.setAlarmVolumeIncreaseSeconds(currentVolIncSec);
         alarmItem.setUseFlashlight(useFlashlight.isChecked());
         alarmItem.setVibrate(vibrate.isChecked());
+        alarmItem.setTitle("");
     }
 
     private void setVolumeIncreaseTime(int minutes, int seconds) {

@@ -1,7 +1,6 @@
 package com.bitflaker.lucidsourcekit.main;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.general.FontHandler;
-import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,6 +22,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     private OnEntryClicked mListener;
     private Context context;
     private List<AlarmData> alarmData;
+    private final static String[] weekdayShorts = new String[] { "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" };
 
     public RecyclerViewAdapterAlarms(Context context, List<AlarmData> alarmData) {
         this.context = context;
@@ -47,24 +46,40 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         holder.timePrimary.setText(isPMAM ? tString.replace("PM", "").replace("AM", "") : tString);
         holder.timeSecondary.setText(isPMAM ? (tString.toUpperCase().contains("PM") ? "PM" : "AM") : "");
         holder.active.setChecked(alarmData.get(position).isActive());
-        Typeface tfThin = FontHandler.getInstance().getFontByName("sans-serif-thin");
-        Typeface tfNormal = FontHandler.getInstance().getFontByName("sans-serif");
-        // TODO: enable toggle for either not showing disabled days or showing them only slightly
-        for (int i = 0; i < holder.weekdays.size(); i++) {
-            TextView dayT = holder.weekdays.get(i);
-            dayT.setTypeface(tfThin);
-            dayT.setTextColor(Tools.getAttrColor(R.attr.secondaryTextColor, context.getTheme()));
-            dayT.setVisibility(View.GONE);
+//        Typeface tfThin = FontHandler.getInstance().getFontByName("sans-serif-thin");
+//        Typeface tfNormal = FontHandler.getInstance().getFontByName("sans-serif");
+//        // TODO: enable toggle for either not showing disabled days or showing them only slightly
+//        for (int i = 0; i < holder.weekdays.size(); i++) {
+//            TextView dayT = holder.weekdays.get(i);
+//            dayT.setTypeface(tfThin);
+//            dayT.setTextColor(Tools.getAttrColor(R.attr.secondaryTextColor, context.getTheme()));
+//            dayT.setVisibility(View.GONE);
+//        }
+//        for (AlarmData.ActiveDays day : alarmData.get(position).getActiveDays()) {
+//            TextView dayT = holder.weekdays.get(day.ordinal());
+//            dayT.setTypeface(tfNormal);
+//            dayT.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, context.getTheme()));
+//            dayT.setVisibility(View.VISIBLE);
+//        }
+        List<AlarmData.ActiveDays> ad = alarmData.get(position).getActiveDays();
+        List<String> names = new ArrayList<>();
+        for (int i = 0; i < ad.size(); i++) {
+            names.add(weekdayShorts[ad.get(i).ordinal()]);
         }
-        for (AlarmData.ActiveDays day : alarmData.get(position).getActiveDays()) {
-            TextView dayT = holder.weekdays.get(day.ordinal());
-            dayT.setTypeface(tfNormal);
-            dayT.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, context.getTheme()));
-            dayT.setVisibility(View.VISIBLE);
+        if(names.size() > 0){
+            holder.activeDays.setText(String.join(", ", names));
+        }
+        else {
+            holder.activeDays.setText("No repeat");
         }
         holder.card.setOnClickListener(e -> {
             // TODO open editor
         });
+    }
+
+    public void setData(List<AlarmData> alarmData) {
+        this.alarmData = alarmData;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -73,7 +88,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     }
 
     public class MainViewHolderAlarms extends RecyclerView.ViewHolder {
-        TextView title, timePrimary, timeSecondary;
+        TextView title, timePrimary, timeSecondary, activeDays;
         TextView dayMo, dayTu, dayWe, dayTh, dayFr, daySa, daySu;
         MaterialCardView card;
         SwitchMaterial active;
@@ -86,6 +101,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
             timePrimary = itemView.findViewById(R.id.txt_alarms_time_prim);
             timeSecondary = itemView.findViewById(R.id.txt_alarms_time_sec);
             active = itemView.findViewById(R.id.swt_alarm_active);
+            activeDays = itemView.findViewById(R.id.txt_alarms_weekdays_active);
             dayMo = itemView.findViewById(R.id.txt_alarms_week_mo);
             dayTu = itemView.findViewById(R.id.txt_alarms_week_tu);
             dayWe = itemView.findViewById(R.id.txt_alarms_week_we);

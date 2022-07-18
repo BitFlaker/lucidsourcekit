@@ -19,7 +19,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Timer;
@@ -27,6 +26,7 @@ import java.util.TimerTask;
 
 public class AlarmsManager extends AppCompatActivity {
     private TextView time, date;
+    private RecyclerViewAdapterAlarms adapterAlarms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,6 @@ public class AlarmsManager extends AppCompatActivity {
         FloatingActionButton addAlarm = findViewById(R.id.fab_add_alarm);
         topContainer.setLayoutParams(Tools.addRelativeLayoutParamsTopStatusbarSpacing(AlarmsManager.this, ((RelativeLayout.LayoutParams) topContainer.getLayoutParams())));
 
-        AlarmStorage.getInstance(this);
         clock.startClock();
         addAlarm.setOnClickListener(e -> startActivity(new Intent(this, AlarmCreator.class)));
 
@@ -71,13 +70,46 @@ public class AlarmsManager extends AppCompatActivity {
             }
         }, cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 1000);
 
-        List<AlarmData> alarms = new ArrayList<>();
-        alarms.add(new AlarmData("Random alarm", Calendar.getInstance(), Arrays.asList(AlarmData.ActiveDays.MONDAY, AlarmData.ActiveDays.TUESDAY, AlarmData.ActiveDays.SUNDAY), true));
-        alarms.add(new AlarmData("Second alarm", Calendar.getInstance(), Arrays.asList(AlarmData.ActiveDays.FRIDAY, AlarmData.ActiveDays.SATURDAY, AlarmData.ActiveDays.SUNDAY), false));
-        alarms.add(new AlarmData("Mid REM sleep", Calendar.getInstance(), Arrays.asList(AlarmData.ActiveDays.WEDNESDAY, AlarmData.ActiveDays.THURSDAY), false));
-        alarms.add(new AlarmData("After party waker", Calendar.getInstance(), Arrays.asList(AlarmData.ActiveDays.SATURDAY, AlarmData.ActiveDays.SUNDAY), true));
-        RecyclerViewAdapterAlarms adapterAlarms = new RecyclerViewAdapterAlarms(this, alarms);
+        adapterAlarms = new RecyclerViewAdapterAlarms(this, new ArrayList<>());
         recyclerView.setAdapter(adapterAlarms);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        new Thread(() -> {
+            while(!AlarmStorage.getInstance(this).isFinishedLoading()){
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            runOnUiThread(this::showAllStoredAlarms);
+        }).start();
+    }
+
+    private void showAllStoredAlarms() {
+        List<AlarmData> alarms = new ArrayList<>();
+        for (int i = 0; i < AlarmStorage.getInstance(this).size(); i++) {
+            alarms.add(getDataFromItem(AlarmStorage.getInstance(this).getAlarmAt(i)));
+        }
+//        alarms.add(new AlarmData("Random alarm", Calendar.getInstance(), Arrays.asList(AlarmData.ActiveDays.MONDAY, AlarmData.ActiveDays.TUESDAY, AlarmData.ActiveDays.SUNDAY), true));
+//        alarms.add(new AlarmData("Second alarm", Calendar.getInstance(), Arrays.asList(AlarmData.ActiveDays.FRIDAY, AlarmData.ActiveDays.SATURDAY, AlarmData.ActiveDays.SUNDAY), false));
+//        alarms.add(new AlarmData("Mid REM sleep", Calendar.getInstance(), Arrays.asList(AlarmData.ActiveDays.WEDNESDAY, AlarmData.ActiveDays.THURSDAY), false));
+//        alarms.add(new AlarmData("After party waker", Calendar.getInstance(), Arrays.asList(AlarmData.ActiveDays.SATURDAY, AlarmData.ActiveDays.SUNDAY), true));
+        adapterAlarms.setData(alarms);
+    }
+
+    private AlarmData getDataFromItem(AlarmItem alarmAt) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, alarmAt.getAlarmHour());
+        cal.set(Calendar.MINUTE, alarmAt.getAlarmMinute());
+
+        List<AlarmData.ActiveDays> activeDays = new ArrayList<>();
+        List<Integer> days = alarmAt.getAlarmRepeatWeekdays();
+
+        for (int day : days) {
+            activeDays.add(AlarmData.ActiveDays.values()[day-2 < 0 ? AlarmData.ActiveDays.SUNDAY.ordinal() : day-2]);
+        }
+
+        return new AlarmData(alarmAt.getTitle(), cal, activeDays, alarmAt.isActive());
     }
 }

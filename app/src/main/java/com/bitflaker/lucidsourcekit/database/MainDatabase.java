@@ -46,7 +46,7 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal;
         DreamMood.class, DreamClarity.class, AudioLocation.class, JournalEntry.class,
         JournalEntryHasTag.class, JournalEntryHasType.class, Goal.class, Shuffle.class,
         ShuffleHasGoal.class, Alarm.class, AlarmIsOnWeekday.class, AlarmToneTypes.class,
-        Weekdays.class}, version = 10, exportSchema = false)
+        Weekdays.class}, version = 11, exportSchema = false)
 public abstract class MainDatabase extends RoomDatabase {
     // Dream Journal tables
     public abstract JournalEntryTagDao getJournalEntryTagDao();
@@ -95,6 +95,7 @@ public abstract class MainDatabase extends RoomDatabase {
                 .addMigrations(MIGRATION_7_8)
                 .addMigrations(MIGRATION_8_9)
                 .addMigrations(MIGRATION_9_10)
+                .addMigrations(MIGRATION_10_11)
                 .build();
     }
 
@@ -204,5 +205,12 @@ public abstract class MainDatabase extends RoomDatabase {
     static final Migration MIGRATION_9_10 = new Migration(9, 10) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) { }
+    };
+
+    static final Migration MIGRATION_10_11 = new Migration(10, 11) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE Alarm ADD title TEXT DEFAULT 'Unnamed Alarm' NOT NULL;");
+        }
     };
 }

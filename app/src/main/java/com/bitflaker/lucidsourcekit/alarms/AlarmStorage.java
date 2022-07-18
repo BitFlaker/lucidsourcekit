@@ -14,6 +14,7 @@ public class AlarmStorage {
     private static AlarmStorage instance;
     private List<AlarmItem> alarms;
     private MainDatabase db;
+    private boolean finishedLoading = false;
 
     private AlarmStorage(Context context) {
         alarms = new ArrayList<>();
@@ -30,6 +31,7 @@ public class AlarmStorage {
     private void finishFullDataGatheringForAlarm(List<Alarm> alarmsList, int i) {
         if(i == alarmsList.size()) {
             // TODO: maybe give event when finished with loading to prevent displaying errors
+            finishedLoading = true;
             return;
         }
         db.getAlarmIsOnWeekdayDao().getAllForAlarm(alarmsList.get(i).alarmId).subscribe((alarmIsOnWeekdays, throwable) -> {
@@ -44,6 +46,7 @@ public class AlarmStorage {
 
     private AlarmItem getObjectFromEntity(Alarm alarm) {
         AlarmItem alarmItem = new AlarmItem(
+                alarm.title,
                 alarm.bedtimeHour,
                 alarm.bedtimeMinute,
                 alarm.alarmHour,
@@ -117,6 +120,7 @@ public class AlarmStorage {
 
     private Alarm getEntityFromObject(AlarmItem alarmItem) {
         Alarm alarm = new Alarm(
+                alarmItem.getTitle(),
                 alarmItem.getBedtimeHour(),
                 alarmItem.getBedtimeMinute(),
                 alarmItem.getAlarmHour(),
@@ -138,5 +142,13 @@ public class AlarmStorage {
         Alarm alarm = getEntityFromObject(alarmItem);
         alarm.setAlarmId(alarmId);
         return alarm;
+    }
+
+    public int size() {
+        return alarms.size();
+    }
+
+    public boolean isFinishedLoading() {
+        return finishedLoading;
     }
 }

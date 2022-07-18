@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:alpha="0.56" android:color="?attr/colorPrimary" android:state_enabled="true" android:state_selected="true"/>
-    <item android:alpha="1" android:color="?attr/slightElevated" android:state_enabled="true"/>
+    <item android:alpha="1" android:color="?attr/slightElevated2x" android:state_enabled="true"/>
 </selector>

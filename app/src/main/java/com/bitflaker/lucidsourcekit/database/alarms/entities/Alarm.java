@@ -1,6 +1,7 @@
 package com.bitflaker.lucidsourcekit.database.alarms.entities;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
@@ -17,6 +18,9 @@ import androidx.room.PrimaryKey;
 public class Alarm {
     @PrimaryKey(autoGenerate = true)
     public int alarmId;
+    @NonNull
+    @ColumnInfo(defaultValue = "Unnamed Alarm")
+    public String title;
     public int bedtimeHour;
     public int bedtimeMinute;
     public int alarmHour;
@@ -31,8 +35,9 @@ public class Alarm {
     public boolean useFlashlight;
     public boolean isActive;
 
-    public Alarm(int alarmId, int bedtimeHour, int bedtimeMinute, int alarmHour, int alarmMinute, int alarmToneType, @NonNull String alarmUri, int alarmVolume, int alarmVolumeIncreaseMinutes, int alarmVolumeIncreaseSeconds, boolean vibrate, boolean useFlashlight, boolean isActive) {
+    public Alarm(int alarmId, String title, int bedtimeHour, int bedtimeMinute, int alarmHour, int alarmMinute, int alarmToneType, @NonNull String alarmUri, int alarmVolume, int alarmVolumeIncreaseMinutes, int alarmVolumeIncreaseSeconds, boolean vibrate, boolean useFlashlight, boolean isActive) {
         this.alarmId = alarmId;
+        this.title = title;
         this.bedtimeHour = bedtimeHour;
         this.bedtimeMinute = bedtimeMinute;
         this.alarmHour = alarmHour;
@@ -48,7 +53,8 @@ public class Alarm {
     }
 
     @Ignore
-    public Alarm(int bedtimeHour, int bedtimeMinute, int alarmHour, int alarmMinute, int alarmToneType, @NonNull String alarmUri, int alarmVolume, int alarmVolumeIncreaseMinutes, int alarmVolumeIncreaseSeconds, boolean vibrate, boolean useFlashlight, boolean isActive) {
+    public Alarm(String title, int bedtimeHour, int bedtimeMinute, int alarmHour, int alarmMinute, int alarmToneType, @NonNull String alarmUri, int alarmVolume, int alarmVolumeIncreaseMinutes, int alarmVolumeIncreaseSeconds, boolean vibrate, boolean useFlashlight, boolean isActive) {
+        this.title = title;
         this.bedtimeHour = bedtimeHour;
         this.bedtimeMinute = bedtimeMinute;
         this.alarmHour = alarmHour;
