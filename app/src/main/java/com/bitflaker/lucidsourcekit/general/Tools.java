@@ -447,4 +447,13 @@ public class Tools {
     public static float roundToDigits(float value, int digits) {
         return (float)(Math.round(value * Math.pow(10, digits)) / Math.pow(10, digits));
     }
+
+    @ColorInt
+    public static int manipulateAlpha(@ColorInt int color, float factor) {
+        int alpha = Math.round(Color.alpha(color) * factor);
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        return Color.argb(alpha, red, green, blue);
+    }
 }

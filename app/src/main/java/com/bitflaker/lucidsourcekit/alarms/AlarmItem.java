@@ -42,6 +42,7 @@ public class AlarmItem {
     }
 
     public AlarmItem() {
+        this.alarmId = -1;
         this.title = "";
         this.bedtimeHour = 0;
         this.bedtimeMinute = 0;

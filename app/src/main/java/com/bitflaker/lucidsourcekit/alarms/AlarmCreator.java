@@ -1,6 +1,7 @@
 package com.bitflaker.lucidsourcekit.alarms;
 
 import static android.app.AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED;
+import static com.bitflaker.lucidsourcekit.alarms.AlarmItem.AlarmToneType.RINGTONE;
 
 import android.Manifest;
 import android.app.AlarmManager;
@@ -59,6 +60,7 @@ public class AlarmCreator extends AppCompatActivity {
     SwitchMaterial vibrateAlarm, useFlashlight;
     LinearLayout weekdaysContainer;
     EditText alarmTitle;
+    SleepClock sleepClock;
     private final static int PERMISSION_REQUEST_CODE = 776;
     private final static boolean[] everydayRepeatPattern = new boolean[] { true, true, true, true, true, true, true };
     private final static boolean[] allWeekdaysRepeatPattern = new boolean[] { true, true, true, true, true, false, false };
@@ -117,7 +119,7 @@ public class AlarmCreator extends AppCompatActivity {
         Tools.makeStatusBarTransparent(this);
         findViewById(R.id.ll_alarm_creator_heading).setLayoutParams(Tools.addLinearLayoutParamsTopStatusbarSpacing(this, ((LinearLayout.LayoutParams) findViewById(R.id.ll_alarm_creator_heading).getLayoutParams())));
 
-        SleepClock sleepClock = findViewById(R.id.slp_clk_set_time);
+        sleepClock = findViewById(R.id.slp_clk_set_time);
         TextView bedtime = findViewById(R.id.txt_time_bedtime);
         TextView alarmTime = findViewById(R.id.txt_time_alarm);
         ImageButton closeCreator = findViewById(R.id.btn_close_alarm_creator);
@@ -187,20 +189,20 @@ public class AlarmCreator extends AppCompatActivity {
         String title = ringtone.getTitle(this);
         selectedToneText.setText(title);
 
-        setCurrentAlarmValues(sleepClock);
-
-        bedtime.setText(String.format(Locale.ENGLISH, "%02d:%02d", sleepClock.getHoursToBedTime(), sleepClock.getMinutesToBedTime()));
-        alarmTime.setText(String.format(Locale.ENGLISH, "%02d:%02d", sleepClock.getHoursToAlarm(), sleepClock.getMinutesToAlarm()));
-        sleepClock.setOnBedtimeChangedListener((hours, minutes) -> {
-            alarmItem.setBedtimeHour(hours);
-            alarmItem.setBedtimeMinute(minutes);
-            bedtime.setText(String.format(Locale.ENGLISH, "%02d:%02d", hours, minutes));
-        });
-        sleepClock.setOnAlarmTimeChangedListener((hours, minutes) -> {
-            alarmItem.setAlarmHour(hours);
-            alarmItem.setAlarmMinute(minutes);
-            alarmTime.setText(String.format(Locale.ENGLISH, "%02d:%02d", hours, minutes));
-        });
+        if(getIntent().hasExtra("ALARM_ID")){
+            int alarmId = getIntent().getIntExtra("ALARM_ID", -1);
+            alarmItem = AlarmStorage.getInstance(this).getAlarmItemWithId(alarmId);
+            setEditValuesFromItem();
+            sleepClock.setOnFirstDrawFinishedListener(() -> {
+                sleepClock.setAlarmTime(alarmItem.getAlarmHour(), alarmItem.getAlarmMinute());
+                sleepClock.setBedTime(alarmItem.getBedtimeHour(), alarmItem.getBedtimeMinute());
+                setTimeChangedListeners(bedtime, alarmTime);
+            });
+        }
+        else {
+            setCurrentAlarmValues(sleepClock);
+            setTimeChangedListeners(bedtime, alarmTime);
+        }
 
         bedtimeTimeCard.setOnClickListener((view) -> new TimePickerDialog(this, (timePickerFrom, hourFrom, minuteFrom) -> sleepClock.setBedTime(hourFrom, minuteFrom), sleepClock.getHoursToBedTime(), sleepClock.getMinutesToBedTime(), true).show());
         alarmTimeCard.setOnClickListener((view) -> new TimePickerDialog(this, (timePickerFrom, hourFrom, minuteFrom) -> sleepClock.setAlarmTime(hourFrom, minuteFrom), sleepClock.getHoursToAlarm(), sleepClock.getMinutesToAlarm(), true).show());
@@ -211,7 +213,7 @@ public class AlarmCreator extends AppCompatActivity {
 
         alarmToneGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if(ringtoneChip.isChecked()) {
-                alarmItem.setAlarmToneType(AlarmItem.AlarmToneType.RINGTONE);
+                alarmItem.setAlarmToneType(RINGTONE);
                 selectedToneText.setText(RingtoneManager.getRingtone(this, ringtoneUri).getTitle(this));
                 alarmItem.setAlarmUri(ringtoneUri);
             }
@@ -289,7 +291,12 @@ public class AlarmCreator extends AppCompatActivity {
             // TODO: make checks (like no tone selected with custom file)
             alarmItem.setTitle(alarmTitle.getText().toString());
             alarmItem.setActive(true);
-            AlarmStorage.getInstance(this).addAlarm(alarmItem);
+            if(alarmItem.getAlarmId() == -1){
+                AlarmStorage.getInstance(this).addAlarm(alarmItem);
+            }
+            else {
+                AlarmStorage.getInstance(this).modifyAlarm(alarmItem);
+            }
 
             Intent intent = new Intent(this, AlarmReceiverManager.class);
             alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
@@ -318,6 +325,49 @@ public class AlarmCreator extends AppCompatActivity {
                 scheduleAlarmSettingsLauncher.launch(new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM));
             }
         }
+    }
+
+    private void setTimeChangedListeners(TextView bedtime, TextView alarmTime) {
+        bedtime.setText(String.format(Locale.ENGLISH, "%02d:%02d", sleepClock.getHoursToBedTime(), sleepClock.getMinutesToBedTime()));
+        alarmTime.setText(String.format(Locale.ENGLISH, "%02d:%02d", sleepClock.getHoursToAlarm(), sleepClock.getMinutesToAlarm()));
+        sleepClock.setOnBedtimeChangedListener((hours, minutes) -> {
+            alarmItem.setBedtimeHour(hours);
+            alarmItem.setBedtimeMinute(minutes);
+            bedtime.setText(String.format(Locale.ENGLISH, "%02d:%02d", hours, minutes));
+        });
+        sleepClock.setOnAlarmTimeChangedListener((hours, minutes) -> {
+            alarmItem.setAlarmHour(hours);
+            alarmItem.setAlarmMinute(minutes);
+            alarmTime.setText(String.format(Locale.ENGLISH, "%02d:%02d", hours, minutes));
+        });
+    }
+
+    private void setEditValuesFromItem() {
+        ringtoneChip.setChecked(alarmItem.getAlarmToneType() == RINGTONE);
+        customFileChip.setChecked(alarmItem.getAlarmToneType() == AlarmItem.AlarmToneType.CUSTOM_FILE);
+        ringtoneUri = alarmItem.getAlarmUri();
+        String title;
+        switch(alarmItem.getAlarmToneType()){
+            case RINGTONE:
+                Ringtone ringtone = RingtoneManager.getRingtone(this, ringtoneUri);
+                title = ringtone.getTitle(this);
+                selectedToneText.setText(title);
+                break;
+            case CUSTOM_FILE:
+                File file = new File(ringtoneUri.getPath());
+                String filename = file.getName();
+                title = filename.substring(0, filename.lastIndexOf("."));
+                selectedToneText.setText(title);
+                break;
+        }
+        alarmVolume.setValue(alarmItem.getAlarmVolume() / 100.0f);
+        currAlarmVolume.setText(String.format(Locale.ENGLISH, "%d%%", (int)(alarmVolume.getValue() * 100)));
+        currentVolIncMin = alarmItem.getAlarmVolumeIncreaseMinutes();
+        currentVolIncSec = alarmItem.getAlarmVolumeIncreaseSeconds();
+        incVolumeFor.setText(String.format(Locale.ENGLISH, "%dm %ds", currentVolIncMin, currentVolIncSec));
+        useFlashlight.setChecked(alarmItem.isUseFlashlight());
+        vibrate.setChecked(alarmItem.isVibrate());
+        alarmTitle.setText(alarmItem.getTitle());
     }
 
     @Override
@@ -369,7 +419,7 @@ public class AlarmCreator extends AppCompatActivity {
         alarmItem.setAlarmHour(sleepClock.getHoursToAlarm());
         alarmItem.setAlarmMinute(sleepClock.getMinutesToAlarm());
         if(ringtoneChip.isChecked()) {
-            alarmItem.setAlarmToneType(AlarmItem.AlarmToneType.RINGTONE);
+            alarmItem.setAlarmToneType(RINGTONE);
         }
         else if (customFileChip.isChecked()){
             alarmItem.setAlarmToneType(AlarmItem.AlarmToneType.CUSTOM_FILE);

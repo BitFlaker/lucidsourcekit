@@ -15,11 +15,19 @@ public class AlarmStorage {
     private List<AlarmItem> alarms;
     private MainDatabase db;
     private boolean finishedLoading = false;
+    private OnAlarmAdded mAlarmAddedListener;
 
     private AlarmStorage(Context context) {
         alarms = new ArrayList<>();
         db = MainDatabase.getInstance(context);
         loadAllAlarmsFromDatabase();
+    }
+
+    public static AlarmStorage getInstance(Context context) {
+        if (instance == null){
+            instance = new AlarmStorage(context);
+        }
+        return instance;
     }
 
     private void loadAllAlarmsFromDatabase() {
@@ -65,13 +73,6 @@ public class AlarmStorage {
         return alarmItem;
     }
 
-    public static AlarmStorage getInstance(Context context) {
-        if (instance == null){
-            instance = new AlarmStorage(context);
-        }
-        return instance;
-    }
-
     public void addAlarm(AlarmItem alarmItem) {
         writeAlarmToDatabase(alarmItem);
     }
@@ -85,8 +86,13 @@ public class AlarmStorage {
         return alarms.get(index);
     }
 
-    public void setAlarmActive(int index, boolean active){
-        alarms.get(index).setActive(active);
+    public void setAlarmActive(int alarmId, boolean active){
+        for (AlarmItem alarm : alarms) {
+            if (alarm.getAlarmId() == alarmId) {
+                alarm.setActive(active);
+                break;
+            }
+        }
     }
 
     private void writeAlarmToDatabase(AlarmItem alarmItem) {
@@ -94,6 +100,9 @@ public class AlarmStorage {
         db.getAlarmDao().insert(alarm).subscribe((alarmId, throwable) -> {
             alarmItem.setAlarmId(alarmId.intValue());
             alarms.add(alarmItem);
+            if(mAlarmAddedListener != null) {
+                mAlarmAddedListener.onEvent(alarmItem);
+            }
             addAlarmIsOnWeekday(alarmId.intValue(), alarmItem.getAlarmRepeatWeekdays(), 0);
         });
     }
@@ -150,5 +159,38 @@ public class AlarmStorage {
 
     public boolean isFinishedLoading() {
         return finishedLoading;
+    }
+
+    public void removedAlarmIds(List<Integer> alarmsToDelete) {
+        int i = 0;
+        int remCount = 0;
+        while(i - remCount < alarms.size()){
+            if(alarmsToDelete.contains(alarms.get(i - remCount).getAlarmId())){
+                alarms.remove(i - remCount);
+                remCount++;
+            }
+            i++;
+        }
+    }
+
+    public AlarmItem getAlarmItemWithId(int alarmId) {
+        for (AlarmItem alarm : alarms) {
+            if(alarm.getAlarmId() == alarmId){
+                return alarm;
+            }
+        }
+        return null;
+    }
+
+    public void modifyAlarm(AlarmItem alarmItem) {
+
+    }
+
+    public interface OnAlarmAdded {
+        void onEvent(AlarmItem alarm);
+    }
+
+    public void setOnAlarmAddedListener(OnAlarmAdded eventListener) {
+        mAlarmAddedListener = eventListener;
     }
 }

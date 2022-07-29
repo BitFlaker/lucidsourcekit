@@ -26,9 +26,15 @@ public interface AlarmDao {
     @Insert(onConflict = REPLACE)
     Single<Long> insert(Alarm alarm);
 
+    @Query("DELETE FROM Alarm WHERE Alarm.alarmId IN (:alarmsToDelete)")
+    Completable deleteAllById(List<Integer> alarmsToDelete);
+
     @Delete
     Completable delete(Alarm alarm);
 
     @Query("DELETE FROM Alarm")
     Completable deleteAll();
+
+    @Query("UPDATE Alarm SET isActive = :checked WHERE alarmId = :alarmId")
+    Completable setActiveState(int alarmId, boolean checked);
 }

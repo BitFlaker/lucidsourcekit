@@ -15,8 +15,6 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 
-import androidx.annotation.ColorInt;
-
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.general.Tools;
 
@@ -88,7 +86,7 @@ public class TextLegend extends View {
         legendBackgroundPaints = new ArrayList<>();
         for (int color : colors) {
             Paint p = new Paint();
-            p.setColor(manipulateAlpha(color, 0.3f));
+            p.setColor(Tools.manipulateAlpha(color, 0.3f));
             p.setAntiAlias(true);
             legendBackgroundPaints.add(p);
         }
@@ -133,15 +131,6 @@ public class TextLegend extends View {
                 dataLabelPaint.setColor(secondaryTextColor);
             }
         }
-    }
-
-    @ColorInt
-    public static int manipulateAlpha(@ColorInt int color, float factor) {
-        int alpha = Math.round(Color.alpha(color) * factor);
-        int red = Color.red(color);
-        int green = Color.green(color);
-        int blue = Color.blue(color);
-        return Color.argb(alpha, red, green, blue);
     }
 
     public int getCurrentSelectedIndex() {

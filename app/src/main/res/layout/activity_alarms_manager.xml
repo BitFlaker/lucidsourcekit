@@ -181,138 +181,11 @@
                 android:textSize="14sp" />
         </LinearLayout>
 
-        <!--        <LinearLayout-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginTop="25dp"-->
-        <!--            android:gravity="center_vertical"-->
-        <!--            android:orientation="horizontal">-->
-
-        <!--            <View-->
-        <!--                android:layout_width="0dp"-->
-        <!--                android:layout_height="1dp"-->
-        <!--                android:layout_weight="1"-->
-        <!--                android:background="?attr/slightElevated" />-->
-
-        <!--            <com.google.android.material.card.MaterialCardView-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                app:cardBackgroundColor="?attr/backgroundColor"-->
-        <!--                app:cardCornerRadius="@dimen/cardRadius"-->
-        <!--                app:cardElevation="0dp"-->
-        <!--                app:strokeColor="?attr/slightElevated"-->
-        <!--                app:strokeWidth="1dp">-->
-
-        <!--                <TextView-->
-        <!--                    android:id="@+id/txt_next_alarm"-->
-        <!--                    android:layout_width="wrap_content"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:paddingStart="8dp"-->
-        <!--                    android:paddingTop="3dp"-->
-        <!--                    android:paddingEnd="8dp"-->
-        <!--                    android:paddingBottom="3dp"-->
-        <!--                    android:text="Alarm in 15h 34m"-->
-        <!--                    android:textColor="?attr/secondaryTextColor"-->
-        <!--                    android:textSize="12sp" />-->
-        <!--            </com.google.android.material.card.MaterialCardView>-->
-
-        <!--            <View-->
-        <!--                android:layout_width="0dp"-->
-        <!--                android:layout_height="1dp"-->
-        <!--                android:layout_weight="1"-->
-        <!--                android:background="?attr/slightElevated" />-->
-        <!--        </LinearLayout>-->
-        <!--        <LinearLayout-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginStart="10dp"-->
-        <!--            android:layout_marginTop="15dp"-->
-        <!--            android:layout_marginEnd="10dp"-->
-        <!--            android:divider="@drawable/divider_small"-->
-        <!--            android:gravity="center_horizontal"-->
-        <!--            android:orientation="vertical"-->
-        <!--            android:showDividers="middle">-->
-
-        <!--            <TextView-->
-        <!--                android:id="@+id/txt_next_alarm"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:background="@drawable/medium_rounded_rectangle"-->
-        <!--                android:backgroundTint="?attr/slightElevated"-->
-        <!--                android:paddingStart="8dp"-->
-        <!--                android:paddingTop="3dp"-->
-        <!--                android:paddingEnd="8dp"-->
-        <!--                android:paddingBottom="3dp"-->
-        <!--                android:text="Alarm in 15h 34m"-->
-        <!--                android:textColor="?attr/secondaryTextColor"-->
-        <!--                android:textSize="12sp" />-->
-        <!--        </LinearLayout>-->
-
-        <!--        <LinearLayout-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:orientation="vertical"-->
-        <!--            android:layout_marginTop="30dp"-->
-        <!--            android:layout_marginStart="18dp"-->
-        <!--            android:layout_marginEnd="18dp">-->
-
-        <!--            <TextView-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:text="Quick alarm in"-->
-        <!--                android:textColor="?attr/secondaryTextColor"-->
-        <!--                android:textSize="14sp"-->
-        <!--                android:textAlignment="center"/>-->
-
-        <!--            <LinearLayout-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:orientation="horizontal"-->
-        <!--                android:gravity="center_horizontal"-->
-        <!--                android:divider="@drawable/divider_small"-->
-        <!--                android:showDividers="middle">-->
-
-        <!--                <com.google.android.material.button.MaterialButton-->
-        <!--                    android:layout_width="wrap_content"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:text="1,5h"-->
-        <!--                    app:cornerRadius="48dp"-->
-        <!--                    app:backgroundTint="?attr/slightElevated"/>-->
-
-        <!--                <com.google.android.material.button.MaterialButton-->
-        <!--                    android:layout_width="wrap_content"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:text="3h"-->
-        <!--                    app:cornerRadius="48dp"-->
-        <!--                    app:backgroundTint="?attr/slightElevated"/>-->
-
-        <!--                <com.google.android.material.button.MaterialButton-->
-        <!--                    android:layout_width="wrap_content"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:text="4,5h"-->
-        <!--                    app:cornerRadius="48dp"-->
-        <!--                    app:backgroundTint="?attr/slightElevated"/>-->
-
-        <!--                <com.google.android.material.button.MaterialButton-->
-        <!--                    android:layout_width="wrap_content"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:text="6h"-->
-        <!--                    app:cornerRadius="48dp"-->
-        <!--                    app:backgroundTint="?attr/slightElevated"/>-->
-        <!--            </LinearLayout>-->
-        <!--        </LinearLayout>-->
-
-        <!--        <View-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="1dp"-->
-        <!--            android:layout_marginTop="8dp"-->
-        <!--            android:background="@drawable/medium_rounded_rectangle"-->
-        <!--            android:backgroundTint="?attr/slightElevated" />-->
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcv_list_alarms"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:overScrollMode="never"
             android:layout_marginTop="15dp" />
     </LinearLayout>
 
@@ -321,7 +194,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_round_add_24"
-        android:backgroundTint="?attr/colorPrimary"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_alignParentBottom="true"

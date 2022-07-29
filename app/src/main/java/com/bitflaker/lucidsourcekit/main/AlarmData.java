@@ -4,10 +4,12 @@ import java.util.Calendar;
 import java.util.List;
 
 public class AlarmData {
+    private int alarmId;
     private String title;
     private Calendar time;
     private List<ActiveDays> activeDays;
     private boolean isActive;
+    private boolean isSelected;
 
     public AlarmData(String title, Calendar time, List<ActiveDays> activeDays, boolean isActive) {
         this.title = title;
@@ -46,6 +48,22 @@ public class AlarmData {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public int getAlarmId() {
+        return alarmId;
+    }
+
+    public void setAlarmId(int alarmId) {
+        this.alarmId = alarmId;
     }
 
     public enum ActiveDays {

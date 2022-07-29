@@ -81,6 +81,8 @@ public class SleepClock extends View {
     private int hoursToAlarm;
     private OnBedtimeChanged mBedtimeChangedListener;
     private OnAlarmTimeChanged mAlarmTimeChangedListener;
+    private OnFirstDrawFinished mFirstDrawFinishedListener;
+    private boolean drewAtLeastOnce = false;
 
     public SleepClock(Context context, AttributeSet as){
         super(context, as);
@@ -256,6 +258,12 @@ public class SleepClock extends View {
             Bitmap alarm = Tools.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_access_alarm_24, getContext().getTheme()), Color.WHITE, Tools.dpToPx(getContext(), 16));
             canvas.drawBitmap(alarm, xAlarm-alarm.getWidth()/2.0f, yAlarm-alarm.getHeight()/2.0f, dataLinePaint);
         }
+        if(!drewAtLeastOnce){
+            drewAtLeastOnce = true;
+            if(mFirstDrawFinishedListener != null){
+                mFirstDrawFinishedListener.onEvent();
+            }
+        }
     }
 
     @Override
@@ -325,8 +333,11 @@ public class SleepClock extends View {
 
         if(movingButtonId == 0) {
             float zeroRot = (float)((90 * Math.PI) / 180.0);
+            if(matrixSweepRotationShader == null){
+                matrixSweepRotationShader = new Matrix();
+            }
             matrixSweepRotationShader.setRotate(0);
-            matrixSweepRotationShader.postRotate((int)((angleBedtime -zeroRot)*(180/Math.PI)), getWidth()/2.0f, getHeight()/2.0f);
+            matrixSweepRotationShader.postRotate((int)((angleBedtime - zeroRot)*(180/Math.PI)), getWidth()/2.0f, getHeight()/2.0f);
 
             gradientShaderREM = new SweepGradient(getWidth() / 2.0f, getHeight() / 2.0f, colorsREMRotator, new float[] { 0.0f, 0.0f, endPerc, endPerc });
             gradientShader = new SweepGradient(getWidth() / 2.0f, getHeight() / 2.0f, colorsRotator, new float[] { 0.0f, 0.0f, endPerc, endPerc });
@@ -372,8 +383,12 @@ public class SleepClock extends View {
                 hoursToBedTime = 0;
             }
         }
-        mBedtimeChangedListener.onEvent(hoursToBedTime, minutesToBedTime);
-        mAlarmTimeChangedListener.onEvent(hoursToAlarm, minutesToAlarm);
+        if(mBedtimeChangedListener != null){
+            mBedtimeChangedListener.onEvent(hoursToBedTime, minutesToBedTime);
+        }
+        if(mAlarmTimeChangedListener != null){
+            mAlarmTimeChangedListener.onEvent(hoursToAlarm, minutesToAlarm);
+        }
 //        System.out.println("BEDTIME: " + hoursToBedTime + ":" + minutesToBedTime + "  ~~~~~~~~~  " + "ALARM: " + hoursToAlarm + ":" + minutesToAlarm + "  ~~~~~~~~  SLEEP TIME: " + hTime + ":" + mTime);
     }
 
@@ -488,5 +503,13 @@ public class SleepClock extends View {
 
     public void setOnAlarmTimeChangedListener(OnAlarmTimeChanged eventListener) {
         mAlarmTimeChangedListener = eventListener;
+    }
+
+    public interface OnFirstDrawFinished {
+        void onEvent();
+    }
+
+    public void setOnFirstDrawFinishedListener(OnFirstDrawFinished eventListener) {
+        mFirstDrawFinishedListener = eventListener;
     }
 }

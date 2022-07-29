@@ -1,5 +1,8 @@
 package com.bitflaker.lucidsourcekit.main;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,8 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.bitflaker.lucidsourcekit.alarms.AlarmsManager;
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.alarms.AlarmReceiverManager;
 
 public class MainOverview extends Fragment {
     private TextView totalEntries, totalLucidEntries, totalGoalsReached, streak;
@@ -37,7 +40,14 @@ public class MainOverview extends Fragment {
 
         getView().findViewById(R.id.crd_alarm1).setOnClickListener(e -> { });
         getView().findViewById(R.id.crd_alarm2).setOnClickListener(e -> { });
-        getView().findViewById(R.id.btn_manage_alarms).setOnClickListener(e -> startActivity(new Intent(getContext(), AlarmsManager.class)));
+        getView().findViewById(R.id.btn_manage_alarms).setOnClickListener(e -> {
+            AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+            PendingIntent alarmIntent;
+            Intent intent = new Intent(getContext(), AlarmReceiverManager.class);
+            alarmIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (6 * 1000L), alarmIntent);
+//            startActivity(new Intent(getContext(), AlarmDisplayer.class));
+        });
     }
 
     private void fillStats() {

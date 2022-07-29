@@ -163,5 +163,14 @@
             android:checked="true"
             android:theme="@style/Switch.Dark"
             app:useMaterialThemeColors="false" />
+
+        <CheckBox
+            android:id="@+id/chk_alarm_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:theme="@style/Switch.Dark"
+            android:visibility="gone"
+            app:useMaterialThemeColors="false" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

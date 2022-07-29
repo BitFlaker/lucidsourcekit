@@ -198,7 +198,6 @@ public class DreamJournal extends Fragment {
     }
 
     private void showJournalCreator(JournalTypes type) {
-        // TODO migrate available tags from extra to load in journal entry creator!
         // TODO start loading animation
         animateFab();
         Intent intent = new Intent(getContext(), DreamJournalEntryEditor.class);
