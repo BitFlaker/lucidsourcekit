@@ -264,7 +264,6 @@ public class BinauralBeatsView extends Fragment {
     }
 
     private void setEndValues(BinauralBeat currentBinauralBeat) {
-        progressLineGraph.updateProgress(currentBinauralBeat.getFrequencyList().getDuration());
         getActivity().runOnUiThread(() -> {
             int finishProgress = (int) currentBinauralBeat.getFrequencyList().getDuration();
             binauralTimeline.setText(getTimeStringFromSeconds(finishProgress));

@@ -297,7 +297,7 @@ public class LineGraph extends View {
 
     public void resetProgress() {
         lgradOpac.getLocalMatrix(lgradOpacMatrix);
-        if (!doNotIndicateProgress){ lgradOpacMatrix.postTranslate(-(float)(((progress)/xMax) * getWidth()), 0); }
+        if (!doNotIndicateProgress) { lgradOpacMatrix.postTranslate(-(float)((lastSetProgress/xMax) * getWidth()), 0); }
         lgradOpac.setLocalMatrix(lgradOpacMatrix);
         lastSetProgress = progress = 0;
         invalidate();

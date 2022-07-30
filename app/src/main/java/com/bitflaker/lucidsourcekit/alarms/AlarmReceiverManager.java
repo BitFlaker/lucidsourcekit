@@ -6,8 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.bitflaker.lucidsourcekit.AlarmDisplayer;
-
 public class AlarmReceiverManager extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {

@@ -1,4 +1,4 @@
-package com.bitflaker.lucidsourcekit;
+package com.bitflaker.lucidsourcekit.alarms;
 
 import android.animation.ValueAnimator;
 import android.app.AlarmManager;
@@ -19,10 +19,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bitflaker.lucidsourcekit.alarms.AlarmReceiverManager;
-import com.bitflaker.lucidsourcekit.alarms.OutsideSlider;
-import com.bitflaker.lucidsourcekit.alarms.QuickAccessAction;
-import com.bitflaker.lucidsourcekit.alarms.RecyclerViewAdapterQuickAccessActions;
+import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.main.dreamjournal.DreamJournalEntryEditor;
@@ -115,16 +112,18 @@ public class AlarmDisplayer extends AppCompatActivity {
             showJournalCreator(JournalTypes.Forms);
         }));
         quickAccessActions.add(new QuickAccessAction("Listen to binaural beats", "Listening to binaural beats while going back to sleep might help to induce lucid dreams", ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_bedtime_24, getTheme()), null, () -> {
-
+            Intent intent = new Intent(this, IsolatedBinauralBeatsView.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }));
         RecyclerViewAdapterQuickAccessActions rcvAQAA = new RecyclerViewAdapterQuickAccessActions(this, quickAccessActions);
         rcvAQAA.setOnEntryClickedListener(quickAccessAction -> quickAccessAction.getOnSelectedListener().onEvent());
         quickAccessActionsView.setLayoutManager(new LinearLayoutManager(this));
         quickAccessActionsView.setAdapter(rcvAQAA);
-        closeDisplayer.setOnClickListener(e -> finish());
+        closeDisplayer.setOnClickListener(e -> closeAndRemove());
 
         Calendar cal = Calendar.getInstance();
-        currentTimeView.setText(String.format(Locale.ENGLISH, "%2d:%2d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE)));
+        currentTimeView.setText(String.format(Locale.ENGLISH, "%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE)));
         cal.set(Calendar.SECOND, cal.get(Calendar.SECOND) + 1);
         cal.set(Calendar.MILLISECOND, 0);
 
@@ -133,9 +132,13 @@ public class AlarmDisplayer extends AppCompatActivity {
             @Override
             public void run() {
                 Calendar cal = Calendar.getInstance();
-                runOnUiThread(() -> currentTimeView.setText(String.format(Locale.ENGLISH, "%2d:%2d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE))));
+                runOnUiThread(() -> currentTimeView.setText(String.format(Locale.ENGLISH, "%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE))));
             }
         }, cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 1000);
+    }
+
+    private void closeAndRemove() {
+        finishAndRemoveTask();
     }
 
     private void showJournalCreator(JournalTypes type) {
@@ -144,5 +147,11 @@ public class AlarmDisplayer extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("type", type.ordinal());
         startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        closeAndRemove();
     }
 }
