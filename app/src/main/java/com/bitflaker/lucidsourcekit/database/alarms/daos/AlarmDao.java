@@ -7,6 +7,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.bitflaker.lucidsourcekit.database.alarms.entities.Alarm;
 
@@ -37,4 +38,7 @@ public interface AlarmDao {
 
     @Query("UPDATE Alarm SET isActive = :checked WHERE alarmId = :alarmId")
     Completable setActiveState(int alarmId, boolean checked);
+
+    @Update
+    Completable update(Alarm alarm);
 }

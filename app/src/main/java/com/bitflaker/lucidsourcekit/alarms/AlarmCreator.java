@@ -36,6 +36,7 @@ import androidx.core.app.ActivityCompat;
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.clock.SleepClock;
 import com.bitflaker.lucidsourcekit.general.Tools;
+import com.bitflaker.lucidsourcekit.main.AlarmData;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
@@ -111,6 +112,9 @@ public class AlarmCreator extends AppCompatActivity {
                     finish();
                 }
             });
+
+    // TODO add option for auto stop alarm after some time
+    // TODO maybe make snooze delay individually changeable in every alarm
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,7 +247,7 @@ public class AlarmCreator extends AppCompatActivity {
             }
         });
         alarmVolume.addOnChangeListener((slider, value, fromUser) -> {
-            currAlarmVolume.setText(String.format(Locale.ENGLISH, "%d%%", (int)(value * 100)));
+            currAlarmVolume.setText(String.format(Locale.ENGLISH, "%d%%", (int)Math.round(value * 100)));
             alarmItem.setAlarmVolume((int)(value * 100));
         });
         volumeIncrease.setOnClickListener(e -> {
@@ -280,7 +284,7 @@ public class AlarmCreator extends AppCompatActivity {
         });
         vibrate.setOnClickListener(e -> {
             vibrateAlarm.setChecked(!vibrateAlarm.isChecked());
-            alarmItem.setVibrate(vibrate.isChecked());
+            alarmItem.setVibrate(vibrateAlarm.isChecked());
         });
         flashlight.setOnClickListener(e -> {
             useFlashlight.setChecked(!useFlashlight.isChecked());
@@ -291,7 +295,7 @@ public class AlarmCreator extends AppCompatActivity {
             // TODO: make checks (like no tone selected with custom file)
             alarmItem.setTitle(alarmTitle.getText().toString());
             alarmItem.setActive(true);
-            if(alarmItem.getAlarmId() == -1){
+            if(alarmItem.getAlarmId() == -1) {
                 AlarmStorage.getInstance(this).addAlarm(alarmItem);
             }
             else {
@@ -299,16 +303,19 @@ public class AlarmCreator extends AppCompatActivity {
             }
 
             Intent intent = new Intent(this, AlarmReceiverManager.class);
-            alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-//            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10 * 1000, alarmIntent);
+            intent.putExtra("ALARM_ID", alarmItem.getAlarmId());
+            alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId()), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.setTimeInMillis(System.currentTimeMillis());
-//            calendar.set(Calendar.HOUR_OF_DAY, alarmItem.getAlarmHour());
-//            calendar.set(Calendar.MINUTE, alarmItem.getAlarmMinute());
-//             setRepeating() lets you specify a precise custom interval -- in this case, 20 minutes.
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.HOUR_OF_DAY, alarmItem.getAlarmHour());
+            calendar.set(Calendar.MINUTE, alarmItem.getAlarmMinute());
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+//               --> setRepeating() lets you specify a precise custom interval -- in this case, 20 minutes.
 //            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 3, alarmIntent);
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (10 * 1000L), alarmIntent);
+//            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (15 * 1000L), alarmIntent);
 
             finish();
         });
@@ -361,13 +368,17 @@ public class AlarmCreator extends AppCompatActivity {
                 break;
         }
         alarmVolume.setValue(alarmItem.getAlarmVolume() / 100.0f);
-        currAlarmVolume.setText(String.format(Locale.ENGLISH, "%d%%", (int)(alarmVolume.getValue() * 100)));
+        currAlarmVolume.setText(String.format(Locale.ENGLISH, "%d%%", (int)Math.round(alarmVolume.getValue() * 100)));
         currentVolIncMin = alarmItem.getAlarmVolumeIncreaseMinutes();
         currentVolIncSec = alarmItem.getAlarmVolumeIncreaseSeconds();
         incVolumeFor.setText(String.format(Locale.ENGLISH, "%dm %ds", currentVolIncMin, currentVolIncSec));
         useFlashlight.setChecked(alarmItem.isUseFlashlight());
-        vibrate.setChecked(alarmItem.isVibrate());
+        vibrateAlarm.setChecked(alarmItem.isVibrate());
         alarmTitle.setText(alarmItem.getTitle());
+        alarmItem.getAlarmRepeatWeekdays().forEach(weekday -> {
+            weekdayChips[weekday-2 < 0 ? AlarmData.ActiveDays.SUNDAY.ordinal() : weekday-2].setChecked(true);
+            updateAlarmRepeatText();
+        });
     }
 
     @Override

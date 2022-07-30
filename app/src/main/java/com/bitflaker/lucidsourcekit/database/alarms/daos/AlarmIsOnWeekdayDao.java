@@ -29,6 +29,9 @@ public interface AlarmIsOnWeekdayDao {
     @Insert(onConflict = REPLACE)
     Completable insert(AlarmIsOnWeekday alarmIsOnWeekday);
 
+    @Query("DELETE FROM AlarmIsOnWeekday WHERE alarmId = :alarmId")
+    Completable deleteAllFromAlarm(int alarmId);
+
     @Delete
     Completable delete(AlarmIsOnWeekday alarmIsOnWeekday);
 

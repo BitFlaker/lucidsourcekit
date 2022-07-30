@@ -34,6 +34,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     private RecyclerView mRecyclerView;
     private int selectionCounter = 0;
     private List<MainViewHolderAlarms> loadedItems = new ArrayList<>();
+    private List<Integer> loadedPositions = new ArrayList<>();
 
     public RecyclerViewAdapterAlarms(Context context, List<AlarmData> alarmData) {
         this.context = context;
@@ -51,6 +52,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     @Override
     public void onBindViewHolder(@NonNull MainViewHolderAlarms holder, int position) {
         loadedItems.add(holder);
+        loadedPositions.add(position);
         holder.title.setText(alarmData.get(position).getTitle());
         DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
         String tString = tf.format(alarmData.get(position).getTime().getTime());
@@ -138,6 +140,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     @Override
     public void onViewRecycled(@NonNull MainViewHolderAlarms holder) {
         super.onViewRecycled(holder);
+        loadedPositions.add(holder.getAdapterPosition());
         loadedItems.remove(holder);
     }
 
@@ -159,6 +162,15 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         AlarmStorage.getInstance(context).setOnAlarmAddedListener(alarm -> {
             alarmData.add(AlarmTools.getAlarmDataFromItem(alarm));
             notifyItemInserted(getItemCount() - 1);
+        });
+        AlarmStorage.getInstance(context).setOnAlarmUpdatedListener(alarmId -> {
+            for (int i = 0; i < alarmData.size(); i++) {
+                if(alarmData.get(i).getAlarmId() == alarmId) {
+                    alarmData.set(i, AlarmTools.getAlarmDataFromItem(AlarmStorage.getInstance(context).getAlarmItemWithId(alarmId)));
+                    notifyItemChanged(i);
+                    break;
+                }
+            }
         });
     }
 
@@ -199,6 +211,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         if(mSelectionModeStateChangedListener != null){
             mSelectionModeStateChangedListener.onSelectionModeLeft();
         }
+        loadedPositions.forEach(this::notifyItemChanged);
     }
 
     @Override

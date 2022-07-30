@@ -456,4 +456,12 @@ public class Tools {
         int blue = Color.blue(color);
         return Color.argb(alpha, red, green, blue);
     }
+
+    public static int getBroadcastReqCodeFromID(int alarmId) {
+        return alarmId + 50000;
+    }
+
+    public static int getBroadcastReqCodeSnoozeFromID(int alarmId) {
+        return alarmId + 100000;
+    }
 }

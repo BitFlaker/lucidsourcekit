@@ -49,7 +49,6 @@ public class AlarmsManager extends AppCompatActivity {
                 startActivity(new Intent(this, AlarmCreator.class));
             }
             else {
-                // TODO: ask if really delete items
                 new AlertDialog.Builder(this, Tools.getThemeDialog()).setTitle("Delete Alarms").setMessage("Do you really want to delete the selected alarms?")
                         .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                             List<Integer> alarmsToDelete = adapterAlarms.getSelectedEntryIds();

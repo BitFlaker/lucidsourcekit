@@ -11,6 +11,7 @@ public class AlarmReceiverManager extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent alarmDisplayer = new Intent(context, AlarmDisplayer.class);
         alarmDisplayer.setFlags(FLAG_ACTIVITY_NEW_TASK);
+        alarmDisplayer.putExtra("ALARM_ID", intent.getIntExtra("ALARM_ID", -1));
         context.startActivity(alarmDisplayer);
     }
 }

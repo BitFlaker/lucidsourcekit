@@ -41,6 +41,24 @@ public class AlarmItem {
         this.alarmUri = alarmUri;
     }
 
+    public AlarmItem(int alarmId, boolean isActive, String title, int bedtimeHour, int bedtimeMinute, int alarmHour, int alarmMinute, List<Integer> alarmRepeatWeekdays, AlarmToneType alarmToneType, Uri alarmUri, int alarmVolume, int alarmVolumeIncreaseMinutes, int alarmVolumeIncreaseSeconds, boolean vibrate, boolean useFlashlight) {
+        this.alarmId = alarmId;
+        this.isActive = isActive;
+        this.title = title;
+        this.bedtimeHour = bedtimeHour;
+        this.bedtimeMinute = bedtimeMinute;
+        this.alarmHour = alarmHour;
+        this.alarmMinute = alarmMinute;
+        this.alarmRepeatWeekdays = alarmRepeatWeekdays;
+        this.alarmToneType = alarmToneType;
+        this.alarmVolume = alarmVolume;
+        this.alarmVolumeIncreaseMinutes = alarmVolumeIncreaseMinutes;
+        this.alarmVolumeIncreaseSeconds = alarmVolumeIncreaseSeconds;
+        this.vibrate = vibrate;
+        this.useFlashlight = useFlashlight;
+        this.alarmUri = alarmUri;
+    }
+
     public AlarmItem() {
         this.alarmId = -1;
         this.title = "";
@@ -184,6 +202,10 @@ public class AlarmItem {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public AlarmItem copy() {
+        return new AlarmItem(alarmId, isActive, title, bedtimeHour, bedtimeMinute, alarmHour, alarmMinute, alarmRepeatWeekdays, alarmToneType, alarmUri, alarmVolume, alarmVolumeIncreaseMinutes, alarmVolumeIncreaseSeconds, vibrate, useFlashlight);
     }
 
     public enum AlarmToneType {

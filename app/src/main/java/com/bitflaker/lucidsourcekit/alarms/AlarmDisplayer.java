@@ -39,6 +39,7 @@ public class AlarmDisplayer extends AppCompatActivity {
     private ImageButton closeDisplayer;
     private TextView currentTimeView, alarmName;
     private boolean isSnoozing = false;
+    private AlarmItem alarmItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +51,7 @@ public class AlarmDisplayer extends AppCompatActivity {
             setTurnScreenOn(true);
             KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
             keyguardManager.requestDismissKeyguard(this, null);
-        }
-        else {
+        } else {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
@@ -64,6 +64,18 @@ public class AlarmDisplayer extends AppCompatActivity {
         alarmSlider.setData(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_check_24, getTheme()), ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_snooze_24, getTheme()));
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
+        if(!getIntent().hasExtra("ALARM_ID")) { System.out.println("NONE"); finish(); }
+        AlarmStorage.getInstance(this).setOnAlarmsLoadedListener(() -> {
+            int id = getIntent().getIntExtra("ALARM_ID", -1);
+            alarmItem = AlarmStorage.getInstance(this).getAlarmItemWithId(id);
+            alarmName.setText(alarmItem.getTitle());
+        });
+        if (AlarmStorage.getInstance(this).isLoaded() && alarmItem == null) {
+            int id = getIntent().getIntExtra("ALARM_ID", -1);
+            alarmItem = AlarmStorage.getInstance(this).getAlarmItemWithId(id);
+            alarmName.setText(alarmItem.getTitle());
+        }
+
         quickAccessActionsView.setVisibility(View.GONE);
         closeDisplayer.setVisibility(View.GONE);
         quickAccessActionsView.setAlpha(0);
@@ -71,17 +83,15 @@ public class AlarmDisplayer extends AppCompatActivity {
 
         alarmSlider.setOnLeftSideSelectedListener(() -> {
             isSnoozing = false;
-            Intent intent = new Intent(this, AlarmReceiverManager.class);
-            alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-            if (alarmManager != null) {
-                alarmManager.cancel(alarmIntent);
-                System.out.println("Alarm cancelled");
-            }
         });
 
         alarmSlider.setOnRightSideSelectedListener(() -> {
             isSnoozing = true;
-            System.out.println("SNOOZING");
+            Intent intent = new Intent(this, AlarmReceiverManager.class);
+            intent.putExtra("ALARM_ID", alarmItem.getAlarmId());
+            alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), Tools.getBroadcastReqCodeSnoozeFromID(alarmItem.getAlarmId()), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (5*60*1000), alarmIntent); // TODO make snooze delay changable
+            finishAndRemoveTask();
         });
 
         alarmSlider.setOnFadedAwayListener(() -> {
@@ -120,7 +130,7 @@ public class AlarmDisplayer extends AppCompatActivity {
         rcvAQAA.setOnEntryClickedListener(quickAccessAction -> quickAccessAction.getOnSelectedListener().onEvent());
         quickAccessActionsView.setLayoutManager(new LinearLayoutManager(this));
         quickAccessActionsView.setAdapter(rcvAQAA);
-        closeDisplayer.setOnClickListener(e -> closeAndRemove());
+        closeDisplayer.setOnClickListener(e -> finishAndRemoveTask());
 
         Calendar cal = Calendar.getInstance();
         currentTimeView.setText(String.format(Locale.ENGLISH, "%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE)));
@@ -137,10 +147,6 @@ public class AlarmDisplayer extends AppCompatActivity {
         }, cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 1000);
     }
 
-    private void closeAndRemove() {
-        finishAndRemoveTask();
-    }
-
     private void showJournalCreator(JournalTypes type) {
         // TODO start loading animation
         Intent intent = new Intent(this, DreamJournalEntryEditor.class);
@@ -152,6 +158,6 @@ public class AlarmDisplayer extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        closeAndRemove();
+        finishAndRemoveTask();
     }
 }

@@ -16,15 +16,19 @@ public class AlarmStorage {
     private MainDatabase db;
     private boolean finishedLoading = false;
     private OnAlarmAdded mAlarmAddedListener;
+    private OnAlarmUpdated mAlarmUpdatedListener;
+    private OnAlarmsLoaded mAlarmsLoadedListener;
+    private boolean isLoaded;
 
     private AlarmStorage(Context context) {
         alarms = new ArrayList<>();
         db = MainDatabase.getInstance(context);
+        isLoaded = false;
         loadAllAlarmsFromDatabase();
     }
 
     public static AlarmStorage getInstance(Context context) {
-        if (instance == null){
+        if (instance == null) {
             instance = new AlarmStorage(context);
         }
         return instance;
@@ -38,7 +42,10 @@ public class AlarmStorage {
 
     private void finishFullDataGatheringForAlarm(List<Alarm> alarmsList, int i) {
         if(i == alarmsList.size()) {
-            // TODO: maybe give event when finished with loading to prevent displaying errors
+            isLoaded = true;
+            if(mAlarmsLoadedListener != null){
+                mAlarmsLoadedListener.onEvent();
+            }
             finishedLoading = true;
             return;
         }
@@ -103,28 +110,25 @@ public class AlarmStorage {
             if(mAlarmAddedListener != null) {
                 mAlarmAddedListener.onEvent(alarmItem);
             }
-            addAlarmIsOnWeekday(alarmId.intValue(), alarmItem.getAlarmRepeatWeekdays(), 0);
+            addAlarmIsOnWeekday(alarmId.intValue(), alarmItem.getAlarmRepeatWeekdays(), 0, false);
         });
     }
 
-    private void addAlarmIsOnWeekday(int alarmId, List<Integer> alarmRepeatWeekdays, int i) {
-        if(i == alarmRepeatWeekdays.size()) { return; }
+    private void addAlarmIsOnWeekday(int alarmId, List<Integer> alarmRepeatWeekdays, int i, boolean causesUpdate) {
+        if(i == alarmRepeatWeekdays.size()) {
+            if(causesUpdate && mAlarmUpdatedListener != null) {
+                mAlarmUpdatedListener.onEvent(alarmId);
+            }
+            return;
+        }
         db.getAlarmIsOnWeekdayDao().insert(new AlarmIsOnWeekday(alarmId, alarmRepeatWeekdays.get(i))).subscribe(() -> {
-            addAlarmIsOnWeekday(alarmId, alarmRepeatWeekdays, i+1);
+            addAlarmIsOnWeekday(alarmId, alarmRepeatWeekdays, i+1, causesUpdate);
         });
     }
 
     private void removeAlarmFromDatabase(AlarmItem alarmItem) {
         Alarm alarm = getEntityFromObject(alarmItem, alarmItem.getAlarmId());
-//        db.getAlarmDao().getAll().subscribe((alarms1, throwable) -> {
-//            Alarm al = alarms1.get(0);
-        db.getAlarmDao().delete(alarm).subscribe(() -> {
-            // JUST HERE FOR TESTING PURPOSES
-            db.getAlarmIsOnWeekdayDao().getAll().subscribe((alarmIsOnWeekdays, throwable2) -> {
-                System.out.println(alarmIsOnWeekdays.size());
-            });
-        });
-//        });
+        db.getAlarmDao().delete(alarm).subscribe(() -> System.out.println("DELETED"));
     }
 
     private Alarm getEntityFromObject(AlarmItem alarmItem) {
@@ -143,6 +147,9 @@ public class AlarmStorage {
                 alarmItem.isUseFlashlight(),
                 alarmItem.isActive()
         );
+        if(alarmItem.getAlarmId() != -1){
+            alarm.setAlarmId(alarmItem.getAlarmId());
+        }
 
         return alarm;
     }
@@ -175,15 +182,30 @@ public class AlarmStorage {
 
     public AlarmItem getAlarmItemWithId(int alarmId) {
         for (AlarmItem alarm : alarms) {
-            if(alarm.getAlarmId() == alarmId){
-                return alarm;
+            if(alarm.getAlarmId() == alarmId) {
+                return alarm.copy();
             }
         }
         return null;
     }
 
     public void modifyAlarm(AlarmItem alarmItem) {
+        for (int i = 0; i < alarms.size(); i++) {
+            if(alarms.get(i).getAlarmId() == alarmItem.getAlarmId()){
+                alarms.set(i, alarmItem);
+                break;
+            }
+        }
+        Alarm alarm = getEntityFromObject(alarmItem);
+        db.getAlarmDao().update(alarm).subscribe(() -> {
+            db.getAlarmIsOnWeekdayDao().deleteAllFromAlarm(alarm.alarmId).subscribe(() -> {
+                addAlarmIsOnWeekday(alarm.alarmId, alarmItem.getAlarmRepeatWeekdays(), 0, true);
+            });
+        });
+    }
 
+    public boolean isLoaded() {
+        return isLoaded;
     }
 
     public interface OnAlarmAdded {
@@ -192,5 +214,21 @@ public class AlarmStorage {
 
     public void setOnAlarmAddedListener(OnAlarmAdded eventListener) {
         mAlarmAddedListener = eventListener;
+    }
+
+    public interface OnAlarmUpdated {
+        void onEvent(int alarmId);
+    }
+
+    public void setOnAlarmUpdatedListener(OnAlarmUpdated eventListener) {
+        mAlarmUpdatedListener = eventListener;
+    }
+
+    public interface OnAlarmsLoaded {
+        void onEvent();
+    }
+
+    public void setOnAlarmsLoadedListener(OnAlarmsLoaded eventListener) {
+        mAlarmsLoadedListener = eventListener;
     }
 }

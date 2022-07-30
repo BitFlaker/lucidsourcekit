@@ -35,6 +35,15 @@ public class AlarmData {
     }
 
     public List<ActiveDays> getActiveDays() {
+        activeDays.sort((ad1, ad2) -> {
+            if(ad1.ordinal() < ad2.ordinal()) {
+                return -1;
+            }
+            else if(ad1.ordinal() > ad2.ordinal()) {
+                return 1;
+            }
+            return 0;
+        });
         return activeDays;
     }
 
