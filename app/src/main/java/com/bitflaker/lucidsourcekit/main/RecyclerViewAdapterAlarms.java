@@ -1,5 +1,6 @@
 package com.bitflaker.lucidsourcekit.main;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -12,10 +13,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.alarms.AlarmCreator;
+import com.bitflaker.lucidsourcekit.alarms.AlarmItem;
+import com.bitflaker.lucidsourcekit.alarms.AlarmReceiverManager;
 import com.bitflaker.lucidsourcekit.alarms.AlarmStorage;
 import com.bitflaker.lucidsourcekit.alarms.AlarmTools;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
@@ -26,6 +29,7 @@ import java.util.List;
 
 public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerViewAdapterAlarms.MainViewHolderAlarms> {
     private OnEntryClicked mListener;
+    private OnEntryActiveStateChanged mEntryActiveStateChangedListener;
     private OnSelectionModeStateChanged mSelectionModeStateChangedListener;
     private Context context;
     private List<AlarmData> alarmData;
@@ -64,7 +68,19 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
             MainDatabase.getInstance(context).getAlarmDao().setActiveState(alarmData.get(position).getAlarmId(), checked).subscribe(() -> {
                 AlarmStorage.getInstance(context).setAlarmActive(alarmData.get(position).getAlarmId(), checked);
             });
-            // TODO: cancel alarm schedule if is being disabled
+            if(checked){
+                AlarmTools.scheduleAlarm(context.getApplicationContext(), AlarmStorage.getInstance(context).getAlarmItemWithId(alarmData.get(position).getAlarmId()));
+            }
+            else {
+                AlarmItem alarmItem = AlarmStorage.getInstance(context).getAlarmItemWithId(alarmData.get(position).getAlarmId());
+                Intent intent = new Intent(context.getApplicationContext(), AlarmReceiverManager.class);
+                intent.putExtra("ALARM_ID", alarmItem.getAlarmId());
+                PendingIntent alarmIntent = PendingIntent.getBroadcast(context.getApplicationContext(), Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId()), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                alarmIntent.cancel();
+            }
+            if(mEntryActiveStateChangedListener != null){
+                mEntryActiveStateChangedListener.onEvent(alarmData.get(position), checked);
+            }
         });
         holder.active.setChecked(alarmData.get(position).isActive());
 //        Typeface tfThin = FontHandler.getInstance().getFontByName("sans-serif-thin");
@@ -116,10 +132,9 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
                 }
             }
             else {
-                Intent editor = new Intent(context, AlarmCreator.class);
-                editor.putExtra("ALARM_ID", alarmData.get(position).getAlarmId());
-                context.startActivity(editor);
-                // TODO open editor
+                if(mListener != null){
+                    mListener.onEvent(alarmData.get(position));
+                }
             }
         });
         holder.card.setOnLongClickListener(e -> {
@@ -272,11 +287,19 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     }
 
     public interface OnEntryClicked {
-        void onEvent(AlarmData binauralBeat, int position);
+        void onEvent(AlarmData alarmData);
     }
 
     public void setOnEntryClickedListener(OnEntryClicked eventListener) {
         mListener = eventListener;
+    }
+
+    public interface OnEntryActiveStateChanged {
+        void onEvent(AlarmData alarmData, boolean isActive);
+    }
+
+    public void setOnEntryActiveStateChangedListener(OnEntryActiveStateChanged eventListener) {
+        mEntryActiveStateChangedListener = eventListener;
     }
 
     public interface OnSelectionModeStateChanged {

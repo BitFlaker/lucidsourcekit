@@ -5,11 +5,12 @@ import static com.bitflaker.lucidsourcekit.alarms.AlarmItem.AlarmToneType.RINGTO
 
 import android.Manifest;
 import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -45,6 +46,7 @@ import com.google.android.material.slider.Slider;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -69,8 +71,6 @@ public class AlarmCreator extends AppCompatActivity {
     private final static boolean[] noRepeatPattern = new boolean[] { false, false, false, false, false, false, false };
     private final static String[] supportedAudioFiles = new String[] { "3gp", "m4a", "aac", "ts", "amr", "flac", "mid", "xmf", "mxmf", "rtttl", "rtx", "ota", "imy", "mp3", "mkv", "ogg", "wav" };
     private Chip[] weekdayChips;
-    private AlarmManager alarmManager;
-    private PendingIntent alarmIntent;
     private Integer[] weekdays = new Integer[] { Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY, Calendar.SATURDAY, Calendar.SUNDAY };
     private final static String[] weekdayShorts = new String[] { "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" };
     private int currentVolIncMin = 2, currentVolIncSec = 30;
@@ -94,6 +94,21 @@ public class AlarmCreator extends AppCompatActivity {
                         String title = filename.substring(0, filename.lastIndexOf("."));
                         selectedToneText.setText(title);
                         alarmItem.setAlarmUri(ringtoneUri);
+                        MediaPlayer mediaPlayer = new MediaPlayer();
+                        mediaPlayer.setAudioAttributes(
+                                new AudioAttributes.Builder()
+                                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                        .setUsage(AudioAttributes.USAGE_ALARM)
+                                        .build()
+                        );
+                        mediaPlayer.setLooping(true);
+                        try {
+                            mediaPlayer.setDataSource(uri.getPath());
+                            mediaPlayer.prepare();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        mediaPlayer.start();
                     }
                     else {
                         Toast.makeText(this, "Unsupported audio file type", Toast.LENGTH_LONG).show();
@@ -234,8 +249,8 @@ public class AlarmCreator extends AppCompatActivity {
             if(ringtoneChip.isChecked()){
                 final Uri currentTone =  ringtoneUri != null ? ringtoneUri : RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_ALARM);//RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_ALARM);
                 Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE);
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone");
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Alarm Tone");
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, currentTone);
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
@@ -302,17 +317,7 @@ public class AlarmCreator extends AppCompatActivity {
                 AlarmStorage.getInstance(this).modifyAlarm(alarmItem);
             }
 
-            Intent intent = new Intent(this, AlarmReceiverManager.class);
-            intent.putExtra("ALARM_ID", alarmItem.getAlarmId());
-            alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId()), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(System.currentTimeMillis());
-            calendar.set(Calendar.HOUR_OF_DAY, alarmItem.getAlarmHour());
-            calendar.set(Calendar.MINUTE, alarmItem.getAlarmMinute());
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+            AlarmTools.scheduleAlarm(getApplicationContext(), alarmItem);
 //               --> setRepeating() lets you specify a precise custom interval -- in this case, 20 minutes.
 //            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 3, alarmIntent);
 //            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (15 * 1000L), alarmIntent);
@@ -326,7 +331,7 @@ public class AlarmCreator extends AppCompatActivity {
             return true;
         });
 
-        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if(!alarmManager.canScheduleExactAlarms()){
                 scheduleAlarmSettingsLauncher.launch(new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM));

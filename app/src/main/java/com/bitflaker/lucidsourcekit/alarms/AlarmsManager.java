@@ -6,6 +6,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,13 +25,18 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class AlarmsManager extends AppCompatActivity {
-    private TextView time, date;
+    private TextView time, date, nAlarmTime, nAlarmTimeTo;
     private RecyclerViewAdapterAlarms adapterAlarms;
     private boolean isInSelectionMode = false;
+    private long nextAlarmTimeStamp;
+    ActivityResultLauncher<Intent> alarmInteractionLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        setNextAlarmData(false);
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +53,7 @@ public class AlarmsManager extends AppCompatActivity {
         clock.startClock();
         addAlarm.setOnClickListener(e -> {
             if(!isInSelectionMode){
-                startActivity(new Intent(this, AlarmCreator.class));
+                alarmInteractionLauncher.launch(new Intent(this, AlarmCreator.class));
             }
             else {
                 new AlertDialog.Builder(this, Tools.getThemeDialog()).setTitle("Delete Alarms").setMessage("Do you really want to delete the selected alarms?")
@@ -66,6 +73,8 @@ public class AlarmsManager extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.rcv_list_alarms);
         time = findViewById(R.id.txt_current_time);
         date = findViewById(R.id.txt_current_date);
+        nAlarmTime = findViewById(R.id.txt_next_alarm_time);
+        nAlarmTimeTo = findViewById(R.id.txt_next_alarm_time_to);
 
         DateFormat tf = DateFormat.getTimeInstance(DateFormat.MEDIUM);
         DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
@@ -107,19 +116,49 @@ public class AlarmsManager extends AppCompatActivity {
                 isInSelectionMode = false;
             }
         });
+        adapterAlarms.setOnEntryClickedListener(alarmData -> {
+            Intent editor = new Intent(this, AlarmCreator.class);
+            editor.putExtra("ALARM_ID", alarmData.getAlarmId());
+            alarmInteractionLauncher.launch(editor);
+        });
+        adapterAlarms.setOnEntryActiveStateChangedListener((alarmData, checked) -> setNextAlarmData(false));
         recyclerView.setAdapter(adapterAlarms);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        AlarmStorage.getInstance(this).setOnAlarmsLoadedListener(this::showAllStoredAlarms);
+        if(AlarmStorage.getInstance(this).isLoaded() && adapterAlarms.getItemCount() == 0) {
+            showAllStoredAlarms();
+        }
+    }
 
-        new Thread(() -> {
-            while(!AlarmStorage.getInstance(this).isFinishedLoading()){
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+    private void setNextAlarmData(boolean startCycle) {
+        // TODO: support AM/PM
+        nextAlarmTimeStamp = getNextAlarmTimeStamp();
+        if(nextAlarmTimeStamp != -1){
+            Calendar calAlarm = Calendar.getInstance();
+            calAlarm.setTimeInMillis(nextAlarmTimeStamp);
+            // TODO: also say which weekday as otherwise it seems as if it would go off today at that time
+            nAlarmTime.setText(String.format(Locale.ENGLISH, "%02d:%02d", calAlarm.get(Calendar.HOUR_OF_DAY), calAlarm.get(Calendar.MINUTE)));
+            setNextTimeTo(nextAlarmTimeStamp);
+        }
+        else {
+            nAlarmTime.setText("--");
+            nAlarmTimeTo.setText("--");
+        }
+
+        if(startCycle){
+            Calendar calDelay = Calendar.getInstance();
+            calDelay.set(Calendar.MINUTE, calDelay.get(Calendar.MINUTE) + 1);
+            calDelay.set(Calendar.SECOND, 0);
+            calDelay.set(Calendar.MILLISECOND, 0);
+
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    setNextTimeTo(nextAlarmTimeStamp);
                 }
-            }
-            runOnUiThread(this::showAllStoredAlarms);
-        }).start();
+            }, calDelay.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 60*1000);
+        }
     }
 
     @Override
@@ -137,10 +176,39 @@ public class AlarmsManager extends AppCompatActivity {
         for (int i = 0; i < AlarmStorage.getInstance(this).size(); i++) {
             alarms.add(AlarmTools.getAlarmDataFromItem(AlarmStorage.getInstance(this).getAlarmAt(i)));
         }
-//        alarms.add(new AlarmData("Random alarm", Calendar.getInstance(), Arrays.asList(AlarmData.ActiveDays.MONDAY, AlarmData.ActiveDays.TUESDAY, AlarmData.ActiveDays.SUNDAY), true));
-//        alarms.add(new AlarmData("Second alarm", Calendar.getInstance(), Arrays.asList(AlarmData.ActiveDays.FRIDAY, AlarmData.ActiveDays.SATURDAY, AlarmData.ActiveDays.SUNDAY), false));
-//        alarms.add(new AlarmData("Mid REM sleep", Calendar.getInstance(), Arrays.asList(AlarmData.ActiveDays.WEDNESDAY, AlarmData.ActiveDays.THURSDAY), false));
-//        alarms.add(new AlarmData("After party waker", Calendar.getInstance(), Arrays.asList(AlarmData.ActiveDays.SATURDAY, AlarmData.ActiveDays.SUNDAY), true));
         adapterAlarms.setData(alarms);
+        setNextAlarmData(true);
+    }
+
+    private long getNextAlarmTimeStamp() {
+        List<Long> nextTimeStamps = new ArrayList<>();
+        for (int i = 0; i < AlarmStorage.getInstance(this).size(); i++) {
+            AlarmItem ai = AlarmStorage.getInstance(this).getAlarmAt(i);
+            if(ai.isActive()){
+                nextTimeStamps.add(ai.getTimesTo().get(0).getMillisTimeStamp());
+            }
+        }
+        nextTimeStamps.sort((nts1, nts2) -> {
+            if(nts1 < nts2) { return -1; }
+            else if(nts1 > nts2) { return 1; }
+            return 0;
+        });
+        return nextTimeStamps.size() == 0 ? -1 : nextTimeStamps.get(0);
+    }
+
+    private void setNextTimeTo(long nextAlarmTimeStamp) {
+        if(nextAlarmTimeStamp == -1){
+//            runOnUiThread(() -> nAlarmTimeTo.setText("--"));
+            return;
+        }
+        long millisDiff = nextAlarmTimeStamp - Calendar.getInstance().getTimeInMillis() + (60 * 1000); // added 1 minute because seconds are hidden and then there would be alarm in 0 minutes for 1 minute
+        double days = (millisDiff / 1000.0 / 60.0 / 60.0 / 24.0);
+        double hours = (days - (int)days) * 24.0;
+        double minutes = (hours - (int)hours) * 60.0;
+//        double seconds = (minutes - (int)minutes) * 60.0;
+
+        runOnUiThread(() -> {
+            nAlarmTimeTo.setText(String.format(Locale.ENGLISH, "%02d:%02d:%02d", (int)days, (int)hours, (int)minutes));
+        });
     }
 }

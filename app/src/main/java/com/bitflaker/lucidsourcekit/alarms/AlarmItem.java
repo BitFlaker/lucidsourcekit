@@ -2,7 +2,10 @@ package com.bitflaker.lucidsourcekit.alarms;
 
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class AlarmItem {
@@ -112,6 +115,25 @@ public class AlarmItem {
         return alarmRepeatWeekdays;
     }
 
+    public List<Integer> getActiveDaysSorted() {
+        alarmRepeatWeekdays.sort((ad1, ad2) -> {
+//            if(ad1 == Calendar.SUNDAY){
+//                return 1;
+//            }
+//            else if (ad2 == Calendar.SUNDAY){
+//                return -1;
+//            } else
+            if(ad1 < ad2) {
+                return -1;
+            }
+            else if(ad1 > ad2) {
+                return 1;
+            }
+            return 0;
+        });
+        return alarmRepeatWeekdays;
+    }
+
     public void setAlarmRepeatWeekdays(List<Integer> alarmRepeatWeekdays) {
         this.alarmRepeatWeekdays = alarmRepeatWeekdays;
     }
@@ -204,8 +226,80 @@ public class AlarmItem {
         this.title = title;
     }
 
+    public List<AlarmTimeSpan> getTimesTo() {
+        List<AlarmTimeSpan> timesTo = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+        int currDay = cal.get(Calendar.DAY_OF_WEEK);
+        int currentHour = cal.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = cal.get(Calendar.MINUTE);
+        if(alarmRepeatWeekdays.size() > 0){
+            List<Integer> lis = getActiveDaysSorted();
+            for (int day : lis) {
+                if(day == currDay && (currentHour < alarmHour || (currentHour == alarmHour && currentMinute < alarmMinute))) {
+                    int hoursLeft = alarmHour - currentHour;
+                    int minutesLeft = alarmMinute - currentMinute;
+                    timesTo.add(new AlarmTimeSpan(0, hoursLeft, minutesLeft));
+                }
+                else {
+                    timesTo.add(calcDayDifference(currDay, currentHour, currentMinute, day));
+                }
+            }
+            timesTo.sort((tt1, tt2) -> {
+                if(tt1.getMillisTimeStamp() < tt2.getMillisTimeStamp()) { return -1; }
+                else if(tt1.getMillisTimeStamp() > tt2.getMillisTimeStamp()) { return 1; }
+                return 0;
+            });
+        }
+        else {
+            if(currentHour < alarmHour || (currentHour == alarmHour && currentMinute < alarmMinute)) {
+                int hoursLeft = alarmHour - currentHour;
+                int minutesLeft = alarmMinute - currentMinute;
+                timesTo.add(new AlarmTimeSpan(0, hoursLeft, minutesLeft));
+            }
+            else {
+                timesTo.add(getAlarmTimeSpan(currentHour, currentMinute, 0));
+            }
+        }
+        return timesTo;
+    }
+
+    private AlarmTimeSpan calcDayDifference(int currDay, int currentHour, int currentMinute, int day) {
+        int daysLeft;
+        if(day == currDay) { daysLeft = 6; }
+        else if (day > currDay) { daysLeft = day - currDay - 1; }
+        else { daysLeft = 7 - (Calendar.MONDAY - Calendar.SUNDAY) - 1; }
+        return getAlarmTimeSpan(currentHour, currentMinute, daysLeft);
+    }
+
+    @NonNull
+    private AlarmTimeSpan getAlarmTimeSpan(int currentHour, int currentMinute, int daysLeft) {
+        int hoursLeft = 24 - currentHour;
+        int minutesLeft = (60 - currentMinute) % 60;
+        if(currentMinute != 0) { hoursLeft--; }
+        minutesLeft += alarmMinute;
+        if(minutesLeft >= 60){
+            minutesLeft = minutesLeft % 60;
+            hoursLeft++;
+        }
+        hoursLeft += alarmHour;
+        if(hoursLeft >= 24){
+            hoursLeft = hoursLeft % 24;
+            daysLeft++;
+        }
+
+        return new AlarmTimeSpan(daysLeft, hoursLeft, minutesLeft);
+    }
+
     public AlarmItem copy() {
         return new AlarmItem(alarmId, isActive, title, bedtimeHour, bedtimeMinute, alarmHour, alarmMinute, alarmRepeatWeekdays, alarmToneType, alarmUri, alarmVolume, alarmVolumeIncreaseMinutes, alarmVolumeIncreaseSeconds, vibrate, useFlashlight);
+    }
+
+    public int getVolumeIncreaseTotalSeconds() {
+        return getAlarmVolumeIncreaseMinutes() * 60 + getAlarmVolumeIncreaseSeconds();
+    }
+
+    public boolean isIncreaseVolume() {
+        return getVolumeIncreaseTotalSeconds() > 0;
     }
 
     public enum AlarmToneType {

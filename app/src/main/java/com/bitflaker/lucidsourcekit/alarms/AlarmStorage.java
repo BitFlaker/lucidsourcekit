@@ -14,7 +14,6 @@ public class AlarmStorage {
     private static AlarmStorage instance;
     private List<AlarmItem> alarms;
     private MainDatabase db;
-    private boolean finishedLoading = false;
     private OnAlarmAdded mAlarmAddedListener;
     private OnAlarmUpdated mAlarmUpdatedListener;
     private OnAlarmsLoaded mAlarmsLoadedListener;
@@ -46,7 +45,6 @@ public class AlarmStorage {
             if(mAlarmsLoadedListener != null){
                 mAlarmsLoadedListener.onEvent();
             }
-            finishedLoading = true;
             return;
         }
         db.getAlarmIsOnWeekdayDao().getAllForAlarm(alarmsList.get(i).alarmId).subscribe((alarmIsOnWeekdays, throwable) -> {
@@ -162,10 +160,6 @@ public class AlarmStorage {
 
     public int size() {
         return alarms.size();
-    }
-
-    public boolean isFinishedLoading() {
-        return finishedLoading;
     }
 
     public void removedAlarmIds(List<Integer> alarmsToDelete) {

@@ -6,8 +6,16 @@ import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
@@ -40,6 +48,13 @@ public class AlarmDisplayer extends AppCompatActivity {
     private TextView currentTimeView, alarmName;
     private boolean isSnoozing = false;
     private AlarmItem alarmItem;
+    private MediaPlayer mediaPlayer;
+    private Timer volumeIncreaser;
+    private Timer vibrationTimer;
+    private Timer flashlightTimer;
+    private Vibrator vib;
+    private String cameraId;
+    private CameraManager camManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +78,8 @@ public class AlarmDisplayer extends AppCompatActivity {
         alarmName = findViewById(R.id.txt_alarm_name);
         alarmSlider.setData(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_check_24, getTheme()), ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_snooze_24, getTheme()));
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        mediaPlayer = new MediaPlayer();
+        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         if(!getIntent().hasExtra("ALARM_ID")) { System.out.println("NONE"); finish(); }
         AlarmStorage.getInstance(this).setOnAlarmsLoadedListener(() -> {
@@ -83,10 +100,12 @@ public class AlarmDisplayer extends AppCompatActivity {
 
         alarmSlider.setOnLeftSideSelectedListener(() -> {
             isSnoozing = false;
+            disableAlarm();
         });
 
         alarmSlider.setOnRightSideSelectedListener(() -> {
             isSnoozing = true;
+            disableAlarm();
             Intent intent = new Intent(this, AlarmReceiverManager.class);
             intent.putExtra("ALARM_ID", alarmItem.getAlarmId());
             alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), Tools.getBroadcastReqCodeSnoozeFromID(alarmItem.getAlarmId()), intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -145,19 +164,120 @@ public class AlarmDisplayer extends AppCompatActivity {
                 runOnUiThread(() -> currentTimeView.setText(String.format(Locale.ENGLISH, "%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE))));
             }
         }, cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 1000);
+
+        try {
+            mediaPlayer.setAudioAttributes(
+                    new AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .setUsage(AudioAttributes.USAGE_ALARM)
+                            .build()
+            );
+            if(alarmItem.getAlarmToneType() == AlarmItem.AlarmToneType.CUSTOM_FILE){
+                mediaPlayer.setDataSource(alarmItem.getAlarmUri().getPath());
+            }
+            else if(alarmItem.getAlarmToneType() == AlarmItem.AlarmToneType.RINGTONE) {
+                mediaPlayer.setDataSource(getApplicationContext(), alarmItem.getAlarmUri());
+            }
+            mediaPlayer.setLooping(true);
+            mediaPlayer.prepare();
+            float alarmVolume = alarmItem.getAlarmVolume()/100.0f;
+            if(alarmItem.isIncreaseVolume()){
+                mediaPlayer.setVolume(0, 0);
+                float incrementVolume = alarmVolume / alarmItem.getVolumeIncreaseTotalSeconds();
+                final int[] currentSeconds = {0};
+                volumeIncreaser = new Timer();
+                volumeIncreaser.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        mediaPlayer.setVolume(incrementVolume * currentSeconds[0], incrementVolume * currentSeconds[0]);
+                        currentSeconds[0]++;
+                        if(currentSeconds[0] > alarmItem.getVolumeIncreaseTotalSeconds()) {
+                            volumeIncreaser.cancel();
+                        }
+                    }
+                }, 0, 1000);
+            }
+            else {
+                mediaPlayer.setVolume(alarmVolume, alarmVolume);
+            }
+            mediaPlayer.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(alarmItem.isVibrate()){
+            vibrationTimer = new Timer();
+            vibrationTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    AsyncTask.execute(() -> {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            vib.vibrate(VibrationEffect.createOneShot(1200, VibrationEffect.DEFAULT_AMPLITUDE));
+                        } else {
+                            vib.vibrate(1200);
+                        }
+                    });
+                }
+            }, 0, 1500);    // TODO: make duration and pause changeable
+        }
+
+        if(alarmItem.isUseFlashlight() && getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)){
+            camManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+            try {
+                cameraId = camManager.getCameraIdList()[0];
+                camManager.setTorchMode(cameraId, true);
+                flashlightTimer = new Timer();
+                final boolean[] flashlightOn = {true};
+                flashlightTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        AsyncTask.execute(() -> {
+                            try {
+                                camManager.setTorchMode(cameraId, flashlightOn[0]);
+                                flashlightOn[0] = !flashlightOn[0];
+                            } catch (CameraAccessException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
+                }, 0, 500);     // TODO: make duration changeable
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void showJournalCreator(JournalTypes type) {
-        // TODO start loading animation
         Intent intent = new Intent(this, DreamJournalEntryEditor.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("type", type.ordinal());
         startActivity(intent);
     }
 
+    private void disableAlarm() {
+        mediaPlayer.stop();
+        if(volumeIncreaser != null){
+            volumeIncreaser.cancel();
+        }
+        if(vibrationTimer != null){
+            vibrationTimer.cancel();
+        }
+        if(flashlightTimer != null){
+            flashlightTimer.cancel();
+        }
+        if(camManager != null){
+            try {
+                camManager.setTorchMode(cameraId, false);
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        disableAlarm();
         finishAndRemoveTask();
     }
 }

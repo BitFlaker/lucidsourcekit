@@ -6,12 +6,14 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- <uses-permission android:name="android.permission.DISABLE_KEYGUARD" /> -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- <uses-permission android:name="android.permission.DISABLE_KEYGUARD" /> -->
     <!-- <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" /> -->
     <!-- <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
+    <permission android:name="android.permission.FLASHLIGHT" android:permissionGroup="android.permission-group.HARDWARE_CONTROLS" android:protectionLevel="normal" />
 
     <application
         android:allowBackup="true"

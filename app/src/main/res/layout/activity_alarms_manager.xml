@@ -112,6 +112,7 @@
                             android:textSize="12sp" />
 
                         <TextView
+                            android:id="@+id/txt_next_alarm_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="14:03"
@@ -139,6 +140,7 @@
                             android:textSize="12sp" />
 
                         <TextView
+                            android:id="@+id/txt_next_alarm_time_to"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="15h 21m"
