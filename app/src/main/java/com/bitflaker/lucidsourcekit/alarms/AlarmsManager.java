@@ -209,6 +209,9 @@ public class AlarmsManager extends AppCompatActivity {
 
         runOnUiThread(() -> {
             nAlarmTimeTo.setText(String.format(Locale.ENGLISH, "%02d:%02d:%02d", (int)days, (int)hours, (int)minutes));
+            if((int)days == 0 && (int)hours == 0 && (int)minutes == 0){
+                setNextAlarmData(false);
+            }
         });
     }
 }

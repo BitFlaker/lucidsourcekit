@@ -211,6 +211,7 @@ public class AlarmCreator extends AppCompatActivity {
         if(getIntent().hasExtra("ALARM_ID")){
             int alarmId = getIntent().getIntExtra("ALARM_ID", -1);
             alarmItem = AlarmStorage.getInstance(this).getAlarmItemWithId(alarmId);
+            AlarmTools.cancelAlarm(getApplicationContext(), alarmItem);
             setEditValuesFromItem();
             sleepClock.setOnFirstDrawFinishedListener(() -> {
                 sleepClock.setAlarmTime(alarmItem.getAlarmHour(), alarmItem.getAlarmMinute());
@@ -316,12 +317,7 @@ public class AlarmCreator extends AppCompatActivity {
             else {
                 AlarmStorage.getInstance(this).modifyAlarm(alarmItem);
             }
-
             AlarmTools.scheduleAlarm(getApplicationContext(), alarmItem);
-//               --> setRepeating() lets you specify a precise custom interval -- in this case, 20 minutes.
-//            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60 * 3, alarmIntent);
-//            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (15 * 1000L), alarmIntent);
-
             finish();
         });
         setAlarm.setOnLongClickListener(e -> {

@@ -93,6 +93,14 @@ public class AlarmDisplayer extends AppCompatActivity {
             alarmName.setText(alarmItem.getTitle());
         }
 
+        if(alarmItem.getAlarmRepeatWeekdays().size() > 0) {
+            AlarmTools.scheduleAlarm(getApplicationContext(), alarmItem);
+        }
+        else {
+            alarmItem.setActive(false);
+            AlarmStorage.getInstance(this).modifyAlarm(alarmItem);
+        }
+
         quickAccessActionsView.setVisibility(View.GONE);
         closeDisplayer.setVisibility(View.GONE);
         quickAccessActionsView.setAlpha(0);

@@ -457,8 +457,14 @@ public class Tools {
         return Color.argb(alpha, red, green, blue);
     }
 
-    public static int getBroadcastReqCodeFromID(int alarmId) {
-        return alarmId + 50000;
+    /**
+     * Generates alarm specific unique id
+     * @param alarmId the id of the alarm
+     * @param weekdayId the id of the weekday of the alarm (Repeat only once = -1, Sunday = 0, Monday = 1, ...)
+     * @return the unique id for the alarm at the specific weekday
+     */
+    public static int getBroadcastReqCodeFromID(int alarmId, int weekdayId) {
+        return (alarmId*10) + 50000 + (weekdayId+1);
     }
 
     public static int getBroadcastReqCodeSnoozeFromID(int alarmId) {

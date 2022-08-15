@@ -1,8 +1,6 @@
 package com.bitflaker.lucidsourcekit.main;
 
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.alarms.AlarmItem;
-import com.bitflaker.lucidsourcekit.alarms.AlarmReceiverManager;
 import com.bitflaker.lucidsourcekit.alarms.AlarmStorage;
 import com.bitflaker.lucidsourcekit.alarms.AlarmTools;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
-import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
@@ -68,15 +64,12 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
             MainDatabase.getInstance(context).getAlarmDao().setActiveState(alarmData.get(position).getAlarmId(), checked).subscribe(() -> {
                 AlarmStorage.getInstance(context).setAlarmActive(alarmData.get(position).getAlarmId(), checked);
             });
+            AlarmItem alarmItem = AlarmStorage.getInstance(context).getAlarmItemWithId(alarmData.get(position).getAlarmId());
             if(checked){
-                AlarmTools.scheduleAlarm(context.getApplicationContext(), AlarmStorage.getInstance(context).getAlarmItemWithId(alarmData.get(position).getAlarmId()));
+                AlarmTools.scheduleAlarm(context.getApplicationContext(), alarmItem);
             }
             else {
-                AlarmItem alarmItem = AlarmStorage.getInstance(context).getAlarmItemWithId(alarmData.get(position).getAlarmId());
-                Intent intent = new Intent(context.getApplicationContext(), AlarmReceiverManager.class);
-                intent.putExtra("ALARM_ID", alarmItem.getAlarmId());
-                PendingIntent alarmIntent = PendingIntent.getBroadcast(context.getApplicationContext(), Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId()), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                alarmIntent.cancel();
+                AlarmTools.cancelAlarm(context.getApplicationContext(), alarmItem);
             }
             if(mEntryActiveStateChangedListener != null){
                 mEntryActiveStateChangedListener.onEvent(alarmData.get(position), checked);

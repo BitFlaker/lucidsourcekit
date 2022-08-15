@@ -38,16 +38,39 @@ public class AlarmTools {
 
         Intent intent = new Intent(applicationContext, AlarmReceiverManager.class);
         intent.putExtra("ALARM_ID", alarmItem.getAlarmId());
-        alarmIntent = PendingIntent.getBroadcast(applicationContext, Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId()), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        List<AlarmTimeSpan> timeSpans = alarmItem.getTimesTo();
 
-//        alarmItem.getTimesTo();  // TODO: implement with this --> and set repeating depending on if it is only once or has repeat days
+//        if(alarmItem.getAlarmRepeatWeekdays().size() == 0) {
+            alarmIntent = PendingIntent.getBroadcast(applicationContext, Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId(), -1), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeSpans.get(0).getMillisTimeStamp(), alarmIntent);
+//        }
+//        else {
+//            List<Integer> activeDays = alarmItem.getActiveDaysSorted();
+//            for (int i = 0; i < activeDays.size(); i++) {
+//                alarmIntent = PendingIntent.getBroadcast(applicationContext, Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId(), activeDays.get(i)), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//                 TODO replace setRepeating with multiple setExact calls as repeating alarms are always inexact!
+//                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeSpans.get(i).getMillisTimeStamp(), 7*24*60*60*1000, alarmIntent);
+//            }
+//        }
+    }
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, alarmItem.getAlarmHour());
-        calendar.set(Calendar.MINUTE, alarmItem.getAlarmMinute());
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+    public static void cancelAlarm(Context applicationContext, AlarmItem alarmItem) {
+        PendingIntent alarmIntent;
+        AlarmManager alarmManager = (AlarmManager) applicationContext.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(applicationContext, AlarmReceiverManager.class);
+        intent.putExtra("ALARM_ID", alarmItem.getAlarmId());
+
+//        if(alarmItem.getAlarmRepeatWeekdays().size() == 0) {
+            alarmIntent = PendingIntent.getBroadcast(applicationContext, Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId(), -1), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmManager.cancel(alarmIntent);
+//        }
+//        else {
+//            List<Integer> activeDays = alarmItem.getActiveDaysSorted();
+//            for (int i = 0; i < activeDays.size(); i++) {
+//                alarmIntent = PendingIntent.getBroadcast(applicationContext, Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId(), activeDays.get(i)), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//                alarmManager.cancel(alarmIntent);
+//            }
+//        }
     }
 }

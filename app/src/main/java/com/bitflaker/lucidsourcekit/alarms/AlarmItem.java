@@ -232,7 +232,7 @@ public class AlarmItem {
         int currDay = cal.get(Calendar.DAY_OF_WEEK);
         int currentHour = cal.get(Calendar.HOUR_OF_DAY);
         int currentMinute = cal.get(Calendar.MINUTE);
-        if(alarmRepeatWeekdays.size() > 0){
+        if(alarmRepeatWeekdays.size() > 0) {
             List<Integer> lis = getActiveDaysSorted();
             for (int day : lis) {
                 if(day == currDay && (currentHour < alarmHour || (currentHour == alarmHour && currentMinute < alarmMinute))) {
