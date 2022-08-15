@@ -7,9 +7,13 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Pair;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +38,8 @@ import com.bitflaker.lucidsourcekit.general.Crypt;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.main.MainViewer;
 import com.bitflaker.lucidsourcekit.setup.SetupViewer;
+import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.BufferedReader;
@@ -51,9 +57,11 @@ import java.util.concurrent.TimeUnit;
 public class MainActivity extends AppCompatActivity {
 
     private AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.5F);
-    private String enteredPin = "";
+    private char[] pinLayout = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ', '0', '<' };
+    private StringBuilder enteredPin = new StringBuilder();
     private String storedHash = "";
     private byte[] storedSalt;
+    private int pinButtonSize = 76;
 
     public static String convertStreamToString(InputStream is) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -212,22 +220,18 @@ public class MainActivity extends AppCompatActivity {
             db.getShuffleDao().getLastShuffleInDay(dayTimeSpans.first, dayTimeSpans.second).subscribe((shuffle, throwable) -> {
                 if(shuffle == null) {
                     db.getGoalDao().getAllSingle().subscribe((goals, throwable2) -> {
-                        //for (int i = 0; i < 10000; i++){
-                            List<Goal> goalsResult = Tools.getSuitableGoals(this, goals, preferences.getFloat("goal_difficulty_tendency", 1.8f), preferences.getFloat("goal_difficulty_variance", 0.15f), preferences.getInt("goal_difficulty_accuracy", 100), preferences.getFloat("goal_difficulty_value_variance", 3.0f), preferences.getInt("goal_difficulty_count", 3));
-                            db.getShuffleDao().insert(new Shuffle(dayTimeSpans.first, dayTimeSpans.second)).subscribe(newShuffleId -> {
-                                int id = newShuffleId.intValue();
-                                List<ShuffleHasGoal> hasGoals = new ArrayList<>();
-                                for (Goal goal : goalsResult) {
-                                    hasGoals.add(new ShuffleHasGoal(id, goal.goalId));
-                                }
-                                db.getShuffleHasGoalDao().insertAll(hasGoals).blockingSubscribe(() -> {
-                                    // TODO: hide loading indicator
-                                    runOnUiThread(() -> applicationLogin(preferences));
-                                });
+                        List<Goal> goalsResult = Tools.getSuitableGoals(this, goals, preferences.getFloat("goal_difficulty_tendency", 1.8f), preferences.getFloat("goal_difficulty_variance", 0.15f), preferences.getInt("goal_difficulty_accuracy", 100), preferences.getFloat("goal_difficulty_value_variance", 3.0f), preferences.getInt("goal_difficulty_count", 3));
+                        db.getShuffleDao().insert(new Shuffle(dayTimeSpans.first, dayTimeSpans.second)).subscribe(newShuffleId -> {
+                            int id = newShuffleId.intValue();
+                            List<ShuffleHasGoal> hasGoals = new ArrayList<>();
+                            for (Goal goal : goalsResult) {
+                                hasGoals.add(new ShuffleHasGoal(id, goal.goalId));
+                            }
+                            db.getShuffleHasGoalDao().insertAll(hasGoals).blockingSubscribe(() -> {
+                                // TODO: hide loading indicator
+                                runOnUiThread(() -> applicationLogin(preferences));
                             });
-                        //}
-                        //System.out.println("FINSIHED ??????????????????");
-                        //runOnUiThread(() -> applicationLogin(preferences));
+                        });
                     });
                 }
                 else {
@@ -255,22 +259,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupPasswordAuthentication() {
-        ((TextView)findViewById(R.id.txt_password)).setVisibility(View.VISIBLE);
-        ((TextView)findViewById(R.id.btn_unlock)).setVisibility(View.VISIBLE);
-        ((LinearLayout)findViewById(R.id.ll_pinLayout)).setVisibility(View.GONE);
+        findViewById(R.id.txt_password).setVisibility(View.VISIBLE);
+        findViewById(R.id.btn_unlock).setVisibility(View.VISIBLE);
+        findViewById(R.id.ll_pinLayout).setVisibility(View.GONE);
         MaterialButton unlockButton = findViewById(R.id.btn_unlock);
         unlockButton.setOnClickListener(e -> {
             try {
                 String hash = Crypt.encryptString(String.valueOf(((TextView) findViewById(R.id.txt_password)).getText()), storedSalt);
-                if(hash.equals(storedHash)){
-                    Intent intent = new Intent(MainActivity.this, MainViewer.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
-                }
-                else {
-                    Toast.makeText(MainActivity.this, "invalid password!", Toast.LENGTH_SHORT).show();
-                }
+                runOnUiThread(() -> {
+                    if(hash.equals(storedHash)) {
+                        startLoadingAnimation();
+                        Intent intent = new Intent(MainActivity.this, MainViewer.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    }
+                    else {
+                        Toast.makeText(MainActivity.this, "invalid password!", Toast.LENGTH_SHORT).show();
+                    }
+                });
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -311,73 +318,101 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupPinAuthentication() {
-        ((TextView)findViewById(R.id.txt_password)).setVisibility(View.GONE);
-        ((TextView)findViewById(R.id.btn_unlock)).setVisibility(View.GONE);
-        ((LinearLayout)findViewById(R.id.ll_pinLayout)).setVisibility(View.VISIBLE);
-        buttonClick.setDuration(100);
+        findViewById(R.id.txt_password).setVisibility(View.GONE);
+        findViewById(R.id.btn_unlock).setVisibility(View.GONE);
+        LinearLayout pinLayout = findViewById(R.id.ll_pinLayout);
+        pinLayout.setVisibility(View.VISIBLE);
+        for (int y = 0; y < 4; y++) {
+            FlexboxLayout hFlxBx = new FlexboxLayout(this);
+            hFlxBx.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            hFlxBx.setJustifyContent(JustifyContent.SPACE_AROUND);
+            for (int x = 0; x < 3; x++) {
+                hFlxBx.addView(generatePinButton(y*3+x));
+            }
+            pinLayout.addView(hFlxBx);
+        }
+    }
 
-        MaterialButton btn_pin0 = (MaterialButton)findViewById(R.id.btn_pin0);
-        MaterialButton btn_pin1 = (MaterialButton)findViewById(R.id.btn_pin1);
-        MaterialButton btn_pin2 = (MaterialButton)findViewById(R.id.btn_pin2);
-        MaterialButton btn_pin3 = (MaterialButton)findViewById(R.id.btn_pin3);
-        MaterialButton btn_pin4 = (MaterialButton)findViewById(R.id.btn_pin4);
-        MaterialButton btn_pin5 = (MaterialButton)findViewById(R.id.btn_pin5);
-        MaterialButton btn_pin6 = (MaterialButton)findViewById(R.id.btn_pin6);
-        MaterialButton btn_pin7 = (MaterialButton)findViewById(R.id.btn_pin7);
-        MaterialButton btn_pin8 = (MaterialButton)findViewById(R.id.btn_pin8);
-        MaterialButton btn_pin9 = (MaterialButton)findViewById(R.id.btn_pin9);
-        MaterialButton[] pinButtons = { btn_pin0, btn_pin1, btn_pin2, btn_pin3, btn_pin4, btn_pin5, btn_pin6, btn_pin7, btn_pin8, btn_pin9};
-        MaterialButton btn_delete = (MaterialButton)findViewById(R.id.btn_delete);
-        TextView txtEnteredPin = (TextView)findViewById(R.id.txt_enteredPin);
-        txtEnteredPin.setTextColor(getResources().getColor(R.color.white, getTheme()));
-
-        for (MaterialButton pinButton : pinButtons) {
-            pinButton.setTextColor(getResources().getColor(R.color.white, getTheme()));
+    private View generatePinButton(int pos) {
+        MaterialButton pinButton = new MaterialButton(this);
+        char currentType = pinLayout[pos];
+        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        pinButton.setLayoutParams(lParams);
+        pinButton.setMinimumHeight(Tools.dpToPx(this, pinButtonSize));
+        pinButton.setMinimumWidth(Tools.dpToPx(this, pinButtonSize));
+        pinButton.setMinHeight(Tools.dpToPx(this, pinButtonSize));
+        pinButton.setMinWidth(Tools.dpToPx(this, pinButtonSize));
+        pinButton.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, getTheme()));
+        pinButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+        pinButton.setBackgroundResource(R.drawable.ripple_round_clear);
+        TextView txtEnteredPin = findViewById(R.id.txt_enteredPin);
+        if (Character.isDigit(currentType)) {
+            pinButton.setText(Character.toString(currentType));
+            int buttonVal = Integer.parseInt(Character.toString(currentType));
             pinButton.setOnClickListener(e -> {
-                pinButton.startAnimation(buttonClick);
                 txtEnteredPin.setText(txtEnteredPin.getText() + "\u2022");
-                enteredPin += pinButton.getText();
-
+                enteredPin.append(buttonVal);
                 new Thread(() -> {
-                    boolean success = false;
-                    try {
-                        String hash = Crypt.encryptStringBlowfish(enteredPin, storedSalt);
-                        if(hash.equals(storedHash)){
-                            success = true;
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-
-                    boolean finalSuccess = success;
-                    runOnUiThread(() -> {
-                        if(finalSuccess){
-                            Intent intent = new Intent(MainActivity.this, MainViewer.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            finish();
-                        }
-                        else{
-                            if(enteredPin.length() > 7) {
-                                enteredPin = "";
+                    boolean success = isPinSuccess();
+                    if(success || enteredPin.length() > 7){
+                        runOnUiThread(() -> {
+                            if(success){
+                                startLoadingAnimation();
+                                Intent intent = new Intent(MainActivity.this, MainViewer.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                finish();
+                            }
+                            else {
+                                enteredPin.delete(0, enteredPin.length());
                                 txtEnteredPin.setText("");
                                 Toast.makeText(MainActivity.this, "Invalid PIN entered!", Toast.LENGTH_SHORT).show();
                             }
-                        }
-                    });
+                        });
+                    }
                 }).start();
             });
+            return pinButton;
         }
+        else if (currentType == '<') {
+            pinButton.setText("\u232B");
+            pinButton.setOnClickListener(e -> {
+                if(enteredPin.length() > 0) {
+                    enteredPin.deleteCharAt(enteredPin.length()-1);
+                    StringBuilder pinText = new StringBuilder();
+                    for(int i = 0; i < enteredPin.length(); i++) { pinText.append("\u2022"); }
+                    txtEnteredPin.setText(pinText.toString());
+                }
+            });
+            return pinButton;
+        }
+        return generateSpace();
+    }
 
-        btn_delete.setTextColor(getResources().getColor(R.color.white, getTheme()));
-        btn_delete.setOnClickListener(e -> {
-            btn_delete.startAnimation(buttonClick);
-            if(enteredPin.length() > 0) {
-                enteredPin = enteredPin.substring(0, enteredPin.length() - 1);
-                StringBuilder pinText = new StringBuilder();
-                for(int i = 0; i < enteredPin.length(); i++) { pinText.append("\u2022"); }
-                txtEnteredPin.setText(pinText.toString());
-            }
-        });
+    private void startLoadingAnimation() {
+        findViewById(R.id.txt_password).setVisibility(View.GONE);
+        findViewById(R.id.btn_unlock).setVisibility(View.GONE);
+        findViewById(R.id.ll_pinLayout).setVisibility(View.GONE);
+        ProgressBar loadingCircle = findViewById(R.id.clpb_start_app);
+        loadingCircle.setVisibility(View.VISIBLE);
+    }
+
+    private Space generateSpace() {
+        Space space = new Space(this);
+        space.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        space.setMinimumHeight(Tools.dpToPx(this, pinButtonSize));
+        space.setMinimumWidth(Tools.dpToPx(this, pinButtonSize));
+        return space;
+    }
+
+    private boolean isPinSuccess() {
+        boolean success = false;
+        try {
+            String hash = Crypt.encryptStringBlowfish(enteredPin.toString(), storedSalt);
+            if(hash != null && hash.equals(storedHash)){ success = true; }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return success;
     }
 }

@@ -13,6 +13,7 @@ Currently the following main features are implemented:
 * Looking out for tasks or objects during the day to complete **goals**
 * Getting an insight into the **statistics** about your dreams and goals
 * Playing **binaural beats** with additional background sounds and an optional **auto-playback-stopping feature**
+* Setting **alarms** and see when a **REM period** is likely to occur
 * **Customizing** the features of the app to your needs
 * Many more features in the future...
 
