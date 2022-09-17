@@ -74,6 +74,7 @@
         <item name="colorSuccess">@color/lighter_green</item>
         <item name="main_overview_graphic">@drawable/deep_night_mountains_new_dark</item>
         <item name="bottomSheetDialogTheme">@style/BottomSheetDialogStyle</item>
+        <item name="typeStyle">@style/Widget.MaterialComponents.Button.TextButton</item>
     </style>
 
     <style name="PopupMenu.Dark" parent="Widget.AppCompat.PopupMenu">

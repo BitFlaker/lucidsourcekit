@@ -41,13 +41,13 @@ public class AlarmTools {
         List<AlarmTimeSpan> timeSpans = alarmItem.getTimesTo();
 
 //        if(alarmItem.getAlarmRepeatWeekdays().size() == 0) {
-            alarmIntent = PendingIntent.getBroadcast(applicationContext, Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId(), -1), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmIntent = PendingIntent.getBroadcast(applicationContext, Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId(), -1), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeSpans.get(0).getMillisTimeStamp(), alarmIntent);
 //        }
 //        else {
 //            List<Integer> activeDays = alarmItem.getActiveDaysSorted();
 //            for (int i = 0; i < activeDays.size(); i++) {
-//                alarmIntent = PendingIntent.getBroadcast(applicationContext, Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId(), activeDays.get(i)), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//                alarmIntent = PendingIntent.getBroadcast(applicationContext, Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId(), activeDays.get(i)), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 //                 TODO replace setRepeating with multiple setExact calls as repeating alarms are always inexact!
 //                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeSpans.get(i).getMillisTimeStamp(), 7*24*60*60*1000, alarmIntent);
 //            }
@@ -62,13 +62,13 @@ public class AlarmTools {
         intent.putExtra("ALARM_ID", alarmItem.getAlarmId());
 
 //        if(alarmItem.getAlarmRepeatWeekdays().size() == 0) {
-            alarmIntent = PendingIntent.getBroadcast(applicationContext, Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId(), -1), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmIntent = PendingIntent.getBroadcast(applicationContext, Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId(), -1), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             alarmManager.cancel(alarmIntent);
 //        }
 //        else {
 //            List<Integer> activeDays = alarmItem.getActiveDaysSorted();
 //            for (int i = 0; i < activeDays.size(); i++) {
-//                alarmIntent = PendingIntent.getBroadcast(applicationContext, Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId(), activeDays.get(i)), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//                alarmIntent = PendingIntent.getBroadcast(applicationContext, Tools.getBroadcastReqCodeFromID(alarmItem.getAlarmId(), activeDays.get(i)), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 //                alarmManager.cancel(alarmIntent);
 //            }
 //        }

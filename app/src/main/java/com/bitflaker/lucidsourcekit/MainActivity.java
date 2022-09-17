@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Pair;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -259,9 +260,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupPasswordAuthentication() {
-        findViewById(R.id.txt_password).setVisibility(View.VISIBLE);
-        findViewById(R.id.btn_unlock).setVisibility(View.VISIBLE);
-        findViewById(R.id.ll_pinLayout).setVisibility(View.GONE);
+        findViewById(R.id.ll_pw_auth_container).setVisibility(View.VISIBLE);
+        findViewById(R.id.ll_pin_auth_container).setVisibility(View.GONE);
         MaterialButton unlockButton = findViewById(R.id.btn_unlock);
         unlockButton.setOnClickListener(e -> {
             try {
@@ -286,10 +286,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupBiometricAuthentication() {
         BiometricManager biometricManager = BiometricManager.from(this);
+        ((LinearLayout)findViewById(R.id.ll_pin_auth_container)).addView(generateUseBiometricsButton());
+        ((LinearLayout)findViewById(R.id.ll_pw_auth_container)).addView(generateUseBiometricsButton());
+
         // TODO: check if phone even supports biometrics (also do so in first time setup and settings)
         switch (biometricManager.canAuthenticate()) {
             case BiometricManager.BIOMETRIC_SUCCESS:
-                // allow login
+                startBiometricAuthentication();
                 break;
             case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
                 // show error no biometric hardware
@@ -301,27 +304,44 @@ public class MainActivity extends AppCompatActivity {
                 // show error biometrics not enrolled
                 break;
         }
+    }
 
+    private void startBiometricAuthentication() {
         Executor executor = ContextCompat.getMainExecutor(this);
         final BiometricPrompt biometricPrompt = new BiometricPrompt(MainActivity.this, executor, new BiometricPrompt.AuthenticationCallback() {
             @Override
             public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
+                startLoadingAnimation();
                 Intent intent = new Intent(MainActivity.this, MainViewer.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
             }
         });
-        final BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder().setTitle("GFG").setDescription("Use your fingerprint to login ").setNegativeButtonText("Cancel").build();
+        final BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder().setTitle("Biometric Login").setDescription("Log in using your biometric credential").setNegativeButtonText("Cancel").build();
         biometricPrompt.authenticate(promptInfo);
     }
 
+    @NonNull
+    private MaterialButton generateUseBiometricsButton() {
+        MaterialButton mat = new MaterialButton(this, null, R.attr.typeStyle);
+        mat.setText("use biometrics instead");
+        mat.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lParams.gravity = Gravity.CENTER_HORIZONTAL;
+        lParams.topMargin = Tools.dpToPx(this, 8);
+        mat.setLayoutParams(lParams);
+        mat.setOnClickListener(e -> {
+            startBiometricAuthentication();
+        });
+        return mat;
+    }
+
     private void setupPinAuthentication() {
-        findViewById(R.id.txt_password).setVisibility(View.GONE);
-        findViewById(R.id.btn_unlock).setVisibility(View.GONE);
+        findViewById(R.id.ll_pw_auth_container).setVisibility(View.GONE);
+        findViewById(R.id.ll_pin_auth_container).setVisibility(View.VISIBLE);
         LinearLayout pinLayout = findViewById(R.id.ll_pinLayout);
-        pinLayout.setVisibility(View.VISIBLE);
         for (int y = 0; y < 4; y++) {
             FlexboxLayout hFlxBx = new FlexboxLayout(this);
             hFlxBx.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -390,9 +410,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startLoadingAnimation() {
-        findViewById(R.id.txt_password).setVisibility(View.GONE);
-        findViewById(R.id.btn_unlock).setVisibility(View.GONE);
-        findViewById(R.id.ll_pinLayout).setVisibility(View.GONE);
+        findViewById(R.id.ll_pw_auth_container).setVisibility(View.GONE);
+        findViewById(R.id.ll_pin_auth_container).setVisibility(View.GONE);
         ProgressBar loadingCircle = findViewById(R.id.clpb_start_app);
         loadingCircle.setVisibility(View.VISIBLE);
     }

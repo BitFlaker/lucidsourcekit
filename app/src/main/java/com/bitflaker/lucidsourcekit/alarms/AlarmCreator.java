@@ -9,13 +9,12 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.AudioAttributes;
-import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.View;
@@ -46,7 +45,6 @@ import com.google.android.material.slider.Slider;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -94,21 +92,21 @@ public class AlarmCreator extends AppCompatActivity {
                         String title = filename.substring(0, filename.lastIndexOf("."));
                         selectedToneText.setText(title);
                         alarmItem.setAlarmUri(ringtoneUri);
-                        MediaPlayer mediaPlayer = new MediaPlayer();
-                        mediaPlayer.setAudioAttributes(
-                                new AudioAttributes.Builder()
-                                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                        .setUsage(AudioAttributes.USAGE_ALARM)
-                                        .build()
-                        );
-                        mediaPlayer.setLooping(true);
-                        try {
-                            mediaPlayer.setDataSource(uri.getPath());
-                            mediaPlayer.prepare();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        mediaPlayer.start();
+//                        MediaPlayer mediaPlayer = new MediaPlayer();
+//                        mediaPlayer.setAudioAttributes(
+//                                new AudioAttributes.Builder()
+//                                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+//                                        .setUsage(AudioAttributes.USAGE_ALARM)
+//                                        .build()
+//                        );
+//                        mediaPlayer.setLooping(true);
+//                        try {
+//                            mediaPlayer.setDataSource(this, uri);
+//                            mediaPlayer.prepare();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                        mediaPlayer.start();
                     }
                     else {
                         Toast.makeText(this, "Unsupported audio file type", Toast.LENGTH_LONG).show();
@@ -258,7 +256,7 @@ public class AlarmCreator extends AppCompatActivity {
                 ringtoneSelectorLauncher.launch(intent);
             }
             else {
-                Intent audioPicker = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+                Intent audioPicker = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.INTERNAL_CONTENT_URI);
                 customFileSelectorLauncher.launch(audioPicker);
             }
         });

@@ -18,60 +18,70 @@
         android:layout_height="match_parent">
 
         <!-- Password login -->
-        <EditText
-            android:id="@+id/txt_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:inputType="textPassword"
-            android:autofillHints="password"
-            android:hint="@string/login_password_hint"
-            android:background="@drawable/rounded_edit_text"
-            android:drawableStart="@drawable/ic_baseline_lock_24"
-            android:textColor="?attr/primaryTextColor"
-            android:textColorHint="#6F9E9BB1"
-            android:drawablePadding="10dp"
-            android:layout_above="@id/btn_unlock"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp"
-            android:layout_marginBottom="20dp"
-            android:minHeight="48dp"
-            android:padding="15dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_unlock"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp"
-            android:layout_marginBottom="80dp"
-            android:background="@drawable/rounded_button_primary"
-            android:text="@string/login_password_unlock_button"
-            android:textColor="?attr/primaryTextColor"
-            app:backgroundTint="#5D41DD" />
-
-        <!-- PIN login -->
         <LinearLayout
-            android:id="@+id/ll_pinLayout"
+            android:id="@+id/ll_pw_auth_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="48dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
-            android:layout_marginBottom="50dp">
+            android:visibility="gone">
 
-            <TextView
-                android:id="@+id/txt_enteredPin"
+            <EditText
+                android:id="@+id/txt_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:inputType="textPassword"
+                android:autofillHints="password"
+                android:hint="@string/login_password_hint"
+                android:background="@drawable/rounded_edit_text"
+                android:drawableStart="@drawable/ic_baseline_lock_24"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="70sp"
-                android:textAlignment="center">
-            </TextView>
+                android:textColorHint="#6F9E9BB1"
+                android:drawablePadding="10dp"
+                android:layout_marginBottom="20dp"
+                android:minHeight="48dp"
+                android:padding="15dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_unlock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:background="@drawable/rounded_button_primary"
+                android:text="@string/login_password_unlock_button"
+                android:textColor="?attr/primaryTextColor"
+                app:backgroundTint="#5D41DD" />
+        </LinearLayout>
+
+        <!-- PIN login -->
+        <LinearLayout
+            android:id="@+id/ll_pin_auth_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="48dp"
+            android:layout_alignParentBottom="true">
+
+            <LinearLayout
+                android:id="@+id/ll_pinLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_enteredPin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="70sp"
+                    android:textAlignment="center" />
+            </LinearLayout>
         </LinearLayout>
 
         <ProgressBar

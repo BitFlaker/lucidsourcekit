@@ -116,7 +116,7 @@ public class AlarmDisplayer extends AppCompatActivity {
             disableAlarm();
             Intent intent = new Intent(this, AlarmReceiverManager.class);
             intent.putExtra("ALARM_ID", alarmItem.getAlarmId());
-            alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), Tools.getBroadcastReqCodeSnoozeFromID(alarmItem.getAlarmId()), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), Tools.getBroadcastReqCodeSnoozeFromID(alarmItem.getAlarmId()), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (5*60*1000), alarmIntent); // TODO make snooze delay changable
             finishAndRemoveTask();
         });
@@ -173,6 +173,9 @@ public class AlarmDisplayer extends AppCompatActivity {
             }
         }, cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 1000);
 
+        // fixed the bug that you cannot open the Alarms-Manager because of the deprecated HARDWARE_CONTROLS permission.
+        //fixed the bug that the dream description in the dream journal entries were displayed with slightly more than two lines
+
         try {
             mediaPlayer.setAudioAttributes(
                     new AudioAttributes.Builder()
@@ -180,13 +183,13 @@ public class AlarmDisplayer extends AppCompatActivity {
                             .setUsage(AudioAttributes.USAGE_ALARM)
                             .build()
             );
+            mediaPlayer.setLooping(true);
             if(alarmItem.getAlarmToneType() == AlarmItem.AlarmToneType.CUSTOM_FILE){
-                mediaPlayer.setDataSource(alarmItem.getAlarmUri().getPath());
+                mediaPlayer.setDataSource(this, alarmItem.getAlarmUri());
             }
             else if(alarmItem.getAlarmToneType() == AlarmItem.AlarmToneType.RINGTONE) {
                 mediaPlayer.setDataSource(getApplicationContext(), alarmItem.getAlarmUri());
             }
-            mediaPlayer.setLooping(true);
             mediaPlayer.prepare();
             float alarmVolume = alarmItem.getAlarmVolume()/100.0f;
             if(alarmItem.isIncreaseVolume()){

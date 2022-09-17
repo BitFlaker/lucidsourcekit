@@ -142,7 +142,6 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             ConstraintLayout.LayoutParams lparamsDesc = (ConstraintLayout.LayoutParams) holder.description.getLayoutParams();
             lparamsDesc.setMargins(0, Tools.dpToPx(context, 10), 0, 0);
             holder.description.setLayoutParams(lparamsDesc);
-            holder.description.setMaxHeight(Tools.spToPx(context, holder.description.getTextSize())-5);
         }
 
         int iconCount = holder.titleIcons.getChildCount();
