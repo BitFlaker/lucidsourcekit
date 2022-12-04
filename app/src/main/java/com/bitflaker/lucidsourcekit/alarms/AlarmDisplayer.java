@@ -173,9 +173,6 @@ public class AlarmDisplayer extends AppCompatActivity {
             }
         }, cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 1000);
 
-        // fixed the bug that you cannot open the Alarms-Manager because of the deprecated HARDWARE_CONTROLS permission.
-        //fixed the bug that the dream description in the dream journal entries were displayed with slightly more than two lines
-
         try {
             mediaPlayer.setAudioAttributes(
                     new AudioAttributes.Builder()

@@ -38,7 +38,10 @@ public class MainOverview extends Fragment {
         getView().findViewById(R.id.crd_alarm1).setOnClickListener(e -> { });
         getView().findViewById(R.id.crd_alarm2).setOnClickListener(e -> { });
         getView().findViewById(R.id.btn_manage_alarms).setOnClickListener(e -> {
+//            AlarmHandler.clickAction(getActivity().getApplicationContext());
             startActivity(new Intent(getContext(), AlarmsManager.class));
+
+
 //            AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
 //            PendingIntent alarmIntent;
 //            Intent intent = new Intent(getContext(), AlarmReceiverManager.class);

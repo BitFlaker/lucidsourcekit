@@ -15,6 +15,7 @@ public class AlarmToneTypes {
         this.alarmToneTypeId = alarmToneTypeId;
         this.description = description;
     }
+
     public static AlarmToneTypes[] populateData(){
         return new AlarmToneTypes[] {
                 new AlarmToneTypes(AlarmItem.AlarmToneType.RINGTONE.ordinal(), "Ringtone"),

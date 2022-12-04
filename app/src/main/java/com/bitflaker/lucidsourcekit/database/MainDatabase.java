@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
@@ -17,6 +18,10 @@ import com.bitflaker.lucidsourcekit.database.alarms.entities.Alarm;
 import com.bitflaker.lucidsourcekit.database.alarms.entities.AlarmIsOnWeekday;
 import com.bitflaker.lucidsourcekit.database.alarms.entities.AlarmToneTypes;
 import com.bitflaker.lucidsourcekit.database.alarms.entities.Weekdays;
+import com.bitflaker.lucidsourcekit.database.alarms.updated.daos.ActiveAlarmDao;
+import com.bitflaker.lucidsourcekit.database.alarms.updated.daos.StoredAlarmDao;
+import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarm;
+import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.daos.AudioLocationDao;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.daos.DreamClarityDao;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.daos.DreamMoodDao;
@@ -46,7 +51,8 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal;
         DreamMood.class, DreamClarity.class, AudioLocation.class, JournalEntry.class,
         JournalEntryHasTag.class, JournalEntryHasType.class, Goal.class, Shuffle.class,
         ShuffleHasGoal.class, Alarm.class, AlarmIsOnWeekday.class, AlarmToneTypes.class,
-        Weekdays.class}, version = 11, exportSchema = false)
+        Weekdays.class, ActiveAlarm.class, StoredAlarm.class}, version = 13, exportSchema = false)
+@TypeConverters({Converters.class})
 public abstract class MainDatabase extends RoomDatabase {
     // Dream Journal tables
     public abstract JournalEntryTagDao getJournalEntryTagDao();
@@ -69,6 +75,10 @@ public abstract class MainDatabase extends RoomDatabase {
     public abstract AlarmIsOnWeekdayDao getAlarmIsOnWeekdayDao();
     public abstract AlarmToneTypesDao getAlarmToneTypesDao();
     public abstract WeekdaysDao getWeekdaysDao();
+
+    // New Alarm tables
+    public abstract ActiveAlarmDao getActiveAlarmDao();
+    public abstract StoredAlarmDao getStoredAlarmDao();
 
     // Database
     private static volatile MainDatabase instance;
@@ -96,6 +106,8 @@ public abstract class MainDatabase extends RoomDatabase {
                 .addMigrations(MIGRATION_8_9)
                 .addMigrations(MIGRATION_9_10)
                 .addMigrations(MIGRATION_10_11)
+                .addMigrations(MIGRATION_11_12)
+                .addMigrations(MIGRATION_12_13)
                 .build();
     }
 
@@ -211,6 +223,51 @@ public abstract class MainDatabase extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE Alarm ADD title TEXT DEFAULT 'Unnamed Alarm' NOT NULL;");
+        }
+    };
+
+    static final Migration MIGRATION_11_12 = new Migration(11, 12) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE ActiveAlarm (" +
+                    "requestCode INTEGER NOT NULL, " +
+                    "initialTime INTEGER NOT NULL, " +
+                    "interval INTEGER NOT NULL, " +
+                    "patternIndex INTEGER NOT NULL, " +
+                    "pattern TEXT NOT NULL, " +
+                    "PRIMARY KEY(requestCode));");
+        }
+    };
+
+    static final Migration MIGRATION_12_13 = new Migration(12, 13) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("DROP TABLE ActiveAlarm");
+            database.execSQL("CREATE TABLE ActiveAlarm (" +
+                    "requestCode INTEGER NOT NULL, " +
+                    "initialTime INTEGER NOT NULL, " +
+                    "interval INTEGER NOT NULL, " +
+                    "patternIndex INTEGER NOT NULL, " +
+                    "PRIMARY KEY(requestCode));");
+            database.execSQL("CREATE TABLE StoredAlarm (" +
+                    "alarmId INTEGER NOT NULL, " +
+                    "title TEXT NOT NULL DEFAULT('Unnamed Alarm'), " +
+                    "bedtimeTimestamp INTEGER NOT NULL, " +
+                    "alarmTimestamp INTEGER NOT NULL, " +
+                    "pattern TEXT NOT NULL, " +
+                    "alarmToneTypeId INTEGER NOT NULL, " +
+                    "alarmUri TEXT NOT NULL, " +
+                    "alarmVolume REAL NOT NULL, " +
+                    "alarmVolumeIncreaseTimestamp INTEGER NOT NULL, " +
+                    "isVibrationActive INTEGER NOT NULL, " +
+                    "isFlashlightActive INTEGER NOT NULL, " +
+                    "isAlarmActive INTEGER NOT NULL, " +
+                    "requestCodeActiveAlarm INTEGER NOT NULL DEFAULT(-1), " +
+                    "PRIMARY KEY(alarmId)," +
+                    "FOREIGN KEY (alarmToneTypeId) REFERENCES AlarmToneTypes (alarmToneTypeId) ON DELETE CASCADE ON UPDATE NO ACTION, " +
+                    "FOREIGN KEY (requestCodeActiveAlarm) REFERENCES ActiveAlarm (requestCode) ON DELETE SET DEFAULT ON UPDATE NO ACTION)");
+            database.execSQL("CREATE INDEX index_StoredAlarm_alarmToneTypeId ON StoredAlarm (alarmToneTypeId);");
+            database.execSQL("CREATE INDEX index_StoredAlarm_requestCodeActiveAlarm ON StoredAlarm (requestCodeActiveAlarm);");
         }
     };
 }

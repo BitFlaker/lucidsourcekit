@@ -24,9 +24,11 @@ import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
+import com.bitflaker.lucidsourcekit.alarms.updated.AlarmHandler;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.entities.AlarmToneTypes;
 import com.bitflaker.lucidsourcekit.database.alarms.entities.Weekdays;
+import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarm;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamClarity;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamType;
@@ -128,22 +130,30 @@ public class MainActivity extends AppCompatActivity {
         // TODO: add loading indicator
         new Thread(() -> {
             MainDatabase db = MainDatabase.getInstance(MainActivity.this);
-            //db.getShuffleHasGoalDao().deleteAll().subscribe(() -> db.getShuffleDao().deleteAll().subscribe(() -> {
-                db.getDreamTypeDao().insertAll(DreamType.populateData()).subscribe(() -> {
-                    db.getDreamMoodDao().insertAll(DreamMood.populateData()).subscribe(() -> {
-                        db.getDreamClarityDao().insertAll(DreamClarity.populateData()).subscribe(() -> {
-                            db.getSleepQualityDao().insertAll(SleepQuality.populateData()).subscribe(() -> {
-                                db.getWeekdaysDao().insertAll(Weekdays.populateData()).subscribe(() -> {
-                                    db.getAlarmToneTypesDao().insertAll(AlarmToneTypes.populateData()).subscribe(() -> {
-                                        db.getGoalDao().getGoalCount().subscribe((count) -> {
-                                            if (count == 0) {
-                                                DefaultGoals defaultGoals = new DefaultGoals(this);
-                                                db.getGoalDao().insertAll(defaultGoals.getGoalsList()).subscribe(() -> {
+//            db.getStoredAlarmDao().getAll().subscribe(all -> {
+//            db.getActiveAlarmDao().getAll().subscribe(all2 -> {
+//            db.getStoredAlarmDao().deleteAll().subscribe(() -> {
+//            db.getActiveAlarmDao().deleteAll().subscribe(() -> {
+//            db.getShuffleHasGoalDao().deleteAll().subscribe(() -> db.getShuffleDao().deleteAll().subscribe(() -> {
+            db.getActiveAlarmDao().insert(ActiveAlarm.createUnreferencedAlarm()).subscribe(() -> {
+                db.getActiveAlarmDao().getAllDetails().subscribe(activeAlarms -> {
+                    AlarmHandler.reEnableAlarmsIfNotRunning(getApplicationContext(), activeAlarms);
+                    db.getDreamTypeDao().insertAll(DreamType.populateData()).subscribe(() -> {
+                        db.getDreamMoodDao().insertAll(DreamMood.populateData()).subscribe(() -> {
+                            db.getDreamClarityDao().insertAll(DreamClarity.populateData()).subscribe(() -> {
+                                db.getSleepQualityDao().insertAll(SleepQuality.populateData()).subscribe(() -> {
+                                    db.getWeekdaysDao().insertAll(Weekdays.populateData()).subscribe(() -> {
+                                        db.getAlarmToneTypesDao().insertAll(AlarmToneTypes.populateData()).subscribe(() -> {
+                                            db.getGoalDao().getGoalCount().subscribe((count) -> {
+                                                if (count == 0) {
+                                                    DefaultGoals defaultGoals = new DefaultGoals(this);
+                                                    db.getGoalDao().insertAll(defaultGoals.getGoalsList()).subscribe(() -> {
+                                                        dataSetupHandler(db, preferences, count);
+                                                    });
+                                                } else {
                                                     dataSetupHandler(db, preferences, count);
-                                                });
-                                            } else {
-                                                dataSetupHandler(db, preferences, count);
-                                            }
+                                                }
+                                            });
                                         });
                                     });
                                 });
@@ -151,7 +161,11 @@ public class MainActivity extends AppCompatActivity {
                         });
                     });
                 });
-            //}));
+            });
+//            });
+//            });
+//            });
+//            });
         }).start();
     }
 
