@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 //            db.getStoredAlarmDao().getAll().subscribe(all -> {
 //            db.getActiveAlarmDao().getAll().subscribe(all2 -> {
 //            db.getStoredAlarmDao().deleteAll().subscribe(() -> {
-//            db.getActiveAlarmDao().deleteAll().subscribe(() -> {
+//            db.getActiveAlarmDao().deleteAllButUnreferenced().subscribe(() -> {
 //            db.getShuffleHasGoalDao().deleteAll().subscribe(() -> db.getShuffleDao().deleteAll().subscribe(() -> {
             db.getActiveAlarmDao().insert(ActiveAlarm.createUnreferencedAlarm()).subscribe(() -> {
                 db.getActiveAlarmDao().getAllDetails().subscribe(activeAlarms -> {

@@ -332,6 +332,9 @@ public class AlarmCreator extends AppCompatActivity {
                 // database and finally schedule the alarm
                 AlarmHandler.cancelRepeatingAlarm(getApplicationContext(), storedAlarm.alarmId).subscribe(() -> {
                     storedAlarm.requestCodeActiveAlarm = -1;
+                    db.getActiveAlarmDao().getAll().blockingSubscribe(all -> {
+                        System.out.println("here is all");
+                    });
                     db.getStoredAlarmDao().update(storedAlarm).subscribe(() -> scheduleAlarmAndExit(false)).dispose();
                 }).dispose();
             }
@@ -352,7 +355,7 @@ public class AlarmCreator extends AppCompatActivity {
     }
 
     private void scheduleAlarmAndExit(boolean createdNewAlarm) {
-        int index = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) + (getMillisSinceMidnight() >= storedAlarm.alarmTimestamp ? 0 : -1);
+        int index = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
         AlarmHandler.scheduleAlarmRepeatedlyAt(getApplicationContext(), storedAlarm.alarmId, getMillisUntilMidnight() + storedAlarm.alarmTimestamp, storedAlarm.pattern, index, 1000*60*60*24).blockingSubscribe(() -> {
             Intent intent = new Intent();
             intent.putExtra("CREATED_NEW_ALARM", createdNewAlarm);

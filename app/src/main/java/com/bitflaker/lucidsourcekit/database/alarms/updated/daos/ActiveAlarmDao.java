@@ -41,6 +41,9 @@ public interface ActiveAlarmDao {
     @Query("DELETE FROM ActiveAlarm")
     Completable deleteAll();
 
+    @Query("DELETE FROM ActiveAlarm WHERE requestCode != -1")
+    Completable deleteAllButUnreferenced();
+
     @Query("SELECT * FROM ActiveAlarm WHERE requestCode = :requestCode")
     Single<ActiveAlarm> getById(int requestCode);
 }

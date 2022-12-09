@@ -75,18 +75,15 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
             System.out.println("INCONSISTENCY DETECTED! ALARM IS ACTIVE BUT REQCODEACTIVEALARM => -1");
         }
         holder.active.setChecked(alarm.isAlarmActive && alarm.requestCodeActiveAlarm != -1);
-        holder.active.setOnCheckedChangeListener((e, checked) -> {
-            alarm.isAlarmActive = checked;
-            MainDatabase.getInstance(context).getStoredAlarmDao().setActiveState(alarm.alarmId, checked).subscribe(() -> {
+        holder.active.setOnClickListener(e -> {
+            SwitchMaterial currSwitch = ((SwitchMaterial) e);
+            alarm.isAlarmActive = currSwitch.isChecked();
+            MainDatabase.getInstance(context).getStoredAlarmDao().setActiveState(alarm.alarmId, currSwitch.isChecked()).subscribe(() -> {
                 // TODO: implement ability to set one-time only alarms
-                if(checked){
+                if(currSwitch.isChecked()){
                     // get the current weekday and reduce it by 1 to get the index
                     // because the week starts with SUNDAY [which has id 1]
                     int index = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
-                    // If the alarm should have already gone off today, schedule it for the next enabled day to trigger
-                    if(getMillisSinceMidnight() >= alarm.alarmTimestamp) {
-                        index++;
-                    }
                     AlarmHandler.scheduleAlarmRepeatedlyAt(context.getApplicationContext(), alarm.alarmId, getMillisUntilMidnight() + alarm.alarmTimestamp, alarm.pattern, index, 1000 * 60 * 60 * 24).subscribe(() -> {
                         updateStoredAlarmFromDatabase(position, alarm);
                     }).dispose();
@@ -98,7 +95,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
                     }).dispose();
                 }
                 if(mEntryActiveStateChangedListener != null){
-                    mEntryActiveStateChangedListener.onEvent(storedAlarms.get(position), checked);
+                    mEntryActiveStateChangedListener.onEvent(storedAlarms.get(position), currSwitch.isChecked());
                 }
             }).dispose();
         });
@@ -166,7 +163,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     private void updateStoredAlarmFromDatabase(int position, StoredAlarm alarm) {
         MainDatabase.getInstance(context).getStoredAlarmDao().getById(alarm.alarmId).subscribe(storedAlarm -> {
             storedAlarms.set(position, storedAlarm);
-            notifyItemChanged(position);
+//            ((Activity)context).runOnUiThread(() -> notifyItemChanged(position));
         }).dispose();
     }
 

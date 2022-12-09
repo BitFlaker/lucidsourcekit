@@ -54,6 +54,7 @@ public class AlarmsManager extends AppCompatActivity {
         }
     };
     private final ActivityResultLauncher<Intent> alarmInteractionLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), alarmCreationOrModificationCallback);
+    private Timer nextTimeToCalcTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,7 +158,6 @@ public class AlarmsManager extends AppCompatActivity {
 //            setNextAlarmData(true);
         });
         fetchNextAlarmAndDisplay();
-        startTimeToAlarmUpdater();
 //        AlarmStorage.getInstance(this).setOnAlarmsLoadedListener(this::showAllStoredAlarms);
 //        if(AlarmStorage.getInstance(this).isLoaded() && adapterAlarms.getItemCount() == 0) {
 //            showAllStoredAlarms();
@@ -166,22 +166,26 @@ public class AlarmsManager extends AppCompatActivity {
 
     private void fetchNextAlarmAndDisplay() {
         // TODO: support AM/PM
-//        MainDatabase.getInstance(AlarmsManager.this).getActiveAlarmDao().getAll().subscribe(all -> {
+        MainDatabase.getInstance(AlarmsManager.this).getActiveAlarmDao().getAll().subscribe(all -> {
             MainDatabase.getInstance(AlarmsManager.this).getActiveAlarmDao().getNextUpcomingAlarmTimestamp().subscribe(nextAlarmTimeStamp -> {
                 // TODO: also say which weekday as otherwise it seems as if it would go off today at that time
                 this.nextAlarmTimeStamp = nextAlarmTimeStamp;
                 if(nextAlarmTimeStamp != -1) {
+                    startTimeToAlarmUpdater();
                     Calendar calAlarm = Calendar.getInstance();
                     calAlarm.setTimeInMillis(nextAlarmTimeStamp);
                     nAlarmTime.setText(String.format(Locale.ENGLISH, "%02d:%02d", calAlarm.get(Calendar.HOUR_OF_DAY), calAlarm.get(Calendar.MINUTE)));
                     setNextTimeTo(nextAlarmTimeStamp);
                 }
                 else {
+                    if(nextTimeToCalcTimer != null) {
+                        nextTimeToCalcTimer.cancel();
+                    }
                     nAlarmTime.setText("--");
                     nAlarmTimeTo.setText("--");
                 }
             }).dispose();
-//        }).dispose();
+        }).dispose();
     }
 
     private void startTimeToAlarmUpdater() {
@@ -190,17 +194,19 @@ public class AlarmsManager extends AppCompatActivity {
         calDelay.set(Calendar.SECOND, 0);
         calDelay.set(Calendar.MILLISECOND, 0);
 
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
+        nextTimeToCalcTimer = new Timer();
+        nextTimeToCalcTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 setNextTimeTo(nextAlarmTimeStamp);
             }
         }, calDelay.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 60*1000);
     }
-
+    
     private void setNextTimeTo(Long nextAlarmTimeStamp) {
-        long diff = nextAlarmTimeStamp - Calendar.getInstance().getTimeInMillis();
+        // adding 60000 to always round up to the next minute (as when only e.g. 50 seconds are left for
+        // the alarm to go off, it would show 00:00:00, but with the added 60000ms it will show 00:00:01)
+        long diff = (nextAlarmTimeStamp + (60 * 1000)) - Calendar.getInstance().getTimeInMillis();
         long days = TimeUnit.MILLISECONDS.toDays(diff);
         long hours = TimeUnit.MILLISECONDS.toHours(diff) - TimeUnit.DAYS.toHours(days);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(diff) - TimeUnit.DAYS.toMinutes(days) - TimeUnit.HOURS.toMinutes(hours);
