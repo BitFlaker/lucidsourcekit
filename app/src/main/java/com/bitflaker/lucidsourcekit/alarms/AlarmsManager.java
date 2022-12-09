@@ -2,6 +2,7 @@ package com.bitflaker.lucidsourcekit.alarms;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -54,7 +55,7 @@ public class AlarmsManager extends AppCompatActivity {
         }
     };
     private final ActivityResultLauncher<Intent> alarmInteractionLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), alarmCreationOrModificationCallback);
-    private Timer nextTimeToCalcTimer;
+    private TimerTask nextTimeToCalcTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,13 +156,8 @@ public class AlarmsManager extends AppCompatActivity {
         MainDatabase db = MainDatabase.getInstance(AlarmsManager.this);
         db.getStoredAlarmDao().getAll().subscribe(storedAlarms -> {
             adapterAlarms.setData(storedAlarms);
-//            setNextAlarmData(true);
-        });
+        }).dispose();
         fetchNextAlarmAndDisplay();
-//        AlarmStorage.getInstance(this).setOnAlarmsLoadedListener(this::showAllStoredAlarms);
-//        if(AlarmStorage.getInstance(this).isLoaded() && adapterAlarms.getItemCount() == 0) {
-//            showAllStoredAlarms();
-//        }
     }
 
     private void fetchNextAlarmAndDisplay() {
@@ -171,15 +167,18 @@ public class AlarmsManager extends AppCompatActivity {
                 // TODO: also say which weekday as otherwise it seems as if it would go off today at that time
                 this.nextAlarmTimeStamp = nextAlarmTimeStamp;
                 if(nextAlarmTimeStamp != -1) {
-                    startTimeToAlarmUpdater();
+                    if(nextTimeToCalcTask == null){
+                        startTimeToAlarmUpdater();
+                    }
                     Calendar calAlarm = Calendar.getInstance();
                     calAlarm.setTimeInMillis(nextAlarmTimeStamp);
                     nAlarmTime.setText(String.format(Locale.ENGLISH, "%02d:%02d", calAlarm.get(Calendar.HOUR_OF_DAY), calAlarm.get(Calendar.MINUTE)));
                     setNextTimeTo(nextAlarmTimeStamp);
                 }
                 else {
-                    if(nextTimeToCalcTimer != null) {
-                        nextTimeToCalcTimer.cancel();
+                    if(nextTimeToCalcTask != null) {
+                        nextTimeToCalcTask.cancel();
+                        nextTimeToCalcTask = null;
                     }
                     nAlarmTime.setText("--");
                     nAlarmTimeTo.setText("--");
@@ -194,15 +193,15 @@ public class AlarmsManager extends AppCompatActivity {
         calDelay.set(Calendar.SECOND, 0);
         calDelay.set(Calendar.MILLISECOND, 0);
 
-        nextTimeToCalcTimer = new Timer();
-        nextTimeToCalcTimer.schedule(new TimerTask() {
+        nextTimeToCalcTask = new TimerTask() {
             @Override
             public void run() {
                 setNextTimeTo(nextAlarmTimeStamp);
             }
-        }, calDelay.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 60*1000);
+        };
+        new Timer().schedule(nextTimeToCalcTask, calDelay.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 60*1000);
     }
-    
+
     private void setNextTimeTo(Long nextAlarmTimeStamp) {
         // adding 60000 to always round up to the next minute (as when only e.g. 50 seconds are left for
         // the alarm to go off, it would show 00:00:00, but with the added 60000ms it will show 00:00:01)
@@ -213,8 +212,9 @@ public class AlarmsManager extends AppCompatActivity {
         runOnUiThread(() -> {
             nAlarmTimeTo.setText(String.format(Locale.ENGLISH, "%02d:%02d:%02d", (int)days, (int)hours, (int)minutes));
             if(days == 0 && hours == 0 && minutes == 0) {
-                // TODO: Get next alarm but keep in mind that rescheduling takes some time and the fetched data might still be the same
-//                fetchNextAlarmAndDisplay();
+                // Fetching time of next alarm with a delay of 20ms as the rescheduling takes some time
+                // and the fetched data might still be the same
+                new Handler().postDelayed(this::fetchNextAlarmAndDisplay, 15);
             }
         });
     }
@@ -228,31 +228,4 @@ public class AlarmsManager extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
-//    private void showAllStoredAlarms() {
-//        List<AlarmData> alarms = new ArrayList<>();
-//        for (int i = 0; i < AlarmStorage.getInstance(this).size(); i++) {
-//            alarms.add(AlarmTools.getAlarmDataFromItem(AlarmStorage.getInstance(this).getAlarmAt(i)));
-//        }
-//        adapterAlarms.setData(alarms);
-//        setNextAlarmData(true);
-//    }
-
-//    private void setNextTimeTo(long nextAlarmTimeStamp) {
-//        if(nextAlarmTimeStamp == -1){
-////            runOnUiThread(() -> nAlarmTimeTo.setText("--"));
-//            return;
-//        }
-//        long millisDiff = nextAlarmTimeStamp - Calendar.getInstance().getTimeInMillis() + (60 * 1000); // added 1 minute because seconds are hidden and then there would be alarm in 0 minutes for 1 minute
-//        double days = (millisDiff / 1000.0 / 60.0 / 60.0 / 24.0);
-//        double hours = (days - (int)days) * 24.0;
-//        double minutes = (hours - (int)hours) * 60.0;
-////        double seconds = (minutes - (int)minutes) * 60.0;
-//
-//        runOnUiThread(() -> {
-//            if((int)days == 0 && (int)hours == 0 && (int)minutes == 0){
-//                setNextAlarmData(false);
-//            }
-//        });
-//    }
 }

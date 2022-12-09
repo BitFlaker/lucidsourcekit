@@ -332,9 +332,6 @@ public class AlarmCreator extends AppCompatActivity {
                 // database and finally schedule the alarm
                 AlarmHandler.cancelRepeatingAlarm(getApplicationContext(), storedAlarm.alarmId).subscribe(() -> {
                     storedAlarm.requestCodeActiveAlarm = -1;
-                    db.getActiveAlarmDao().getAll().blockingSubscribe(all -> {
-                        System.out.println("here is all");
-                    });
                     db.getStoredAlarmDao().update(storedAlarm).subscribe(() -> scheduleAlarmAndExit(false)).dispose();
                 }).dispose();
             }
@@ -476,7 +473,7 @@ public class AlarmCreator extends AppCompatActivity {
         storedAlarm.alarmVolume = alarmVolume.getValue();
         storedAlarm.alarmVolumeIncreaseTimestamp = (long) currentVolIncMin * 60L * 1000L + (long) currentVolIncSec * 1000L;
         storedAlarm.isFlashlightActive = useFlashlight.isChecked();
-        storedAlarm.isVibrationActive = vibrate.isChecked();
+        storedAlarm.isVibrationActive = vibrateAlarm.isChecked();
         storedAlarm.title = "";
     }
 

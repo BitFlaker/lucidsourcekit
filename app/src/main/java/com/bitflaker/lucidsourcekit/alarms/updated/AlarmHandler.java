@@ -175,7 +175,7 @@ public class AlarmHandler {
                         final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, storedAlarm.requestCodeActiveAlarm, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                         pendingIntent.cancel();
                         manager.cancel(pendingIntent);
-                        db.getActiveAlarmDao().delete(activeAlarm).blockingAwait(); // TODO: check if the reference in StoredAlarms really gets set to -1 again
+                        db.getActiveAlarmDao().delete(activeAlarm).blockingAwait();
                     });
                 }
             });
