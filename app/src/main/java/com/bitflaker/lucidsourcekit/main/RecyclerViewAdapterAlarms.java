@@ -78,26 +78,23 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         holder.active.setOnClickListener(e -> {
             SwitchMaterial currSwitch = ((SwitchMaterial) e);
             alarm.isAlarmActive = currSwitch.isChecked();
-            MainDatabase.getInstance(context).getStoredAlarmDao().setActiveState(alarm.alarmId, currSwitch.isChecked()).subscribe(() -> {
-                // TODO: implement ability to set one-time only alarms
-                if(currSwitch.isChecked()){
-                    // get the current weekday and reduce it by 1 to get the index
-                    // because the week starts with SUNDAY [which has id 1]
-                    int index = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
-                    AlarmHandler.scheduleAlarmRepeatedlyAt(context.getApplicationContext(), alarm.alarmId, getMillisUntilMidnight() + alarm.alarmTimestamp, alarm.pattern, index, 1000 * 60 * 60 * 24).subscribe(() -> {
-                        updateStoredAlarmFromDatabase(position, alarm);
-                    }).dispose();
-                }
-                else {
-                    // cancel the alarm
-                    AlarmHandler.cancelRepeatingAlarm(context.getApplicationContext(), alarm.alarmId).subscribe(() -> {
-                        updateStoredAlarmFromDatabase(position, alarm);
-                    }).dispose();
-                }
-                if(mEntryActiveStateChangedListener != null){
-                    mEntryActiveStateChangedListener.onEvent(storedAlarms.get(position), currSwitch.isChecked());
-                }
-            }).dispose();
+            if(currSwitch.isChecked()){
+                // get the current weekday and reduce it by 1 to get the index
+                // because the week starts with SUNDAY [which has id 1]
+                int index = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
+                AlarmHandler.scheduleAlarmRepeatedlyAt(context.getApplicationContext(), alarm.alarmId, getMillisUntilMidnight() + alarm.alarmTimestamp, alarm.pattern, index, 1000 * 60 * 60 * 24).subscribe(() -> {
+                    updateStoredAlarmFromDatabase(position, alarm);
+                }).dispose();
+            }
+            else {
+                // cancel the alarm
+                AlarmHandler.cancelRepeatingAlarm(context.getApplicationContext(), alarm.alarmId).subscribe(() -> {
+                    updateStoredAlarmFromDatabase(position, alarm);
+                }).dispose();
+            }
+            if(mEntryActiveStateChangedListener != null){
+                mEntryActiveStateChangedListener.onEvent(storedAlarms.get(position), currSwitch.isChecked());
+            }
         });
 //        Typeface tfThin = FontHandler.getInstance().getFontByName("sans-serif-thin");
 //        Typeface tfNormal = FontHandler.getInstance().getFontByName("sans-serif");
@@ -163,7 +160,6 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     private void updateStoredAlarmFromDatabase(int position, StoredAlarm alarm) {
         MainDatabase.getInstance(context).getStoredAlarmDao().getById(alarm.alarmId).subscribe(storedAlarm -> {
             storedAlarms.set(position, storedAlarm);
-//            ((Activity)context).runOnUiThread(() -> notifyItemChanged(position));
         }).dispose();
     }
 
@@ -259,6 +255,24 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
             storedAlarms.add(alarm);
             notifyItemInserted(storedAlarms.size() - 1);
         }).dispose();
+    }
+
+    public void alarmWentOff(long alarmTimestamp) {
+        MainDatabase.getInstance(context).getActiveAlarmDao().getStoredAlarmByAlarmTime(alarmTimestamp).blockingSubscribe(refreshStoredAlarms -> {
+            List<Integer> positions = new ArrayList<>();
+            for (int i = 0; i < refreshStoredAlarms.size(); i++) {
+                for (int j = 0; j < storedAlarms.size(); j++) {
+                    if(storedAlarms.get(j).alarmId == refreshStoredAlarms.get(i).alarmId){
+                        positions.add(j);
+                        break;
+                    }
+                }
+            }
+            for (int i = 0; i < refreshStoredAlarms.size(); i++) {
+                storedAlarms.set(positions.get(i), refreshStoredAlarms.get(i));
+                notifyItemChanged(positions.get(i));
+            }
+        });
     }
 
     public static class MainViewHolderAlarms extends RecyclerView.ViewHolder {

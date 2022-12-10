@@ -17,10 +17,16 @@ public class AlarmReceiverManager extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if(intent.getAction() == null){
-//                printStoredActiveAlarms(context);
-            printAlarmTriggeredStatement(context);
-            if(intent.hasExtra("REPETITION_PATTERN") && intent.hasExtra("REPETITION_PATTERN_INDEX") && intent.hasExtra("REPETITION_INTERVAL") && intent.hasExtra("REQUEST_CODE") && intent.hasExtra("INITIAL_TIME")){
+//            printStoredActiveAlarms(context);
+            if(intent.hasExtra("REPETITION_PATTERN") && intent.hasExtra("REPETITION_PATTERN_INDEX") && intent.hasExtra("REPETITION_INTERVAL") && intent.hasExtra("REQUEST_CODE") && intent.hasExtra("INITIAL_TIME") && intent.hasExtra("STORED_ALARM_ID")){
+                // a repeating alarm was triggered
+                printAlarmTriggeredStatement(context, true);
                 updateAndRescheduleNextAlarm(context, intent);
+            }
+            else if(intent.hasExtra("STORED_ALARM_ID")) {
+                // a one time alarm was triggered
+                printAlarmTriggeredStatement(context, false);
+                removeOneTimeAlarm(context, intent);
             }
         }
         else if(intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED) || intent.getAction().equalsIgnoreCase(Intent.ACTION_MY_PACKAGE_REPLACED)){
@@ -34,6 +40,11 @@ public class AlarmReceiverManager extends BroadcastReceiver {
 //            context.startActivity(alarmDisplayer);
     }
 
+    private void removeOneTimeAlarm(Context context, Intent intent) {
+        int storedAlarmId = intent.getIntExtra("STORED_ALARM_ID", -120);
+        AlarmHandler.cancelOneTimeAlarm(context, storedAlarmId).blockingSubscribe();
+    }
+
     private void rescheduleAllStoredAlarms(Context context) {
         MainDatabase db = MainDatabase.getInstance(context);
         db.getActiveAlarmDao().getAllDetails().subscribe(all -> {
@@ -44,7 +55,7 @@ public class AlarmReceiverManager extends BroadcastReceiver {
                 }
                 AlarmHandler.updateScheduledRepeatingAlarmTo(context, alarm.storedAlarmId, alarm.initialTime, alarm.pattern, alarm.patternIndex, alarm.interval, alarm.requestCode).blockingSubscribe();
             }
-        });
+        }).dispose();
     }
 
     private void updateAndRescheduleNextAlarm(Context context, Intent intent) {
@@ -57,11 +68,11 @@ public class AlarmReceiverManager extends BroadcastReceiver {
         AlarmHandler.updateScheduledRepeatingAlarmTo(context, storedAlarmId, initialTime + interval, repetitionPattern, repetitionPatternCurrentIndex + 1, interval, requestCode).blockingSubscribe();
     }
 
-    private void printAlarmTriggeredStatement(Context context) {
+    private void printAlarmTriggeredStatement(Context context, boolean isRepeating) {
         Date currentTime = Calendar.getInstance().getTime();
         DateFormat df = DateFormat.getTimeInstance(DateFormat.LONG);
-        Toast.makeText(context, "ALARM: " + df.format(currentTime), Toast.LENGTH_SHORT).show();
-        System.out.println(df.format(currentTime) + " -> ALARM TRIGGERED NOW!");
+        Toast.makeText(context, (isRepeating ? "REP-" : "SINGLE-") + "ALARM: " + df.format(currentTime), Toast.LENGTH_SHORT).show();
+        System.out.println(df.format(currentTime) + " -> " + (isRepeating ? "REP-" : "SINGLE-") + "ALARM TRIGGERED NOW!");
     }
 
     private void printStoredActiveAlarms(Context context) {
@@ -70,6 +81,6 @@ public class AlarmReceiverManager extends BroadcastReceiver {
             for (ActiveAlarmDetails alarm : allActiveAlarms) {
                 System.out.println("ALARM: " + alarm.toString());
             }
-        });
+        }).dispose();
     }
 }

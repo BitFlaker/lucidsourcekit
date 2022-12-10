@@ -51,7 +51,7 @@ public class AlarmsManager extends AppCompatActivity {
                     adapterAlarms.reloadModifiedAlarmWithId(data.getIntExtra("ALARM_ID", -1));
                 }
             }
-            fetchNextAlarmAndDisplay();
+            fetchNextAlarmAndDisplay(false);
         }
     };
     private final ActivityResultLauncher<Intent> alarmInteractionLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), alarmCreationOrModificationCallback);
@@ -79,7 +79,6 @@ public class AlarmsManager extends AppCompatActivity {
                         .setTitle("Delete Alarms")
                         .setMessage("Do you really want to delete the selected alarms?")
                         .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-                            // TODO: cancel the alarms first before deleting them !!
                             List<Integer> alarmIds = adapterAlarms.getSelectedStoredAlarmIds();
                             MainDatabase db = MainDatabase.getInstance(this);
                             db.getStoredAlarmDao().getAllById(alarmIds).blockingSubscribe(allAlarms -> {
@@ -91,7 +90,7 @@ public class AlarmsManager extends AppCompatActivity {
                                     });
                                 }
                                 adapterAlarms.removeSelectedAlarmIds();
-                                runOnUiThread(this::fetchNextAlarmAndDisplay);
+                                runOnUiThread(() -> fetchNextAlarmAndDisplay(false));
                             });
                         })
                         .setNegativeButton(getResources().getString(R.string.no), null)
@@ -150,21 +149,24 @@ public class AlarmsManager extends AppCompatActivity {
             editor.putExtra("ALARM_ID", storedAlarm.alarmId);
             alarmInteractionLauncher.launch(editor);
         });
-        adapterAlarms.setOnEntryActiveStateChangedListener((alarmData, checked) -> fetchNextAlarmAndDisplay());
+        adapterAlarms.setOnEntryActiveStateChangedListener((alarmData, checked) -> fetchNextAlarmAndDisplay(false));
         recyclerView.setAdapter(adapterAlarms);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         MainDatabase db = MainDatabase.getInstance(AlarmsManager.this);
         db.getStoredAlarmDao().getAll().subscribe(storedAlarms -> {
             adapterAlarms.setData(storedAlarms);
         }).dispose();
-        fetchNextAlarmAndDisplay();
+        fetchNextAlarmAndDisplay(false);
     }
 
-    private void fetchNextAlarmAndDisplay() {
+    private void fetchNextAlarmAndDisplay(boolean triggeredByAlarm) {
         // TODO: support AM/PM
-        MainDatabase.getInstance(AlarmsManager.this).getActiveAlarmDao().getAll().subscribe(all -> {
-            MainDatabase.getInstance(AlarmsManager.this).getActiveAlarmDao().getNextUpcomingAlarmTimestamp().subscribe(nextAlarmTimeStamp -> {
+        MainDatabase.getInstance(AlarmsManager.this).getActiveAlarmDao().getAll().blockingSubscribe(all -> {
+            MainDatabase.getInstance(AlarmsManager.this).getActiveAlarmDao().getNextUpcomingAlarmTimestamp().blockingSubscribe(nextAlarmTimeStamp -> {
                 // TODO: also say which weekday as otherwise it seems as if it would go off today at that time
+                if(triggeredByAlarm && this.nextAlarmTimeStamp != nextAlarmTimeStamp){
+                    adapterAlarms.alarmWentOff(nextAlarmTimeStamp);
+                }
                 this.nextAlarmTimeStamp = nextAlarmTimeStamp;
                 if(nextAlarmTimeStamp != -1) {
                     if(nextTimeToCalcTask == null){
@@ -183,15 +185,17 @@ public class AlarmsManager extends AppCompatActivity {
                     nAlarmTime.setText("--");
                     nAlarmTimeTo.setText("--");
                 }
-            }).dispose();
-        }).dispose();
+            });
+        });
     }
 
     private void startTimeToAlarmUpdater() {
+        // TODO fix that sometimes the alarm still says 00:00:01 even though the alarm already went off (maybe load new data after a slight delay after an exact minute)
+            // => for a workaround that might work the alarm should be refreshed 150ms after the alarm should have gone off
         Calendar calDelay = Calendar.getInstance();
         calDelay.set(Calendar.MINUTE, calDelay.get(Calendar.MINUTE) + 1);
         calDelay.set(Calendar.SECOND, 0);
-        calDelay.set(Calendar.MILLISECOND, 0);
+        calDelay.set(Calendar.MILLISECOND, 150);
 
         nextTimeToCalcTask = new TimerTask() {
             @Override
@@ -214,7 +218,7 @@ public class AlarmsManager extends AppCompatActivity {
             if(days == 0 && hours == 0 && minutes == 0) {
                 // Fetching time of next alarm with a delay of 20ms as the rescheduling takes some time
                 // and the fetched data might still be the same
-                new Handler().postDelayed(this::fetchNextAlarmAndDisplay, 15);
+                new Handler().postDelayed(() -> fetchNextAlarmAndDisplay(true), 15);
             }
         });
     }

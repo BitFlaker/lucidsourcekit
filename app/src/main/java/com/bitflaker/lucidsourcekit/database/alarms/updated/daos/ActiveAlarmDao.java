@@ -9,6 +9,7 @@ import androidx.room.Update;
 
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarm;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarmDetails;
+import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public interface ActiveAlarmDao {
     @Update
     Completable update(ActiveAlarm alarm);
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     Completable insert(ActiveAlarm alarm);
 
     @Delete
@@ -46,4 +47,10 @@ public interface ActiveAlarmDao {
 
     @Query("SELECT * FROM ActiveAlarm WHERE requestCode = :requestCode")
     Single<ActiveAlarm> getById(int requestCode);
+
+    @Query("DELETE FROM ActiveAlarm WHERE requestCode = :requestCodeActiveAlarm")
+    Completable deleteById(int requestCodeActiveAlarm);
+
+    @Query("SELECT StoredAlarm.* FROM ActiveAlarm LEFT JOIN StoredAlarm ON ActiveAlarm.requestCode = StoredAlarm.requestCodeActiveAlarm WHERE initialTime = :alarmTime")
+    Single<List<StoredAlarm>> getStoredAlarmByAlarmTime(long alarmTime);
 }

@@ -96,7 +96,6 @@ public abstract class MainDatabase extends RoomDatabase {
     }
 
     private static MainDatabase create(final Context context) {
-        // .allowMainThreadQueries()
         return Room.databaseBuilder(context, MainDatabase.class, "journalDatabase.db")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigrationFrom(4)

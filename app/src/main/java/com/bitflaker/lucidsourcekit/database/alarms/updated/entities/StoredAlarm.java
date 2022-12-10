@@ -82,4 +82,11 @@ public class StoredAlarm {
         this.isAlarmActive = isAlarmActive;
         this.requestCodeActiveAlarm = requestCodeActiveAlarm;
     }
+
+    @Ignore
+    @NonNull
+    @Override
+    public String toString() {
+        return "Alarm with id " + alarmId + " and title \"" + title + "\"";
+    }
 }

@@ -59,12 +59,12 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.5F);
-    private char[] pinLayout = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ', '0', '<' };
-    private StringBuilder enteredPin = new StringBuilder();
+    private final AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.5F);
+    private final char[] pinLayout = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ', '0', '<' };
+    private final StringBuilder enteredPin = new StringBuilder();
     private String storedHash = "";
     private byte[] storedSalt;
-    private int pinButtonSize = 76;
+    private final int pinButtonSize = 76;
 
     public static String convertStreamToString(InputStream is) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -149,23 +149,23 @@ public class MainActivity extends AppCompatActivity {
                                                     DefaultGoals defaultGoals = new DefaultGoals(this);
                                                     db.getGoalDao().insertAll(defaultGoals.getGoalsList()).subscribe(() -> {
                                                         dataSetupHandler(db, preferences, count);
-                                                    });
+                                                    }).dispose();
                                                 } else {
                                                     dataSetupHandler(db, preferences, count);
                                                 }
-                                            });
-                                        });
-                                    });
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-//            });
-//            });
-//            });
-//            });
+                                            }).dispose();
+                                        }).dispose();
+                                    }).dispose();
+                                }).dispose();
+                            }).dispose();
+                        }).dispose();
+                    }).dispose();
+                }).dispose();
+            }).dispose();
+//            }).dispose();
+//            }).dispose();
+//            }).dispose();
+//            }).dispose();
         }).start();
     }
 
@@ -246,16 +246,16 @@ public class MainActivity extends AppCompatActivity {
                                 // TODO: hide loading indicator
                                 runOnUiThread(() -> applicationLogin(preferences));
                             });
-                        });
-                    });
+                        }).dispose();
+                    }).dispose();
                 }
                 else {
                     System.out.println("SHUFFLE " + shuffle.shuffleId + " already present");
                     // TODO: hide loading indicator
                     runOnUiThread(() -> applicationLogin(preferences) );
                 }
-            });
-        });
+            }).dispose();
+        }).dispose();
     }
 
     private boolean anyGoalSettingMissing(SharedPreferences preferences) {
