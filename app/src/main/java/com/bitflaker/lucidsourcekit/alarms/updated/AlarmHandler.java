@@ -21,6 +21,8 @@ import java.util.List;
 import io.reactivex.rxjava3.core.Completable;
 
 public class AlarmHandler {
+    public static final int SNOOZING_ALARM_REQUEST_CODE_START_VALUE = 1000000000;
+
     public static void clickAction(Context context) {
         Date currentTime = Calendar.getInstance().getTime();
         DateFormat df = DateFormat.getTimeInstance(DateFormat.LONG);

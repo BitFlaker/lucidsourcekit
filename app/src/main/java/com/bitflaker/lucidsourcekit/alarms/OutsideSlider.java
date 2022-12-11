@@ -60,6 +60,11 @@ public class OutsideSlider extends View {
         indicatorPaint.setColor(primColor);
         indicatorPaint.setAntiAlias(true);
         buttonSelectorRadius = Tools.dpToPx(getContext(), 24);
+
+        this.leftIcon = Tools.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_check_24, getContext().getTheme()), primColor, Tools.dpToPx(getContext(), 32));
+        this.rightIcon = Tools.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_snooze_24, getContext().getTheme()), primColor, Tools.dpToPx(getContext(), 32));
+        this.leftArrow = Tools.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_keyboard_double_arrow_left_24, getContext().getTheme()), Tools.dpToPx(getContext(), 24));
+        this.rightArrow = Tools.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_keyboard_double_arrow_right_24, getContext().getTheme()), Tools.dpToPx(getContext(), 24));
     }
 
     public void setData(Drawable leftIcon, Drawable rightIcon) {

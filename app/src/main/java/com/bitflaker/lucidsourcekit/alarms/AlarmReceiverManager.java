@@ -1,5 +1,7 @@
 package com.bitflaker.lucidsourcekit.alarms;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,13 +22,19 @@ public class AlarmReceiverManager extends BroadcastReceiver {
 //            printStoredActiveAlarms(context);
             if(intent.hasExtra("REPETITION_PATTERN") && intent.hasExtra("REPETITION_PATTERN_INDEX") && intent.hasExtra("REPETITION_INTERVAL") && intent.hasExtra("REQUEST_CODE") && intent.hasExtra("INITIAL_TIME") && intent.hasExtra("STORED_ALARM_ID")){
                 // a repeating alarm was triggered
+                openAlarmViewer(context, intent.getIntExtra("STORED_ALARM_ID", -1));
                 printAlarmTriggeredStatement(context, true);
                 updateAndRescheduleNextAlarm(context, intent);
             }
             else if(intent.hasExtra("STORED_ALARM_ID")) {
                 // a one time alarm was triggered
+                openAlarmViewer(context, intent.getIntExtra("STORED_ALARM_ID", -1));
                 printAlarmTriggeredStatement(context, false);
                 removeOneTimeAlarm(context, intent);
+            }
+            else if (intent.hasExtra("SNOOZING_STORED_ALARM_ID")){
+                // a snoozing alarm should go off again
+                openAlarmViewer(context, intent.getIntExtra("SNOOZING_STORED_ALARM_ID", -1));
             }
         }
         else if(intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED) || intent.getAction().equalsIgnoreCase(Intent.ACTION_MY_PACKAGE_REPLACED)){
@@ -34,14 +42,17 @@ public class AlarmReceiverManager extends BroadcastReceiver {
             Toast.makeText(context, "ACTION: " + intent.getAction(), Toast.LENGTH_LONG).show();
             rescheduleAllStoredAlarms(context);
         }
-//            Intent alarmDisplayer = new Intent(context, AlarmDisplayer.class);
-//            alarmDisplayer.setFlags(FLAG_ACTIVITY_NEW_TASK);
-//            alarmDisplayer.putExtra("ALARM_ID", intent.getIntExtra("ALARM_ID", -1));
-//            context.startActivity(alarmDisplayer);
+    }
+
+    private void openAlarmViewer(Context context, int storedAlarmId) {
+        Intent alarmViewer = new Intent(context, AlarmViewer.class);
+        alarmViewer.setFlags(FLAG_ACTIVITY_NEW_TASK);
+        alarmViewer.putExtra("STORED_ALARM_ID", storedAlarmId);
+        context.startActivity(alarmViewer);
     }
 
     private void removeOneTimeAlarm(Context context, Intent intent) {
-        int storedAlarmId = intent.getIntExtra("STORED_ALARM_ID", -120);
+        int storedAlarmId = intent.getIntExtra("STORED_ALARM_ID", -1);
         AlarmHandler.cancelOneTimeAlarm(context, storedAlarmId).blockingSubscribe();
     }
 

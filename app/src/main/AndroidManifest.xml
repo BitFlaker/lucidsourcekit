@@ -28,7 +28,7 @@
             android:name=".alarms.IsolatedBinauralBeatsView"
             android:exported="false" />
         <activity
-            android:name=".alarms.AlarmDisplayer"
+            android:name=".alarms.AlarmViewer"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait"
