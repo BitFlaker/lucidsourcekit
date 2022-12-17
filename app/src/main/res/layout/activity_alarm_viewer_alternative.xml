@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".alarms.AlarmViewer">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/circle_half"
+        android:scaleType="centerCrop"
+        app:tint="#040404"
+        android:tintMode="screen"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp">
+
+        <View
+            android:layout_width="12dp"
+            android:layout_height="72dp"
+            android:layout_marginTop="-6dp"
+            android:layout_marginStart="0dp"
+            android:background="@drawable/medium_rounded_rectangle"
+            android:backgroundTint="?attr/backgroundColor"
+            android:alpha="1"/>
+
+        <TextView
+            android:id="@+id/txt_alarm_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:textColor="?attr/secondaryTextColor"
+            android:textSize="21sp"
+            android:textStyle="bold"
+            android:text="Test alarm for first night" />
+
+        <TextView
+            android:id="@+id/txt_current_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="?attr/tertiaryTextColor"
+            android:textSize="14sp"
+            android:text="December 11, Saturday" />
+
+        <TextView
+            android:id="@+id/txt_current_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="54sp"
+            android:fontFamily="sans-serif-light"
+            android:text="05:45" />
+
+        <View
+            android:layout_width="12dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="48dp"
+            android:layout_marginStart="0dp"
+            android:background="@drawable/medium_rounded_rectangle"
+            android:backgroundTint="?attr/backgroundColor"
+            android:alpha="1"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/crd_alarm_slider_container"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_marginTop="64dp"
+            android:layout_marginBottom="56dp"
+            android:visibility="gone"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#28292e"
+            app:cardCornerRadius="48dp">
+
+            <com.bitflaker.lucidsourcekit.alarms.OutsideSlider
+                android:id="@+id/oss_alarm_slider"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:layout_gravity="center_vertical"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:id="@+id/ll_alarm_stop_button_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:orientation="vertical"
+            android:layout_marginBottom="56dp"
+            android:visibility="visible">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_snooze"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Snooze"
+                android:background="@drawable/ripple_round"
+                app:backgroundTint="?attr/slightElevated"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_stop_alarm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="Stop"
+                android:background="@drawable/ripple_round"
+                app:backgroundTint="?attr/colorPrimary"/>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_close_viewer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/ripple_round_border_dashed"
+            android:backgroundTint="#232428"
+            android:backgroundTintMode="add"
+            android:minWidth="56dp"
+            android:minHeight="56dp"
+            android:src="@drawable/ic_round_close_24"
+            android:layout_marginBottom="48dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:tint="?attr/colorOnBackground" />
+    </LinearLayout>
+</RelativeLayout>

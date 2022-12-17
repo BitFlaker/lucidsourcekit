@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:width="100dp" android:height="100dp">
+        <inset android:insetLeft="-100dp" android:insetTop="-50dp" android:insetBottom="-50dp" android:insetRight="32dp">
+            <shape android:shape="oval" >
+                <size android:width="200dp" android:height="200dp" />
+                <solid android:color="?attr/backgroundColor" />
+                <corners android:bottomRightRadius="100dp" android:topRightRadius="100dp" />
+            </shape>
+        </inset>
+    </item>
+</layer-list>

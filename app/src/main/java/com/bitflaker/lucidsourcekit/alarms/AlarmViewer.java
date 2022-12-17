@@ -27,8 +27,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.alarms.updated.AlarmHandler;
@@ -38,11 +36,10 @@ import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.main.dreamjournal.DreamJournalEntryEditor;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -50,7 +47,7 @@ public class AlarmViewer extends AppCompatActivity {
     private AlarmManager alarmManager;
     private PendingIntent alarmIntent;
     private OutsideSlider alarmSlider;
-    private RecyclerView quickAccessActionsView;
+//    private RecyclerView quickAccessActionsView;
     private ImageButton closeViewer;
     private TextView currentTimeView, currentDateView, alarmName;
     private boolean isSnoozing = false;
@@ -64,14 +61,15 @@ public class AlarmViewer extends AppCompatActivity {
     private ValueAnimator volumeIncreaseAnimation;
     private MaterialButton snoozeAlarmButton, stopAlarmButton;
     private LinearLayout buttonContainer;
-    private final AlarmStopByMode alarmStopByMode = AlarmStopByMode.SWIPE;
+    private MaterialCardView sliderContainer;
+    private final AlarmStopByMode alarmStopByMode = AlarmStopByMode.BUTTON;
     private final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
     private final DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_alarm_viewer);
+        setContentView(R.layout.activity_alarm_viewer_alternative);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true);
@@ -84,7 +82,7 @@ public class AlarmViewer extends AppCompatActivity {
 
         Tools.makeStatusBarTransparent(this);
         alarmSlider = findViewById(R.id.oss_alarm_slider);
-        quickAccessActionsView = findViewById(R.id.rcv_quick_access_actions);
+//        quickAccessActionsView = findViewById(R.id.rcv_quick_access_actions);
         closeViewer = findViewById(R.id.btn_close_viewer);
         currentTimeView = findViewById(R.id.txt_current_time);
         currentDateView = findViewById(R.id.txt_current_date);
@@ -95,6 +93,7 @@ public class AlarmViewer extends AppCompatActivity {
         snoozeAlarmButton = findViewById(R.id.btn_snooze);
         stopAlarmButton = findViewById(R.id.btn_stop_alarm);
         buttonContainer = findViewById(R.id.ll_alarm_stop_button_container);
+        sliderContainer = findViewById(R.id.crd_alarm_slider_container);
 
         alarmSlider.setData(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_check_24, getTheme()), ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_snooze_24, getTheme()));
 
@@ -107,14 +106,14 @@ public class AlarmViewer extends AppCompatActivity {
             alarmName.setText(alarm.title);
         }).dispose();
 
-        quickAccessActionsView.setVisibility(View.GONE);
+//        quickAccessActionsView.setVisibility(View.GONE);
         closeViewer.setVisibility(View.GONE);
-        quickAccessActionsView.setAlpha(0);
+//        quickAccessActionsView.setAlpha(0);
         closeViewer.setAlpha(0.0f);
 
         if(alarmStopByMode == AlarmStopByMode.BUTTON){
             buttonContainer.setVisibility(View.VISIBLE);
-            alarmSlider.setVisibility(View.GONE);
+            sliderContainer.setVisibility(View.GONE);
             stopAlarmButton.setOnClickListener(e -> {
                 stopAlarmSelected();
                 buttonContainer.setVisibility(View.GONE);
@@ -123,35 +122,34 @@ public class AlarmViewer extends AppCompatActivity {
             snoozeAlarmButton.setOnClickListener(e -> snoozeAlarmSelected());
         }
         else if (alarmStopByMode == AlarmStopByMode.SWIPE){
-            alarmSlider.setVisibility(View.VISIBLE);
+            sliderContainer.setVisibility(View.VISIBLE);
             buttonContainer.setVisibility(View.GONE);
             alarmSlider.setOnLeftSideSelectedListener(this::stopAlarmSelected);
             alarmSlider.setOnRightSideSelectedListener(this::snoozeAlarmSelected);
         }
 
         alarmSlider.setOnFadedAwayListener(() -> {
-            alarmSlider.setVisibility(View.GONE);
+            sliderContainer.setVisibility(View.GONE);
             showAfterAlarmStopControls();
         });
 
-        List<QuickAccessAction> quickAccessActions = new ArrayList<>();
-        quickAccessActions.add(new QuickAccessAction("Add text journal entry", "Write down your dreams now so you do not forget them", ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_book_24, getTheme()), ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_text_fields_24, getTheme()), () -> {
-            showJournalCreator(JournalTypes.Text);
-        }));
-        quickAccessActions.add(new QuickAccessAction("Add forms journal entry", "Write down your dreams into the set template for writing them down quickly and easily", ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_book_24, getTheme()), ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_ballot_24, getTheme()), () -> {
-            showJournalCreator(JournalTypes.Forms);
-        }));
-        quickAccessActions.add(new QuickAccessAction("Listen to binaural beats", "Listening to binaural beats while going back to sleep might help to induce lucid dreams", ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_bedtime_24, getTheme()), null, () -> {
-            Intent intent = new Intent(this, IsolatedBinauralBeatsView.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        }));
-        RecyclerViewAdapterQuickAccessActions rvQuickAccessActions = new RecyclerViewAdapterQuickAccessActions(this, quickAccessActions);
-        rvQuickAccessActions.setOnEntryClickedListener(quickAccessAction -> quickAccessAction.getOnSelectedListener().onEvent());
-        quickAccessActionsView.setLayoutManager(new LinearLayoutManager(this));
-        quickAccessActionsView.setAdapter(rvQuickAccessActions);
+//        List<QuickAccessAction> quickAccessActions = new ArrayList<>();
+//        quickAccessActions.add(new QuickAccessAction("Add text journal entry", "Write down your dreams now so you do not forget them", ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_book_24, getTheme()), ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_text_fields_24, getTheme()), () -> {
+//            showJournalCreator(JournalTypes.Text);
+//        }));
+//        quickAccessActions.add(new QuickAccessAction("Add forms journal entry", "Write down your dreams into the set template for writing them down quickly and easily", ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_book_24, getTheme()), ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_ballot_24, getTheme()), () -> {
+//            showJournalCreator(JournalTypes.Forms);
+//        }));
+//        quickAccessActions.add(new QuickAccessAction("Listen to binaural beats", "Listening to binaural beats while going back to sleep might help to induce lucid dreams", ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_bedtime_24, getTheme()), null, () -> {
+//            Intent intent = new Intent(this, IsolatedBinauralBeatsView.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+//        }));
+//        RecyclerViewAdapterQuickAccessActions rvQuickAccessActions = new RecyclerViewAdapterQuickAccessActions(this, quickAccessActions);
+//        rvQuickAccessActions.setOnEntryClickedListener(quickAccessAction -> quickAccessAction.getOnSelectedListener().onEvent());
+//        quickAccessActionsView.setLayoutManager(new LinearLayoutManager(this));
+//        quickAccessActionsView.setAdapter(rvQuickAccessActions);
         closeViewer.setOnClickListener(e -> finishAndRemoveTask());
-
 
         Calendar cal = Calendar.getInstance();
         currentTimeView.setText(timeFormat.format(cal.getTime()));
@@ -249,13 +247,13 @@ public class AlarmViewer extends AppCompatActivity {
     private void showAfterAlarmStopControls() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if(!isSnoozing){
-            quickAccessActionsView.setVisibility(View.VISIBLE);
+//            quickAccessActionsView.setVisibility(View.VISIBLE);
             closeViewer.setVisibility(View.VISIBLE);
             ValueAnimator opacityAnim = ValueAnimator.ofFloat(0, 1);
             opacityAnim.setDuration(300);
             opacityAnim.setInterpolator(new LinearInterpolator());
             opacityAnim.addUpdateListener((valueAnimator) -> {
-                quickAccessActionsView.setAlpha((float)valueAnimator.getAnimatedValue());
+//                quickAccessActionsView.setAlpha((float)valueAnimator.getAnimatedValue());
                 closeViewer.setAlpha((float)valueAnimator.getAnimatedValue());
             });
             opacityAnim.start();

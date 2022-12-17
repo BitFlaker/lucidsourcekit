@@ -68,7 +68,8 @@
             android:layout_weight="14"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:overScrollMode="never"/>
+            android:overScrollMode="never"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <LinearLayout
@@ -79,7 +80,8 @@
         android:layout_marginLeft="42dp"
         android:layout_marginRight="42dp"
         android:layout_marginBottom="64dp"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_snooze"
@@ -104,20 +106,158 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginBottom="60dp"
-        android:layout_alignParentBottom="true"/>
-
-    <ImageButton
-        android:id="@+id/btn_close_viewer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minHeight="56dp"
-        android:minWidth="56dp"
-        android:src="@drawable/ic_round_close_24"
-        android:background="@drawable/ripple_round"
-        android:backgroundTint="?attr/backgroundColor"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="30dp"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        app:tint="?attr/colorOnBackground" />
+        android:visibility="gone"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
+            android:layout_marginEnd="28dp"
+            android:layout_marginBottom="64dp"
+            app:cardBackgroundColor="?attr/slightElevated"
+            app:cardCornerRadius="64dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_close_viewer">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_round_book_24" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_baseline_text_fields_24" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="6dp"
+                    android:text="Text\nJournal"
+                    android:textAlignment="center"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView2"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
+            android:layout_marginStart="28dp"
+            android:layout_marginBottom="64dp"
+            app:cardBackgroundColor="?attr/slightElevated"
+            app:cardCornerRadius="64dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_close_viewer">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_round_book_24" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_baseline_ballot_24" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="6dp"
+                    android:text="Forms\nJournal"
+                    android:textAlignment="center"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="104dp"
+            android:layout_height="104dp"
+            android:layout_marginBottom="28dp"
+            app:cardBackgroundColor="?attr/slightElevated"
+            app:cardCornerRadius="64dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_close_viewer"
+            app:layout_constraintEnd_toStartOf="@+id/materialCardView2"
+            app:layout_constraintStart_toEndOf="@+id/materialCardView">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/ic_baseline_bedtime_24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="6dp"
+                    android:text="Binaural\nBeats"
+                    android:textAlignment="center"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <ImageButton
+            android:id="@+id/btn_close_viewer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/ripple_round_border_dashed"
+            android:backgroundTint="?attr/backgroundColor"
+            android:backgroundTintMode="add"
+            android:minWidth="56dp"
+            android:minHeight="56dp"
+            android:src="@drawable/ic_round_close_24"
+            android:layout_marginBottom="48dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:tint="?attr/colorOnBackground" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>
