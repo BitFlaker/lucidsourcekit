@@ -393,6 +393,12 @@ public class MainActivity extends AppCompatActivity {
                             if(success){
                                 startLoadingAnimation();
                                 Intent intent = new Intent(MainActivity.this, MainViewer.class);
+                                if(getIntent().hasExtra("INITIAL_PAGE")){
+                                    intent.putExtra("INITIAL_PAGE", getIntent().getStringExtra("INITIAL_PAGE"));
+                                }
+                                if(getIntent().hasExtra("type")){
+                                    intent.putExtra("type", getIntent().getIntExtra("type", -1));
+                                }
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
                                 finish();

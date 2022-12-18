@@ -7,6 +7,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
@@ -28,13 +30,13 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.bitflaker.lucidsourcekit.MainActivity;
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.alarms.updated.AlarmHandler;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
-import com.bitflaker.lucidsourcekit.main.dreamjournal.DreamJournalEntryEditor;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
@@ -48,7 +50,7 @@ public class AlarmViewer extends AppCompatActivity {
     private PendingIntent alarmIntent;
     private OutsideSlider alarmSlider;
 //    private RecyclerView quickAccessActionsView;
-    private ImageButton closeViewer;
+    private ImageButton closeViewer, openJournal, openBinauralBeatsPlayer, openApp;
     private TextView currentTimeView, currentDateView, alarmName;
     private boolean isSnoozing = false;
     private StoredAlarm storedAlarm;
@@ -60,9 +62,9 @@ public class AlarmViewer extends AppCompatActivity {
     private CameraManager camManager;
     private ValueAnimator volumeIncreaseAnimation;
     private MaterialButton snoozeAlarmButton, stopAlarmButton;
-    private LinearLayout buttonContainer;
+    private LinearLayout buttonContainer, quickAccessActionsContainer;
     private MaterialCardView sliderContainer;
-    private final AlarmStopByMode alarmStopByMode = AlarmStopByMode.BUTTON;
+    private final AlarmStopByMode alarmStopByMode = AlarmStopByMode.SWIPE;
     private final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
     private final DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
 
@@ -94,6 +96,10 @@ public class AlarmViewer extends AppCompatActivity {
         stopAlarmButton = findViewById(R.id.btn_stop_alarm);
         buttonContainer = findViewById(R.id.ll_alarm_stop_button_container);
         sliderContainer = findViewById(R.id.crd_alarm_slider_container);
+        quickAccessActionsContainer = findViewById(R.id.ll_quick_access_actions);
+        openJournal = findViewById(R.id.btn_open_journal);
+        openBinauralBeatsPlayer = findViewById(R.id.btn_open_binaural_player);
+        openApp = findViewById(R.id.btn_open_app);
 
         alarmSlider.setData(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_check_24, getTheme()), ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_snooze_24, getTheme()));
 
@@ -106,10 +112,8 @@ public class AlarmViewer extends AppCompatActivity {
             alarmName.setText(alarm.title);
         }).dispose();
 
-//        quickAccessActionsView.setVisibility(View.GONE);
-        closeViewer.setVisibility(View.GONE);
-//        quickAccessActionsView.setAlpha(0);
-        closeViewer.setAlpha(0.0f);
+        quickAccessActionsContainer.setVisibility(View.GONE);
+        quickAccessActionsContainer.setAlpha(0.0f);
 
         if(alarmStopByMode == AlarmStopByMode.BUTTON){
             buttonContainer.setVisibility(View.VISIBLE);
@@ -133,6 +137,26 @@ public class AlarmViewer extends AppCompatActivity {
             showAfterAlarmStopControls();
         });
 
+        openBinauralBeatsPlayer.setOnClickListener(e -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("INITIAL_PAGE", "binaural");
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finishAndRemoveTask();
+        });
+        openJournal.setOnClickListener(e -> {
+            DreamJournalEntryTypeDialog dialog = new DreamJournalEntryTypeDialog(this);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.setOnEntryTypeSelected(this::showJournalCreator);
+            dialog.show();
+        });
+        openApp.setOnClickListener(e -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finishAndRemoveTask();
+        });
+
 //        List<QuickAccessAction> quickAccessActions = new ArrayList<>();
 //        quickAccessActions.add(new QuickAccessAction("Add text journal entry", "Write down your dreams now so you do not forget them", ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_book_24, getTheme()), ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_text_fields_24, getTheme()), () -> {
 //            showJournalCreator(JournalTypes.Text);
@@ -154,7 +178,6 @@ public class AlarmViewer extends AppCompatActivity {
         Calendar cal = Calendar.getInstance();
         currentTimeView.setText(timeFormat.format(cal.getTime()));
         currentDateView.setText(dateFormat.format(cal.getTime()));
-//        currentTimeView.setText(String.format(Locale.ENGLISH, "%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE)));
         cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) + 1);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
@@ -168,7 +191,6 @@ public class AlarmViewer extends AppCompatActivity {
                     currentTimeView.setText(timeFormat.format(cal.getTime()));
                     currentDateView.setText(dateFormat.format(cal.getTime()));
                 });
-//                runOnUiThread(() -> currentTimeView.setText(String.format(Locale.ENGLISH, "%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE))));
             }
         }, cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 60*1000);
 
@@ -248,13 +270,13 @@ public class AlarmViewer extends AppCompatActivity {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if(!isSnoozing){
 //            quickAccessActionsView.setVisibility(View.VISIBLE);
-            closeViewer.setVisibility(View.VISIBLE);
+            quickAccessActionsContainer.setVisibility(View.VISIBLE);
             ValueAnimator opacityAnim = ValueAnimator.ofFloat(0, 1);
             opacityAnim.setDuration(300);
             opacityAnim.setInterpolator(new LinearInterpolator());
             opacityAnim.addUpdateListener((valueAnimator) -> {
 //                quickAccessActionsView.setAlpha((float)valueAnimator.getAnimatedValue());
-                closeViewer.setAlpha((float)valueAnimator.getAnimatedValue());
+                quickAccessActionsContainer.setAlpha((float)valueAnimator.getAnimatedValue());
             });
             opacityAnim.start();
         }
@@ -291,10 +313,12 @@ public class AlarmViewer extends AppCompatActivity {
     }
 
     private void showJournalCreator(JournalTypes type) {
-        Intent intent = new Intent(this, DreamJournalEntryEditor.class);
+        Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("type", type.ordinal());
+        intent.putExtra("INITIAL_PAGE", "journal");
         startActivity(intent);
+        finishAndRemoveTask();
     }
 
     private void resetAlarmActivity() {

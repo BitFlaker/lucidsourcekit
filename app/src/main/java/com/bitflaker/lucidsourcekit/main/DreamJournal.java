@@ -25,7 +25,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasType;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AssignedTags;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntriesList;
@@ -35,9 +38,14 @@ import com.bitflaker.lucidsourcekit.main.dreamjournal.JournalInMemory;
 import com.bitflaker.lucidsourcekit.main.dreamjournal.JournalInMemoryManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.List;
+
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.disposables.Disposable;
+
 public class DreamJournal extends Fragment {
 
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private TextView noEntryFound;
     private FloatingActionButton fabAdd, fabText, fabForms;
     private Animation fabOpen, fabClose, rotateForward, rotateBackward;
@@ -48,6 +56,9 @@ public class DreamJournal extends Fragment {
     private ImageButton sortEntries, filterEntries, resetFilterEntries;
     private int sortBy = 0;
     private MainDatabase db;
+    private DreamJournalEntriesList djel = new DreamJournalEntriesList();
+    @Nullable
+    private JournalTypes autoOpenJournalTypeCreator = null;
 
     // TODO: new audio entry added => displaying 0 audio files and does not display them, but when reloaded, it shows correct values
     // same goes for tags => queried too fast => entry added but tags and audio files not !
@@ -64,24 +75,10 @@ public class DreamJournal extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getView().findViewById(R.id.ll_header).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
 
-        db = MainDatabase.getInstance(getContext());
-
         Context context = getContext();
-
-        db.getJournalEntryDao().getAll().subscribe(journalEntries -> {
-            // TODO gather all data in a more efficient way!
-            DreamJournalEntriesList djel = new DreamJournalEntriesList();
-            for (JournalEntry entry : journalEntries) {
-                db.getJournalEntryHasTagDao().getAllFromEntryId(entry.entryId).subscribe((assignedTags, throwable1) -> {
-                    db.getJournalEntryIsTypeDao().getAllFromEntryId(entry.entryId).subscribe((journalEntryHasTypes, throwable2) -> {
-                        db.getAudioLocationDao().getAllFromEntryId(entry.entryId).subscribe((audioLocations, throwable3) -> {
-                            DreamJournalEntry djEntry = new DreamJournalEntry(entry, assignedTags, journalEntryHasTypes, audioLocations);
-                            djel.add(djEntry);
-                        });
-                    });
-                });
-            }
-
+        db = MainDatabase.getInstance(getContext());
+        Disposable flowableEntries = db.getJournalEntryDao().getAll().subscribe(journalEntries -> {
+            loadAllJournalData(journalEntries).blockingSubscribe();
             Handler mainHandler = new Handler(context.getMainLooper());
             Runnable myRunnable = () -> {
                 if(setData(djel)) {
@@ -96,6 +93,24 @@ public class DreamJournal extends Fragment {
                 checkForEntries();
             };
             mainHandler.post(myRunnable);
+        });
+        if(autoOpenJournalTypeCreator != null) {
+            // TODO when an entry was created after the editor was opened by the alarm quick action, the list of entries in the MainViewer does not get updated
+            showJournalCreator(autoOpenJournalTypeCreator);
+            autoOpenJournalTypeCreator = null;
+        }
+    }
+
+    private Completable loadAllJournalData(List<JournalEntry> journalEntries) {
+        return Completable.fromAction(() -> {
+            // TODO gather all data in a more efficient way!
+            for (JournalEntry entry : journalEntries) {
+                List<AssignedTags> assignedTags = db.getJournalEntryHasTagDao().getAllFromEntryId(entry.entryId).blockingGet();
+                List<JournalEntryHasType> journalEntryHasTypes = db.getJournalEntryIsTypeDao().getAllFromEntryId(entry.entryId).blockingGet();
+                List<AudioLocation> audioLocations = db.getAudioLocationDao().getAllFromEntryId(entry.entryId).blockingGet();
+                DreamJournalEntry djEntry = new DreamJournalEntry(entry, assignedTags, journalEntryHasTypes, audioLocations);
+                djel.add(djEntry);
+            }
         });
     }
 
@@ -197,16 +212,17 @@ public class DreamJournal extends Fragment {
         }
     }
 
-    private void showJournalCreator(JournalTypes type) {
+    public void showJournalCreator(JournalTypes type) {
         // TODO start loading animation
         animateFab();
-        Intent intent = new Intent(getContext(), DreamJournalEntryEditor.class);
+        Intent intent = new Intent(requireContext(), DreamJournalEntryEditor.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("type", type.ordinal());
         dreamJournalEditorActivityResultLauncher.launch(intent);
     }
 
     private void animateFab(){
+        if (fabAdd == null){ return; }
         if (isOpen){
             fabAdd.startAnimation(rotateForward);
             fabText.startAnimation(fabClose);
@@ -262,5 +278,9 @@ public class DreamJournal extends Fragment {
                 });
             });
         });
+    }
+
+    public void showJournalCreatorWhenLoaded(@Nullable JournalTypes type) {
+        this.autoOpenJournalTypeCreator = type;
     }
 }

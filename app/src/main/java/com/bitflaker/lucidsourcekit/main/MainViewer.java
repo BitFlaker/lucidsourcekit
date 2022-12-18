@@ -10,6 +10,7 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
@@ -21,11 +22,11 @@ public class MainViewer extends AppCompatActivity {
     private ViewPager2 viewPager2;
     private ImageButton moreOptions;
 
-    private final String pageOverview = "";
-    private final String pageLogging = "";
-    private final String pageStats = "";
-    private final String pageGoals = "";
-    private final String pageBinauralBeats = "";
+    private final String pageOverview = "overview";
+    private final String pageLogging = "journal";
+    private final String pageStats = "statistics";
+    private final String pageGoals = "goals";
+    private final String pageBinauralBeats = "binaural";
 
     private ViewPagerAdapter vpAdapter;
 
@@ -64,6 +65,19 @@ public class MainViewer extends AppCompatActivity {
             });
             popup.show();
         });
+
+        if(getIntent().hasExtra("INITIAL_PAGE")) {
+            String title = getIntent().getStringExtra("INITIAL_PAGE");
+            int position = vpAdapter.getTabIndex(title);
+            tabLayout.selectTab(tabLayout.getTabAt(position));
+            viewPager2.setCurrentItem(position);
+            if(title.equalsIgnoreCase(pageLogging)) {
+                int ordinal = getIntent().getIntExtra("type", -1);
+                if(ordinal >= 0 && ordinal < JournalTypes.values().length) {
+                    vwLogging.showJournalCreatorWhenLoaded(JournalTypes.values()[ordinal]);
+                }
+            }
+        }
     }
 
     @NonNull

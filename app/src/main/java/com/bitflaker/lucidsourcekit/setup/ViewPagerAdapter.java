@@ -41,4 +41,8 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     public Fragment getFragment(String title) {
         return fragmentArrayList.get(fragmentTitle.indexOf(title));
     }
+
+    public int getTabIndex(String title) {
+        return fragmentTitle.indexOf(title);
+    }
 }

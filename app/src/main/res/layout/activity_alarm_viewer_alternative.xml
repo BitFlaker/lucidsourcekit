@@ -8,13 +8,13 @@
     android:orientation="vertical"
     tools:context=".alarms.AlarmViewer">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/circle_half"
-        android:scaleType="centerCrop"
-        app:tint="#040404"
-        android:tintMode="screen"/>
+<!--    <ImageView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:src="@drawable/circle_half"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        app:tint="#040404"-->
+<!--        android:tintMode="screen"/>-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,23 +23,38 @@
         android:paddingStart="32dp"
         android:paddingEnd="32dp">
 
-        <View
-            android:layout_width="12dp"
-            android:layout_height="72dp"
-            android:layout_marginTop="-6dp"
-            android:layout_marginStart="0dp"
-            android:background="@drawable/medium_rounded_rectangle"
-            android:backgroundTint="?attr/backgroundColor"
-            android:alpha="1"/>
+<!--        <View-->
+<!--            android:layout_width="12dp"-->
+<!--            android:layout_height="72dp"-->
+<!--            android:layout_marginTop="-6dp"-->
+<!--            android:layout_marginStart="0dp"-->
+<!--            android:background="@drawable/medium_rounded_rectangle"-->
+<!--            android:backgroundTint="?attr/backgroundColor"-->
+<!--            android:alpha="1"/>-->
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+<!--        <ImageView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center_horizontal"-->
+<!--            android:minHeight="64dp"-->
+<!--            android:minWidth="64dp"-->
+<!--            android:src="@drawable/ic_round_alarm_24"-->
+<!--            app:tint="?attr/slightElevated2x" />-->
 
         <TextView
             android:id="@+id/txt_alarm_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="18dp"
+            android:layout_gravity="center_horizontal"
             android:textColor="?attr/secondaryTextColor"
-            android:textSize="21sp"
-            android:textStyle="bold"
+            android:textSize="24sp"
+            android:textStyle="normal"
             android:text="Test alarm for first night" />
 
         <TextView
@@ -47,36 +62,60 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:layout_gravity="center_horizontal"
             android:textColor="?attr/tertiaryTextColor"
             android:textSize="14sp"
             android:text="December 11, Saturday" />
 
-        <TextView
-            android:id="@+id/txt_current_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:textColor="?attr/primaryTextColor"
-            android:textSize="54sp"
-            android:fontFamily="sans-serif-light"
-            android:text="05:45" />
-
-        <View
-            android:layout_width="12dp"
+        <Space
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="48dp"
-            android:layout_marginStart="0dp"
-            android:background="@drawable/medium_rounded_rectangle"
-            android:backgroundTint="?attr/backgroundColor"
-            android:alpha="1"/>
+            android:layout_weight="1" />
+
+<!--        android:layout_marginTop="24dp"-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="6">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/gradient_circle"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:id="@+id/txt_current_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="sans-serif-light"
+                android:text="05:45"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="42sp" />
+        </RelativeLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+<!--        <View-->
+<!--            android:layout_width="12dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_marginTop="48dp"-->
+<!--            android:layout_marginStart="0dp"-->
+<!--            android:background="@drawable/medium_rounded_rectangle"-->
+<!--            android:backgroundTint="?attr/backgroundColor"-->
+<!--            android:alpha="1"/>-->
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/crd_alarm_slider_container"
             android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:layout_marginTop="64dp"
-            android:layout_marginBottom="56dp"
+            android:layout_height="88dp"
+            android:layout_marginTop="89dp"
+            android:layout_marginBottom="81dp"
             android:visibility="gone"
             app:cardElevation="0dp"
             app:cardBackgroundColor="#28292e"
@@ -95,10 +134,10 @@
             android:id="@+id/ll_alarm_stop_button_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="80dp"
             android:orientation="vertical"
             android:layout_marginBottom="56dp"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_snooze"
@@ -112,29 +151,97 @@
                 android:id="@+id/btn_stop_alarm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="26dp"
                 android:text="Stop"
                 android:background="@drawable/ripple_round"
                 app:backgroundTint="?attr/colorPrimary"/>
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/btn_close_viewer"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/ll_quick_access_actions"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/ripple_round_border_dashed"
-            android:backgroundTint="#232428"
-            android:backgroundTintMode="add"
-            android:minWidth="56dp"
-            android:minHeight="56dp"
-            android:src="@drawable/ic_round_close_24"
-            android:layout_marginBottom="48dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:tint="?attr/colorOnBackground" />
+            android:orientation="vertical"
+            android:layout_marginTop="52dp"
+            android:layout_marginBottom="46dp"
+            android:gravity="center_horizontal"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_open_journal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ripple_round_border"
+                    android:backgroundTint="#232428"
+                    android:backgroundTintMode="add"
+                    android:minWidth="56dp"
+                    android:minHeight="56dp"
+                    android:src="@drawable/ic_round_book_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:tint="?attr/colorOnBackground" />
+
+                <Space
+                    android:layout_width="32dp"
+                    android:layout_height="0dp"/>
+
+                <ImageButton
+                    android:id="@+id/btn_open_binaural_player"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ripple_round_border"
+                    android:backgroundTint="#232428"
+                    android:backgroundTintMode="add"
+                    android:minWidth="56dp"
+                    android:minHeight="56dp"
+                    android:src="@drawable/frequency_symbol"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:tint="?attr/colorOnBackground" />
+
+                <Space
+                    android:layout_width="32dp"
+                    android:layout_height="0dp"/>
+
+                <ImageButton
+                    android:id="@+id/btn_open_app"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ripple_round_border"
+                    android:backgroundTint="#232428"
+                    android:backgroundTintMode="add"
+                    android:minWidth="56dp"
+                    android:minHeight="56dp"
+                    android:src="@drawable/ic_round_open_in_new_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:tint="?attr/colorOnBackground" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btn_close_viewer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp"
+                android:background="@drawable/ripple_round_border_dashed"
+                android:backgroundTint="#232428"
+                android:backgroundTintMode="add"
+                android:minWidth="56dp"
+                android:minHeight="56dp"
+                android:src="@drawable/ic_round_close_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:tint="?attr/colorOnBackground" />
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
