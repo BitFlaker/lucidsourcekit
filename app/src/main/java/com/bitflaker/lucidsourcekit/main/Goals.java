@@ -114,14 +114,17 @@ public class Goals extends Fragment {
 
         @ColorInt int primVar = Tools.getAttrColor(R.attr.colorPrimaryVariant, getContext().getTheme());
         List<GoalAdvice> advices = new ArrayList<>();
-        advices.add(new GoalAdvice("GOAL COUNT", "Increase Count", "Increase the goal count to 4 for more difficulty", R.drawable.ic_round_plus_one_24, Color.TRANSPARENT));
-        advices.add(new GoalAdvice("NOTIFICATIONS", "Notifications", "Enable notifications to be reminded to look out for the targets", R.drawable.ic_baseline_notifications_active_24, Color.TRANSPARENT));
-        advices.add(new GoalAdvice("SHUFFLE", "Shuffle Goals", "Shuffle the goals again to get new and possibly better ones", R.drawable.ic_baseline_shuffle_24, Color.TRANSPARENT));
-        advices.add(new GoalAdvice("DIFFICULTY", "Increase Difficulty", "Increase the target goal difficulty to 2.3 for a bigger challenge", R.drawable.ic_baseline_vertical_align_top_24, Color.TRANSPARENT));
+        advices.add(new GoalAdvice("GOAL COUNT", "Increase goal count", "Increase the goal count to 4 for more difficulty", R.drawable.ic_round_plus_one_24, Color.TRANSPARENT));
+        advices.add(new GoalAdvice("NOTIFICATIONS", "Enable notifications", "Enable notifications to be reminded to look out for the targets", R.drawable.ic_baseline_notifications_active_24, Color.TRANSPARENT));
+        advices.add(new GoalAdvice("SHUFFLE", "Shuffle goals", "Shuffle the goals again to get new and possibly better ones", R.drawable.ic_baseline_shuffle_24, Color.TRANSPARENT));
+        advices.add(new GoalAdvice("DIFFICULTY", "Increase goals difficulty", "Increase the target goal difficulty to 2.3 for a bigger challenge", R.drawable.ic_baseline_vertical_align_top_24, Color.TRANSPARENT));
         RecyclerViewAdapterGoalAdvice goalAdvice = new RecyclerViewAdapterGoalAdvice(getContext(), advices);
+
+
         quickScrollAdjustmentsContainer.setAdapter(goalAdvice);
-        quickScrollAdjustmentsContainer.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        quickScrollAdjustmentsContainer.addOnItemTouchListener(horizontalScrollViewPger);
+//        quickScrollAdjustmentsContainer.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        quickScrollAdjustmentsContainer.setLayoutManager(new LinearLayoutManager(getContext()));
+//        quickScrollAdjustmentsContainer.addOnItemTouchListener(horizontalScrollViewPger);
 
         db = MainDatabase.getInstance(getContext());
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -453,8 +456,14 @@ public class Goals extends Fragment {
                difficultySpeedometer.setData(25, currentDifficulty, 3);
 
                String[] numParts = getDecimalNumParts(100 * (float)achievedCountAtmc.get() / yesterdayCountAtmc.get(), 2);
-               yGoalsDiff.setText(String.format(Locale.ENGLISH, "%.1f", yesterdaysDifficulty.get()));
-               yGoalsDiffPart.setText(String.format(Locale.ENGLISH, "%s%s", "/", yesterdayCountAtmc.get()));
+               if(!Float.isNaN(yesterdaysDifficulty.get())){
+                   yGoalsDiff.setText(String.format(Locale.ENGLISH, "%.1f", yesterdaysDifficulty.get()));
+                   yGoalsDiffPart.setText(String.format(Locale.ENGLISH, "%s%s", "/", yesterdayCountAtmc.get()));
+               }
+               else {
+                   yGoalsDiff.setVisibility(View.GONE);
+                   yGoalsDiffPart.setText("- / -");
+               }
                yGoalsAchieved.setText(numParts[0]);
                yGoalsAchievedPart.setText(String.format(Locale.ENGLISH, "%s%s", numParts[1], "%"));
 
@@ -520,37 +529,37 @@ public class Goals extends Fragment {
         });
     }
 
-    private RecyclerView.OnItemTouchListener horizontalScrollViewPger = new RecyclerView.OnItemTouchListener() {
-        int lastX = 0;
-        @Override
-        public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-            switch (e.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    lastX = (int) e.getX();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    boolean isScrollingRight = e.getX() < lastX;
-                    if ((isScrollingRight && ((LinearLayoutManager) quickScrollAdjustmentsContainer.getLayoutManager()).findLastCompletelyVisibleItemPosition() == quickScrollAdjustmentsContainer.getAdapter().getItemCount() - 1) ||
-                            (!isScrollingRight && ((LinearLayoutManager) quickScrollAdjustmentsContainer.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0)) {
-                        mainViewPager.setUserInputEnabled(true);
-                    } else {
-                        mainViewPager.setUserInputEnabled(false);
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                    lastX = 0;
-                    mainViewPager.setUserInputEnabled(true);
-                    break;
-            }
-            return false;
-        }
-
-        @Override
-        public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) { }
-
-        @Override
-        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) { }
-    };
+//    private RecyclerView.OnItemTouchListener horizontalScrollViewPger = new RecyclerView.OnItemTouchListener() {
+//        int lastX = 0;
+//        @Override
+//        public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+//            switch (e.getAction()) {
+//                case MotionEvent.ACTION_DOWN:
+//                    lastX = (int) e.getX();
+//                    break;
+//                case MotionEvent.ACTION_MOVE:
+//                    boolean isScrollingRight = e.getX() < lastX;
+//                    if ((isScrollingRight && ((LinearLayoutManager) quickScrollAdjustmentsContainer.getLayoutManager()).findLastCompletelyVisibleItemPosition() == quickScrollAdjustmentsContainer.getAdapter().getItemCount() - 1) ||
+//                            (!isScrollingRight && ((LinearLayoutManager) quickScrollAdjustmentsContainer.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0)) {
+//                        mainViewPager.setUserInputEnabled(true);
+//                    } else {
+//                        mainViewPager.setUserInputEnabled(false);
+//                    }
+//                    break;
+//                case MotionEvent.ACTION_UP:
+//                    lastX = 0;
+//                    mainViewPager.setUserInputEnabled(true);
+//                    break;
+//            }
+//            return false;
+//        }
+//
+//        @Override
+//        public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) { }
+//
+//        @Override
+//        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) { }
+//    };
 
     private enum NumberPickableFields {
         GOAL_COUNT,

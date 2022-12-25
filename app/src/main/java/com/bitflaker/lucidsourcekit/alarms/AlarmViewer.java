@@ -149,6 +149,7 @@ public class AlarmViewer extends AppCompatActivity {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.setOnEntryTypeSelected(this::showJournalCreator);
             dialog.show();
+            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         });
         openApp.setOnClickListener(e -> {
             Intent intent = new Intent(this, MainActivity.class);

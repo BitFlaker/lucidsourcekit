@@ -12,37 +12,71 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp">
+        android:orientation="vertical"
+        android:paddingBottom="12dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_text_entry"
-            android:layout_width="0dp"
-            android:layout_height="128dp"
-            android:layout_weight="1"
-            android:layout_margin="6dp"
-            android:text="Text Dream Journal Entry"
-            android:padding="24dp"
-            android:drawableTop="@drawable/ic_baseline_text_fields_24"
-            android:drawableTint="@color/white"
-            android:background="@drawable/ripple_rounded"
-            app:backgroundTint="?attr/slightElevated"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="center_horizontal"
+            android:text="Dream journal entry type"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"/>
 
-        <Space
-            android:layout_width="8dp"
-            android:layout_height="0dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_forms_entry"
-            android:layout_width="0dp"
-            android:layout_height="128dp"
-            android:layout_weight="1"
-            android:padding="24dp"
-            android:layout_margin="6dp"
-            android:text="Forms Dream Journal Entry"
-            android:drawableTop="@drawable/ic_baseline_ballot_24"
-            android:drawableTint="@color/white"
-            android:background="@drawable/ripple_rounded"
-            app:backgroundTint="?attr/slightElevated"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_text_entry"
+                android:layout_width="0dp"
+                android:layout_height="128dp"
+                android:layout_weight="1"
+                android:layout_margin="6dp"
+                android:text="Text"
+                android:padding="24dp"
+                android:drawableTop="@drawable/ic_baseline_text_fields_24"
+                android:drawableTint="@color/white"
+                android:background="@drawable/ripple_rounded"
+                app:backgroundTint="?attr/slightElevated"/>
+
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="0dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_forms_entry"
+                android:layout_width="0dp"
+                android:layout_height="128dp"
+                android:layout_weight="1"
+                android:padding="24dp"
+                android:layout_margin="6dp"
+                android:text="Form"
+                android:drawableTop="@drawable/ic_baseline_ballot_24"
+                android:drawableTint="@color/white"
+                android:background="@drawable/ripple_rounded"
+                app:backgroundTint="?attr/slightElevated"/>
+        </LinearLayout>
+
+<!--        <ImageButton-->
+<!--            android:id="@+id/btn_close_viewer"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="18dp"-->
+<!--            android:layout_marginBottom="24dp"-->
+<!--            android:layout_gravity="center_horizontal"-->
+<!--            android:background="@drawable/ripple_round_border_dashed"-->
+<!--            android:backgroundTint="#232428"-->
+<!--            android:backgroundTintMode="add"-->
+<!--            android:minWidth="48dp"-->
+<!--            android:minHeight="48dp"-->
+<!--            android:src="@drawable/ic_round_close_24"-->
+<!--            app:tint="?attr/colorOnBackground" />-->
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

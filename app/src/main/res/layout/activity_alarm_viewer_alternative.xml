@@ -162,7 +162,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="52dp"
+            android:layout_marginTop="50dp"
             android:layout_marginBottom="46dp"
             android:gravity="center_horizontal"
             android:visibility="visible">
@@ -170,16 +170,25 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:padding="1dp"
+                android:background="@drawable/rounded_border_thin"
+                android:backgroundTint="?attr/slightElevated"
                 android:orientation="horizontal"
                 android:gravity="center_horizontal">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
 
                 <ImageButton
                     android:id="@+id/btn_open_journal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ripple_round_border"
-                    android:backgroundTint="#232428"
-                    android:backgroundTintMode="add"
+                    android:background="@drawable/ripple_round"
+                    android:backgroundTint="?attr/backgroundColor"
                     android:minWidth="56dp"
                     android:minHeight="56dp"
                     android:src="@drawable/ic_round_book_24"
@@ -189,16 +198,16 @@
                     app:tint="?attr/colorOnBackground" />
 
                 <Space
-                    android:layout_width="32dp"
-                    android:layout_height="0dp"/>
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"/>
 
                 <ImageButton
                     android:id="@+id/btn_open_binaural_player"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ripple_round_border"
-                    android:backgroundTint="#232428"
-                    android:backgroundTintMode="add"
+                    android:background="@drawable/ripple_round"
+                    android:backgroundTint="?attr/backgroundColor"
                     android:minWidth="56dp"
                     android:minHeight="56dp"
                     android:src="@drawable/frequency_symbol"
@@ -208,16 +217,17 @@
                     app:tint="?attr/colorOnBackground" />
 
                 <Space
-                    android:layout_width="32dp"
-                    android:layout_height="0dp"/>
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"/>
 
+<!--                android:backgroundTintMode="add" &lt;!&ndash; #232428&ndash;&gt;-->
                 <ImageButton
                     android:id="@+id/btn_open_app"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ripple_round_border"
-                    android:backgroundTint="#232428"
-                    android:backgroundTintMode="add"
+                    android:background="@drawable/ripple_round"
+                    android:backgroundTint="?attr/backgroundColor"
                     android:minWidth="56dp"
                     android:minHeight="56dp"
                     android:src="@drawable/ic_round_open_in_new_24"
@@ -225,6 +235,11 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:tint="?attr/colorOnBackground" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
             </LinearLayout>
 
             <ImageButton

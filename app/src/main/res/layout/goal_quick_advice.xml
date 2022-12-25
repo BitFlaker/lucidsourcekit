@@ -3,12 +3,14 @@
     android:id="@+id/crd_adv_card"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="150dp"
-    android:layout_height="match_parent"
-    android:layout_marginStart="6dp"
-    android:layout_marginEnd="6dp"
-    android:backgroundTint="?attr/slightElevated"
-    app:cardCornerRadius="@dimen/cardRadius"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
+    app:cardBackgroundColor="?attr/slightElevated"
+    app:cardCornerRadius="64dp"
     app:cardElevation="1dp">
 
     <View
@@ -21,25 +23,26 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:orientation="horizontal"
+        android:padding="5dp">
 
-        <TextView
-            android:id="@+id/txt_adv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="GOAL COUNT"
-            android:textColor="?attr/tertiaryTextColor"
-            android:textSize="12sp"
-            android:visibility="gone"/>
+<!--        <TextView-->
+<!--            android:id="@+id/txt_adv_title"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="GOAL COUNT"-->
+<!--            android:textColor="?attr/tertiaryTextColor"-->
+<!--            android:textSize="12sp"-->
+<!--            android:visibility="gone"/>-->
 
         <ImageView
             android:id="@+id/img_adv_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/ic_round_plus_one_24"
             app:tint="?attr/tertiaryTextColor" />
 
@@ -47,18 +50,20 @@
             android:id="@+id/txt_adv_heading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:fontFamily="sans-serif-medium"
+            android:layout_gravity="center_vertical"
             android:text="Increase Count"
             android:textColor="?attr/primaryTextColor"
             android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/txt_adv_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:text="Increase the goal count to 4 for more difficulty"
-            android:textColor="?attr/secondaryTextColor"
-            android:textSize="14sp" />
+<!--        <TextView-->
+<!--            android:id="@+id/txt_adv_description"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:fontFamily="sans-serif"-->
+<!--            android:text="Increase the goal count to 4 for more difficulty"-->
+<!--            android:textColor="?attr/secondaryTextColor"-->
+<!--            android:textSize="14sp" />-->
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
