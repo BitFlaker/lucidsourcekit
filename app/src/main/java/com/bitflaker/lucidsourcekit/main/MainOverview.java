@@ -27,7 +27,7 @@ import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import java.util.ArrayList;
 
 public class MainOverview extends Fragment {
-    private TextView totalEntries, totalLucidEntries, totalGoalsReached, streak;
+    private TextView totalEntries, totalLucidEntries, totalGoalsReached, streak, noAlarmsSet;
     private RecyclerViewAdapterAlarms adapterAlarms;
     private final ActivityResultCallback<ActivityResult> alarmCreationOrModificationCallback = result -> {
         if(result.getResultCode() == RESULT_OK){
@@ -42,10 +42,12 @@ public class MainOverview extends Fragment {
     private final ActivityResultCallback<ActivityResult> alarmManagerCallback = result -> {
         MainDatabase.getInstance(getContext()).getStoredAlarmDao().getAllActive().subscribe(storedAlarms -> {
             adapterAlarms.setData(storedAlarms);
+            setNoActiveAlarmsMessageVisible(storedAlarms.size() == 0);
         }).dispose();
     };
     private final ActivityResultLauncher<Intent> alarmInteractionLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), alarmCreationOrModificationCallback);
     private final ActivityResultLauncher<Intent> alarmManagerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), alarmManagerCallback);
+    private RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,8 +66,9 @@ public class MainOverview extends Fragment {
         totalLucidEntries = getView().findViewById(R.id.txt_lucid_journal_entries);
         totalGoalsReached = getView().findViewById(R.id.txt_total_goals_reached);
         streak = getView().findViewById(R.id.txt_days_streak);
+        noAlarmsSet = getView().findViewById(R.id.txt_no_alarms_set);
 
-        RecyclerView recyclerView = getView().findViewById(R.id.rcv_active_alarms);
+        recyclerView = getView().findViewById(R.id.rcv_active_alarms);
         adapterAlarms = new RecyclerViewAdapterAlarms(getContext(), new ArrayList<>());
         adapterAlarms.setSelectionModeEnabled(false);
         adapterAlarms.setControlsVisible(false);
@@ -80,6 +83,7 @@ public class MainOverview extends Fragment {
         MainDatabase db = MainDatabase.getInstance(getContext());
         db.getStoredAlarmDao().getAllActive().subscribe(storedAlarms -> {
             adapterAlarms.setData(storedAlarms);
+            setNoActiveAlarmsMessageVisible(storedAlarms.size() == 0);
         }).dispose();
 
 //        getView().findViewById(R.id.crd_alarm1).setOnClickListener(e -> { });
@@ -96,6 +100,17 @@ public class MainOverview extends Fragment {
 //            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (6 * 1000L), alarmIntent);
 //            startActivity(new Intent(getContext(), AlarmDisplayer.class));
         });
+    }
+
+    private void setNoActiveAlarmsMessageVisible(boolean visible) {
+        if(visible){
+            noAlarmsSet.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
+        else {
+            noAlarmsSet.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void fillStats() {

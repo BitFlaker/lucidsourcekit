@@ -135,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
 //            db.getStoredAlarmDao().deleteAll().subscribe(() -> {
 //            db.getActiveAlarmDao().deleteAllButUnreferenced().subscribe(() -> {
 //            db.getShuffleHasGoalDao().deleteAll().subscribe(() -> db.getShuffleDao().deleteAll().subscribe(() -> {
+//            db.getGoalDao().getAllSingle().subscribe((goals, throwable) -> {
             db.getActiveAlarmDao().insert(ActiveAlarm.createUnreferencedAlarm()).subscribe(() -> {
                 db.getActiveAlarmDao().getAllDetails().subscribe(activeAlarms -> {
                     AlarmHandler.reEnableAlarmsIfNotRunning(getApplicationContext(), activeAlarms);
@@ -162,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
                     }).dispose();
                 }).dispose();
             }).dispose();
+//            }).dispose();
 //            }).dispose();
 //            }).dispose();
 //            }).dispose();

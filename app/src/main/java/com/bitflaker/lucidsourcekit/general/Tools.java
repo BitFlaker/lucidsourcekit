@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -333,6 +334,58 @@ public class Tools {
         }
 
         return fitGoals.stream().limit(count).collect(Collectors.toList());
+    }
+
+    public static List<Goal> getSuitableGoals(Context context, List<Goal> providedGoals, int goalsCount, float goalsDiff1Weight, float goalsDiff2Weight, float goalsDiff3Weight) {
+        float a = (-goalsDiff1Weight + 2 * goalsDiff2Weight - goalsDiff3Weight) / -2;
+        float b = goalsDiff2Weight - goalsDiff1Weight - 3 * a;
+        float c = goalsDiff1Weight - a - b;
+
+        List<Double> weightedGoals = new ArrayList<>();
+
+        if(goalsCount > providedGoals.size()){
+            throw new IllegalArgumentException("The goals count must be smaller or equal to the size of the list of proved goals");
+        }
+
+        double weightSum = 0;
+        for (Goal goal : providedGoals) {
+            // ignoring the fact that multiple goals could have the value 0, as they are ignored anyways
+            double weight = Math.max(a * Math.pow(goal.difficulty, 2) + b * goal.difficulty + c, 0);
+            weightSum += weight;
+            weightedGoals.add(weightSum);
+        }
+
+        Random r = new Random();
+        List<Goal> chosenGoals = new ArrayList<>();
+        for (int i = 0; i < goalsCount; i++) {
+            double chosenWeight = weightedGoals.get(weightedGoals.size() - 1) * r.nextDouble();
+            int closestValueIndex = getClosestHigherNumber(weightedGoals, chosenWeight);
+            chosenGoals.add(providedGoals.get(closestValueIndex));
+            providedGoals.remove(closestValueIndex);
+            weightedGoals.remove(closestValueIndex);
+        }
+        return chosenGoals;
+    }
+
+    public static int getClosestHigherNumber(List<Double> numbers, double target) {
+        int low = 0;
+        int high = numbers.size() - 1;
+
+        while (low < high) {
+            int mid = (low + high) / 2;
+            double midVal = numbers.get(mid);
+            if (midVal < target) {
+                low = mid + 1;
+            } else {
+                high = mid;
+            }
+        }
+
+        if (low >= numbers.size()) {
+            return -1;
+        }
+
+        return low;
     }
 
     public static double[] calculateQuadraticFunction(PointF weight1, PointF weight2, PointF weight3) {
