@@ -15,6 +15,7 @@ import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.alarms.updated.AlarmHandler;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
+import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
@@ -39,6 +40,9 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     private List<StoredAlarm> storedAlarms;
     private List<Integer> selectedAlarmIds;
     private List<Integer> selectedIndexes;
+    private boolean selectionModeEnabled = true;
+    private boolean controlsVisible = true;
+    private boolean elevatedBackground = false;
 
     public RecyclerViewAdapterAlarms(Context context, List<StoredAlarm> storedAlarms) {
         this.context = context;
@@ -57,6 +61,9 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public void onBindViewHolder(@NonNull MainViewHolderAlarms holder, int position) {
+        if(!controlsVisible){
+            holder.hideControls();
+        }
         StoredAlarm alarm = storedAlarms.get(position);
         loadedItems.add(holder);
         loadedPositions.add(position);
@@ -119,7 +126,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
             }
         }
         holder.activeDays.setText(joiner.toString());
-        holder.setSelectionModeActive(isInSelectionMode);
+        holder.setSelectionModeActive(isInSelectionMode && selectionModeEnabled);
         holder.chkChecked.setOnTouchListener((v, event) -> {
             View par = ((View) v.getParent().getParent());
             event.setLocation(par.getWidth(), 0);
@@ -128,7 +135,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         });
         holder.chkChecked.setChecked(selectedAlarmIds.contains(alarm.alarmId));
         holder.card.setOnClickListener(e -> {
-            if(isInSelectionMode){
+            if(isInSelectionMode && selectionModeEnabled){
                 holder.chkChecked.setChecked(!holder.chkChecked.isChecked());
                 if(holder.chkChecked.isChecked()){
                     selectedIndexes.add(position);
@@ -146,15 +153,20 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
                 mOnEntryClickedListener.onEvent(storedAlarms.get(position));
             }
         });
-        holder.card.setOnLongClickListener(e -> {
-            if(!isInSelectionMode){
-                setIsInSelectionMode(true);
-                holder.chkChecked.setChecked(true);
-                selectedIndexes.add(position);
-                selectedAlarmIds.add(alarm.alarmId);
-            }
-            return true;
-        });
+        if(selectionModeEnabled){
+            holder.card.setOnLongClickListener(e -> {
+                if(!isInSelectionMode){
+                    setIsInSelectionMode(true);
+                    holder.chkChecked.setChecked(true);
+                    selectedIndexes.add(position);
+                    selectedAlarmIds.add(alarm.alarmId);
+                }
+                return true;
+            });
+        }
+        if(elevatedBackground){
+            holder.card.setCardBackgroundColor(Tools.getAttrColorStateList(R.attr.slightElevated, context.getTheme()));
+        }
     }
 
     private void updateStoredAlarmFromDatabase(int position, StoredAlarm alarm) {
@@ -184,8 +196,10 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     }
 
     private void setSelectionModeInItems(boolean selMode) {
-        for (MainViewHolderAlarms al : loadedItems) {
-            al.setSelectionModeActive(selMode);
+        if(selectionModeEnabled){
+            for (MainViewHolderAlarms al : loadedItems) {
+                al.setSelectionModeActive(selMode);
+            }
         }
     }
 
@@ -210,16 +224,18 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     }
 
     public void setIsInSelectionMode(boolean isInSelectionMode) {
-        selectedAlarmIds = new ArrayList<>();
-        selectedIndexes = new ArrayList<>();
-        this.isInSelectionMode = isInSelectionMode;
-        setSelectionModeInItems(isInSelectionMode);
-        if(mSelectionModeStateChangedListener != null){
-            if(isInSelectionMode){
-                mSelectionModeStateChangedListener.onSelectionModeEntered();
-            }
-            else {
-                mSelectionModeStateChangedListener.onSelectionModeLeft();
+        if(selectionModeEnabled){
+            selectedAlarmIds = new ArrayList<>();
+            selectedIndexes = new ArrayList<>();
+            this.isInSelectionMode = isInSelectionMode;
+            setSelectionModeInItems(isInSelectionMode);
+            if(mSelectionModeStateChangedListener != null){
+                if(isInSelectionMode){
+                    mSelectionModeStateChangedListener.onSelectionModeEntered();
+                }
+                else {
+                    mSelectionModeStateChangedListener.onSelectionModeLeft();
+                }
             }
         }
     }
@@ -275,6 +291,30 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         });
     }
 
+    public void setSelectionModeEnabled(boolean enabled) {
+        selectionModeEnabled = enabled;
+    }
+
+    public boolean isSelectionModeEnabled() {
+        return selectionModeEnabled;
+    }
+
+    public void setControlsVisible(boolean visible) {
+        controlsVisible = visible;
+    }
+
+    public boolean isControlsVisible() {
+        return controlsVisible;
+    }
+
+    public void setElevatedBackground(boolean elevatedBackground) {
+        this.elevatedBackground = elevatedBackground;
+    }
+
+    public boolean isElevatedBackground() {
+        return elevatedBackground;
+    }
+
     public static class MainViewHolderAlarms extends RecyclerView.ViewHolder {
         TextView title, timePrimary, timeSecondary, activeDays;
         TextView dayMo, dayTu, dayWe, dayTh, dayFr, daySa, daySu;
@@ -282,9 +322,11 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         SwitchMaterial active;
         List<TextView> weekdays;
         CheckBox chkChecked;
+        boolean controlsHidden;
 
         public MainViewHolderAlarms(@NonNull View itemView) {
             super(itemView);
+            controlsHidden = false;
             card = itemView.findViewById(R.id.crd_alarm);
             title = itemView.findViewById(R.id.txt_alarms_title);
             timePrimary = itemView.findViewById(R.id.txt_alarms_time_prim);
@@ -302,15 +344,23 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
             weekdays = Arrays.asList(dayMo, dayTu, dayWe, dayTh, dayFr, daySa, daySu);
         }
 
+        public void hideControls(){
+            chkChecked.setVisibility(View.GONE);
+            active.setVisibility(View.GONE);
+            controlsHidden = true;
+        }
+
         public void setSelectionModeActive(boolean isInSelectionMode) {
-            if(isInSelectionMode){
-                chkChecked.setVisibility(View.VISIBLE);
-                active.setVisibility(View.GONE);
-            }
-            else {
-                chkChecked.setChecked(false);
-                chkChecked.setVisibility(View.GONE);
-                active.setVisibility(View.VISIBLE);
+            if(!controlsHidden){
+                if(isInSelectionMode){
+                    chkChecked.setVisibility(View.VISIBLE);
+                    active.setVisibility(View.GONE);
+                }
+                else {
+                    chkChecked.setChecked(false);
+                    chkChecked.setVisibility(View.GONE);
+                    active.setVisibility(View.VISIBLE);
+                }
             }
         }
     }
@@ -337,6 +387,11 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     }
 
     public void setOnSelectionModeStateChangedListener(OnSelectionModeStateChanged eventListener) {
-        mSelectionModeStateChangedListener = eventListener;
+        if(selectionModeEnabled) {
+            mSelectionModeStateChangedListener = eventListener;
+        }
+        else {
+            throw new IllegalStateException("Setting the listener of the selection state change event is not possible if the selection mode is disabled!");
+        }
     }
 }

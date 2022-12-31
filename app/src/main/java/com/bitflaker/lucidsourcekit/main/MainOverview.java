@@ -1,5 +1,7 @@
 package com.bitflaker.lucidsourcekit.main;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,15 +9,43 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.alarms.AlarmCreator;
 import com.bitflaker.lucidsourcekit.alarms.AlarmsManager;
+import com.bitflaker.lucidsourcekit.database.MainDatabase;
+
+import java.util.ArrayList;
 
 public class MainOverview extends Fragment {
     private TextView totalEntries, totalLucidEntries, totalGoalsReached, streak;
+    private RecyclerViewAdapterAlarms adapterAlarms;
+    private final ActivityResultCallback<ActivityResult> alarmCreationOrModificationCallback = result -> {
+        if(result.getResultCode() == RESULT_OK){
+            Intent data = result.getData();
+            if (data != null && data.hasExtra("CREATED_NEW_ALARM") && data.hasExtra("ALARM_ID")) {
+                if(!data.getBooleanExtra("CREATED_NEW_ALARM", false)){
+                    adapterAlarms.reloadModifiedAlarmWithId(data.getIntExtra("ALARM_ID", -1));
+                }
+            }
+        }
+    };
+    private final ActivityResultCallback<ActivityResult> alarmManagerCallback = result -> {
+        MainDatabase.getInstance(getContext()).getStoredAlarmDao().getAllActive().subscribe(storedAlarms -> {
+            adapterAlarms.setData(storedAlarms);
+        }).dispose();
+    };
+    private final ActivityResultLauncher<Intent> alarmInteractionLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), alarmCreationOrModificationCallback);
+    private final ActivityResultLauncher<Intent> alarmManagerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), alarmManagerCallback);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,11 +65,28 @@ public class MainOverview extends Fragment {
         totalGoalsReached = getView().findViewById(R.id.txt_total_goals_reached);
         streak = getView().findViewById(R.id.txt_days_streak);
 
-        getView().findViewById(R.id.crd_alarm1).setOnClickListener(e -> { });
-        getView().findViewById(R.id.crd_alarm2).setOnClickListener(e -> { });
+        RecyclerView recyclerView = getView().findViewById(R.id.rcv_active_alarms);
+        adapterAlarms = new RecyclerViewAdapterAlarms(getContext(), new ArrayList<>());
+        adapterAlarms.setSelectionModeEnabled(false);
+        adapterAlarms.setControlsVisible(false);
+        adapterAlarms.setElevatedBackground(true);
+        adapterAlarms.setOnEntryClickedListener(storedAlarm -> {
+            Intent editor = new Intent(getContext(), AlarmCreator.class);
+            editor.putExtra("ALARM_ID", storedAlarm.alarmId);
+            alarmInteractionLauncher.launch(editor);
+        });
+        recyclerView.setAdapter(adapterAlarms);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        MainDatabase db = MainDatabase.getInstance(getContext());
+        db.getStoredAlarmDao().getAllActive().subscribe(storedAlarms -> {
+            adapterAlarms.setData(storedAlarms);
+        }).dispose();
+
+//        getView().findViewById(R.id.crd_alarm1).setOnClickListener(e -> { });
+//        getView().findViewById(R.id.crd_alarm2).setOnClickListener(e -> { });
         getView().findViewById(R.id.btn_manage_alarms).setOnClickListener(e -> {
 //            AlarmHandler.clickAction(getActivity().getApplicationContext());
-            startActivity(new Intent(getContext(), AlarmsManager.class));
+            alarmManagerLauncher.launch(new Intent(getContext(), AlarmsManager.class));
 
 
 //            AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);

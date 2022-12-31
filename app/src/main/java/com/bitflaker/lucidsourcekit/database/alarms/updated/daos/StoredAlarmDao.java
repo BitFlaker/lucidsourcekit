@@ -18,6 +18,9 @@ public interface StoredAlarmDao {
     @Query("SELECT * FROM StoredAlarm")
     Single<List<StoredAlarm>> getAll();
 
+    @Query("SELECT * FROM StoredAlarm WHERE requestCodeActiveAlarm != -1")
+    Single<List<StoredAlarm>> getAllActive();
+
     @Query("SELECT * FROM StoredAlarm WHERE alarmId IN (:alarmIds)")
     Single<List<StoredAlarm>> getAllById(List<Integer> alarmIds);
 

@@ -105,7 +105,7 @@ public class AlarmHandler {
             intent.putExtra("REPETITION_PATTERN_INDEX", finalRepetitionPatternCurrentIndex);
             intent.putExtra("REPETITION_INTERVAL", interval);
             intent.putExtra("INITIAL_TIME", finalFirstAlarmTime);
-            intent.putExtra("STORED_ALARM_ID", storedAlarmId);
+            intent.putExtra("STORED_ALARM_ID", (int) storedAlarmId);
 
             // Check if the alarm should be created or updated
             MainDatabase db = MainDatabase.getInstance(context);
@@ -205,7 +205,7 @@ public class AlarmHandler {
                         intent.putExtra("REPETITION_PATTERN_INDEX", activeAlarm.patternIndex);
                         intent.putExtra("REPETITION_INTERVAL", activeAlarm.interval);
                         intent.putExtra("INITIAL_TIME", activeAlarm.initialTime);
-                        intent.putExtra("STORED_ALARM_ID", storedAlarmId);
+                        intent.putExtra("STORED_ALARM_ID", (int) storedAlarmId);
                         intent.putExtra("REQUEST_CODE", storedAlarm.requestCodeActiveAlarm);
 
                         final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, storedAlarm.requestCodeActiveAlarm, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -255,7 +255,7 @@ public class AlarmHandler {
 
             // create the target broadcast receiver to check against (repetitive or one time)
             Intent intent = new Intent(context, AlarmReceiverManager.class);
-            intent.putExtra("STORED_ALARM_ID", alarm.storedAlarmId);
+            intent.putExtra("STORED_ALARM_ID", (int) alarm.storedAlarmId);
             if(alarm.interval != -1){
                 intent.putExtra("REPETITION_PATTERN", alarm.pattern);
                 intent.putExtra("REPETITION_PATTERN_INDEX", alarm.patternIndex);

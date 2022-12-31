@@ -224,167 +224,175 @@
                     app:cardCornerRadius="@dimen/cardRadius"
                     app:cardElevation="@dimen/cardElevationRegular">
 
-                    <LinearLayout
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcv_active_alarms"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="50dp"
-                        android:orientation="vertical">
+                        android:overScrollMode="never"
+                        android:nestedScrollingEnabled="false"/>
 
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/crd_alarm1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:backgroundTint="?attr/slightElevated"
-                            app:cardCornerRadius="0dp"
-                            app:cardElevation="0dp">
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginBottom="50dp"-->
+<!--                        android:orientation="vertical">-->
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:layout_marginTop="6dp"
-                                android:paddingStart="15dp"
-                                android:paddingTop="13dp"
-                                android:paddingBottom="13dp"
-                                android:paddingEnd="15dp">
+<!--                        <com.google.android.material.card.MaterialCardView-->
+<!--                            android:id="@+id/crd_alarm1"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:backgroundTint="?attr/slightElevated"-->
+<!--                            app:cardCornerRadius="0dp"-->
+<!--                            app:cardElevation="0dp">-->
 
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:orientation="horizontal">
+<!--                            <LinearLayout-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:gravity="center_vertical"-->
+<!--                                android:orientation="horizontal"-->
+<!--                                android:layout_marginTop="6dp"-->
+<!--                                android:paddingStart="15dp"-->
+<!--                                android:paddingTop="13dp"-->
+<!--                                android:paddingBottom="13dp"-->
+<!--                                android:paddingEnd="15dp">-->
 
-                                    <LinearLayout
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center_vertical"
-                                        android:divider="@drawable/divider_small"
-                                        android:orientation="horizontal"
-                                        android:showDividers="middle">
+<!--                                <LinearLayout-->
+<!--                                    android:layout_width="0dp"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_weight="1"-->
+<!--                                    android:orientation="horizontal">-->
 
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="02:15"
-                                            android:textColor="?attr/primaryTextColor"
-                                            android:textSize="24sp" />
+<!--                                    <LinearLayout-->
+<!--                                        android:layout_width="wrap_content"-->
+<!--                                        android:layout_height="wrap_content"-->
+<!--                                        android:layout_gravity="center_vertical"-->
+<!--                                        android:divider="@drawable/divider_small"-->
+<!--                                        android:orientation="horizontal"-->
+<!--                                        android:showDividers="middle">-->
 
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="AM"
-                                            android:textColor="?attr/secondaryTextColor"
-                                            android:textSize="12sp" />
-                                    </LinearLayout>
+<!--                                        <TextView-->
+<!--                                            android:layout_width="wrap_content"-->
+<!--                                            android:layout_height="wrap_content"-->
+<!--                                            android:text="02:15"-->
+<!--                                            android:textColor="?attr/primaryTextColor"-->
+<!--                                            android:textSize="24sp" />-->
 
-                                    <LinearLayout
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:layout_gravity="center_vertical"
-                                        android:layout_marginStart="20dp"
-                                        android:gravity="center"
-                                        android:orientation="vertical">
+<!--                                        <TextView-->
+<!--                                            android:layout_width="wrap_content"-->
+<!--                                            android:layout_height="wrap_content"-->
+<!--                                            android:text="AM"-->
+<!--                                            android:textColor="?attr/secondaryTextColor"-->
+<!--                                            android:textSize="12sp" />-->
+<!--                                    </LinearLayout>-->
 
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:fontFamily="sans-serif"
-                                            android:text="First REM-Period Alarm"
-                                            android:layout_marginBottom="3dp"
-                                            android:textColor="?attr/primaryTextColor"
-                                            android:textSize="15sp" />
+<!--                                    <LinearLayout-->
+<!--                                        android:layout_width="0dp"-->
+<!--                                        android:layout_height="wrap_content"-->
+<!--                                        android:layout_weight="1"-->
+<!--                                        android:layout_gravity="center_vertical"-->
+<!--                                        android:layout_marginStart="20dp"-->
+<!--                                        android:gravity="center"-->
+<!--                                        android:orientation="vertical">-->
 
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Mo, Tu, Fr, Su"
-                                            android:textColor="?attr/secondaryTextColor"
-                                            android:textSize="12sp" />
-                                    </LinearLayout>
-                                </LinearLayout>
+<!--                                        <TextView-->
+<!--                                            android:layout_width="wrap_content"-->
+<!--                                            android:layout_height="wrap_content"-->
+<!--                                            android:fontFamily="sans-serif"-->
+<!--                                            android:text="First REM-Period Alarm"-->
+<!--                                            android:layout_marginBottom="3dp"-->
+<!--                                            android:textColor="?attr/primaryTextColor"-->
+<!--                                            android:textSize="15sp" />-->
 
-                            </LinearLayout>
-                        </com.google.android.material.card.MaterialCardView>
+<!--                                        <TextView-->
+<!--                                            android:layout_width="wrap_content"-->
+<!--                                            android:layout_height="wrap_content"-->
+<!--                                            android:text="Mo, Tu, Fr, Su"-->
+<!--                                            android:textColor="?attr/secondaryTextColor"-->
+<!--                                            android:textSize="12sp" />-->
+<!--                                    </LinearLayout>-->
+<!--                                </LinearLayout>-->
 
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/crd_alarm2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:backgroundTint="?attr/slightElevated"
-                            app:cardCornerRadius="0dp"
-                            app:cardElevation="0dp">
+<!--                            </LinearLayout>-->
+<!--                        </com.google.android.material.card.MaterialCardView>-->
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:paddingStart="15dp"
-                                android:paddingTop="13dp"
-                                android:paddingBottom="13dp"
-                                android:paddingEnd="15dp">
+<!--                        <com.google.android.material.card.MaterialCardView-->
+<!--                            android:id="@+id/crd_alarm2"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:backgroundTint="?attr/slightElevated"-->
+<!--                            app:cardCornerRadius="0dp"-->
+<!--                            app:cardElevation="0dp">-->
 
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:orientation="horizontal">
+<!--                            <LinearLayout-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:gravity="center_vertical"-->
+<!--                                android:orientation="horizontal"-->
+<!--                                android:paddingStart="15dp"-->
+<!--                                android:paddingTop="13dp"-->
+<!--                                android:paddingBottom="13dp"-->
+<!--                                android:paddingEnd="15dp">-->
 
-                                    <LinearLayout
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center_vertical"
-                                        android:divider="@drawable/divider_small"
-                                        android:orientation="horizontal"
-                                        android:showDividers="middle">
+<!--                                <LinearLayout-->
+<!--                                    android:layout_width="0dp"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_weight="1"-->
+<!--                                    android:orientation="horizontal">-->
 
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="04:42"
-                                            android:textColor="?attr/primaryTextColor"
-                                            android:textSize="24sp" />
+<!--                                    <LinearLayout-->
+<!--                                        android:layout_width="wrap_content"-->
+<!--                                        android:layout_height="wrap_content"-->
+<!--                                        android:layout_gravity="center_vertical"-->
+<!--                                        android:divider="@drawable/divider_small"-->
+<!--                                        android:orientation="horizontal"-->
+<!--                                        android:showDividers="middle">-->
 
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="AM"
-                                            android:textColor="?attr/secondaryTextColor"
-                                            android:textSize="14sp" />
-                                    </LinearLayout>
+<!--                                        <TextView-->
+<!--                                            android:layout_width="wrap_content"-->
+<!--                                            android:layout_height="wrap_content"-->
+<!--                                            android:text="04:42"-->
+<!--                                            android:textColor="?attr/primaryTextColor"-->
+<!--                                            android:textSize="24sp" />-->
 
-                                    <LinearLayout
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:layout_gravity="center_vertical"
-                                        android:layout_marginStart="20dp"
-                                        android:gravity="center"
-                                        android:orientation="vertical">
+<!--                                        <TextView-->
+<!--                                            android:layout_width="wrap_content"-->
+<!--                                            android:layout_height="wrap_content"-->
+<!--                                            android:text="AM"-->
+<!--                                            android:textColor="?attr/secondaryTextColor"-->
+<!--                                            android:textSize="14sp" />-->
+<!--                                    </LinearLayout>-->
 
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginBottom="3dp"
-                                            android:fontFamily="sans-serif"
-                                            android:text="Second REM-Period Alarm"
-                                            android:textColor="?attr/primaryTextColor"
-                                            android:textSize="15sp" />
+<!--                                    <LinearLayout-->
+<!--                                        android:layout_width="0dp"-->
+<!--                                        android:layout_height="wrap_content"-->
+<!--                                        android:layout_weight="1"-->
+<!--                                        android:layout_gravity="center_vertical"-->
+<!--                                        android:layout_marginStart="20dp"-->
+<!--                                        android:gravity="center"-->
+<!--                                        android:orientation="vertical">-->
 
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Mo, Tu, Fr, Su"
-                                            android:textColor="?attr/secondaryTextColor"
-                                            android:textSize="12sp" />
-                                    </LinearLayout>
-                                </LinearLayout>
+<!--                                        <TextView-->
+<!--                                            android:layout_width="wrap_content"-->
+<!--                                            android:layout_height="wrap_content"-->
+<!--                                            android:layout_marginBottom="3dp"-->
+<!--                                            android:fontFamily="sans-serif"-->
+<!--                                            android:text="Second REM-Period Alarm"-->
+<!--                                            android:textColor="?attr/primaryTextColor"-->
+<!--                                            android:textSize="15sp" />-->
 
-                            </LinearLayout>
-                        </com.google.android.material.card.MaterialCardView>
-                    </LinearLayout>
+<!--                                        <TextView-->
+<!--                                            android:layout_width="wrap_content"-->
+<!--                                            android:layout_height="wrap_content"-->
+<!--                                            android:text="Mo, Tu, Fr, Su"-->
+<!--                                            android:textColor="?attr/secondaryTextColor"-->
+<!--                                            android:textSize="12sp" />-->
+<!--                                    </LinearLayout>-->
+<!--                                </LinearLayout>-->
+
+<!--                            </LinearLayout>-->
+<!--                        </com.google.android.material.card.MaterialCardView>-->
+<!--                    </LinearLayout>-->
                 </com.google.android.material.card.MaterialCardView>
 
                 <ImageButton
