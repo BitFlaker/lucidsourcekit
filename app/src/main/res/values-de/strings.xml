@@ -10,12 +10,12 @@
     <string name="password_too_short">Passwort zu kurz!</string>
     <string name="pin_too_short">PIN zu kurz!</string>
     <string name="setup_security_title">Bleib sicher</string>
-    <string name="setup_security_description">Deine Traumtagebucheinträge, Alarme, Statistiken, etc. können durch Aktivieren der mitgelieferten Authentifikations-Funktion lokal geschützt werden.</string>
+    <string name="setup_security_description">Deine Traumtagebucheinträge, Alarme, Statistiken, etc. können durch Aktivieren der Authentifikations-Funktion lokal geschützt werden.</string>
     <string name="setup_open_source_title">Open Source</string>
-    <string name="setup_open_source_description">Diese Anwendung ist Open Source. Das bedeutet, dass der Quellcode der Anwendung öfftenlich auf <a href="https://github.com/BitFlaker/LucidSourceKit">GitHub</a> einsehbar ist. Mithilfe des Erstellens eines "Issues", können Bugs, Funktionswünsche und vieles mehr besprochen werden.</string>
+    <string name="setup_open_source_description">Diese Anwendung ist Open Source. Das bedeutet, dass der Quellcode der Anwendung öfftenlich auf <a href="https://github.com/BitFlaker/LucidSourceKit">GitHub</a> einsehbar ist. Mithilfe des Erstellens eines "Issues", können Bugs, Funktionswünsche und vieles mehr besprochen werden.\n\nWenn Sie fortfahren, bestätigen Sie, dass Sie den Inhalt der README.md Datei auf der <a href="https://github.com/BitFlaker/lucidsourcekit/blob/main/README.md">GitHub</a> Website des Projektes sorgfältig gelesen haben und akzeptieren alles, das im Dokument aufgeführt ist.</string>
     <string name="setup_privacy_biometrics">verwende Biometrik</string>
     <string name="setup_experimental_title">Experimentell</string>
-    <string name="setup_experimental_description">Diese Anwendung beinhaltet experimentelle Funktionen welche auf manche Menschen unvorhersehbar wirken kann. Benutzen Sie diese Werkzeuge auf eigenes Risiko.</string>
+    <string name="setup_experimental_description">Diese Anwendung beinhaltet experimentelle Funktionen welche auf manche Menschen unvorhersehbar wirken kann. Stellen Sie sicher, dass Sie Ihre eigenen Nachforschungen anstellen, z.B. über binaurale Beats und ob Sie diese hören dürfen. Benutzen Sie diese Anwendung auf eigenes Risiko.</string>
     <string name="setup_consent_checkbox">Ich akzeptiere das Risiko</string>
     <string name="setup_auth_data_title_pin">PIN festlegen</string>
     <string name="setup_auth_data_title_password">Passwort festlegen</string>
@@ -103,6 +103,8 @@
     <string name="total_entries_count"><![CDATA[This data is based on a total of <TOTAL_COUNT> dream journal entries.]]></string>
     <string name="goal_achievement_stats"><![CDATA[You achieved this goal <COUNT> out of <TOTAL> times. Your success rate is <PERCENTAGE>%]]></string>
     <string name="not_enough_data_available">Not enough data available!</string>
+    <string name="setup_finish_setup_title">Setup abschließen</string>
+    <string name="setup_finish_content">Der Setup der Anwendung ist abgeschlossen. Um alle Angaben zu speichern und die Anwendung zu starten, klicke auf den Fertigstellen Button.</string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>

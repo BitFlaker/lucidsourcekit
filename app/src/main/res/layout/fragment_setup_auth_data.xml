@@ -60,6 +60,19 @@
         android:textSize="26sp"
         android:textStyle="bold" />
 
+    <TextView
+        android:id="@+id/txt_finish_setup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_auth_data_title"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginTop="2dp"
+        android:textAlignment="center"
+        android:textColor="?attr/primaryTextColor"
+        android:textSize="18sp"
+        android:text="@string/setup_finish_content" />
+
     <!-- Password login -->
     <EditText
         android:id="@+id/txt_setup_password"

@@ -73,7 +73,7 @@ public class SetupViewer extends AppCompatActivity {
                     setAuthData.showPasswordSetup();
                     break;
                 case None:
-                    // TODO: hide slide? no auth data needed to be set
+                    setAuthData.showFinishSetup();
                     break;
             }
         });

@@ -9,12 +9,12 @@
     <string name="password_too_short">Password too short!</string>
     <string name="pin_too_short">PIN too short!</string>
     <string name="setup_security_title">Stay secure</string>
-    <string name="setup_security_description">Your dream journal entries, alarms, statistics, etc. can be protected locally by enabling the built-in authentication feature.</string>
+    <string name="setup_security_description">Your dream journal entries, alarms, statistics, etc. can be protected locally by enabling authentication.</string>
     <string name="setup_open_source_title">Open Source</string>
-    <string name="setup_open_source_description">This app is open source. That means, you can take a look at the source code at <a href="https://github.com/BitFlaker/LucidSourceKit">GitHub</a>. By creating an issue you can submit bugs, feature wishes and more.</string>
+    <string name="setup_open_source_description">This app is open source. That means you can take a look at the source code at <a href="https://github.com/BitFlaker/LucidSourceKit">GitHub</a>. By creating an issue you can submit bugs, feature wishes and more.\n\nBy continuing you confirm you have carefully read the README.md file on the <a href="https://github.com/BitFlaker/lucidsourcekit/blob/main/README.md">GitHub</a> page and accept everything stated within the document.</string>
     <string name="setup_privacy_biometrics">use biometrics</string>
     <string name="setup_experimental_title">Experimental</string>
-    <string name="setup_experimental_description">This app contains experimental features that some people might not react as expected. Use these tools at your own risk.</string>
+    <string name="setup_experimental_description">This app contains experimental features that some people might not react as expected. Make sure to do your own research on topics like for example binaural beats and whether you are allowed to listen to them. Use this app at your own risk.</string>
     <string name="setup_consent_checkbox">I accept the risk</string>
     <string name="setup_auth_data_title_pin">Enter PIN to set</string>
     <string name="setup_auth_data_title_password">Enter password to set</string>
@@ -102,6 +102,8 @@
     <string name="total_entries_count"><![CDATA[This data is based on a total of <TOTAL_COUNT> dream journal entries.]]></string>
     <string name="goal_achievement_stats"><![CDATA[You achieved this goal <COUNT> out of <TOTAL> times. Your success rate is <PERCENTAGE>%]]></string>
     <string name="not_enough_data_available">Not enough data available!</string>
+    <string name="setup_finish_setup_title">Finish setup</string>
+    <string name="setup_finish_content">The setup of the app is done. To save everything and launch the app, click the finish button.</string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>
