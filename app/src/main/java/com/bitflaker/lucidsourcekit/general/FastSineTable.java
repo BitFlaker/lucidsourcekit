@@ -1,28 +1,34 @@
 package com.bitflaker.lucidsourcekit.general;
 
+import androidx.annotation.NonNull;
+
 public class FastSineTable
 {
-	float[] sineTable;
-	float stepSize;
-	public int size;
+	private final float[] sineTable;
+	private final int sampleRate;
 
 	public FastSineTable(int sampleRate)
 	{
-		size = sampleRate;
-		sineTable = new float[size];
-		this.stepSize = (float) (2d * Math.PI / size);
-		for (int i = 0; i < size; i++) {
-			sineTable[i] = (float) Math.sin(this.stepSize * ((float)i));
+		this.sampleRate = sampleRate;
+		sineTable = generateSineTable();
+	}
+
+	@NonNull
+	private float[] generateSineTable() {
+		final float[] sineTable = new float[this.sampleRate];
+		float stepSize = (float) (2d * Math.PI / this.sampleRate);
+		for (int i = 0; i < this.sampleRate; i++) {
+			sineTable[i] = (float) Math.sin(stepSize * ((float)i));
 		}
+		return sineTable;
 	}
 
 	public float sineByDeg(long angle)
 	{
-		int index = (int)(angle % size);
-		return sineTable[index];
+		return sineTable[(int)(angle % sampleRate)];
 	}
 
-	public int getSize() {
-		return size;
+	public int getSampleRate() {
+		return sampleRate;
 	}
 }

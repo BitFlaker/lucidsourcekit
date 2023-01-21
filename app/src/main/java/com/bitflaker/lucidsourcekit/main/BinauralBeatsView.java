@@ -126,7 +126,6 @@ public class BinauralBeatsView extends Fragment {
                     FragmentActivity fragAct = getActivity();
                     if (fragAct != null) {
                         fragAct.runOnUiThread(() -> progressLineGraph.updateProgress(progress));
-                        fragAct.runOnUiThread(() -> progressLineGraph.updateProgress(progress));
                     }
                     else {
                         binBeatPlayer.stop();
@@ -268,6 +267,8 @@ public class BinauralBeatsView extends Fragment {
             int finishProgress = (int) currentBinauralBeat.getFrequencyList().getDuration();
             binauralTimeline.setText(getTimeStringFromSeconds(finishProgress));
             binauralFrequency.setText(String.format(Locale.ENGLISH, "%.2f", currentBinauralBeat.getFrequencyList().getFrequencyAtDuration(finishProgress)));
+            // TODO: the progress updating is a bit a workaround and should be better
+            progressLineGraph.updateProgress(progressLineGraph.getDurationProgress());
         });
     }
 

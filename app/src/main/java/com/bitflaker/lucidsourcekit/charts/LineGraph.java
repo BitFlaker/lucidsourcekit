@@ -302,5 +302,9 @@ public class LineGraph extends View {
         lastSetProgress = progress = 0;
         invalidate();
     }
+
+    public float getDurationProgress() {
+        return xMax;
+    }
 }
 
