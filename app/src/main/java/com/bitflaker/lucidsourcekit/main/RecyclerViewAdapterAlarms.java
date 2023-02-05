@@ -38,7 +38,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     private final Context context;
     private boolean isInSelectionMode = false;
     private List<StoredAlarm> storedAlarms;
-    private List<Integer> selectedAlarmIds;
+    private List<Long> selectedAlarmIds;
     private List<Integer> selectedIndexes;
     private boolean selectionModeEnabled = true;
     private boolean controlsVisible = true;
@@ -143,7 +143,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
                     return;
                 }
                 selectedIndexes.remove(position);
-                selectedAlarmIds.remove(Integer.valueOf(alarm.alarmId));
+                selectedAlarmIds.remove(alarm.alarmId);
                 if(selectedIndexes.size() == 0){
                     setIsInSelectionMode(false);
                 }
@@ -214,7 +214,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         notifyDataSetChanged();
     }
 
-    public List<Integer> getSelectedStoredAlarmIds() {
+    public List<Long> getSelectedStoredAlarmIds() {
         return selectedAlarmIds;
     }
 
@@ -250,7 +250,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         loadedPositions.forEach(this::notifyItemChanged);
     }
 
-    public void reloadModifiedAlarmWithId(int alarmId) {
+    public void reloadModifiedAlarmWithId(long alarmId) {
         MainDatabase.getInstance(context).getStoredAlarmDao().getById(alarmId).subscribe(alarm -> {
             int updatedIndex = -1;
             for (int i = 0; i < storedAlarms.size(); i++) {
@@ -266,7 +266,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         }).dispose();
     }
 
-    public void loadAddedAlarmWithId(int alarmId) {
+    public void loadAddedAlarmWithId(long alarmId) {
         MainDatabase.getInstance(context).getStoredAlarmDao().getById(alarmId).subscribe(alarm -> {
             storedAlarms.add(alarm);
             notifyItemInserted(storedAlarms.size() - 1);

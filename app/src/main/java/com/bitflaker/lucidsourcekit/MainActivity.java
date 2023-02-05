@@ -193,10 +193,7 @@ public class MainActivity extends AppCompatActivity {
                     storedSalt = Base64.decode(preferences.getString("auth_key", ""), Base64.DEFAULT);
                     break;
                 default:
-                    Intent intent = new Intent(MainActivity.this, MainViewer.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
+                    startMainApp();
                     break;
             }
         }
@@ -206,6 +203,19 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    private void startMainApp() {
+        Intent intent = new Intent(MainActivity.this, MainViewer.class);
+        if(getIntent().hasExtra("INITIAL_PAGE")){
+            intent.putExtra("INITIAL_PAGE", getIntent().getStringExtra("INITIAL_PAGE"));
+        }
+        if(getIntent().hasExtra("type")){
+            intent.putExtra("type", getIntent().getIntExtra("type", -1));
+        }
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
     private void dataSetupHandler(MainDatabase db, SharedPreferences preferences, int goalsCount) {
@@ -285,10 +295,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     if(hash.equals(storedHash)) {
                         startLoadingAnimation();
-                        Intent intent = new Intent(MainActivity.this, MainViewer.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
+                        startMainApp();
                     }
                     else {
                         Toast.makeText(MainActivity.this, "invalid password!", Toast.LENGTH_SHORT).show();
@@ -329,10 +336,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
                 startLoadingAnimation();
-                Intent intent = new Intent(MainActivity.this, MainViewer.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
+                startMainApp();
             }
         });
         final BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder().setTitle("Biometric Login").setDescription("Log in using your biometric credential").setNegativeButtonText("Cancel").build();
@@ -394,16 +398,7 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             if(success){
                                 startLoadingAnimation();
-                                Intent intent = new Intent(MainActivity.this, MainViewer.class);
-                                if(getIntent().hasExtra("INITIAL_PAGE")){
-                                    intent.putExtra("INITIAL_PAGE", getIntent().getStringExtra("INITIAL_PAGE"));
-                                }
-                                if(getIntent().hasExtra("type")){
-                                    intent.putExtra("type", getIntent().getIntExtra("type", -1));
-                                }
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
-                                finish();
+                                startMainApp();
                             }
                             else {
                                 enteredPin.delete(0, enteredPin.length());

@@ -27,7 +27,7 @@ import com.bitflaker.lucidsourcekit.database.alarms.entities.AlarmToneTypes;
 )
 public class StoredAlarm {
     @PrimaryKey(autoGenerate = true)
-    public int alarmId;
+    public long alarmId;
     @NonNull
     @ColumnInfo(defaultValue = "Unnamed Alarm")
     public String title;
@@ -46,7 +46,7 @@ public class StoredAlarm {
     @ColumnInfo(defaultValue = "-1")
     public int requestCodeActiveAlarm;
 
-    public StoredAlarm(int alarmId, @NonNull String title, long bedtimeTimestamp, long alarmTimestamp, @NonNull boolean[] pattern, int alarmToneTypeId, @NonNull String alarmUri, float alarmVolume, long alarmVolumeIncreaseTimestamp, boolean isVibrationActive, boolean isFlashlightActive, boolean isAlarmActive, int requestCodeActiveAlarm) {
+    public StoredAlarm(long alarmId, @NonNull String title, long bedtimeTimestamp, long alarmTimestamp, @NonNull boolean[] pattern, int alarmToneTypeId, @NonNull String alarmUri, float alarmVolume, long alarmVolumeIncreaseTimestamp, boolean isVibrationActive, boolean isFlashlightActive, boolean isAlarmActive, int requestCodeActiveAlarm) {
         this.alarmId = alarmId;
         this.title = title;
         this.bedtimeTimestamp = bedtimeTimestamp;

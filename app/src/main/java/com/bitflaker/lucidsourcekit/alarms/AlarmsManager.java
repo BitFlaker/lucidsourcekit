@@ -45,10 +45,10 @@ public class AlarmsManager extends AppCompatActivity {
             Intent data = result.getData();
             if (data != null && data.hasExtra("CREATED_NEW_ALARM") && data.hasExtra("ALARM_ID")) {
                 if(data.getBooleanExtra("CREATED_NEW_ALARM", false)){
-                    adapterAlarms.loadAddedAlarmWithId(data.getIntExtra("ALARM_ID", -1));
+                    adapterAlarms.loadAddedAlarmWithId(data.getLongExtra("ALARM_ID", -1));
                 }
                 else {
-                    adapterAlarms.reloadModifiedAlarmWithId(data.getIntExtra("ALARM_ID", -1));
+                    adapterAlarms.reloadModifiedAlarmWithId(data.getLongExtra("ALARM_ID", -1));
                 }
             }
             fetchNextAlarmAndDisplay(false);
@@ -79,7 +79,7 @@ public class AlarmsManager extends AppCompatActivity {
                         .setTitle("Delete Alarms")
                         .setMessage("Do you really want to delete the selected alarms?")
                         .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-                            List<Integer> alarmIds = adapterAlarms.getSelectedStoredAlarmIds();
+                            List<Long> alarmIds = adapterAlarms.getSelectedStoredAlarmIds();
                             MainDatabase db = MainDatabase.getInstance(this);
                             db.getStoredAlarmDao().getAllById(alarmIds).blockingSubscribe(allAlarms -> {
                                 // TODO: also support one time only alarms

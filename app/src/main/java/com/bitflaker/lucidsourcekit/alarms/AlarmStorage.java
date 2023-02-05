@@ -54,7 +54,7 @@ public class AlarmStorage {
             }
             alarms.add(alarmItem);
             finishFullDataGatheringForAlarm(alarmsList, i+1);
-        });
+        }).dispose();
     }
 
     private AlarmItem getObjectFromEntity(Alarm alarm) {

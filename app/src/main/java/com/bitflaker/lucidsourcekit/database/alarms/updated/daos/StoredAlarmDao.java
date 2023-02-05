@@ -22,10 +22,10 @@ public interface StoredAlarmDao {
     Single<List<StoredAlarm>> getAllActive();
 
     @Query("SELECT * FROM StoredAlarm WHERE alarmId IN (:alarmIds)")
-    Single<List<StoredAlarm>> getAllById(List<Integer> alarmIds);
+    Single<List<StoredAlarm>> getAllById(List<Long> alarmIds);
 
     @Query("SELECT * FROM StoredAlarm WHERE alarmId = :alarmId")
-    Single<StoredAlarm> getById(int alarmId);
+    Single<StoredAlarm> getById(long alarmId);
 
     @Query("UPDATE StoredAlarm SET requestCodeActiveAlarm = :requestCode WHERE alarmId = :storedAlarmId")
     Completable updateRequestCode(long storedAlarmId, int requestCode);
@@ -43,8 +43,8 @@ public interface StoredAlarmDao {
     Completable deleteAll();
 
     @Query("UPDATE StoredAlarm SET isAlarmActive = :isAlarmActive WHERE alarmId = :alarmId")
-    Completable setActiveState(int alarmId, boolean isAlarmActive);
+    Completable setActiveState(long alarmId, boolean isAlarmActive);
 
     @Query("DELETE FROM StoredAlarm WHERE alarmId IN (:alarmsToDelete)")
-    Completable deleteAllById(List<Integer> alarmsToDelete);
+    Completable deleteAllById(List<Long> alarmsToDelete);
 }

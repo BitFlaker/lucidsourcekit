@@ -106,7 +106,8 @@ public class AlarmViewer extends AppCompatActivity {
         // The alarm id is missing, which should not be possible when the alarm was triggered from the alarm receiver
         if(!getIntent().hasExtra("STORED_ALARM_ID")) { finish(); }
 
-        int id = getIntent().getIntExtra("STORED_ALARM_ID", -1);
+        long id = getIntent().getLongExtra("STORED_ALARM_ID", -1);
+        // TODO: ERROR: returned empty result!!
         MainDatabase.getInstance(this).getStoredAlarmDao().getById(id).subscribe(alarm -> {
             storedAlarm = alarm;
             alarmName.setText(alarm.title);
@@ -140,9 +141,9 @@ public class AlarmViewer extends AppCompatActivity {
         openBinauralBeatsPlayer.setOnClickListener(e -> {
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("INITIAL_PAGE", "binaural");
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            finishAndRemoveTask();
+            finishAffinity();
         });
         openJournal.setOnClickListener(e -> {
             DreamJournalEntryTypeDialog dialog = new DreamJournalEntryTypeDialog(this);
@@ -153,9 +154,9 @@ public class AlarmViewer extends AppCompatActivity {
         });
         openApp.setOnClickListener(e -> {
             Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            finishAndRemoveTask();
+            finishAffinity();
         });
 
 //        List<QuickAccessAction> quickAccessActions = new ArrayList<>();
@@ -282,7 +283,7 @@ public class AlarmViewer extends AppCompatActivity {
             opacityAnim.start();
         }
         else {
-            finishAndRemoveTask();
+            finish();
         }
     }
 
@@ -291,9 +292,9 @@ public class AlarmViewer extends AppCompatActivity {
         resetAlarmActivity();
         Intent intent = new Intent(this, AlarmReceiverManager.class);
         intent.putExtra("SNOOZING_STORED_ALARM_ID", storedAlarm.alarmId);
-        alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), AlarmHandler.SNOOZING_ALARM_REQUEST_CODE_START_VALUE + storedAlarm.alarmId, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), AlarmHandler.SNOOZING_ALARM_REQUEST_CODE_START_VALUE + (int)storedAlarm.alarmId, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (5*60*1000), alarmIntent); // TODO make snooze delay changeable
-        finishAndRemoveTask();
+        finish();
     }
 
     private void stopAlarmSelected() {
@@ -315,11 +316,11 @@ public class AlarmViewer extends AppCompatActivity {
 
     private void showJournalCreator(JournalTypes type) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("type", type.ordinal());
         intent.putExtra("INITIAL_PAGE", "journal");
         startActivity(intent);
-        finishAndRemoveTask();
+        finishAffinity();
     }
 
     private void resetAlarmActivity() {

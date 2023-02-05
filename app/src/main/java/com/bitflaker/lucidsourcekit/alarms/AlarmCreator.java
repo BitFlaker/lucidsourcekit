@@ -208,7 +208,7 @@ public class AlarmCreator extends AppCompatActivity {
         selectedToneText.setText(title);
 
         if(getIntent().hasExtra("ALARM_ID")){
-            int alarmId = getIntent().getIntExtra("ALARM_ID", -1);
+            long alarmId = getIntent().getLongExtra("ALARM_ID", -1);
             db.getStoredAlarmDao().getById(alarmId).subscribe(loadedStoredAlarm -> {
                 storedAlarm = loadedStoredAlarm;
                 setEditValuesFromItem();

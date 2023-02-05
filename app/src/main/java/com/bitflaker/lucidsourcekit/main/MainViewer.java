@@ -68,6 +68,7 @@ public class MainViewer extends AppCompatActivity {
 
         if(getIntent().hasExtra("INITIAL_PAGE")) {
             String title = getIntent().getStringExtra("INITIAL_PAGE");
+            System.out.println("INITIAL_PAGE: " + title);
             int position = vpAdapter.getTabIndex(title);
             tabLayout.selectTab(tabLayout.getTabAt(position));
             viewPager2.setCurrentItem(position);
