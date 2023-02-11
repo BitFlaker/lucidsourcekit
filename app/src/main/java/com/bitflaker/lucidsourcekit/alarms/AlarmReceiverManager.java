@@ -74,7 +74,6 @@ public class AlarmReceiverManager extends BroadcastReceiver {
         int interval = intent.getIntExtra("REPETITION_INTERVAL", 0);
         int requestCode = intent.getIntExtra("REQUEST_CODE", 0);
         long initialTime = intent.getLongExtra("INITIAL_TIME", 0);
-        // TODO: ERROR: Cannot cast Integer to Long
         long storedAlarmId = intent.getLongExtra("STORED_ALARM_ID", 0);
         AlarmHandler.updateScheduledRepeatingAlarmTo(context, storedAlarmId, initialTime + interval, repetitionPattern, repetitionPatternCurrentIndex + 1, interval, requestCode).blockingSubscribe();
     }

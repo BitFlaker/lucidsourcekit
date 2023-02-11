@@ -339,21 +339,30 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chp_ringtone"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        app:chipBackgroundColor="@drawable/chip_background"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="?attr/colorOnPrimary"
-                        android:text="Ringtone" />
+                        android:text="Ringtone"
+                        app:chipBackgroundColor="@drawable/chip_background"
+                        style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chp_binaural_beats"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:text="Binaural Beats"
+                        app:chipBackgroundColor="@drawable/chip_background"
+                        style="@style/Widget.MaterialComponents.Chip.Choice" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chp_custom_file"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        app:chipBackgroundColor="@drawable/chip_background"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="?attr/colorOnPrimary"
-                        android:text="Custom file" />
+                        android:text="Custom file"
+                        app:chipBackgroundColor="@drawable/chip_background"
+                        style="@style/Widget.MaterialComponents.Chip.Choice" />
                 </com.google.android.material.chip.ChipGroup>
 
                 <View

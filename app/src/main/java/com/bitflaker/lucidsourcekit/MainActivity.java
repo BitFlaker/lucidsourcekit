@@ -29,6 +29,7 @@ import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.entities.AlarmToneTypes;
 import com.bitflaker.lucidsourcekit.database.alarms.entities.Weekdays;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarm;
+import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarmDetails;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamClarity;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamType;
@@ -138,6 +139,9 @@ public class MainActivity extends AppCompatActivity {
 //            db.getGoalDao().getAllSingle().subscribe((goals, throwable) -> {
             db.getActiveAlarmDao().insert(ActiveAlarm.createUnreferencedAlarm()).subscribe(() -> {
                 db.getActiveAlarmDao().getAllDetails().subscribe(activeAlarms -> {
+                    for (ActiveAlarmDetails details : activeAlarms) {
+                        System.out.println("INITIAL ALARM TIME: " + details.initialTime);
+                    }
                     AlarmHandler.reEnableAlarmsIfNotRunning(getApplicationContext(), activeAlarms);
                     db.getDreamTypeDao().insertAll(DreamType.populateData()).subscribe(() -> {
                         db.getDreamMoodDao().insertAll(DreamMood.populateData()).subscribe(() -> {

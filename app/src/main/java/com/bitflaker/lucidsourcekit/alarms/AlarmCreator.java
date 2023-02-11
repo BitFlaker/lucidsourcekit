@@ -1,6 +1,7 @@
 package com.bitflaker.lucidsourcekit.alarms;
 
 import static android.app.AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED;
+import static com.bitflaker.lucidsourcekit.alarms.AlarmItem.AlarmToneType.BINAURAL_BEAT;
 import static com.bitflaker.lucidsourcekit.alarms.AlarmItem.AlarmToneType.CUSTOM_FILE;
 import static com.bitflaker.lucidsourcekit.alarms.AlarmItem.AlarmToneType.RINGTONE;
 
@@ -56,16 +57,16 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class AlarmCreator extends AppCompatActivity {
-    MaterialButton setAlarm;
-    MaterialCardView tone, volume, volumeIncrease, vibrate, flashlight, alarmTimeCard, bedtimeTimeCard;
-    ChipGroup alarmToneGroup;
-    Chip ringtoneChip, customFileChip;
-    TextView selectedToneText, incVolumeFor, currAlarmVolume, repeatPatternText;
-    Slider alarmVolume;
-    SwitchMaterial vibrateAlarm, useFlashlight;
-    LinearLayout weekdaysContainer;
-    EditText alarmTitle;
-    SleepClock sleepClock;
+    private MaterialButton setAlarm;
+    private MaterialCardView tone, volume, volumeIncrease, vibrate, flashlight, alarmTimeCard, bedtimeTimeCard;
+    private ChipGroup alarmToneGroup;
+    private Chip ringtoneChip, customFileChip, binauralBeatsChip;
+    private TextView selectedToneText, incVolumeFor, currAlarmVolume, repeatPatternText;
+    private Slider alarmVolume;
+    private SwitchMaterial vibrateAlarm, useFlashlight;
+    private LinearLayout weekdaysContainer;
+    private EditText alarmTitle;
+    private SleepClock sleepClock;
 
     private final static int PERMISSION_REQUEST_CODE = 776;
     private final static boolean[] noRepeatPattern = new boolean[] { false, false, false, false, false, false, false };
@@ -152,6 +153,7 @@ public class AlarmCreator extends AppCompatActivity {
         flashlight = findViewById(R.id.crd_alarm_use_flashlight);
         alarmToneGroup = findViewById(R.id.chp_grp_alarm_tone);
         customFileChip = findViewById(R.id.chp_custom_file);
+        binauralBeatsChip = findViewById(R.id.chp_binaural_beats);
         ringtoneChip = findViewById(R.id.chp_ringtone);
         selectedToneText = findViewById(R.id.txt_tone_selected);
         incVolumeFor = findViewById(R.id.txt_inc_volume_for);
@@ -245,6 +247,12 @@ public class AlarmCreator extends AppCompatActivity {
                 selectedToneText.setText(RingtoneManager.getRingtone(this, ringtoneUri).getTitle(this));
                 storedAlarm.alarmUri = ringtoneUri.toString();
             }
+            else if (binauralBeatsChip.isChecked()){
+                // TODO: binaural beats selection visible
+                storedAlarm.alarmToneTypeId = BINAURAL_BEAT.ordinal();
+                selectedToneText.setText("- NONE -");
+                storedAlarm.alarmUri = Uri.EMPTY.toString();
+            }
             else if (customFileChip.isChecked()) {
                 if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_EXTERNAL_STORAGE }, PERMISSION_REQUEST_CODE);
@@ -265,7 +273,10 @@ public class AlarmCreator extends AppCompatActivity {
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
                 ringtoneSelectorLauncher.launch(intent);
             }
-            else {
+            else if(binauralBeatsChip.isChecked()){
+                // TODO: open binaural beats selector
+            }
+            else if(customFileChip.isChecked()) {
                 Intent audioPicker = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.INTERNAL_CONTENT_URI);
                 customFileSelectorLauncher.launch(audioPicker);
             }
@@ -390,6 +401,7 @@ public class AlarmCreator extends AppCompatActivity {
 
     private void setEditValuesFromItem() {
         ringtoneChip.setChecked(storedAlarm.alarmToneTypeId == RINGTONE.ordinal());
+        binauralBeatsChip.setChecked(storedAlarm.alarmToneTypeId == BINAURAL_BEAT.ordinal());
         customFileChip.setChecked(storedAlarm.alarmToneTypeId == CUSTOM_FILE.ordinal());
         ringtoneUri = Uri.parse(storedAlarm.alarmUri);
         String title;
@@ -404,6 +416,9 @@ public class AlarmCreator extends AppCompatActivity {
                 String filename = file.getName();
                 title = filename.substring(0, filename.lastIndexOf("."));
                 selectedToneText.setText(title);
+                break;
+            case BINAURAL_BEAT:
+                // TODO: Get selected binaural beat and display it appropriately
                 break;
         }
         alarmVolume.setValue(storedAlarm.alarmVolume);
@@ -468,7 +483,7 @@ public class AlarmCreator extends AppCompatActivity {
     private void setCurrentAlarmValues(SleepClock sleepClock) {
         storedAlarm.bedtimeTimestamp = (long) sleepClock.getHoursToBedTime() * 60L * 60L * 1000L + (long) sleepClock.getMinutesToBedTime() * 60L * 1000L;
         storedAlarm.alarmTimestamp = (long) sleepClock.getHoursToAlarm() * 60L * 60L * 1000L + (long) sleepClock.getMinutesToAlarm() * 60L * 1000L;
-        storedAlarm.alarmToneTypeId = ringtoneChip.isChecked() ? RINGTONE.ordinal() : (customFileChip.isChecked() ? CUSTOM_FILE.ordinal() : -1);
+        storedAlarm.alarmToneTypeId = ringtoneChip.isChecked() ? RINGTONE.ordinal() : (customFileChip.isChecked() ? CUSTOM_FILE.ordinal() : (binauralBeatsChip.isChecked() ? BINAURAL_BEAT.ordinal() : -1));
         storedAlarm.alarmUri = ringtoneUri.toString();
         storedAlarm.alarmVolume = alarmVolume.getValue();
         storedAlarm.alarmVolumeIncreaseTimestamp = (long) currentVolIncMin * 60L * 1000L + (long) currentVolIncSec * 1000L;

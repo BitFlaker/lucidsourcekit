@@ -304,6 +304,7 @@ public class AlarmItem {
 
     public enum AlarmToneType {
         RINGTONE,
-        CUSTOM_FILE
+        CUSTOM_FILE,
+        BINAURAL_BEAT
     }
 }
