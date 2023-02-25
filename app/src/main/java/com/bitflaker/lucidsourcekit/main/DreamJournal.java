@@ -104,6 +104,7 @@ public class DreamJournal extends Fragment {
     private Completable loadAllJournalData(List<JournalEntry> journalEntries) {
         return Completable.fromAction(() -> {
             // TODO gather all data in a more efficient way!
+            djel.clear();
             for (JournalEntry entry : journalEntries) {
                 List<AssignedTags> assignedTags = db.getJournalEntryHasTagDao().getAllFromEntryId(entry.entryId).blockingGet();
                 List<JournalEntryHasType> journalEntryHasTypes = db.getJournalEntryIsTypeDao().getAllFromEntryId(entry.entryId).blockingGet();

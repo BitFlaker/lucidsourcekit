@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.widget.Toast;
 
+import com.bitflaker.lucidsourcekit.alarms.AlarmCreator;
 import com.bitflaker.lucidsourcekit.alarms.AlarmReceiverManager;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarm;
@@ -115,12 +116,18 @@ public class AlarmHandler {
                 // create an alarm
                 // query first free request code and store it in the database, then schedule the alarm
                 db.getActiveAlarmDao().getFirstFreeRequestCode().blockingSubscribe(reqCode -> {
-                    db.getActiveAlarmDao().insert(new ActiveAlarm(reqCode, finalfinalFirstAlarmTime, interval, finalfinalRepetitionPatternCurrentIndex)).blockingSubscribe(() -> {
-                        db.getStoredAlarmDao().updateRequestCode(storedAlarmId, reqCode).blockingSubscribe(() -> {
+                    int alarmReqCode = reqCode * 2;
+                    int alarmEditorReqCode = reqCode * 2 + 1;
+                    db.getActiveAlarmDao().insert(new ActiveAlarm(alarmReqCode, finalfinalFirstAlarmTime, interval, finalfinalRepetitionPatternCurrentIndex)).blockingSubscribe(() -> {
+                        db.getStoredAlarmDao().updateRequestCode(storedAlarmId, alarmReqCode).blockingSubscribe(() -> {
                             db.getStoredAlarmDao().setActiveState((int) storedAlarmId, true).blockingSubscribe(() -> {
-                                intent.putExtra("REQUEST_CODE", reqCode);
-                                final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, reqCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                                manager.setExact(AlarmManager.RTC_WAKEUP, finalfinalFirstAlarmTime, pendingIntent);
+                                intent.putExtra("REQUEST_CODE", alarmReqCode);
+                                final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarmReqCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+//                                manager.setExact(AlarmManager.RTC_WAKEUP, finalfinalFirstAlarmTime, pendingIntent);
+                                Intent editor = new Intent(context, AlarmCreator.class);
+                                editor.putExtra("ALARM_ID", storedAlarmId);
+                                final PendingIntent pendingIntentEditor = PendingIntent.getBroadcast(context, alarmEditorReqCode, editor, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                                manager.setAlarmClock(new AlarmManager.AlarmClockInfo(finalfinalFirstAlarmTime, pendingIntentEditor), pendingIntent);
                             });
                         });
                     });
@@ -131,7 +138,11 @@ public class AlarmHandler {
                 db.getActiveAlarmDao().update(new ActiveAlarm(requestCode, firstAlarmTime, interval, repetitionPatternCurrentIndex)).blockingSubscribe(() -> {
                     intent.putExtra("REQUEST_CODE", requestCode);
                     final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                    manager.setExact(AlarmManager.RTC_WAKEUP, finalfinalFirstAlarmTime, pendingIntent);
+//                    manager.setExact(AlarmManager.RTC_WAKEUP, finalfinalFirstAlarmTime, pendingIntent);
+                    Intent editor = new Intent(context, AlarmCreator.class);
+                    editor.putExtra("ALARM_ID", storedAlarmId);
+                    final PendingIntent pendingIntentEditor = PendingIntent.getBroadcast(context, requestCode + 1, editor, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    manager.setAlarmClock(new AlarmManager.AlarmClockInfo(finalfinalFirstAlarmTime, pendingIntentEditor), pendingIntent);
                 });
             }
         });
@@ -162,10 +173,16 @@ public class AlarmHandler {
             if(requestCode == -1){
                 db.getStoredAlarmDao().setActiveState((int) storedAlarmId, true).blockingSubscribe(() -> {
                     db.getActiveAlarmDao().getFirstFreeRequestCode().blockingSubscribe(reqCode -> {
-                        db.getActiveAlarmDao().insert(new ActiveAlarm(reqCode, finalTime, -1, -1)).blockingSubscribe(() -> {
-                            db.getStoredAlarmDao().updateRequestCode((int) storedAlarmId, reqCode).blockingSubscribe(() -> {
-                                final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, reqCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                                manager.setExact(AlarmManager.RTC_WAKEUP, finalTime, pendingIntent);
+                        int alarmReqCode = reqCode * 2;
+                        int alarmEditorReqCode = reqCode * 2 + 1;
+                        db.getActiveAlarmDao().insert(new ActiveAlarm(alarmReqCode, finalTime, -1, -1)).blockingSubscribe(() -> {
+                            db.getStoredAlarmDao().updateRequestCode((int) storedAlarmId, alarmReqCode).blockingSubscribe(() -> {
+                                final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarmReqCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+//                                manager.setExact(AlarmManager.RTC_WAKEUP, finalTime, pendingIntent);
+                                Intent editor = new Intent(context, AlarmCreator.class);
+                                editor.putExtra("ALARM_ID", storedAlarmId);
+                                final PendingIntent pendingIntentEditor = PendingIntent.getBroadcast(context, alarmEditorReqCode, editor, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                                manager.setAlarmClock(new AlarmManager.AlarmClockInfo(finalTime, pendingIntentEditor), pendingIntent);
                             });
                         });
                     });
@@ -174,7 +191,11 @@ public class AlarmHandler {
             else {
                 db.getActiveAlarmDao().update(new ActiveAlarm(requestCode, finalTime, -1, -1)).blockingSubscribe(() -> {
                     final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                    manager.setExact(AlarmManager.RTC_WAKEUP, finalTime, pendingIntent);
+//                    manager.setExact(AlarmManager.RTC_WAKEUP, finalTime, pendingIntent);
+                    Intent editor = new Intent(context, AlarmCreator.class);
+                    editor.putExtra("ALARM_ID", storedAlarmId);
+                    final PendingIntent pendingIntentEditor = PendingIntent.getBroadcast(context, requestCode + 1, editor, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    manager.setAlarmClock(new AlarmManager.AlarmClockInfo(finalTime, pendingIntentEditor), pendingIntent);
                 });
             }
         });

@@ -19,13 +19,15 @@ import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.StringJoiner;
+import java.util.concurrent.TimeUnit;
 
 public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerViewAdapterAlarms.MainViewHolderAlarms> {
     private final List<MainViewHolderAlarms> loadedItems = new ArrayList<>();
@@ -68,14 +70,23 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         loadedItems.add(holder);
         loadedPositions.add(position);
         holder.title.setText(alarm.title);
-        DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
 
-        Calendar alarmTime = Calendar.getInstance();
-        alarmTime.setTimeInMillis(alarm.alarmTimestamp);
-        String tString = tf.format(alarmTime.getTime().getTime());
-        boolean isPmAm = tString.toUpperCase().contains("PM") || tString.toUpperCase().contains("AM");
-        holder.timePrimary.setText(isPmAm ? tString.replace("PM", "").replace("AM", "") : tString);
-        holder.timeSecondary.setText(isPmAm ? (tString.toUpperCase().contains("PM") ? "PM" : "AM") : "");
+        long alarmHours = TimeUnit.MILLISECONDS.toHours(alarm.alarmTimestamp);
+        long alarmMinutes = TimeUnit.MILLISECONDS.toMinutes(alarm.alarmTimestamp) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(alarm.alarmTimestamp));
+        boolean isPmAm = !android.text.format.DateFormat.is24HourFormat(context);//tString.toUpperCase().contains("PM") || tString.toUpperCase().contains("AM");
+        String alarmTime = alarmHours + ":" + alarmMinutes;
+        SimpleDateFormat clock24H = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat clock12H = new SimpleDateFormat("hh:mm");
+        try {
+            Date date = clock24H.parse(alarmTime);
+            alarmTime = isPmAm ? clock12H.format(date) : alarmTime;
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+        }
+
+        holder.timePrimary.setText(alarmTime);
+        holder.timeSecondary.setText(isPmAm ? (alarmHours < 12 ? " AM" : " PM") : "");
 
 //        holder.active.setOnCheckedChangeListener(null);
         if(alarm.isAlarmActive && alarm.requestCodeActiveAlarm == -1){

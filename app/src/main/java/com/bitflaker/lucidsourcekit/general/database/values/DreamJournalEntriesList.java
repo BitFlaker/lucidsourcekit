@@ -2,6 +2,8 @@ package com.bitflaker.lucidsourcekit.general.database.values;
 
 import android.util.Pair;
 
+import androidx.annotation.NonNull;
+
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AssignedTags;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
@@ -24,8 +26,22 @@ public class DreamJournalEntriesList {
         entries = new ArrayList<>();
     }
 
-    public DreamJournalEntriesList(List<DreamJournalEntry> entries){
-        this.entries = entries;
+    private DreamJournalEntriesList(List<DreamJournalEntry> entries){
+        this.entries = new ArrayList<>();
+        if(entries == null){
+            this.entries = new ArrayList<>();
+            return;
+        }
+        this.entries.addAll(entries);
+    }
+
+    @NonNull
+    public DreamJournalEntriesList clone() {
+        return new DreamJournalEntriesList(entries);
+    }
+
+    public void clear() {
+        this.entries.clear();
     }
 
     public Integer[] getEntryIds() {

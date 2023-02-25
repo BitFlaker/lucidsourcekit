@@ -70,7 +70,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     public RecyclerViewAdapterDreamJournal(DreamJournal journalList, Context context, DreamJournalEntriesList entries) {
         this.journalList = journalList;
         this.context = context;
-        this.entries = entries;
+        this.entries = entries.clone();
         db = MainDatabase.getInstance(context);
         filteredEntries = null;
         currentFilter = null;
@@ -506,7 +506,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     public void setEntries(DreamJournalEntriesList entries) {
         if(filteredEntries == null) {
             Pair<Operation, Integer> changes = getChanges(entries);
-            this.entries = entries;
+            this.entries = entries.clone();
             int index;
             switch (changes.first) {
                 case ADDED:
