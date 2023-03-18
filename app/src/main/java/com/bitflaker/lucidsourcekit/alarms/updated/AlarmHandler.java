@@ -4,8 +4,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.widget.Toast;
 
 import com.bitflaker.lucidsourcekit.alarms.AlarmCreator;
 import com.bitflaker.lucidsourcekit.alarms.AlarmReceiverManager;
@@ -298,10 +296,10 @@ public class AlarmHandler {
                 alarmUp = false;
             }
 
-            boolean finalAlarmUp = alarmUp;
-            new Handler(context.getMainLooper()).post(() -> {
-                Toast.makeText(context, "RUNNING: " + finalAlarmUp, Toast.LENGTH_SHORT).show();
-            });
+//            boolean finalAlarmUp = alarmUp;
+//            new Handler(context.getMainLooper()).post(() -> {
+//                Toast.makeText(context, "RUNNING: " + finalAlarmUp, Toast.LENGTH_SHORT).show();
+//            });
 
             // in case the alarm is no longer running, reschedule it
             if(!alarmUp){

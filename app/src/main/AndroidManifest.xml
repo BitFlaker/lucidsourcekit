@@ -6,15 +6,19 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!-- <uses-permission android:name="android.permission.DISABLE_KEYGUARD" /> -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- <uses-permission android:name="android.permission.DISABLE_KEYGUARD" /> -->
     <!-- <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" /> -->
     <!-- <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <permission tools:node="remove" android:name="android.permission.FLASHLIGHT" android:permissionGroup="android.permission-group.HARDWARE_CONTROLS" android:protectionLevel="normal" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <permission
+        android:name="android.permission.FLASHLIGHT"
+        android:permissionGroup="android.permission-group.HARDWARE_CONTROLS"
+        android:protectionLevel="normal"
+        tools:node="remove" />
 
     <application
         android:allowBackup="true"
@@ -24,15 +28,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LucidSourceKit.Dark">
         <activity
+            android:name=".notification.NotificationManager"
+            android:configChanges="orientation"
+            android:exported="false" />
+        <activity
             android:name=".alarms.IsolatedBinauralBeatsView"
             android:exported="false" />
         <activity
             android:name=".alarms.AlarmViewer"
+            android:autoRemoveFromRecents="true"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:showOnLockScreen="true"
-            android:autoRemoveFromRecents="true" />
+            android:showOnLockScreen="true" />
         <activity
             android:name=".alarms.AlarmCreator"
             android:configChanges="orientation"
@@ -78,7 +86,9 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".alarms.AlarmReceiverManager" android:exported="false">
+        <receiver
+            android:name=".alarms.AlarmReceiverManager"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -86,4 +96,5 @@
             </intent-filter>
         </receiver>
     </application>
+
 </manifest>

@@ -2,6 +2,7 @@ package com.bitflaker.lucidsourcekit;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
@@ -80,7 +82,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Tools.setThemeColors(R.style.Theme_LucidSourceKit_Dark);
+        // TODO: remove enforce dark mode
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        switch (currentNightMode) {
+            case Configuration.UI_MODE_NIGHT_NO:
+                Tools.setThemeColors(R.style.Theme_LucidSourceKit_Light);
+                break;
+            case Configuration.UI_MODE_NIGHT_YES:
+                Tools.setThemeColors(R.style.Theme_LucidSourceKit_Dark);
+                break;
+        }
+        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Tools.loadLanguage(MainActivity.this);

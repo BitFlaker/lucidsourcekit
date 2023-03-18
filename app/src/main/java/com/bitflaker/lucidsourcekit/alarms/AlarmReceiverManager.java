@@ -37,7 +37,7 @@ public class AlarmReceiverManager extends BroadcastReceiver {
         }
         else if(intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED) || intent.getAction().equalsIgnoreCase(Intent.ACTION_MY_PACKAGE_REPLACED)){
             // TODO: check if the alarm gets rescheduled after updating the app
-            Toast.makeText(context, "ACTION: " + intent.getAction(), Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "ACTION: " + intent.getAction(), Toast.LENGTH_LONG).show();
             rescheduleAllStoredAlarms(context);
         }
     }

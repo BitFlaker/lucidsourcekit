@@ -15,6 +15,7 @@ public class IsolatedBinauralBeatsView extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_isolated_binaural_beats_view);
         Tools.makeStatusBarTransparent(this);

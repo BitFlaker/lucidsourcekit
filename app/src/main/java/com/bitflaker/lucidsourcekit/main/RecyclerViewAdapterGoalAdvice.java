@@ -20,11 +20,11 @@ import java.util.List;
 public class RecyclerViewAdapterGoalAdvice extends RecyclerView.Adapter<RecyclerViewAdapterGoalAdvice.MainViewHolderGoalAdvices> {
     private OnEntryClicked mListener;
     private Context context;
-    private List<GoalAdvice> gaolAdvices;
+    private List<GoalAdvice> goalAdvices;
 
-    public RecyclerViewAdapterGoalAdvice(Context context, List<GoalAdvice> gaolAdvices) {
+    public RecyclerViewAdapterGoalAdvice(Context context, List<GoalAdvice> goalAdvices) {
         this.context = context;
-        this.gaolAdvices = gaolAdvices;
+        this.goalAdvices = goalAdvices;
     }
 
     @NonNull
@@ -52,19 +52,18 @@ public class RecyclerViewAdapterGoalAdvice extends RecyclerView.Adapter<Recycler
 //        }
         holder.card.setLayoutParams(lParams);
 //        holder.title.setText(gaolAdvices.get(position).getTitle().toUpperCase());
-        holder.heading.setText(gaolAdvices.get(position).getHeading());
+        holder.heading.setText(goalAdvices.get(position).getHeading());
 //        holder.description.setText(gaolAdvices.get(position).getDescription());
-        holder.icon.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), gaolAdvices.get(position).getIcon(), context.getTheme()));
-        holder.topCardColor.setBackgroundTintList(ColorStateList.valueOf(gaolAdvices.get(position).getColor()));
+        holder.icon.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), goalAdvices.get(position).getIcon(), context.getTheme()));
+        holder.topCardColor.setBackgroundTintList(ColorStateList.valueOf(goalAdvices.get(position).getColor()));
         holder.card.setOnClickListener(e -> {
-            // TODO add logic to apply advice
-            System.out.println("advice clicked --> apply");
+            goalAdvices.get(position).getOnAdviceSelectedListener().adviceSelected(goalAdvices.get(position));
         });
     }
 
     @Override
     public int getItemCount() {
-        return gaolAdvices.size();
+        return goalAdvices.size();
     }
 
     public class MainViewHolderGoalAdvices extends RecyclerView.ViewHolder {

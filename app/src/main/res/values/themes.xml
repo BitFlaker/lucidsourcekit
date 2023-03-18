@@ -1,42 +1,125 @@
 <resources>
-    <style name="Theme.LucidSourceKit.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">@color/creamy_blue</item>
-        <item name="android:textColor">?attr/bright_text_color</item>
-        <item name="priorityColor">@color/white</item>
-        <item name="iconColor">@color/darker_white</item>
-        <item name="bright_text_color">@color/black</item>
-        <item name="darker_text_color">@color/gray</item>
-        <item name="button_primary">@color/dark_purple_blue</item>
-        <item name="pin_background">@color/dark_purple_blue_transparent</item>
-        <item name="inactivePageDot">@color/clay_white</item>
-        <item name="activePageDot">?attr/colorPrimary</item>
-        <item name="activeTabIcon">@color/creamy_blue</item>
-        <item name="inactiveTabIcon">@color/darker_gray_white</item>
-        <item name="secondColor">@color/gray_white</item>
-        <item name="main_background_color">@color/white</item>
-        <item name="background_stand_out">@color/clay_gray_white</item>
+    <style name="Theme.LucidSourceKit.Light" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/blue_500</item>
+        <item name="colorPrimaryVariant">@color/blue_var</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/teal_300</item>
+        <item name="colorSecondaryVariant">@color/teal_var</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="backgroundColor">@color/background</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:textColorHint">@color/white_50p</item>
+
+        <item name="tertiaryTextColor">@color/white_50p</item>
+        <item name="secondaryTextColor">@color/white_70p</item>
+        <item name="primaryTextColor">@color/white</item>
+
+        <item name="slightElevated">@color/grayed_blue</item>
+        <item name="slightElevated2x">@color/white_6p</item>
+        <item name="colorDisabled">@color/background_brighter</item>
+        <item name="colorPrimaryTranslucent">@color/prim_30p</item>
         <item name="colorError">@color/lighter_red</item>
-        <item name="highlight_success">@color/darker_green</item>
-        <item name="lightSelection">@color/clay_white</item>
-        <item name="main_overview_graphic">@drawable/deep_night_mountains_light</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="colorWarning">@color/lighter_orange</item>
+        <item name="colorSuccess">@color/lighter_green</item>
+        <item name="main_overview_graphic">@drawable/deep_night_mountains_new_dark</item>
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDialogStyle</item>
+        <item name="typeStyle">@style/Widget.MaterialComponents.Button.TextButton</item>
     </style>
 
-    <style name="ThemedDialog.Light" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <style name="PopupMenu.Dark" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:textColor">?attr/primaryTextColor</item>
+        <item name="popupMenuBackground">@drawable/medium_rounded_rectangle_padded</item>
+        <item name="android:backgroundTint">?attr/backgroundColor</item>
+    </style>
+
+    <style name="ThemedDialog.Dark" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="colorPrimary">@color/blue_500</item>
+        <item name="slightElevated">@color/white_40p</item>
+        <item name="android:background">@color/background_paper</item>
+        <item name="android:textColor">?attr/primaryTextColor</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    </style>
+
+    <style name="ThemedChipEntry.Dark" parent="Widget.MaterialComponents.Chip.Entry">
+        <item name="slightElevated">@color/white_40p</item>
+        <item name="android:background">@color/white_40p</item>
+        <item name="android:textColor">?attr/primaryTextColor</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/blue_500</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/blue_500</item>
+    </style>
+
+    <style name="Tooltip.Dark" parent="Widget.MaterialComponents.Tooltip">
+        <item name="backgroundTint">?attr/slightElevated2x</item>
+    </style>
+
+    <!-- Bottom Sheet styles -->
+
+    <style name="BottomSheetDialogStyle" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="android:backgroundTint">@color/background</item>
+        <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:theme">@style/Theme.LucidSourceKit.Dark</item>
+    </style>
+
+    <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
+    </style>
+
+    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">18dp</item>
+    </style>
+
+
+
+<!--    <style name="Theme.LucidSourceKit.Light" parent="Theme.MaterialComponents.Light.NoActionBar">-->
+<!--        <item name="colorPrimary">@color/creamy_blue</item>-->
+<!--        <item name="android:textColor">?attr/bright_text_color</item>-->
+<!--        <item name="priorityColor">@color/white</item>-->
+<!--        <item name="iconColor">@color/darker_white</item>-->
+<!--        <item name="bright_text_color">@color/black</item>-->
+<!--        <item name="darker_text_color">@color/gray</item>-->
+<!--        <item name="button_primary">@color/dark_purple_blue</item>-->
+<!--        <item name="pin_background">@color/dark_purple_blue_transparent</item>-->
+<!--        <item name="inactivePageDot">@color/clay_white</item>-->
+<!--        <item name="activePageDot">?attr/colorPrimary</item>-->
+<!--        <item name="activeTabIcon">@color/creamy_blue</item>-->
+<!--        <item name="inactiveTabIcon">@color/darker_gray_white</item>-->
+<!--        <item name="secondColor">@color/gray_white</item>-->
+<!--        <item name="main_background_color">@color/white</item>-->
+<!--        <item name="background_stand_out">@color/clay_gray_white</item>-->
+<!--        <item name="colorError">@color/lighter_red</item>-->
+<!--        <item name="highlight_success">@color/darker_green</item>-->
+<!--        <item name="lightSelection">@color/clay_white</item>-->
+<!--        <item name="main_overview_graphic">@drawable/deep_night_mountains_light</item>-->
+<!--    </style>-->
+
+    <style name="ThemedDialog.Light" parent="Theme.MaterialComponents.Light.Dialog.Alert">
         <item name="android:background">?attr/background_stand_out</item>
         <item name="android:textColor">?attr/bright_text_color</item>
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
     </style>
 
-    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">?attr/colorPrimary</item>
-    </style>
+<!--    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">-->
+<!--        <item name="android:textColor">?attr/colorPrimary</item>-->
+<!--    </style>-->
 
-    <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">?attr/colorPrimary</item>
-    </style>
+<!--    <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">-->
+<!--        <item name="android:textColor">?attr/colorPrimary</item>-->
+<!--    </style>-->
 
-    <style name="PopupMenu.Light" parent="Widget.AppCompat.PopupMenu">
+    <style name="PopupMenu.Light" parent="Widget.MaterialComponents.PopupMenu">
         <item name="android:textColor">?attr/bright_text_color</item>
         <item name="android:itemBackground">?attr/main_background_color</item>
     </style>

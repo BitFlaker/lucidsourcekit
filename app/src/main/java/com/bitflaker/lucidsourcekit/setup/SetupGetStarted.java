@@ -12,6 +12,7 @@ import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamClarity;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamType;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.SleepQuality;
+import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.File;
@@ -21,6 +22,7 @@ public class SetupGetStarted extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_started);
 

@@ -46,6 +46,7 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.resulttables.DetailedShuffleHasGoal;
 import com.bitflaker.lucidsourcekit.general.Tools;
+import com.bitflaker.lucidsourcekit.notification.NotificationManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
@@ -114,12 +115,13 @@ public class Goals extends Fragment {
 
         @ColorInt int primVar = Tools.getAttrColor(R.attr.colorPrimaryVariant, getContext().getTheme());
         List<GoalAdvice> advices = new ArrayList<>();
-        advices.add(new GoalAdvice("GOAL COUNT", "Increase goal count", "Increase the goal count to 4 for more difficulty", R.drawable.ic_round_plus_one_24, Color.TRANSPARENT));
-        advices.add(new GoalAdvice("NOTIFICATIONS", "Enable notifications", "Enable notifications to be reminded to look out for the targets", R.drawable.ic_baseline_notifications_active_24, Color.TRANSPARENT));
-        advices.add(new GoalAdvice("SHUFFLE", "Shuffle goals", "Shuffle the goals again to get new and possibly better ones", R.drawable.ic_baseline_shuffle_24, Color.TRANSPARENT));
-        advices.add(new GoalAdvice("DIFFICULTY", "Increase goals difficulty", "Increase the target goal difficulty to 2.3 for a bigger challenge", R.drawable.ic_baseline_vertical_align_top_24, Color.TRANSPARENT));
+        advices.add(new GoalAdvice("NOTIFICATIONS", "Configure notifications", "Configure notifications to remind you to look out for the targets", R.drawable.ic_baseline_notifications_active_24, Color.TRANSPARENT, advice -> {
+            startActivity(new Intent(getContext(), NotificationManager.class));
+        }));
+        advices.add(new GoalAdvice("GOAL COUNT", "Increase goal count", "Increase the goal count to 4 for more difficulty", R.drawable.ic_round_plus_one_24, Color.TRANSPARENT, advice -> {}));
+        advices.add(new GoalAdvice("SHUFFLE", "Shuffle goals", "Shuffle the goals again to get new and possibly better ones", R.drawable.ic_baseline_shuffle_24, Color.TRANSPARENT, advice -> {}));
+        advices.add(new GoalAdvice("DIFFICULTY", "Increase goals difficulty", "Increase the target goal difficulty to 2.3 for a bigger challenge", R.drawable.ic_baseline_vertical_align_top_24, Color.TRANSPARENT, advice -> {}));
         RecyclerViewAdapterGoalAdvice goalAdvice = new RecyclerViewAdapterGoalAdvice(getContext(), advices);
-
 
         quickScrollAdjustmentsContainer.setAdapter(goalAdvice);
 //        quickScrollAdjustmentsContainer.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -442,11 +444,11 @@ public class Goals extends Fragment {
                                    totalPastDrawCount += iVal;
                                }
                                pastOccFreq.set(100 * (totalPastDrawCount - finalRedrawReduction) / (float) (shuffleCount - drawCounts.size()));
-                           });
-                       });
-                   });
-               });
-           });
+                           }).dispose();
+                       }).dispose();
+                   }).dispose();
+               }).dispose();
+           }).dispose();
            getActivity().runOnUiThread(() -> {
                // TODO: hide loading indicators
                currentGoalsContainer.removeAllViews();
@@ -497,7 +499,7 @@ public class Goals extends Fragment {
                yGoalsOccFreq.setText(numParts[0]);
                yGoalsOccFreqPart.setText(String.format(Locale.ENGLISH, "%s%s", numParts[1], "%"));
            });
-       });
+       }).dispose();
    }
 
     private String[] getDecimalNumParts(float value, int decimals) {

@@ -37,6 +37,7 @@ public class EditGoals extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_goals);
         Tools.makeStatusBarTransparent(EditGoals.this);

@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
@@ -42,6 +43,7 @@ import java.util.stream.Collectors;
 public class Tools {
     private static int THEME_DIALOG;
     private static int THEME_POPUP;
+    private static int THEME;
 
     public static void setThemeColors(int theme){
         if(theme == R.style.Theme_LucidSourceKit_Light) {
@@ -60,6 +62,7 @@ public class Tools {
             THEME_DIALOG = R.style.ThemedDialog_Dark;
             THEME_POPUP = R.style.PopupMenu_Dark;
         }
+        THEME = theme;
     }
 
     public static int getThemeDialog(){
@@ -68,6 +71,10 @@ public class Tools {
 
     public static int getPopupTheme() {
         return THEME_POPUP;
+    }
+
+    public static int getTheme() {
+        return THEME;
     }
 
     public static void loadLanguage(Activity activity){
@@ -162,6 +169,11 @@ public class Tools {
         LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lParams.setMargins(dpToPx(context, 15), getStatusBarHeight(context) + dpToPx(context, 10), 0, 0);
         return lParams;
+    }
+
+    public static ConstraintLayout.LayoutParams getConstraintLayoutParamsTopStatusbar(ConstraintLayout.LayoutParams layoutParams, Context context) {
+        layoutParams.setMargins(dpToPx(context, 15), getStatusBarHeight(context), 0, 0);
+        return layoutParams;
     }
 
     public static RelativeLayout.LayoutParams addRelativeLayoutParamsTopStatusbarSpacing(Context context, RelativeLayout.LayoutParams lParams) {

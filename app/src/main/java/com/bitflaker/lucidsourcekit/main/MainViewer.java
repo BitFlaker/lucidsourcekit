@@ -21,7 +21,6 @@ public class MainViewer extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
     private ImageButton moreOptions;
-
     private final String pageOverview = "overview";
     private final String pageLogging = "journal";
     private final String pageStats = "statistics";
@@ -38,6 +37,7 @@ public class MainViewer extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_viewer);
         Tools.makeStatusBarTransparent(this);

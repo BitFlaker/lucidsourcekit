@@ -137,6 +137,7 @@ public class AlarmCreator extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_creator);
         Tools.makeStatusBarTransparent(this);
