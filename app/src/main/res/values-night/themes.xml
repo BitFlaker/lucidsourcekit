@@ -98,6 +98,12 @@
         <item name="android:textColor">?attr/primaryTextColor</item>
     </style>
 
+    <style name="Custom.Chip.Choice.Elevated" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:textColor">@color/chip_text_default_gone</item>
+        <item name="chipBackgroundColor">@color/chip_background_default_gone</item>
+        <item name="rippleColor">@color/ripple_color_white</item>
+    </style>
+
     <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/blue_500</item>
     </style>
@@ -111,9 +117,8 @@
     </style>
 
     <!-- Bottom Sheet styles -->
-
     <style name="BottomSheetDialogStyle" parent="Theme.MaterialComponents.BottomSheetDialog">
-        <item name="android:backgroundTint">@color/background</item>
+        <item name="slightElevated">@color/grayed_blue</item>
         <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
@@ -123,6 +128,7 @@
 
     <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
+        <item name="android:backgroundTint">@color/background</item>
     </style>
 
     <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">

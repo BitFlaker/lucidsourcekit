@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:backgroundTint="?attr/backgroundColor">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/crd_notification_settings_icon_background"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        app:cardBackgroundColor="?attr/slightElevated"
+        app:cardCornerRadius="@dimen/cardRadius"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/img_notification_settings_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_baseline_bedtime_24" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/txt_notification_settings_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Dream journal reminder"
+        android:textAlignment="center"
+        android:textColor="?attr/primaryTextColor"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/crd_notification_settings_icon_background" />
+
+    <TextView
+        android:id="@+id/txt_notification_settings_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="48dp"
+        android:text="Reminder for writing down your dream to the dream journal in order to improve dream recall"
+        android:textAlignment="center"
+        android:textColor="?attr/secondaryTextColor"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_notification_settings_heading" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginRight="20dp"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="@dimen/cardRadius_Var2"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_notification_settings_description"
+        app:strokeColor="?attr/slightElevated"
+        app:strokeWidth="1dp">
+
+        <LinearLayout
+            android:id="@+id/ll_notification_obfuscation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:divider="@drawable/divider_x_small"
+            android:orientation="horizontal"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:showDividers="middle">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chp_obfuscate_transparent"
+                style="@style/Custom.Chip.Choice.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Transparent"
+                android:textAlignment="center"
+                app:ensureMinTouchTargetSize="false" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chp_obfuscate_neutral"
+                style="@style/Custom.Chip.Choice.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Neutral"
+                android:textAlignment="center"
+                app:ensureMinTouchTargetSize="false" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chp_obfuscate_max"
+                style="@style/Custom.Chip.Choice.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Obfuscated"
+                android:textAlignment="center"
+                app:ensureMinTouchTargetSize="false" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="20dp"
+        android:divider="@drawable/divider_medium"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView3">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:cardBackgroundColor="@color/transparent"
+            app:cardCornerRadius="@dimen/cardRadius"
+            app:cardElevation="0dp"
+            app:strokeColor="?attr/slightElevated"
+            app:strokeWidth="1dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/txt_start_time_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="From"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="07:30"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="3dp"
+                    android:background="@drawable/ripple_round_clear"
+                    android:padding="12dp"
+                    android:src="@drawable/round_access_time_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:cardBackgroundColor="@color/transparent"
+            app:cardCornerRadius="@dimen/cardRadius"
+            app:cardElevation="0dp"
+            app:strokeColor="?attr/slightElevated"
+            app:strokeWidth="1dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageButton"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/txt_end_time_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Until"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="16:00"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/imageButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="3dp"
+                    android:background="@drawable/ripple_round_clear"
+                    android:padding="12dp"
+                    android:src="@drawable/round_access_time_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="20dp"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="@dimen/cardRadius"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:strokeColor="?attr/slightElevated"
+        app:strokeWidth="1dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:checked="true"
+                android:text="Enable notifications"
+                android:theme="@style/Switch.Dark"
+                app:useMaterialThemeColors="false" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/ll_daily_notification_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_gravity="center_horizontal"
+                app:singleSelection="true"
+                app:selectionRequired="true"
+                app:checkedChip="@id/chp_notification_3">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chp_notification_1"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:text="1"
+                    android:includeFontPadding="false"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_check_change"
+                    app:chipBackgroundColor="@drawable/chip_background"
+                    app:chipCornerRadius="48dp"
+                    app:chipMinHeight="36dp"
+                    app:textStartPadding="0dp"
+                    app:textEndPadding="0dp"
+                    app:chipEndPadding="0dp"
+                    app:chipStartPadding="0dp"
+                    app:chipMinTouchTargetSize="0dp"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chp_notification_2"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:text="2"
+                    android:includeFontPadding="false"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_check_change"
+                    app:chipBackgroundColor="@drawable/chip_background"
+                    app:chipCornerRadius="48dp"
+                    app:chipMinHeight="36dp"
+                    app:textStartPadding="0dp"
+                    app:textEndPadding="0dp"
+                    app:chipEndPadding="0dp"
+                    app:chipStartPadding="0dp"
+                    app:chipMinTouchTargetSize="0dp"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chp_notification_3"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:text="3"
+                    android:includeFontPadding="false"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_check_change"
+                    app:chipBackgroundColor="@drawable/chip_background"
+                    app:chipCornerRadius="48dp"
+                    app:chipMinHeight="36dp"
+                    app:textStartPadding="0dp"
+                    app:textEndPadding="0dp"
+                    app:chipEndPadding="0dp"
+                    app:chipStartPadding="0dp"
+                    app:chipMinTouchTargetSize="0dp"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chp_notification_5"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:text="5"
+                    android:includeFontPadding="false"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_check_change"
+                    app:chipBackgroundColor="@drawable/chip_background"
+                    app:chipCornerRadius="48dp"
+                    app:chipMinHeight="36dp"
+                    app:textStartPadding="0dp"
+                    app:textEndPadding="0dp"
+                    app:chipEndPadding="0dp"
+                    app:chipStartPadding="0dp"
+                    app:chipMinTouchTargetSize="0dp"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chp_notification_10"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:text="10"
+                    android:includeFontPadding="false"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_check_change"
+                    app:chipBackgroundColor="@drawable/chip_background"
+                    app:chipCornerRadius="48dp"
+                    app:chipMinHeight="36dp"
+                    app:textStartPadding="0dp"
+                    app:textEndPadding="0dp"
+                    app:chipEndPadding="0dp"
+                    app:chipStartPadding="0dp"
+                    app:chipMinTouchTargetSize="0dp"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chp_notification_custom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="Custom (16)"
+                    android:includeFontPadding="false"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_check_change"
+                    app:chipBackgroundColor="@drawable/chip_background"
+                    app:chipCornerRadius="48dp"
+                    app:chipMinHeight="36dp"
+                    app:textStartPadding="16dp"
+                    app:textEndPadding="16dp"
+                    app:chipEndPadding="0dp"
+                    app:chipStartPadding="0dp"
+                    app:chipMinTouchTargetSize="0dp"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"/>
+            </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="20dp"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="@dimen/cardRadius"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView4"
+        app:strokeColor="?attr/slightElevated"
+        app:strokeWidth="1dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Complying notifications"
+                    android:textSize="11sp"
+                    android:textColor="?attr/secondaryTextColor" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="24"
+                        android:textSize="18sp"
+                        android:textColor="?attr/primaryTextColor" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="/ 175"
+                        android:textSize="13sp"
+                        android:textColor="?attr/secondaryTextColor" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/imageButton2"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="6dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/ripple_round_clear"
+                android:src="@drawable/ic_round_mode_edit_24" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/materialButton3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="21dp"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/ripple_round"
+        android:minWidth="128dp"
+        android:text="Cancel"
+        app:backgroundTint="?attr/slightElevated"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView5" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/materialButton2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="21dp"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/ripple_round"
+        android:backgroundTint="?attr/slightElevated"
+        android:text="Save"
+        app:icon="@drawable/ic_baseline_check_24"
+        app:iconGravity="textStart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/materialButton3"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView5" />
+</androidx.constraintlayout.widget.ConstraintLayout>
