@@ -1,8 +1,10 @@
 package com.bitflaker.lucidsourcekit.notification;
 
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -129,6 +131,7 @@ public class NotificationManager extends AppCompatActivity {
         TextView labelNotificationTimeTo = bottomSheetDialog.findViewById(R.id.txt_notification_time_to);
         MaterialButton cancelButton = bottomSheetDialog.findViewById(R.id.btn_cancel);
         MaterialButton saveButton = bottomSheetDialog.findViewById(R.id.btn_save);
+        ImageButton editNotificationMessages = bottomSheetDialog.findViewById(R.id.btn_edit_notification_messages);
 
         DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
 
@@ -203,6 +206,9 @@ public class NotificationManager extends AppCompatActivity {
             builder.setNegativeButton(getResources().getString(R.string.cancel), null);
             builder.create();
             builder.show();
+        });
+        editNotificationMessages.setOnClickListener(e -> {
+            startActivity(new Intent(this, NotificationManagerEditor.class));
         });
         cancelButton.setOnClickListener(e -> bottomSheetDialog.cancel());
         saveButton.setOnClickListener(e -> {

@@ -28,6 +28,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LucidSourceKit.Dark">
         <activity
+            android:name=".notification.NotificationManagerEditor"
+            android:exported="false" />
+        <activity
             android:name=".notification.NotificationManager"
             android:configChanges="orientation"
             android:exported="false" />

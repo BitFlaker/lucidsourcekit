@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:backgroundTint="?attr/backgroundColor">
+
+    <TextView
+        android:id="@+id/txt_notification_settings_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="Notification Editor"
+        android:textAlignment="center"
+        android:textColor="?attr/primaryTextColor"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/txt_custom_notification_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/rounded_spinner"
+        android:backgroundTint="?attr/slightElevated"
+        android:hint="Enter a custom message..."
+        android:imeOptions="actionDone"
+        android:inputType="text|textShortMessage|textCapSentences"
+        android:minWidth="100dp"
+        android:minHeight="48dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="5dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="5dp"
+        android:textColor="?attr/primaryTextColor"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@+id/txt_notification_settings_heading" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginRight="20dp"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="@dimen/cardRadius_Var2"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_custom_notification_message"
+        app:strokeColor="?attr/slightElevated"
+        app:strokeWidth="1dp">
+
+        <LinearLayout
+            android:id="@+id/ll_notification_obfuscation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:divider="@drawable/divider_x_small"
+            android:orientation="horizontal"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:showDividers="middle">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chp_obfuscate_transparent"
+                style="@style/Custom.Chip.Choice.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Transparent"
+                android:textAlignment="center"
+                app:ensureMinTouchTargetSize="false" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chp_obfuscate_neutral"
+                style="@style/Custom.Chip.Choice.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Neutral"
+                android:textAlignment="center"
+                app:ensureMinTouchTargetSize="false" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chp_obfuscate_max"
+                style="@style/Custom.Chip.Choice.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Obfuscated"
+                android:textAlignment="center"
+                app:ensureMinTouchTargetSize="false" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="16dp"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="@dimen/cardRadius"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView3"
+        app:strokeColor="?attr/slightElevated"
+        app:strokeWidth="1dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/chk_custom_notification_weight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="Custom weight"
+                android:theme="@style/Switch.Dark"
+                app:useMaterialThemeColors="false" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chp_grp_notification_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                app:checkedChip="@id/chp_notification_weight_1"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chp_notification_weight_1"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:includeFontPadding="false"
+                    android:text="2"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_check_change"
+                    app:chipBackgroundColor="@drawable/chip_background"
+                    app:chipCornerRadius="48dp"
+                    app:chipEndPadding="0dp"
+                    app:chipMinHeight="36dp"
+                    app:chipMinTouchTargetSize="0dp"
+                    app:chipStartPadding="0dp"
+                    app:textEndPadding="0dp"
+                    app:textStartPadding="0dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chp_notification_weight_2"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:includeFontPadding="false"
+                    android:text="3"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_check_change"
+                    app:chipBackgroundColor="@drawable/chip_background"
+                    app:chipCornerRadius="48dp"
+                    app:chipEndPadding="0dp"
+                    app:chipMinHeight="36dp"
+                    app:chipMinTouchTargetSize="0dp"
+                    app:chipStartPadding="0dp"
+                    app:textEndPadding="0dp"
+                    app:textStartPadding="0dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chp_notification_weight_3"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:includeFontPadding="false"
+                    android:text="4"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_check_change"
+                    app:chipBackgroundColor="@drawable/chip_background"
+                    app:chipCornerRadius="48dp"
+                    app:chipEndPadding="0dp"
+                    app:chipMinHeight="36dp"
+                    app:chipMinTouchTargetSize="0dp"
+                    app:chipStartPadding="0dp"
+                    app:textEndPadding="0dp"
+                    app:textStartPadding="0dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chp_notification_weight_4"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:includeFontPadding="false"
+                    android:text="5"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_check_change"
+                    app:chipBackgroundColor="@drawable/chip_background"
+                    app:chipCornerRadius="48dp"
+                    app:chipEndPadding="0dp"
+                    app:chipMinHeight="36dp"
+                    app:chipMinTouchTargetSize="0dp"
+                    app:chipStartPadding="0dp"
+                    app:textEndPadding="0dp"
+                    app:textStartPadding="0dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chp_notification_weight_5"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:includeFontPadding="false"
+                    android:text="6"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_check_change"
+                    app:chipBackgroundColor="@drawable/chip_background"
+                    app:chipCornerRadius="48dp"
+                    app:chipEndPadding="0dp"
+                    app:chipMinHeight="36dp"
+                    app:chipMinTouchTargetSize="0dp"
+                    app:chipStartPadding="0dp"
+                    app:textEndPadding="0dp"
+                    app:textStartPadding="0dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chp_notification_weight_custom"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:includeFontPadding="false"
+                    android:text="Custom"
+                    android:textAlignment="center"
+                    android:textColor="@color/chip_text_check_change"
+                    app:chipBackgroundColor="@drawable/chip_background"
+                    app:chipCornerRadius="48dp"
+                    app:chipEndPadding="0dp"
+                    app:chipMinHeight="36dp"
+                    app:chipMinTouchTargetSize="0dp"
+                    app:chipStartPadding="0dp"
+                    app:textEndPadding="16dp"
+                    app:textStartPadding="16dp" />
+            </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_cancel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="21dp"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/ripple_round"
+        android:minWidth="128dp"
+        android:text="Cancel"
+        app:backgroundTint="?attr/slightElevated"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView4" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_save"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="21dp"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/ripple_round"
+        android:backgroundTint="?attr/slightElevated"
+        android:text="Save"
+        app:icon="@drawable/ic_baseline_check_24"
+        app:iconGravity="textStart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_cancel"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView4" />
+</androidx.constraintlayout.widget.ConstraintLayout>

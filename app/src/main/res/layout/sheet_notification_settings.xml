@@ -270,7 +270,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:checked="true"
-                android:text="Enable notifications"
+                android:text="Daily notifications"
                 android:theme="@style/Switch.Dark"
                 app:useMaterialThemeColors="false" />
 
@@ -278,7 +278,7 @@
                 android:id="@+id/ll_daily_notification_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="14dp"
                 android:layout_marginBottom="16dp"
                 android:layout_gravity="center_horizontal"
                 app:singleSelection="true"
@@ -456,7 +456,7 @@
             </LinearLayout>
 
             <ImageButton
-                android:id="@+id/imageButton2"
+                android:id="@+id/btn_edit_notification_messages"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginEnd="6dp"
