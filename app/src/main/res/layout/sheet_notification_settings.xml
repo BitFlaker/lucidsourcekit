@@ -129,6 +129,7 @@
         app:layout_constraintTop_toBottomOf="@+id/materialCardView3">
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/crd_notification_time_from"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -162,7 +163,7 @@
                         android:textSize="11sp" />
 
                     <TextView
-                        android:id="@+id/textView2"
+                        android:id="@+id/txt_notification_time_from"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="07:30"
@@ -175,7 +176,6 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_margin="3dp"
-                    android:background="@drawable/ripple_round_clear"
                     android:padding="12dp"
                     android:src="@drawable/round_access_time_24"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -186,6 +186,7 @@
 
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/crd_notification_time_to"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -219,6 +220,7 @@
                         android:textSize="11sp" />
 
                     <TextView
+                        android:id="@+id/txt_notification_time_to"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="16:00"
@@ -231,7 +233,6 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_margin="3dp"
-                    android:background="@drawable/ripple_round_clear"
                     android:padding="12dp"
                     android:src="@drawable/round_access_time_24"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -263,6 +264,7 @@
             android:orientation="vertical">
 
             <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/chk_enable_notifications"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="16dp"
@@ -377,7 +379,7 @@
                     android:id="@+id/chp_notification_custom"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
-                    android:text="Custom (16)"
+                    android:text="Custom"
                     android:includeFontPadding="false"
                     android:textAlignment="center"
                     android:textColor="@color/chip_text_check_change"
@@ -466,7 +468,7 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/materialButton3"
+        android:id="@+id/btn_cancel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -481,7 +483,7 @@
         app:layout_constraintTop_toBottomOf="@+id/materialCardView5" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/materialButton2"
+        android:id="@+id/btn_save"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -495,6 +497,6 @@
         app:iconGravity="textStart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/materialButton3"
+        app:layout_constraintStart_toEndOf="@+id/btn_cancel"
         app:layout_constraintTop_toBottomOf="@+id/materialCardView5" />
 </androidx.constraintlayout.widget.ConstraintLayout>
