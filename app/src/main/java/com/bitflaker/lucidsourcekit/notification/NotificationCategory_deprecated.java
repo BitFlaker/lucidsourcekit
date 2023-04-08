@@ -1,6 +1,6 @@
 package com.bitflaker.lucidsourcekit.notification;
 
-public class NotificationCategory {
+public class NotificationCategory_deprecated {
     private int categoryDrawable;
     private String categoryHeading;
     private String categoryDescription;
@@ -8,11 +8,11 @@ public class NotificationCategory {
     private boolean isActive;
     private NotificationCategoryClicked categoryClickedListener;
 
-    public NotificationCategory() {
+    public NotificationCategory_deprecated() {
 
     }
 
-    public NotificationCategory(int categoryDrawable, String categoryHeading, String categoryDescription, int notificationCount, boolean isActive, NotificationCategoryClicked categoryClickedListener) {
+    public NotificationCategory_deprecated(int categoryDrawable, String categoryHeading, String categoryDescription, int notificationCount, boolean isActive, NotificationCategoryClicked categoryClickedListener) {
         this.categoryDrawable = categoryDrawable;
         this.categoryHeading = categoryHeading;
         this.categoryDescription = categoryDescription;

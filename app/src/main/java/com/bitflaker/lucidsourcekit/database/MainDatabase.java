@@ -46,12 +46,19 @@ import com.bitflaker.lucidsourcekit.database.goals.daos.ShuffleHasGoalDao;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Shuffle;
 import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal;
+import com.bitflaker.lucidsourcekit.database.notifications.daos.NotificationCategoryDao;
+import com.bitflaker.lucidsourcekit.database.notifications.daos.NotificationMessageDao;
+import com.bitflaker.lucidsourcekit.database.notifications.daos.NotificationObfuscationDao;
+import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
+import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationMessage;
+import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationObfuscations;
 
 @Database(entities = {JournalEntryTag.class, DreamType.class, SleepQuality.class,
         DreamMood.class, DreamClarity.class, AudioLocation.class, JournalEntry.class,
         JournalEntryHasTag.class, JournalEntryHasType.class, Goal.class, Shuffle.class,
         ShuffleHasGoal.class, Alarm.class, AlarmIsOnWeekday.class, AlarmToneTypes.class,
-        Weekdays.class, ActiveAlarm.class, StoredAlarm.class}, version = 13, exportSchema = false)
+        Weekdays.class, ActiveAlarm.class, StoredAlarm.class, NotificationObfuscations.class,
+        NotificationMessage.class, NotificationCategory.class}, version = 14, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class MainDatabase extends RoomDatabase {
     // Dream Journal tables
@@ -80,6 +87,11 @@ public abstract class MainDatabase extends RoomDatabase {
     public abstract ActiveAlarmDao getActiveAlarmDao();
     public abstract StoredAlarmDao getStoredAlarmDao();
 
+    // Notification tables
+    public abstract NotificationObfuscationDao getNotificationObfuscationDao();
+    public abstract NotificationMessageDao getNotificationMessageDao();
+    public abstract NotificationCategoryDao getNotificationCategoryDao();
+
     // Database
     private static volatile MainDatabase instance;
 
@@ -87,6 +99,8 @@ public abstract class MainDatabase extends RoomDatabase {
         if (instance == null) {
             instance = create(context);
             populateStaticTables(instance);
+            instance.getNotificationObfuscationDao().insertAll(NotificationObfuscations.populateData());
+            instance.getNotificationCategoryDao().insertAll(NotificationCategory.populateData());
         }
         return instance;
     }
@@ -107,6 +121,7 @@ public abstract class MainDatabase extends RoomDatabase {
                 .addMigrations(MIGRATION_10_11)
                 .addMigrations(MIGRATION_11_12)
                 .addMigrations(MIGRATION_12_13)
+                .addMigrations(MIGRATION_13_14)
                 .build();
     }
 
@@ -267,6 +282,46 @@ public abstract class MainDatabase extends RoomDatabase {
                     "FOREIGN KEY (requestCodeActiveAlarm) REFERENCES ActiveAlarm (requestCode) ON DELETE SET DEFAULT ON UPDATE NO ACTION)");
             database.execSQL("CREATE INDEX index_StoredAlarm_alarmToneTypeId ON StoredAlarm (alarmToneTypeId);");
             database.execSQL("CREATE INDEX index_StoredAlarm_requestCodeActiveAlarm ON StoredAlarm (requestCodeActiveAlarm);");
+        }
+    };
+
+    static final Migration MIGRATION_13_14 = new Migration(13, 14) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE NotificationObfuscations (" +
+                    "obfuscationTypeId INTEGER PRIMARY KEY NOT NULL," +
+                    "description TEXT NOT NULL);");
+            database.execSQL("CREATE TABLE NotificationMessage (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "notificationCategoryId TEXT NOT NULL," +
+                    "message TEXT NOT NULL," +
+                    "obfuscationTypeId INTEGER NOT NULL," +
+                    "weight INTEGER NOT NULL," +
+                    "FOREIGN KEY (obfuscationTypeId)" +
+                    "REFERENCES NotificationObfuscations (obfuscationTypeId)" +
+                    "ON DELETE CASCADE " +
+                    "ON UPDATE NO ACTION," +
+                    "FOREIGN KEY (notificationCategoryId)" +
+                    "REFERENCES NotificationCategory (id)" +
+                    "ON DELETE CASCADE " +
+                    "ON UPDATE NO ACTION);");
+            database.execSQL("CREATE TABLE NotificationCategory (" +
+                    "id TEXT PRIMARY KEY NOT NULL," +
+                    "description TEXT NOT NULL," +
+                    "timeFrom INTEGER NOT NULL," +
+                    "timeTo INTEGER NOT NULL," +
+                    "obfuscationTypeId INTEGER NOT NULL," +
+                    "dailyNotificationCount INTEGER NOT NULL," +
+                    "isPermanent INTEGER NOT NULL," +
+                    "isEnabled INTEGER NOT NULL," +
+                    "FOREIGN KEY (obfuscationTypeId)" +
+                    "REFERENCES NotificationObfuscations (obfuscationTypeId)" +
+                    "ON DELETE CASCADE " +
+                    "ON UPDATE NO ACTION);");
+
+            database.execSQL("CREATE INDEX index_NotificationCategory_obfuscationTypeId ON NotificationCategory (obfuscationTypeId);");
+            database.execSQL("CREATE INDEX index_NotificationMessage_notificationCategoryId ON NotificationMessage (notificationCategoryId);");
+            database.execSQL("CREATE INDEX index_NotificationMessage_obfuscationTypeId ON NotificationMessage (obfuscationTypeId);");
         }
     };
 }

@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationMessage;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
@@ -20,13 +22,14 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationManagerEditor extends AppCompatActivity {
 
     private int customNotificationWeightValue;
     private RecyclerViewAdapterNotificationEditor rcvaNotificationEditor;
+    private String notificationCategoryId;
+    private MainDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,23 +39,33 @@ public class NotificationManagerEditor extends AppCompatActivity {
         ConstraintLayout.LayoutParams lParamsHeading = Tools.getConstraintLayoutParamsTopStatusbar((ConstraintLayout.LayoutParams) findViewById(R.id.txt_notification_editor_heading).getLayoutParams(), NotificationManagerEditor.this);
         findViewById(R.id.txt_notification_editor_heading).setLayoutParams(lParamsHeading);
 
-        List<NotificationMessage> notificationMessages = new ArrayList<>();
-        notificationMessages.add(new NotificationMessage(1, "This is a very long example notification message which should not fit within one line or even two lines of this TextView \uD83D\uDE2F", 0, 9));
-        notificationMessages.add(new NotificationMessage(2, "Some random test message", 0, 2));
-        notificationMessages.add(new NotificationMessage(3, "Some random test message", 1, 1));
-        notificationMessages.add(new NotificationMessage(4, "Some random test message", 1, 2));
-        notificationMessages.add(new NotificationMessage(5, "Some random test message", 1, 2));
-        notificationMessages.add(new NotificationMessage(6, "Some random test message", 1, 6));
-        notificationMessages.add(new NotificationMessage(7, "Some random test message", 2, 1));
-        notificationMessages.add(new NotificationMessage(8, "Some random test message", 2, 3));
-        notificationMessages.add(new NotificationMessage(9, "Some random test message", 2, 3));
-        notificationMessages.add(new NotificationMessage(10, "Some random test message", 2, 15));
+        db = MainDatabase.getInstance(this);
+
+        if(!getIntent().hasExtra("notificationCategoryId")){
+            finish();
+        }
+
+        notificationCategoryId = getIntent().getStringExtra("notificationCategoryId");
+
+        List<NotificationMessage> notificationMessages = db.getNotificationMessageDao().getAllOfCategory(notificationCategoryId).blockingGet();
 
         RecyclerView rcv = findViewById(R.id.rcv_notification_messages);
         FloatingActionButton addNotificationMessageButton = findViewById(R.id.btn_add_notification_message);
 
         rcvaNotificationEditor = new RecyclerViewAdapterNotificationEditor(this, notificationMessages);
         rcvaNotificationEditor.setOnMessageClickedListener(this::createAndShowBottomSheetConfigurator);
+
+        // The following code is because of the issue of moving the first object causes a weird scroll
+        // This workaround makes it look a little better but is not perfect still
+        rcvaNotificationEditor.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+                super.onItemRangeMoved(fromPosition, toPosition, itemCount);
+                if (fromPosition == 0 || toPosition == 0){
+                    rcv.scrollToPosition(0);
+                }
+            }
+        });
         rcv.setAdapter(rcvaNotificationEditor);
         rcv.setLayoutManager(new LinearLayoutManager(this));
 
@@ -135,15 +148,18 @@ public class NotificationManagerEditor extends AppCompatActivity {
                 if(obfuscationMin.isChecked()) { message.setObfuscationTypeId(0); }
                 else if(obfuscationMed.isChecked()){ message.setObfuscationTypeId(1); }
                 else if(obfuscationMax.isChecked()){ message.setObfuscationTypeId(2); }
+                db.getNotificationMessageDao().update(message).blockingAwait();
                 rcvaNotificationEditor.notifyMessageChanged(message, origObfuscationTypeId != message.getObfuscationTypeId());
             }
             else {
                 NotificationMessage newMessage = new NotificationMessage(
-                        999,
+                        notificationCategoryId,
                         editNotificationMessage.getText().toString(),
                         obfuscationMin.isChecked() ? 0 : (obfuscationMed.isChecked() ? 1 : 2),
                         customNotificationWeight.isChecked() ? customNotificationWeightValue : getSelectedWeight(customNotificationWeightChips)
                 );
+                long messageId = db.getNotificationMessageDao().insert(newMessage);
+                newMessage.setId((int)messageId);
                 rcvaNotificationEditor.notifyMessageAdded(newMessage);
             }
 

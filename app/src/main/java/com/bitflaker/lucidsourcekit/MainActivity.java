@@ -40,6 +40,8 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Shuffle;
 import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.defaults.DefaultGoals;
+import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
+import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationObfuscations;
 import com.bitflaker.lucidsourcekit.general.Crypt;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.main.MainViewer;
@@ -162,15 +164,19 @@ public class MainActivity extends AppCompatActivity {
                                 db.getSleepQualityDao().insertAll(SleepQuality.populateData()).subscribe(() -> {
                                     db.getWeekdaysDao().insertAll(Weekdays.populateData()).subscribe(() -> {
                                         db.getAlarmToneTypesDao().insertAll(AlarmToneTypes.populateData()).subscribe(() -> {
-                                            db.getGoalDao().getGoalCount().subscribe((count) -> {
-                                                if (count == 0) {
-                                                    DefaultGoals defaultGoals = new DefaultGoals(this);
-                                                    db.getGoalDao().insertAll(defaultGoals.getGoalsList()).subscribe(() -> {
-                                                        dataSetupHandler(db, preferences, count);
+                                            db.getNotificationObfuscationDao().insertAll(NotificationObfuscations.populateData()).subscribe(() -> {
+                                                db.getNotificationCategoryDao().insertAll(NotificationCategory.populateData()).subscribe(() -> {
+                                                    db.getGoalDao().getGoalCount().subscribe((count) -> {
+                                                        if (count == 0) {
+                                                            DefaultGoals defaultGoals = new DefaultGoals(this);
+                                                            db.getGoalDao().insertAll(defaultGoals.getGoalsList()).subscribe(() -> {
+                                                                dataSetupHandler(db, preferences, count);
+                                                            }).dispose();
+                                                        } else {
+                                                            dataSetupHandler(db, preferences, count);
+                                                        }
                                                     }).dispose();
-                                                } else {
-                                                    dataSetupHandler(db, preferences, count);
-                                                }
+                                                }).dispose();
                                             }).dispose();
                                         }).dispose();
                                     }).dispose();

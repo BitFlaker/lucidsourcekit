@@ -12,13 +12,14 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
 
 public class RecyclerViewAdapterNotificationCategories extends RecyclerView.Adapter<RecyclerViewAdapterNotificationCategories.MainViewHolderNotificationCategories> {
     private final Context context;
-    private List<NotificationCategory> notificationCategories;
+    private final List<NotificationCategory> notificationCategories;
 
     public RecyclerViewAdapterNotificationCategories(Context context, List<NotificationCategory> notificationCategories) {
         this.context = context;
@@ -36,11 +37,11 @@ public class RecyclerViewAdapterNotificationCategories extends RecyclerView.Adap
     @Override
     public void onBindViewHolder(@NonNull MainViewHolderNotificationCategories holder, int position) {
         NotificationCategory current = notificationCategories.get(position);
-        holder.heading.setText(current.getCategoryHeading());
-        holder.description.setText(current.getCategoryDescription());
-        holder.count.setText(current.getNotificationCount() == 0 || !current.isActive() ? "No notifications" : current.getNotificationCount() + " daily notifications");
-        holder.categoryIcon.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), current.getCategoryDrawable(), context.getTheme()));
-        holder.activeIndicator.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), current.isActive() ? R.drawable.check_badge_check : R.drawable.check_badge_cross, context.getTheme()));
+        holder.heading.setText(current.getItemHeading());
+        holder.description.setText(current.getItemDescription());
+        holder.count.setText(current.getDailyNotificationCount() == 0 || !current.isEnabled() ? "No notifications" : current.getDailyNotificationCount() + " daily notifications");
+        holder.categoryIcon.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), current.getDrawable(), context.getTheme()));
+        holder.activeIndicator.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), current.isEnabled() ? R.drawable.check_badge_check : R.drawable.check_badge_cross, context.getTheme()));
         holder.card.setOnClickListener(e -> current.getCategoryClickedListener().notificationCategoryClicked());
     }
 

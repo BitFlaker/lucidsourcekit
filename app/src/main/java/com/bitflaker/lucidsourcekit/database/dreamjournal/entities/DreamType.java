@@ -9,7 +9,6 @@ public class DreamType {
     @NonNull
     @PrimaryKey
     public String typeId;
-
     public String description;
 
     public DreamType(@NonNull String typeId, String description) {

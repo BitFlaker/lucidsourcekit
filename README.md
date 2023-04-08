@@ -21,9 +21,12 @@ Currently the following main features are implemented:
 It is being tried to ensure that all the data you store in the app stays in the app as long as you do not export it. Everything is saved locally on the phone in a folder that only this app has access to (at least if the phone is not rooted). The app does not have the permission for using the Internet. Because of this you can't log in with any account and it is highly unlikely that your data will be shared with others. Exceptions would be data automatically processed by Android devices and other data transfers that I am not aware of. If you notice any kind of privacy issue, feel free to report it in the [Issues](https://github.com/BitFlaker/lucidsourcekit/issues) section.
 
 ## Disclaimer
+I (the developer of the app) am not a scientist, doctor or anything like that. I am just a programmer who creates this app as a hobby because it is the app I wish existed. All features of the app are made to the best of my knowledge. This also means that it is possible that some features of the app do not work as they should (due to lack of scientific knowledge or similar).
+
 This application is not intended for medical treatment. The application could contain errors, bugs or vulnerabilities which could lead to unexpected consequences, if you encounter such problems, feel free to report them in the [issues](https://github.com/BitFlaker/lucidsourcekit/issues) section. The app contains a binaural beats generator that outputs frequencies that replicate brain wave cycles. By listening to these binaural beats, your state of consciousness will be altered. Due to the strong and repetitive pulsating rhythms, people who are prone to seizures, epilepsy, suffer from mental illnesses, are pregnant or are chilldren are strongly advised not to use this binaural beats generator. I recommend that you seek professional medical advice before use of this app.
 I am not liable in any way for damages resulting from injury to life, body or health.
-Use the app at your own risk.<br/>
+Use the app at your own risk.
+
 By using the app you are agreeing to accept this disclaimer.
 
 ## Supported languages

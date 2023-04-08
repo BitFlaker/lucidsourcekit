@@ -1,12 +1,12 @@
 package com.bitflaker.lucidsourcekit.notification;
 
-public class NotificationMessage {
+public class NotificationMessage_deprecated {
     private final int id;
     private String message;
     private int obfuscationTypeId;
     private int weight;
 
-    public NotificationMessage(int id, String message, int obfuscationTypeId, int weight) {
+    public NotificationMessage_deprecated(int id, String message, int obfuscationTypeId, int weight) {
         this.id = id;
         this.message = message;
         this.obfuscationTypeId = obfuscationTypeId;

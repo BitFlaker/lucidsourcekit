@@ -35,6 +35,8 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.ThreadLocalRandom;
@@ -534,5 +536,32 @@ public class Tools {
 
     public static int getBroadcastReqCodeSnoozeFromID(int alarmId) {
         return alarmId + 100000;
+    }
+
+    public static long getTimeOfDayMillis(Calendar calendar) {
+        long timeOfDayMillis = calendar.get(Calendar.HOUR_OF_DAY) * 60 * 60 * 1000;
+        timeOfDayMillis += calendar.get(Calendar.MINUTE) * 60 * 1000;
+        timeOfDayMillis += calendar.get(Calendar.SECOND) * 1000;
+        timeOfDayMillis += calendar.get(Calendar.MILLISECOND);
+        return timeOfDayMillis;
+    }
+
+    public static long getTimeFromMidnight(long timeInMillis) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.setTimeInMillis(cal.getTimeInMillis() + timeInMillis);
+        return cal.getTimeInMillis();
+    }
+
+    public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
+        for (Map.Entry<T, E> entry : map.entrySet()) {
+            if (Objects.equals(value, entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 }

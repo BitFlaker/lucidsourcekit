@@ -14,16 +14,21 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationMessage;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class RecyclerViewAdapterNotificationEditor extends RecyclerView.Adapter<RecyclerViewAdapterNotificationEditor.MainViewHolderNotificationEditor> {
     private final Context context;
-    private List<NotificationMessage> notificationMessages;
+    private final List<NotificationMessage> notificationMessages;
     private OnMessageClickedListener mMessageClickedListener;
+    private MainViewHolderNotificationEditor lastItemHolder;
+    private HashMap<Integer, MainViewHolderNotificationEditor> headingItemHolders;
+    private HashMap<Integer, Integer> headingItemHolderPositions;
 
     /**
      *
@@ -33,6 +38,8 @@ public class RecyclerViewAdapterNotificationEditor extends RecyclerView.Adapter<
     public RecyclerViewAdapterNotificationEditor(Context context, List<NotificationMessage> notificationMessages) {
         this.context = context;
         this.notificationMessages = notificationMessages;
+        headingItemHolders = new HashMap<>();
+        headingItemHolderPositions = new HashMap<>();
     }
 
     @NonNull
@@ -54,10 +61,15 @@ public class RecyclerViewAdapterNotificationEditor extends RecyclerView.Adapter<
         LinearLayout.LayoutParams lParamsCard = (LinearLayout.LayoutParams)holder.card.getLayoutParams();
         lParamsCard.bottomMargin = Tools.dpToPx(context, position == notificationMessages.size() - 1 ? 20 : 0);
         holder.card.setLayoutParams(lParamsCard);
+        if(position == notificationMessages.size() - 1){
+            lastItemHolder = holder;
+        }
 
         if(position == 0 || notificationMessages.get(position-1).getObfuscationTypeId() != current.getObfuscationTypeId()){
             holder.headingContainer.setVisibility(View.VISIBLE);
             holder.heading.setText(resolveObfuscationTypeHeading(current.getObfuscationTypeId()));
+            headingItemHolders.put(notificationMessages.get(position).getObfuscationTypeId(), holder);
+            headingItemHolderPositions.put(notificationMessages.get(position).getObfuscationTypeId(), position);
         }
         else {
             holder.headingContainer.setVisibility(View.GONE);
@@ -119,10 +131,33 @@ public class RecyclerViewAdapterNotificationEditor extends RecyclerView.Adapter<
             int previousIndex = notificationMessages.indexOf(message);
             notificationMessages.remove(previousIndex);
             int suitableIndex = getSuitableIndex(message);
-            System.out.println(suitableIndex);
             notificationMessages.add(suitableIndex, message);
+
+            // TODO: optimize the following code to only reload items that actually have to be reloaded
+            //       (like in comment below (comment does not work to 100% !))
+            if(previousIndex > 0) { notifyItemChanged(previousIndex - 1); }
+            notifyItemChanged(previousIndex);
+            if(previousIndex < notificationMessages.size() - 1) { notifyItemChanged(previousIndex + 1); }
+            if(suitableIndex > 0) { notifyItemChanged(suitableIndex - 1); }
+            notifyItemChanged(suitableIndex);
+            if(suitableIndex < notificationMessages.size() - 1) { notifyItemChanged(suitableIndex+1); }
+
+//            if(suitableIndex - previousIndex < 0 && headingItemHolderPositions.containsValue(suitableIndex) ||
+//               suitableIndex == notificationMessages.size() - 1) {
+//                // Update item on new position to remove the heading if it has one when moving item upwards
+//                // Or update the item that was previously the last one so the bottom spacing gets removed
+//                notifyItemChanged(suitableIndex);
+//            }
+//            else if (suitableIndex - previousIndex > 0 && headingItemHolderPositions.containsValue(suitableIndex + 1)){
+//                // Update item on new position to remove the heading if it has one when moving item downwards
+//                notifyItemChanged(suitableIndex + 1);
+//            }
+//            if(headingItemHolderPositions.containsValue(previousIndex)){
+//                // Updating item below the item to move so it adds the heading to itself if
+//                // the item to move had a heading before
+//                notifyItemChanged(previousIndex + 1);
+//            }
             notifyItemMoved(previousIndex, suitableIndex);
-            // TODO: if you move the last item up, the special last item bottom margin will remain on the item
         }
     }
 
@@ -134,6 +169,9 @@ public class RecyclerViewAdapterNotificationEditor extends RecyclerView.Adapter<
         else {
             int suitableIndex = getSuitableIndex(newMessage);
             if(suitableIndex >= 0){
+                if(notificationMessages.size() == suitableIndex) {
+                    notifyItemChanged(notificationMessages.size() - 1, lastItemHolder);
+                }
                 notificationMessages.add(suitableIndex, newMessage);
                 notifyItemInserted(suitableIndex);
             }
