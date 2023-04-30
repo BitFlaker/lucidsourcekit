@@ -50,6 +50,25 @@ public class RecyclerViewAdapterNotificationCategories extends RecyclerView.Adap
         return notificationCategories.size();
     }
 
+    public void openSettingsForCategoryId(String autoOpenId) {
+        for(NotificationCategory notificationCategory : notificationCategories) {
+            if (notificationCategory.getId().equals(autoOpenId)) {
+                notificationCategory.getCategoryClickedListener().notificationCategoryClicked();
+                break;
+            }
+        }
+    }
+
+    public void notifyCategoryChanged(NotificationCategory category) {
+        for (int i = 0; i < notificationCategories.size(); i++) {
+            if (notificationCategories.get(i).getId().equals(category.getId())) {
+                notificationCategories.set(i, category);
+                notifyItemChanged(i);
+                break;
+            }
+        }
+    }
+
     public static class MainViewHolderNotificationCategories extends RecyclerView.ViewHolder {
         MaterialCardView card;
         TextView heading, description, count;

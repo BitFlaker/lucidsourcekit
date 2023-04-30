@@ -57,6 +57,7 @@
                 android:useDefaultMargins="true">
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/crd_reality_check_reminder_state"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -67,6 +68,7 @@
                     app:cardElevation="@dimen/cardElevationRegular">
 
                     <TextView
+                        android:id="@+id/txt_reality_check_reminder_state"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:drawablePadding="8dp"
@@ -81,6 +83,7 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/crd_permanent_notification_state"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -91,6 +94,7 @@
                     app:cardElevation="@dimen/cardElevationRegular">
 
                     <TextView
+                        android:id="@+id/txt_permanent_notification_state"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:drawablePadding="8dp"
@@ -99,12 +103,13 @@
                         android:paddingTop="5dp"
                         android:paddingEnd="10dp"
                         android:paddingBottom="5dp"
-                        android:text="permanent notification"
+                        android:text="Permanent notification"
                         android:textColor="?attr/primaryTextColor"
                         app:drawableStartCompat="@drawable/ic_baseline_cross_24" />
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/crd_lockscreen_writer_state"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -115,6 +120,7 @@
                     app:cardElevation="@dimen/cardElevationRegular">
 
                     <TextView
+                        android:id="@+id/txt_lockscreen_writer_state"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:drawablePadding="8dp"
@@ -123,13 +129,14 @@
                         android:paddingTop="5dp"
                         android:paddingEnd="10dp"
                         android:paddingBottom="5dp"
-                        android:text="lockscreen journal writer"
+                        android:text="Lockscreen journal writer"
                         android:textColor="?attr/primaryTextColor"
                         app:drawableStartCompat="@drawable/ic_baseline_cross_24" />
                 </com.google.android.material.card.MaterialCardView>
 
                 <!-- morning / evening reminder -->
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/crd_task_reminder_state"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -140,6 +147,7 @@
                     app:cardElevation="@dimen/cardElevationRegular">
 
                     <TextView
+                        android:id="@+id/txt_task_reminder_state"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:drawablePadding="8dp"
@@ -148,7 +156,7 @@
                         android:paddingTop="5dp"
                         android:paddingEnd="10dp"
                         android:paddingBottom="5dp"
-                        android:text="task reminder"
+                        android:text="Task reminder"
                         android:textColor="?attr/primaryTextColor"
                         app:drawableStartCompat="@drawable/ic_baseline_cross_24" />
                 </com.google.android.material.card.MaterialCardView>

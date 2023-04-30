@@ -35,6 +35,7 @@ public class NotificationManager extends AppCompatActivity {
     private Calendar notificationsTimeFrom, notificationsTimeTo;
     private int customDailyNotificationsCount;
     private MainDatabase db;
+    private RecyclerViewAdapterNotificationCategories rcvaNotificationCategories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,10 +93,15 @@ public class NotificationManager extends AppCompatActivity {
             category.setCategoryClickedListener(() -> createAndShowBottomSheetConfigurator(category));
         }
 
-        RecyclerViewAdapterNotificationCategories rcvaNotificationCategories = new RecyclerViewAdapterNotificationCategories(this, categories);
+        rcvaNotificationCategories = new RecyclerViewAdapterNotificationCategories(this, categories);
         RecyclerView rcvNotificationCategories = findViewById(R.id.rcv_notification_categories);
         rcvNotificationCategories.setAdapter(rcvaNotificationCategories);
         rcvNotificationCategories.setLayoutManager(new LinearLayoutManager(this));
+
+        if(getIntent().hasExtra("AUTO_OPEN_ID")){
+            String autoOpenId = getIntent().getStringExtra("AUTO_OPEN_ID");
+            rcvaNotificationCategories.openSettingsForCategoryId(autoOpenId);
+        }
     }
 
     private void createAndShowBottomSheetConfigurator(NotificationCategory category) {
@@ -232,6 +238,7 @@ public class NotificationManager extends AppCompatActivity {
             // TODO save changes
             db.getNotificationCategoryDao().update(category).blockingAwait();
             bottomSheetDialog.dismiss();
+            rcvaNotificationCategories.notifyCategoryChanged(category);
         });
         bottomSheetDialog.show();
     }
