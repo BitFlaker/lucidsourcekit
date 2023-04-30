@@ -1,19 +1,27 @@
 package com.bitflaker.lucidsourcekit.general;
 
+import androidx.annotation.NonNull;
+
 public class AudioBufferPosition {
     int index;
     int bufferPosition;
-    long angle1;
-    long angle2;
-    int counter;
+    long angleLeftSpeaker;
+    long angleRightSpeaker;
     boolean finished;
+
+    private AudioBufferPosition(int index, int bufferPosition, long angleLeftSpeaker, long angleRightSpeaker, boolean finished) {
+        this.index = index;
+        this.bufferPosition = bufferPosition;
+        this.angleLeftSpeaker = angleLeftSpeaker;
+        this.angleRightSpeaker = angleRightSpeaker;
+        this.finished = finished;
+    }
 
     public AudioBufferPosition() {
         index = 0;
         bufferPosition = 0;
-        angle1 = 0;
-        angle2 = 0;
-        counter = 0;
+        angleLeftSpeaker = 0;
+        angleRightSpeaker = 0;
         finished = false;
     }
 
@@ -33,28 +41,20 @@ public class AudioBufferPosition {
         this.bufferPosition = bufferPosition;
     }
 
-    public long getAngle1() {
-        return angle1;
+    public long getAngleLeftSpeaker() {
+        return angleLeftSpeaker;
     }
 
-    public void setAngle1(long angle1) {
-        this.angle1 = angle1;
+    public void setAngleLeftSpeaker(long angleLeftSpeaker) {
+        this.angleLeftSpeaker = angleLeftSpeaker;
     }
 
-    public long getAngle2() {
-        return angle2;
+    public long getAngleRightSpeaker() {
+        return angleRightSpeaker;
     }
 
-    public void setAngle2(long angle2) {
-        this.angle2 = angle2;
-    }
-
-    public int getCounter() {
-        return counter;
-    }
-
-    public void setCounter(int counter) {
-        this.counter = counter;
+    public void setAngleRightSpeaker(long angleRightSpeaker) {
+        this.angleRightSpeaker = angleRightSpeaker;
     }
 
     public boolean isFinished() {
@@ -63,5 +63,10 @@ public class AudioBufferPosition {
 
     public void setFinished(boolean finished) {
         this.finished = finished;
+    }
+
+    @NonNull
+    public AudioBufferPosition clone() {
+        return new AudioBufferPosition(index, bufferPosition, angleLeftSpeaker, angleRightSpeaker, finished);
     }
 }

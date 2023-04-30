@@ -18,7 +18,6 @@ import io.reactivex.rxjava3.core.Single;
 public class BinauralBeatsPlayer {
     protected final static int SAMPLE_RATE = 44100;
     protected final static int MAX_SAMPLE_COUNT = BinauralBeatsPlayer.SAMPLE_RATE / 6;
-    protected final static FastSineTable FAST_SINE_TABLE = new FastSineTable(SAMPLE_RATE);
     private final BinauralBeat binauralBeat;
     private int lastSecUpdate;
     private int frameCounter;
@@ -32,7 +31,6 @@ public class BinauralBeatsPlayer {
     private Thread trackThread;
     private AudioTrack binauralAudioTrack;
     private AudioBufferPosition currentPosition;
-    private int updateSecondsCounter;
 
     public BinauralBeatsPlayer(BinauralBeat binauralBeat) {
         this.binauralBeat = binauralBeat;
@@ -98,7 +96,6 @@ public class BinauralBeatsPlayer {
         frameCounter = 0;
         lastSecUpdate = 0;
         playerWrittenCount = 0;
-        updateSecondsCounter = 0;
         playing = false;
         isPaused = false;
     }
@@ -212,88 +209,95 @@ public class BinauralBeatsPlayer {
 }
 
 class NextBufferGenerator {
-    private final static int TWO_PI = BinauralBeatsPlayer.FAST_SINE_TABLE.getSampleRate();
+    private final static float VOLUME = 0.05f;
+    private final static float AMPLITUDE = VOLUME * Short.MAX_VALUE;
 
     private NextBufferGenerator() { }
 
-    public static Single<BufferGeneratorResult> generateSamples(BinauralBeat binauralBeat, AudioBufferPosition startAfter) {
+    /**
+     * Generates the samples for the AudioTrack's audioData for a specified BinauralBeat with the positions and values from past packets of the current BinauralBeat
+     * @param binauralBeat the binaural beat to generate the samples for
+     * @param audioBufferPosition the positions and values of past packets of the current BinauralBeat
+     * @return a BufferGeneratorResult with the AudioTrack audioData as buffer and an updated clone of the passed AudioBufferPosition
+     */
+    public static Single<BufferGeneratorResult> generateSamples(BinauralBeat binauralBeat, AudioBufferPosition audioBufferPosition) {
         return Single.fromCallable(() -> {
             short[] buffer = new short[BinauralBeatsPlayer.MAX_SAMPLE_COUNT];
-            AudioBufferPosition nextStartAfter = generateSamples(binauralBeat, buffer, startAfter);
+            AudioBufferPosition nextStartAfter = generateSamples(binauralBeat, buffer, audioBufferPosition);
             return new BufferGeneratorResult(buffer, nextStartAfter);
         });
     }
 
-    public static AudioBufferPosition generateSamples(BinauralBeat binauralBeat, short[] buffer, AudioBufferPosition startAt) {
-        int prevWrittenFrameCount = 0;
+    /**
+     * Generates the samples for the AudioTrack's audioData for a specified BinauralBeat with the positions and values from past packets of the current BinauralBeat
+     * @param binauralBeat the binaural beat to generate the samples for
+     * @param buffer the buffer to write the generated samples to
+     * @param audioBufferPosition the positions and values of past packets of the current BinauralBeat
+     * @return an updated clone of the passed AudioBufferPosition
+     */
+    public static AudioBufferPosition generateSamples(BinauralBeat binauralBeat, short[] buffer, AudioBufferPosition audioBufferPosition) {
         float baseFrequency = binauralBeat.getBaseFrequency();
-        float[] normalSineWave = new float[buffer.length];
-        AudioBufferPosition abp = new AudioBufferPosition();
+        AudioBufferPosition abp = audioBufferPosition.clone();
+        int prevWrittenFrameCount = 0;
 
-        for (int j = startAt.getIndex(); j < binauralBeat.getFrequencyList().size(); j++) {
+        for (int j = abp.getIndex(); j < binauralBeat.getFrequencyList().size(); j++) {
             FrequencyData fd = binauralBeat.getFrequencyList().get(j);
-            long angle1 = startAt.getAngle1();
-            long angle2 = startAt.getAngle2();
-
-            float fdFromFrequency = fd.getFrequency();
-            float fdToFrequency = Float.isNaN(fd.getFrequencyTo()) ? fdFromFrequency : fd.getFrequencyTo();
-            float fdFrequencyStepSize = (fdToFrequency - fdFromFrequency) / (fd.getDuration() * BinauralBeatsPlayer.SAMPLE_RATE);
-
             int fdFrameCount = (int)(fd.getDuration() * BinauralBeatsPlayer.SAMPLE_RATE * 2);
-            for (int i = startAt.getBufferPosition(); i < fdFrameCount; i += 2) {
-                int currentSineWaveIndex = i + prevWrittenFrameCount - startAt.getBufferPosition();
+            int written = fillFrequencyPacket(buffer, baseFrequency, prevWrittenFrameCount, fd.getFrequency(), fd.getFrequencyStepSize(BinauralBeatsPlayer.SAMPLE_RATE), fdFrameCount, abp);
+            int fullCurrentPacketSize = fdFrameCount - abp.getBufferPosition();
 
-                normalSineWave[currentSineWaveIndex] = BinauralBeatsPlayer.FAST_SINE_TABLE.sineByDeg(angle1);
-                normalSineWave[currentSineWaveIndex + 1] = BinauralBeatsPlayer.FAST_SINE_TABLE.sineByDeg(angle2);
-
-                float frequency = fdFromFrequency + fdFrequencyStepSize * (i / 2.0f);
-
-                angle1 = (angle1 + getAngleIncrementAtFrequency(baseFrequency + frequency)) % TWO_PI;
-                angle2 = (angle2 + getAngleIncrementAtFrequency(baseFrequency)) % TWO_PI;
-
-                boolean samplesFilledAfterNextRun = currentSineWaveIndex + 2 == normalSineWave.length;
-                boolean fdFinishedAfterNextRun = currentSineWaveIndex + startAt.getBufferPosition() + 2 == fdFrameCount;
-
-                if(samplesFilledAfterNextRun) {
-                    if(fdFinishedAfterNextRun) {
-                        abp.setIndex(j+1);
-                        abp.setBufferPosition(0);
-                        abp.setAngle1(0);
-                        abp.setAngle2(0);
-                        if(j + 1 == binauralBeat.getFrequencyList().size()){
-                            abp.setFinished(true);
-                        }
+            // Check whether the frequency data packet was fully written (then continue with the
+            // next frequency data in the list to fill the remaining buffer space) or not (then save
+            // the current position data to the AudioBufferPosition and return it)
+            if(fdFrameCount == written + abp.getBufferPosition()) {
+                abp.setBufferPosition(0);
+                if(prevWrittenFrameCount + fullCurrentPacketSize == buffer.length) {
+                    abp.setIndex(j + 1);
+                    if(j + 1 != binauralBeat.getFrequencyList().size()){
+                        return abp;
                     }
-                    else {
-                        abp.setIndex(j);
-                        abp.setBufferPosition(i+2);
-                        abp.setAngle1(angle1);
-                        abp.setAngle2(angle2);
-                    }
-                    fillBuffer(buffer, normalSineWave);
-                    return abp;
                 }
+                prevWrittenFrameCount += fullCurrentPacketSize;
             }
-            prevWrittenFrameCount += fdFrameCount - startAt.getBufferPosition();
-            startAt.setAngle1(0);
-            startAt.setAngle2(0);
-            startAt.setBufferPosition(0);
+            else {
+                abp.setIndex(j);
+                abp.setBufferPosition(abp.getBufferPosition() + written);
+                return abp;
+            }
         }
         abp.setFinished(true);
-        fillBuffer(buffer, normalSineWave);
         return abp;
     }
 
-    private static void fillBuffer(short[] buffer, float[] normalSineWave) {
-        for (int i = 0; i < buffer.length; i += 2) {
-            float volume = 0.05f;
-            buffer[i] = (short) (volume * normalSineWave[i] * Short.MAX_VALUE);
-            buffer[i+1] = (short) (volume * normalSineWave[i + 1] * Short.MAX_VALUE);
+    /**
+     * Fills a short[] buffer with binaural beats PCM data for a frequency data packet
+     * @param buffer the buffer to fill
+     * @param baseFrequency the base frequency of the binaural beat
+     * @param prevWrittenFrameCount the amount of frames written to a previous packet in the current buffer
+     * @param fdFromFrequency the binaural frequency
+     * @param fdFrequencyStepSize the step size of the transition of the binaural beat
+     * @param fdFrameCount the total count of frames of the frequency data packet
+     * @param audioBufferPosition the position snapshot information of the other packet passes
+     * @return the amount of values written to the buffer array
+     */
+    private static int fillFrequencyPacket(short[] buffer, float baseFrequency, int prevWrittenFrameCount, float fdFromFrequency, float fdFrequencyStepSize, int fdFrameCount, AudioBufferPosition audioBufferPosition) {
+        int written = 0;
+        int currentBufferIndex = prevWrittenFrameCount;
+        for (int i = audioBufferPosition.getBufferPosition(); i < fdFrameCount && currentBufferIndex + 2 < buffer.length; i += 2) {
+            currentBufferIndex = i + prevWrittenFrameCount - audioBufferPosition.getBufferPosition();
+            float offsetFrequency = baseFrequency + (fdFromFrequency + fdFrequencyStepSize * (i / 2.0f));
+
+            audioBufferPosition.setAngleLeftSpeaker(applyCurrentSinePosition(buffer, currentBufferIndex, audioBufferPosition.getAngleLeftSpeaker(), offsetFrequency));
+            audioBufferPosition.setAngleRightSpeaker(applyCurrentSinePosition(buffer, currentBufferIndex + 1, audioBufferPosition.getAngleRightSpeaker(), baseFrequency));
+
+            written += 2;
         }
+        return written;
     }
 
-    private static int getAngleIncrementAtFrequency(float frequency) {
-        return (int) (TWO_PI * frequency / BinauralBeatsPlayer.SAMPLE_RATE);
+    private static long applyCurrentSinePosition(short[] buffer, int bufferIndex, long angle, float frequency) {
+        buffer[bufferIndex] = (short) (AMPLITUDE * FastSineTable.getTable().sineBySampleRateDeg(angle));
+        return (angle + (long) frequency) % BinauralBeatsPlayer.SAMPLE_RATE;
     }
 
     static class BufferGeneratorResult {

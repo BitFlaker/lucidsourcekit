@@ -26,6 +26,10 @@ public class FrequencyData {
     }
 
     public float getFrequencyTo() {
-        return frequencyTo;
+        return Float.isNaN(frequencyTo) ? frequency : frequencyTo;
+    }
+
+    public float getFrequencyStepSize(int sampleRate) {
+        return (getFrequencyTo() - frequency) / (duration * sampleRate);
     }
 }

@@ -4,13 +4,18 @@ import androidx.annotation.NonNull;
 
 public class FastSineTable
 {
+	private static final FastSineTable instance = new FastSineTable(44100);
 	private final float[] sineTable;
 	private final int sampleRate;
 
-	public FastSineTable(int sampleRate)
+	private FastSineTable(int sampleRate)
 	{
 		this.sampleRate = sampleRate;
 		sineTable = generateSineTable();
+	}
+
+	public static FastSineTable getTable(){
+		return instance;
 	}
 
 	@NonNull
@@ -23,12 +28,8 @@ public class FastSineTable
 		return sineTable;
 	}
 
-	public float sineByDeg(long angle)
+	public float sineBySampleRateDeg(long angle)
 	{
 		return sineTable[(int)(angle % sampleRate)];
-	}
-
-	public int getSampleRate() {
-		return sampleRate;
 	}
 }
