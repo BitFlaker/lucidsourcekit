@@ -4,11 +4,10 @@
     android:shape="rectangle"
     android:padding="10dp">
 
-    <solid android:color="#22C4BFE8" />
+    <solid android:color="?attr/slightElevated" />
     <corners
         android:bottomRightRadius="30dp"
         android:bottomLeftRadius="30dp"
         android:topLeftRadius="30dp"
         android:topRightRadius="30dp" />
-    <stroke android:width="5px" android:color="#40786EC2" />
 </shape>

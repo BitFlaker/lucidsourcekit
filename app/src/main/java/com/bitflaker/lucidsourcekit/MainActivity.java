@@ -9,12 +9,10 @@ import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Pair;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private final StringBuilder enteredPin = new StringBuilder();
     private String storedHash = "";
     private byte[] storedSalt;
-    private final int pinButtonSize = 76;
+    private int pinButtonSize = 68;
 
     public static String convertStreamToString(InputStream is) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -103,6 +101,11 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
+
+        findViewById(R.id.btn_fingerprint_unlock).setOnClickListener(e -> startBiometricAuthentication());
+        if(!getResources().getBoolean(R.bool.is_h720dp)){
+            pinButtonSize = 54;
+        }
 
         // TODO: set language of controls
 
@@ -202,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                 case "password":
                     setupPasswordAuthentication();
                     if(preferences.getString("auth_use_biometrics", "").equals("true")) {
-                        setupBiometricAuthentication();     // TODO: should be callable again if cancelled
+                        setupBiometricAuthentication();
                     }
                     storedHash = preferences.getString("auth_hash", "");
                     storedSalt = Base64.decode(preferences.getString("auth_salt", ""), Base64.DEFAULT);
@@ -210,12 +213,13 @@ public class MainActivity extends AppCompatActivity {
                 case "pin":
                     setupPinAuthentication();
                     if(preferences.getString("auth_use_biometrics", "").equals("true")) {
-                        setupBiometricAuthentication();     // TODO: should be callable again if cancelled
+                        setupBiometricAuthentication();
                     }
                     storedHash = preferences.getString("auth_cipher", "");
                     storedSalt = Base64.decode(preferences.getString("auth_key", ""), Base64.DEFAULT);
                     break;
                 default:
+                    startLoadingAnimation();
                     startMainApp();
                     break;
             }
@@ -332,12 +336,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupBiometricAuthentication() {
         BiometricManager biometricManager = BiometricManager.from(this);
-        ((LinearLayout)findViewById(R.id.ll_pin_auth_container)).addView(generateUseBiometricsButton());
-        ((LinearLayout)findViewById(R.id.ll_pw_auth_container)).addView(generateUseBiometricsButton());
+//        ((LinearLayout)findViewById(R.id.ll_pin_auth_container)).addView(generateUseBiometricsButton());
+//        ((LinearLayout)findViewById(R.id.ll_pw_auth_container)).addView(generateUseBiometricsButton());
 
         // TODO: check if phone even supports biometrics (also do so in first time setup and settings)
         switch (biometricManager.canAuthenticate()) {
             case BiometricManager.BIOMETRIC_SUCCESS:
+                findViewById(R.id.btn_fingerprint_unlock).setVisibility(View.VISIBLE);
                 startBiometricAuthentication();
                 break;
             case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
@@ -366,20 +371,20 @@ public class MainActivity extends AppCompatActivity {
         biometricPrompt.authenticate(promptInfo);
     }
 
-    @NonNull
-    private MaterialButton generateUseBiometricsButton() {
-        MaterialButton mat = new MaterialButton(this, null, R.attr.typeStyle);
-        mat.setText("use biometrics instead");
-        mat.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lParams.gravity = Gravity.CENTER_HORIZONTAL;
-        lParams.topMargin = Tools.dpToPx(this, 8);
-        mat.setLayoutParams(lParams);
-        mat.setOnClickListener(e -> {
-            startBiometricAuthentication();
-        });
-        return mat;
-    }
+//    @NonNull
+//    private MaterialButton generateUseBiometricsButton() {
+//        MaterialButton mat = new MaterialButton(this, null, R.attr.typeStyle);
+//        mat.setText("use biometrics instead");
+//        mat.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+//        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        lParams.gravity = Gravity.CENTER_HORIZONTAL;
+//        lParams.topMargin = Tools.dpToPx(this, 8);
+//        mat.setLayoutParams(lParams);
+//        mat.setOnClickListener(e -> {
+//            startBiometricAuthentication();
+//        });
+//        return mat;
+//    }
 
     private void setupPinAuthentication() {
         findViewById(R.id.ll_pw_auth_container).setVisibility(View.GONE);
@@ -405,6 +410,9 @@ public class MainActivity extends AppCompatActivity {
         pinButton.setMinimumWidth(Tools.dpToPx(this, pinButtonSize));
         pinButton.setMinHeight(Tools.dpToPx(this, pinButtonSize));
         pinButton.setMinWidth(Tools.dpToPx(this, pinButtonSize));
+        pinButton.setHeight(Tools.dpToPx(this, pinButtonSize));
+        pinButton.setWidth(Tools.dpToPx(this, pinButtonSize));
+        pinButton.setPadding(0,0,0,0);
         pinButton.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, getTheme()));
         pinButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
         pinButton.setBackgroundResource(R.drawable.ripple_round_clear);
@@ -452,8 +460,8 @@ public class MainActivity extends AppCompatActivity {
     private void startLoadingAnimation() {
         findViewById(R.id.ll_pw_auth_container).setVisibility(View.GONE);
         findViewById(R.id.ll_pin_auth_container).setVisibility(View.GONE);
-        ProgressBar loadingCircle = findViewById(R.id.clpb_start_app);
-        loadingCircle.setVisibility(View.VISIBLE);
+        findViewById(R.id.btn_fingerprint_unlock).setVisibility(View.GONE);
+        findViewById(R.id.clpb_start_app).setVisibility(View.VISIBLE);
     }
 
     private Space generateSpace() {

@@ -10,40 +10,39 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:gravity="center_horizontal"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/ll_auth_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
             android:src="@mipmap/ic_launcher_pure_round" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_gravity="center_vertical"
+            android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-thin"
             android:text="LucidSourceKit"
             android:textColor="?attr/primaryTextColor"
-            android:textSize="18sp" />
+            android:textSize="21sp" />
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/btn_fingerprint_unlock"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="18dp"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/ripple_round"
         android:backgroundTint="?attr/slightElevated"
         android:src="@drawable/round_fingerprint_24"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -52,9 +51,9 @@
         android:id="@+id/ll_auth_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="18dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="24dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/btn_fingerprint_unlock"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,7 +64,7 @@
             android:id="@+id/ll_pw_auth_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="36dp"
+            android:layout_marginBottom="48dp"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -80,7 +79,6 @@
                 android:drawablePadding="10dp"
                 android:hint="@string/login_password_hint"
                 android:inputType="textPassword"
-                android:minHeight="48dp"
                 android:padding="12dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textColorHint="#6F9E9BB1" />
@@ -100,7 +98,8 @@
             android:id="@+id/ll_pin_auth_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <LinearLayout
                 android:id="@+id/ll_pinLayout"
@@ -112,12 +111,11 @@
                     android:id="@+id/txt_enteredPin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
                     android:includeFontPadding="false"
                     android:text=""
                     android:textAlignment="center"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="48sp"/>
+                    android:textSize="64sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

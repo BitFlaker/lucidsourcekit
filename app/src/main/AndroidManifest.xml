@@ -29,9 +29,11 @@
         android:theme="@style/Theme.LucidSourceKit.Dark">
         <activity
             android:name=".notification.NotificationManagerEditor"
+            android:configChanges="orientation"
             android:exported="false" />
         <activity
             android:name=".notification.NotificationManager"
+            android:screenOrientation="portrait"
             android:configChanges="orientation"
             android:exported="false" />
         <activity
