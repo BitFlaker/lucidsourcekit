@@ -14,8 +14,8 @@ import androidx.fragment.app.Fragment;
 import com.bitflaker.lucidsourcekit.R;
 
 public class SetupConsent extends Fragment {
-    OnConsentChangedListener mListener;
-    boolean lastCheckState = false;
+    private OnConsentChangedListener mListener;
+    private boolean lastCheckState = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,5 +51,10 @@ public class SetupConsent extends Fragment {
 
     public void setOnConsentChangedListener(OnConsentChangedListener eventListener) {
         mListener = eventListener;
+    }
+
+    public boolean hasConsentListener() {
+        System.out.println("mListener == null: " + (mListener == null));
+        return mListener != null;
     }
 }

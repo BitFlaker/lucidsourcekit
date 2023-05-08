@@ -10,11 +10,10 @@
         android:id="@+id/tablayout"
         android:layout_width="409dp"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="SpeakableTextPresentCheck"
-        tools:visibility="gone" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewpager"
@@ -49,9 +48,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_button_primary_2"
-            app:backgroundTint="#1F5D96"
-            android:textColor="?attr/primaryTextColor"
-            android:drawableRight="@drawable/ic_baseline_arrow_forward_24"
-            android:text="@string/setup_next" />
+            android:textColor="?attr/colorOnPrimary"
+            android:drawableEnd="@drawable/ic_baseline_arrow_forward_24"
+            android:drawableTint="?attr/colorOnPrimary"
+            android:text="@string/setup_next"
+            app:backgroundTint="?attr/colorPrimary" />
     </LinearLayout>
 </RelativeLayout>

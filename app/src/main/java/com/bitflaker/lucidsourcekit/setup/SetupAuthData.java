@@ -53,7 +53,8 @@ public class SetupAuthData extends Fragment {
         selectedAuthType = AuthTypes.Password;
         if(getView() != null) {
             ((TextView) getView().findViewById(R.id.txt_auth_data_title)).setText(getContext().getResources().getString(R.string.setup_auth_data_title_password));
-            ((TextView) getView().findViewById(R.id.txt_finish_setup)).setVisibility(View.GONE);
+//            ((TextView) getView().findViewById(R.id.txt_privacy_settings_setup)).setVisibility(View.GONE);
+            ((TextView) getView().findViewById(R.id.txt_privacy_settings_setup)).setText(R.string.setup_privacy_password);
             ((LinearLayout) getView().findViewById(R.id.ll_setup_pinLayout)).setVisibility(View.GONE);
             TextView pwBox = ((EditText) getView().findViewById(R.id.txt_setup_password));
             pwBox.setText("");
@@ -65,9 +66,10 @@ public class SetupAuthData extends Fragment {
         selectedAuthType = AuthTypes.None;
         if(getView() != null) {
             ((TextView) getView().findViewById(R.id.txt_auth_data_title)).setText(getContext().getResources().getString(R.string.setup_finish_setup_title));
+//            ((TextView) getView().findViewById(R.id.txt_privacy_settings_setup)).setVisibility(View.VISIBLE);
+            ((TextView) getView().findViewById(R.id.txt_privacy_settings_setup)).setText(R.string.setup_finish_content);
             ((LinearLayout) getView().findViewById(R.id.ll_setup_pinLayout)).setVisibility(View.GONE);
             ((EditText) getView().findViewById(R.id.txt_setup_password)).setVisibility(View.GONE);
-            ((TextView) getView().findViewById(R.id.txt_finish_setup)).setVisibility(View.VISIBLE);
         }
     }
 
@@ -75,7 +77,8 @@ public class SetupAuthData extends Fragment {
         selectedAuthType = AuthTypes.Pin;
         if(getView() != null) {
             ((TextView) getView().findViewById(R.id.txt_auth_data_title)).setText(getContext().getResources().getString(R.string.setup_auth_data_title_pin));
-            ((TextView) getView().findViewById(R.id.txt_finish_setup)).setVisibility(View.GONE);
+//            ((TextView) getView().findViewById(R.id.txt_privacy_settings_setup)).setVisibility(View.GONE);
+            ((TextView) getView().findViewById(R.id.txt_privacy_settings_setup)).setText(R.string.setup_privacy_pin);
             ((LinearLayout) getView().findViewById(R.id.ll_setup_pinLayout)).setVisibility(View.VISIBLE);
             ((EditText) getView().findViewById(R.id.txt_setup_password)).setVisibility(View.GONE);
             setupPinAuthentication();

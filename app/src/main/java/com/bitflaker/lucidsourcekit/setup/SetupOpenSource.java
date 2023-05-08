@@ -1,5 +1,7 @@
 package com.bitflaker.lucidsourcekit.setup;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -23,6 +25,10 @@ public class SetupOpenSource extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ((TextView) getView().findViewById(R.id.txt_open_source_description)).setMovementMethod(LinkMovementMethod.getInstance());
+        getView().findViewById(R.id.btn_open_readme).setOnClickListener(e -> {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/BitFlaker/lucidsourcekit/blob/main/README.md"));
+            startActivity(browserIntent);
+        });
     }
 
     public void updateLanguages() {

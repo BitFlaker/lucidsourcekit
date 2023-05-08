@@ -180,7 +180,7 @@ public class SetupViewer extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                pageDots.get(tab.getPosition()).setBackgroundTintList(Tools.getAttrColorStateList(R.attr.backgroundColor, getTheme()));
+                pageDots.get(tab.getPosition()).setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getTheme()));
             }
 
             @Override
@@ -198,7 +198,7 @@ public class SetupViewer extends AppCompatActivity {
 
             ColorStateList stateList;
             if(i == 0){ stateList = Tools.getAttrColorStateList(R.attr.colorPrimary, getTheme()); }
-            else{ stateList = Tools.getAttrColorStateList(R.attr.backgroundColor, getTheme()); }
+            else{ stateList = Tools.getAttrColorStateList(R.attr.slightElevated, getTheme()); }
             dotPage.setBackgroundTintList(stateList);
 
             pageDotContainer.addView(dotPage, lp);

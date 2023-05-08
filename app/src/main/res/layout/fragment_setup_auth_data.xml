@@ -1,264 +1,286 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".setup.SetupOpenSource">
 
-    <ImageView
+
+    <LinearLayout
+        android:id="@+id/ll_topic_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/setup_deep_night" />
+        android:layout_marginTop="48dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <RelativeLayout
-        android:id="@+id/background_scrapes"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp">
+        <RelativeLayout
+            android:id="@+id/background_scrapes"
+            android:layout_width="60dp"
+            android:layout_height="60dp">
 
-        <ImageView
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="6dp"
+                android:alpha=".2"
+                android:background="@drawable/background_scrapes"
+                android:backgroundTint="#030303"
+                android:scaleType="fitCenter" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="3dp"
+                android:layout_marginBottom="3dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/background_scrapes"
+                    app:tint="?attr/slightElevated" />
+
+                <ImageView
+                    android:id="@+id/icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_baseline_key_24"
+                    app:tint="#868791" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txt_auth_data_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="15dp"
-            android:scaleType="fitCenter"
-            android:backgroundTint="#030303"
-            android:background="@drawable/background_scrapes" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/background_scrapes" />
-
-        <ImageView
-            android:id="@+id/icon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_centerInParent="true"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_baseline_key_24" />
-
-    </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="@string/setup_auth_data_title_password"
+            android:textAlignment="center"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/txt_auth_data_title"
+        android:id="@+id/txt_privacy_settings_setup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/background_scrapes"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="40dp"
-        android:text="@string/setup_auth_data_title_password"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginTop="28dp"
+        android:text="@string/setup_privacy_pin"
         android:textAlignment="center"
-        android:textColor="?attr/primaryTextColor"
-        android:textSize="26sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/txt_finish_setup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_auth_data_title"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginTop="2dp"
-        android:textAlignment="center"
-        android:textColor="?attr/primaryTextColor"
-        android:textSize="18sp"
-        android:text="@string/setup_finish_content" />
+        android:textColor="?attr/secondaryTextColor"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_topic_container" />
 
     <!-- Password login -->
     <EditText
         android:id="@+id/txt_setup_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="175dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="96dp"
         android:autofillHints="password"
         android:background="@drawable/rounded_spinner"
+        android:backgroundTint="?attr/slightElevated"
         android:drawableStart="@drawable/ic_baseline_lock_24"
         android:drawablePadding="10dp"
+        android:drawableTint="#868791"
         android:hint="@string/login_password_hint"
         android:inputType="textPassword"
         android:minHeight="48dp"
         android:padding="15dp"
         android:textColor="?attr/primaryTextColor"
         android:textColorHint="#6F9E9BB1"
-        android:visibility="visible" />
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- PIN login -->
     <LinearLayout
+        android:id="@+id/ll_setup_pinLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/ll_setup_pinLayout"
+        android:layout_marginLeft="48dp"
+        android:layout_marginRight="48dp"
+        android:layout_marginBottom="96dp"
         android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="85dp"
-        android:layout_marginRight="85dp"
-        android:layout_marginBottom="100dp"
-        android:visibility="gone">
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/txt_setup_enteredPin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:includeFontPadding="false"
             android:text=""
+            android:textAlignment="center"
             android:textColor="?attr/primaryTextColor"
-            android:textSize="35sp"
-            android:textAlignment="center">
+            android:textSize="32sp">
 
         </TextView>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/ll_setup_numRow1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
                 android:id="@+id/btn_setup_pin1"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:background="@drawable/round_pin_button"
                 android:text="1"
-                android:layout_weight="1"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="28sp"
-                android:background="@drawable/round_pin_button"/>
+                android:textSize="21sp" />
 
             <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
                 android:id="@+id/btn_setup_pin2"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:background="@drawable/round_pin_button"
                 android:text="2"
-                android:layout_weight="1"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="28sp"
-                android:background="@drawable/round_pin_button"/>
+                android:textSize="21sp" />
 
             <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
                 android:id="@+id/btn_setup_pin3"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:background="@drawable/round_pin_button"
                 android:text="3"
-                android:layout_weight="1"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="28sp"
-                android:background="@drawable/round_pin_button"/>
+                android:textSize="21sp" />
         </LinearLayout>
+
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/ll_setup_numRow2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
                 android:id="@+id/btn_setup_pin4"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:background="@drawable/round_pin_button"
                 android:text="4"
-                android:layout_weight="1"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="28sp"
-                android:background="@drawable/round_pin_button"/>
+                android:textSize="21sp" />
 
             <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
                 android:id="@+id/btn_setup_pin5"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:background="@drawable/round_pin_button"
                 android:text="5"
-                android:layout_weight="1"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="28sp"
-                android:background="@drawable/round_pin_button"/>
+                android:textSize="21sp" />
 
             <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
                 android:id="@+id/btn_setup_pin6"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:background="@drawable/round_pin_button"
                 android:text="6"
-                android:layout_weight="1"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="28sp"
-                android:background="@drawable/round_pin_button"/>
+                android:textSize="21sp" />
         </LinearLayout>
+
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/ll_setup_numRow3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
                 android:id="@+id/btn_setup_pin7"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:background="@drawable/round_pin_button"
                 android:text="7"
-                android:layout_weight="1"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="28sp"
-                android:background="@drawable/round_pin_button"/>
+                android:textSize="21sp" />
 
             <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
                 android:id="@+id/btn_setup_pin8"
-                android:text="8"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
                 android:layout_weight="1"
+                android:background="@drawable/round_pin_button"
+                android:text="8"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="28sp"
-                android:background="@drawable/round_pin_button"/>
+                android:textSize="21sp" />
 
             <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
                 android:id="@+id/btn_setup_pin9"
-                android:text="9"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
                 android:layout_weight="1"
+                android:background="@drawable/round_pin_button"
+                android:text="9"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="28sp"
-                android:background="@drawable/round_pin_button"/>
+                android:textSize="21sp" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_setup_numRow4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/ll_setup_numRow4"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="44dp"
                 android:layout_weight="1"
                 android:background="#00000000"
-                android:textSize="28sp"
+                android:textSize="21sp"
                 tools:ignore="SpeakableTextPresentCheck" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_setup_pin0"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="44dp"
                 android:layout_weight="1"
                 android:background="@drawable/round_pin_button"
                 android:text="0"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="28sp"/>
+                android:textSize="21sp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_setup_delete"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="44dp"
                 android:layout_weight="1"
                 android:background="@drawable/round_pin_button"
                 android:text="\u232B"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="28sp"/>
+                android:textSize="21sp" />
         </LinearLayout>
     </LinearLayout>
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

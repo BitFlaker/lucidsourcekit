@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".setup.SetupOpenSource">
+
+    <RelativeLayout
+        android:id="@+id/background_scrapes"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="15dp"
+            android:scaleType="fitCenter"
+            android:backgroundTint="#030303"
+            android:background="@drawable/background_scrapes"
+            android:alpha=".2"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/background_scrapes"
+            app:tint="?attr/slightElevated" />
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_baseline_report_problem_24"
+            app:tint="#868791" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txt_experimental_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/background_scrapes"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="40dp"
+        android:text="@string/setup_experimental_title"
+        android:textAlignment="center"
+        android:textColor="?attr/primaryTextColor"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txt_experimental_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_experimental_title"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="40dp"
+        android:text="@string/setup_experimental_description"
+        android:textAlignment="center"
+        android:textColor="?attr/secondaryTextColor"
+        android:textSize="16sp" />
+
+    <CheckBox
+        android:id="@+id/chk_accept_risk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="70dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginBottom="175dp"
+        android:background="@drawable/rounded_spinner"
+        android:backgroundTint="?attr/slightElevated"
+        android:button="@android:color/transparent"
+        android:drawableStart="@drawable/ic_baseline_check_box_outline_blank_24"
+        android:drawableTint="?attr/colorOnSurface"
+        android:drawablePadding="10dp"
+        android:paddingStart="15dp"
+        android:text="@string/setup_consent_checkbox"
+        android:textColor="?attr/primaryTextColor" />
+</RelativeLayout>

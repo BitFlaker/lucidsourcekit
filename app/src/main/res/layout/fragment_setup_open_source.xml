@@ -1,76 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".setup.SetupOpenSource">
 
-    <ImageView
+    <LinearLayout
+        android:id="@+id/ll_topic_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/setup_deep_night" />
+        android:layout_marginTop="48dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <RelativeLayout
-        android:id="@+id/background_scrapes"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp">
+        <RelativeLayout
+            android:id="@+id/background_scrapes"
+            android:layout_width="60dp"
+            android:layout_height="60dp">
 
-        <ImageView
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="6dp"
+                android:alpha=".2"
+                android:background="@drawable/background_scrapes"
+                android:backgroundTint="#030303"
+                android:scaleType="fitCenter" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="3dp"
+                android:layout_marginBottom="3dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/background_scrapes"
+                    app:tint="?attr/slightElevated" />
+
+                <ImageView
+                    android:id="@+id/icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_baseline_code_24"
+                    app:tint="#868791" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txt_open_source_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="15dp"
-            android:scaleType="fitCenter"
-            android:backgroundTint="#030303"
-            android:background="@drawable/background_scrapes" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/background_scrapes" />
-
-        <ImageView
-            android:id="@+id/icon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_baseline_code_24"/>
-
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/txt_open_source_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/background_scrapes"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="40dp"
-        android:text="@string/setup_open_source_title"
-        android:textAlignment="center"
-        android:textColor="?attr/primaryTextColor"
-        android:textSize="26sp"
-        android:textStyle="bold" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="@string/setup_open_source_title"
+            android:textAlignment="center"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/txt_open_source_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_open_source_title"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="2dp"
-        android:textAlignment="center"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="28dp"
         android:text="@string/setup_open_source_description"
-        android:textColor="?attr/primaryTextColor"
-        android:textSize="18sp" />
-</RelativeLayout>
+        android:textAlignment="center"
+        android:textColor="?attr/secondaryTextColor"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_topic_container" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_open_readme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="96dp"
+        android:background="@drawable/ripple_round"
+        android:text="README.md"
+        android:textAllCaps="false"
+        app:icon="@drawable/ic_round_open_in_new_24"
+        app:backgroundTint="?attr/slightElevated"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
