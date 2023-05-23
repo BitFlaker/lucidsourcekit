@@ -37,6 +37,8 @@
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
         android:overScrollMode="ifContentScrolls"
+        android:clipToPadding="false"
+        android:paddingBottom="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_notification_editor_sub_heading" />
 

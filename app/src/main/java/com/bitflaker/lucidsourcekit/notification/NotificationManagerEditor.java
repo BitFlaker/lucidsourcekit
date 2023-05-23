@@ -149,7 +149,7 @@ public class NotificationManagerEditor extends AppCompatActivity {
                 else if(obfuscationMed.isChecked()){ message.setObfuscationTypeId(1); }
                 else if(obfuscationMax.isChecked()){ message.setObfuscationTypeId(2); }
                 db.getNotificationMessageDao().update(message).blockingAwait();
-                rcvaNotificationEditor.notifyMessageChanged(message, origObfuscationTypeId != message.getObfuscationTypeId());
+                rcvaNotificationEditor.notifyMessageChanged(message, origObfuscationTypeId, message.getObfuscationTypeId());
             }
             else {
                 NotificationMessage newMessage = new NotificationMessage(

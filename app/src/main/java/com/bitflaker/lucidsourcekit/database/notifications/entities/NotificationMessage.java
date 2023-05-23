@@ -7,6 +7,8 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import com.bitflaker.lucidsourcekit.notification.NotificationMessageModel;
+
 @Entity(foreignKeys = {
         @ForeignKey(entity = NotificationObfuscations.class,
             parentColumns = "obfuscationTypeId",
@@ -19,7 +21,7 @@ import androidx.room.PrimaryKey;
     },
     indices = { @Index("notificationCategoryId"), @Index("obfuscationTypeId") }
 )
-public class NotificationMessage {
+public class NotificationMessage extends NotificationMessageModel {
     @PrimaryKey(autoGenerate = true)
     private int id;
     @NonNull
@@ -57,6 +59,7 @@ public class NotificationMessage {
         this.weight = weight;
     }
 
+    @Override
     public int getId() {
         return id;
     }
@@ -66,6 +69,7 @@ public class NotificationMessage {
         return message;
     }
 
+    @Override
     public int getObfuscationTypeId() {
         return obfuscationTypeId;
     }
@@ -81,5 +85,10 @@ public class NotificationMessage {
 
     public void setId(int messageId) {
         this.id = messageId;
+    }
+
+    @Override
+    public int getType() {
+        return 0;
     }
 }

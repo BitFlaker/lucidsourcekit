@@ -18,66 +18,86 @@ import com.bitflaker.lucidsourcekit.database.notifications.entities.Notification
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.card.MaterialCardView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class RecyclerViewAdapterNotificationEditor extends RecyclerView.Adapter<RecyclerViewAdapterNotificationEditor.MainViewHolderNotificationEditor> {
+public class RecyclerViewAdapterNotificationEditor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final int DEFAULT_HEADING_MARGIN_TOP = 36;
+    private static final int FIRST_HEADING_MARGIN_TOP = 8;
     private final Context context;
-    private final List<NotificationMessage> notificationMessages;
+    private final List<NotificationMessageModel> notificationMessages;
     private OnMessageClickedListener mMessageClickedListener;
-    private MainViewHolderNotificationEditor lastItemHolder;
-    private HashMap<Integer, MainViewHolderNotificationEditor> headingItemHolders;
-    private HashMap<Integer, Integer> headingItemHolderPositions;
+    private final HashMap<Integer, Integer> obfuscationCategoryCounter;
+    private final HashMap<Integer, MainViewHolderNotificationHeading> obfuscationCategoryHeadingLayout;
 
     /**
      *
-     * @param context
-     * @param notificationMessages List of messages ordered by OBFUSCATION-TYPE-ID, ID
+     * @param context the context for the recycler view adapter
+     * @param notificationMessages list of messages ordered by OBFUSCATION-TYPE-ID, ID
      */
     public RecyclerViewAdapterNotificationEditor(Context context, List<NotificationMessage> notificationMessages) {
         this.context = context;
-        this.notificationMessages = notificationMessages;
-        headingItemHolders = new HashMap<>();
-        headingItemHolderPositions = new HashMap<>();
+        this.obfuscationCategoryCounter = new HashMap<>();
+        this.obfuscationCategoryHeadingLayout = new HashMap<>();
+        this.notificationMessages = addHeadingsToMessages(notificationMessages);
+    }
+
+    private List<NotificationMessageModel> addHeadingsToMessages(List<NotificationMessage> notificationMessages) {
+        List<NotificationMessageModel> messagesWithHeadings = new ArrayList<>();
+
+        for (int i = 0; i < notificationMessages.size(); i++) {
+            if(i == 0 || notificationMessages.get(i).getObfuscationTypeId() != notificationMessages.get(i - 1).getObfuscationTypeId()) {
+                messagesWithHeadings.add(new NotificationMessageHeading(notificationMessages.get(i).getObfuscationTypeId()));
+            }
+            messagesWithHeadings.add(notificationMessages.get(i));
+            updateObfuscationCategoryCounter(notificationMessages.get(i).getObfuscationTypeId(), true);
+        }
+
+        return messagesWithHeadings;
+    }
+
+    private void updateObfuscationCategoryCounter(int obfuscationTypeId, boolean wasAdded) {
+        int newValue = obfuscationCategoryCounter.getOrDefault(obfuscationTypeId, 0) + (wasAdded ? 1 : -1);
+        obfuscationCategoryCounter.put(obfuscationTypeId, newValue);
     }
 
     @NonNull
     @Override
-    public MainViewHolderNotificationEditor onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.entry_notification_editor, parent, false);
-        return new MainViewHolderNotificationEditor(view);
+        if(viewType == 0) {
+            return new MainViewHolderNotificationMessage(inflater.inflate(R.layout.entry_notification_editor, parent, false), viewType);
+        }
+        else {
+            return new MainViewHolderNotificationHeading(inflater.inflate(R.layout.entry_notification_editor_section_heading, parent, false), viewType);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MainViewHolderNotificationEditor holder, int position) {
-        NotificationMessage current = notificationMessages.get(position);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        NotificationMessageModel currentModel = notificationMessages.get(position);
+        if(currentModel.getType() == 0) {
+            NotificationMessage current = (NotificationMessage)currentModel;
+            MainViewHolderNotificationMessage currentHolder = (MainViewHolderNotificationMessage)holder;
 
-        LinearLayout.LayoutParams lParamsHeading = (LinearLayout.LayoutParams)holder.headingContainer.getLayoutParams();
-        lParamsHeading.topMargin = Tools.dpToPx(context, position == 0 ? 6 : 36);
-        holder.headingContainer.setLayoutParams(lParamsHeading);
+            currentHolder.message.setText(current.getMessage());
+            currentHolder.obfuscationIndicator.setImageDrawable(resolveObfuscationTypeIcon(current.getObfuscationTypeId()));
+            if(mMessageClickedListener != null) {
+                currentHolder.card.setOnClickListener(e -> mMessageClickedListener.onEvent(current));
+            }
+        }
+        else if (currentModel.getType() == 1) {
+            NotificationMessageHeading current = (NotificationMessageHeading)currentModel;
+            MainViewHolderNotificationHeading currentHolder = (MainViewHolderNotificationHeading)holder;
+            obfuscationCategoryHeadingLayout.put(current.getObfuscationTypeId(), currentHolder);
 
-        LinearLayout.LayoutParams lParamsCard = (LinearLayout.LayoutParams)holder.card.getLayoutParams();
-        lParamsCard.bottomMargin = Tools.dpToPx(context, position == notificationMessages.size() - 1 ? 20 : 0);
-        holder.card.setLayoutParams(lParamsCard);
-        if(position == notificationMessages.size() - 1){
-            lastItemHolder = holder;
-        }
+            currentHolder.heading.setText(resolveObfuscationTypeHeading(current.getObfuscationTypeId()));
+            RecyclerView.LayoutParams lParamsHeading = (RecyclerView.LayoutParams)currentHolder.headingContainer.getLayoutParams();
+            lParamsHeading.topMargin = Tools.dpToPx(context, position == 0 ? FIRST_HEADING_MARGIN_TOP : DEFAULT_HEADING_MARGIN_TOP);
 
-        if(position == 0 || notificationMessages.get(position-1).getObfuscationTypeId() != current.getObfuscationTypeId()){
-            holder.headingContainer.setVisibility(View.VISIBLE);
-            holder.heading.setText(resolveObfuscationTypeHeading(current.getObfuscationTypeId()));
-            headingItemHolders.put(notificationMessages.get(position).getObfuscationTypeId(), holder);
-            headingItemHolderPositions.put(notificationMessages.get(position).getObfuscationTypeId(), position);
-        }
-        else {
-            holder.headingContainer.setVisibility(View.GONE);
-        }
-        holder.message.setText(current.getMessage());
-        holder.obfuscationIndicator.setImageDrawable(resolveObfuscationTypeIcon(current.getObfuscationTypeId()));
-        if(mMessageClickedListener != null) {
-            holder.card.setOnClickListener(e -> mMessageClickedListener.onEvent(current));
+            currentHolder.headingContainer.setLayoutParams(lParamsHeading);
         }
     }
 
@@ -118,12 +138,17 @@ public class RecyclerViewAdapterNotificationEditor extends RecyclerView.Adapter<
         return notificationMessages.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return notificationMessages.get(position).getType();
+    }
+
     public void setOnMessageClickedListener(OnMessageClickedListener messageClickedListener) {
         this.mMessageClickedListener = messageClickedListener;
     }
 
-    public void notifyMessageChanged(NotificationMessage message, boolean obfuscationTypeIdChanged) {
-        if(!obfuscationTypeIdChanged){
+    public void notifyMessageChanged(NotificationMessage message, int oldObfuscationTypeId, int newObfuscationTypeId) {
+        if(oldObfuscationTypeId == newObfuscationTypeId) {
             int index = notificationMessages.indexOf(message);
             notifyItemChanged(index);
         }
@@ -132,52 +157,71 @@ public class RecyclerViewAdapterNotificationEditor extends RecyclerView.Adapter<
             notificationMessages.remove(previousIndex);
             int suitableIndex = getSuitableIndex(message);
             notificationMessages.add(suitableIndex, message);
-
-            // TODO: optimize the following code to only reload items that actually have to be reloaded
-            //       (like in comment below (comment does not work to 100% !))
-            if(previousIndex > 0) { notifyItemChanged(previousIndex - 1); }
-            notifyItemChanged(previousIndex);
-            if(previousIndex < notificationMessages.size() - 1) { notifyItemChanged(previousIndex + 1); }
-            if(suitableIndex > 0) { notifyItemChanged(suitableIndex - 1); }
-            notifyItemChanged(suitableIndex);
-            if(suitableIndex < notificationMessages.size() - 1) { notifyItemChanged(suitableIndex+1); }
-
-//            if(suitableIndex - previousIndex < 0 && headingItemHolderPositions.containsValue(suitableIndex) ||
-//               suitableIndex == notificationMessages.size() - 1) {
-//                // Update item on new position to remove the heading if it has one when moving item upwards
-//                // Or update the item that was previously the last one so the bottom spacing gets removed
-//                notifyItemChanged(suitableIndex);
-//            }
-//            else if (suitableIndex - previousIndex > 0 && headingItemHolderPositions.containsValue(suitableIndex + 1)){
-//                // Update item on new position to remove the heading if it has one when moving item downwards
-//                notifyItemChanged(suitableIndex + 1);
-//            }
-//            if(headingItemHolderPositions.containsValue(previousIndex)){
-//                // Updating item below the item to move so it adds the heading to itself if
-//                // the item to move had a heading before
-//                notifyItemChanged(previousIndex + 1);
-//            }
             notifyItemMoved(previousIndex, suitableIndex);
+            notifyItemChanged(suitableIndex);
+
+            updateObfuscationCategoryCounter(oldObfuscationTypeId, false);
+            updateObfuscationCategoryCounter(newObfuscationTypeId, true);
+            updateCategoryHeadings();
         }
     }
 
     public void notifyMessageAdded(NotificationMessage newMessage) {
-        if(notificationMessages.size() == 0){
+        if(notificationMessages.size() == 0) {
             notificationMessages.add(newMessage);
             notifyItemInserted(0);
         }
         else {
             int suitableIndex = getSuitableIndex(newMessage);
             if(suitableIndex >= 0){
-                if(notificationMessages.size() == suitableIndex) {
-                    notifyItemChanged(notificationMessages.size() - 1, lastItemHolder);
-                }
                 notificationMessages.add(suitableIndex, newMessage);
                 notifyItemInserted(suitableIndex);
             }
             else {
                 System.err.println("notifyMessageAdded(NotificationMessage) -> suitableIndex = " + suitableIndex);
+                return;
             }
+        }
+        updateObfuscationCategoryCounter(newMessage.getObfuscationTypeId(), true);
+        updateCategoryHeadings();
+    }
+
+    private void updateCategoryHeadings() {
+        removeEmptyCategoryHeadings();
+        addNewCategoryHeadings();
+    }
+
+    private void addNewCategoryHeadings() {
+        for (int i = 0; i < notificationMessages.size(); i++) {
+            if(i == 0 && notificationMessages.get(i).getType() == 0 || notificationMessages.get(i).getType() == 0 && notificationMessages.get(i - 1).getType() == 0 && ((NotificationMessage)notificationMessages.get(i)).getObfuscationTypeId() != ((NotificationMessage)notificationMessages.get(i - 1)).getObfuscationTypeId()) {
+                if(i == 0 && notificationMessages.get(i).getType() == 0 && notificationMessages.size() > i + 1 && notificationMessages.get(i + 1).getType() == 1){
+                    NotificationMessageHeading heading = (NotificationMessageHeading)notificationMessages.get(i + 1);
+                    notifyItemChanged(heading.getObfuscationTypeId(), obfuscationCategoryHeadingLayout.get(heading.getObfuscationTypeId()));
+                }
+                notificationMessages.add(i, new NotificationMessageHeading(((NotificationMessage) notificationMessages.get(i)).getObfuscationTypeId()));
+                notifyItemInserted(i);
+                i++;
+            }
+        }
+    }
+
+    private void removeEmptyCategoryHeadings() {
+        boolean wasFirstHeadingDeleted = false;
+        NotificationMessageHeading nextHeading = null;
+        for (int i = 0; i < notificationMessages.size(); i++) {
+            if(notificationMessages.get(i).getType() == 1) {
+                NotificationMessageHeading heading = (NotificationMessageHeading) notificationMessages.get(i);
+                if(wasFirstHeadingDeleted && nextHeading == null) { nextHeading = heading; }
+                if(obfuscationCategoryCounter.getOrDefault(heading.getObfuscationTypeId(), 0) == 0) {
+                    notificationMessages.remove(i);
+                    notifyItemRemoved(i);
+                    if(i == 0) { wasFirstHeadingDeleted = true; nextHeading = null; }
+                    i--;
+                }
+            }
+        }
+        if(wasFirstHeadingDeleted) {
+            notifyItemChanged(notificationMessages.indexOf(nextHeading), obfuscationCategoryHeadingLayout.get(nextHeading.getObfuscationTypeId()));
         }
     }
 
@@ -195,19 +239,31 @@ public class RecyclerViewAdapterNotificationEditor extends RecyclerView.Adapter<
         return index;
     }
 
-    public static class MainViewHolderNotificationEditor extends RecyclerView.ViewHolder {
+    public static class MainViewHolderNotificationMessage extends RecyclerView.ViewHolder {
         MaterialCardView card;
-        LinearLayout headingContainer;
-        TextView heading, message;
+        TextView message;
         ImageView obfuscationIndicator;
+        int viewType;
 
-        public MainViewHolderNotificationEditor(@NonNull View itemView) {
+        public MainViewHolderNotificationMessage(@NonNull View itemView, int viewType) {
             super(itemView);
+            this.viewType = viewType;
             card = itemView.findViewById(R.id.crd_notification_message);
-            headingContainer = itemView.findViewById(R.id.ll_notification_obfuscation_heading);
-            heading = itemView.findViewById(R.id.txt_notification_obfuscation_heading);
             message = itemView.findViewById(R.id.txt_notification_message);
             obfuscationIndicator = itemView.findViewById(R.id.img_notification_obfuscation_indicator);
+        }
+    }
+
+    public static class MainViewHolderNotificationHeading extends RecyclerView.ViewHolder {
+        TextView heading;
+        LinearLayout headingContainer;
+        int viewType;
+
+        public MainViewHolderNotificationHeading(@NonNull View itemView, int viewType) {
+            super(itemView);
+            this.viewType = viewType;
+            heading = itemView.findViewById(R.id.txt_notification_obfuscation_heading);
+            headingContainer = itemView.findViewById(R.id.ll_notification_obfuscation_heading);
         }
     }
 
