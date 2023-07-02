@@ -18,6 +18,7 @@ import com.bitflaker.lucidsourcekit.general.Tools;
 import java.util.Locale;
 
 public class Speedometer extends View {
+    private final Paint dataDescriptionPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
     private final Paint dataLabelPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
     private final Paint dataLabelPaintOf = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
     private final Paint dataLinePaint = new Paint();
@@ -29,12 +30,17 @@ public class Speedometer extends View {
     private float circlePercentage;
     private SweepGradient gradientShader = null;
     private Rect textBounds, textBoundsOf;
+    private Rect[] descriptionTextBounds;
     private int fontSizeLarge;
     private int fontSizeMedium;
     private int fontSizeSmall;
     @ColorInt private int primaryTextColor;
     @ColorInt private int secondaryTextColor;
     @ColorInt private int trackColor;
+    private String[] description;
+    private int decimalPlaces = 1;
+    private float descriptionMarginTop = 25;
+    private boolean drawProgressOnNoProgress = false;
 
     public Speedometer(Context context) {
         super(context);
@@ -65,13 +71,20 @@ public class Speedometer extends View {
         dataLabelPaint.setTextAlign(Paint.Align.LEFT);
         dataLabelPaint.setFakeBoldText(true);
         dataLabelPaint.setAntiAlias(true);
-        dataLabelPaintOf.setColor(Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme()));
+        dataDescriptionPaint.setColor(secondaryTextColor);
+        dataDescriptionPaint.setTextAlign(Paint.Align.LEFT);
+        dataDescriptionPaint.setTextSize(fontSizeSmall);
+        dataDescriptionPaint.setFakeBoldText(false);
+        dataDescriptionPaint.setAntiAlias(true);
+        dataLabelPaintOf.setColor(secondaryTextColor);
         dataLabelPaintOf.setTextSize(fontSizeMedium);
         dataLabelPaintOf.setTextAlign(Paint.Align.LEFT);
         dataLabelPaintOf.setFakeBoldText(false);
         dataLabelPaintOf.setAntiAlias(true);
         textBounds = new Rect();
+        descriptionTextBounds = new Rect[0];
         textBoundsOf = new Rect();
+        description = new String[0];
     }
 
     public void setData(float lineWidth, float value, float maxValue) {
@@ -83,6 +96,14 @@ public class Speedometer extends View {
         circlePercentage = percentage / 2.0f + 0.5f;
         gradientShader = null;
         invalidate();
+    }
+
+    public void setDescription(String description) {
+        this.description = description.replaceAll("\\\\r\\\\n", "\n").split("\n");
+        descriptionTextBounds = new Rect[this.description.length];
+        for (int i = 0; i < descriptionTextBounds.length; i++) {
+            descriptionTextBounds[i] = new Rect();
+        }
     }
 
     @Override
@@ -107,33 +128,61 @@ public class Speedometer extends View {
         double xVal = (getWidth()/2.0f) + Math.cos(angle) * (smallestRadius-0);
         double yVal = (paddedHeight) + Math.sin(angle) * (smallestRadius);
 
-        canvas.drawCircle(leftOffset, paddedHeight, lineWidth/2.0f, dataLinePaintCap);
-        canvas.drawCircle((float)xVal, (float)yVal, lineWidth/2.0f, dataLinePaintCap);
+        if(this.value != 0 || drawProgressOnNoProgress){
+            canvas.drawCircle(leftOffset, paddedHeight, lineWidth/2.0f, dataLinePaintCap);
+            canvas.drawCircle((float)xVal, (float)yVal, lineWidth/2.0f, dataLinePaintCap);
+        }
 
-        String text = String.format(Locale.ENGLISH, "%.1f",value);   // TODO: , and . as separators have to be taken into consideration
-        String textOf = " / " + maxValue;
-        String[] descriptions = "Today's goals combined\ndifficulty rating".split("\n");    // TODO: extract string resource
+        String text = String.format(Locale.ENGLISH, "%." + decimalPlaces + "f", value);   // TODO: , and . as separators have to be taken into consideration
+        String textOf = " / " + String.format(Locale.ENGLISH, "%." + decimalPlaces + "f", maxValue);
         int accHeight = 0;
 
-        dataLabelPaint.setTextSize(fontSizeLarge);
-        dataLabelPaint.setFakeBoldText(true);
-        dataLabelPaint.setColor(primaryTextColor);
         dataLabelPaint.getTextBounds(text, 0, text.length(), textBounds);
         dataLabelPaintOf.getTextBounds(textOf, 0, textOf.length(), textBoundsOf);
 
-        float bigLabelPos = paddedHeight - textBounds.height() - 30;
+        int descriptionFieldHeight = 0;
+        for (int i = 0; i < description.length; i++) {
+            dataDescriptionPaint.getTextBounds(description[i], 0, description[i].length(), descriptionTextBounds[i]);
+            descriptionFieldHeight += descriptionTextBounds[i].height();
+        }
+
+        float bigLabelPos = paddedHeight - getDescriptionMarginTop() - descriptionFieldHeight;
+        if(description.length == 0) {
+            // If there is no description, change the position of the value to the center
+            bigLabelPos -= (paddedHeight - (textBounds.height() * 2) - dataLinePaint.getStrokeWidth()) / 2.0f;
+        }
         canvas.drawText(text, getWidth()/2.0f - textBounds.exactCenterX() - textBoundsOf.exactCenterX(), bigLabelPos, dataLabelPaint);
         canvas.drawText(textOf, getWidth()/2.0f + textBounds.exactCenterX() - textBoundsOf.exactCenterX(), bigLabelPos, dataLabelPaintOf);
 
-        dataLabelPaint.setTextSize(fontSizeSmall);
-        dataLabelPaint.setFakeBoldText(false);
-        dataLabelPaint.setColor(secondaryTextColor);
-
-        accHeight += textBounds.height() / 2.0f;
-        for (String description : descriptions) {
-            dataLabelPaint.getTextBounds(description, 0, description.length(), textBounds);
-            canvas.drawText(description, getWidth() / 2.0f - textBounds.exactCenterX(), bigLabelPos + accHeight + 36, dataLabelPaint);
-            accHeight += textBounds.height() + 10;
+        accHeight += getDescriptionMarginTop(); //textBounds.height() / 2.0f;
+        for (int i = 0; i < description.length; i++) {
+            canvas.drawText(description[i], getWidth() / 2.0f - descriptionTextBounds[i].exactCenterX(), bigLabelPos + accHeight + 36, dataDescriptionPaint);
+            accHeight += descriptionTextBounds[i].height() + 10;
+            System.out.println(descriptionTextBounds[i].height());
         }
+    }
+
+    public int getDecimalPlaces() {
+        return decimalPlaces;
+    }
+
+    public void setDecimalPlaces(int decimalPlaces) {
+        this.decimalPlaces = decimalPlaces;
+    }
+
+    public float getDescriptionMarginTop() {
+        return description.length == 0 ? 0 : descriptionMarginTop;
+    }
+
+    public void setDescriptionMarginTop(float descriptionMarginTop) {
+        this.descriptionMarginTop = descriptionMarginTop;
+    }
+
+    public boolean isDrawProgressOnNoProgress() {
+        return drawProgressOnNoProgress;
+    }
+
+    public void setDrawProgressOnNoProgress(boolean drawProgressOnNoProgress) {
+        this.drawProgressOnNoProgress = drawProgressOnNoProgress;
     }
 }

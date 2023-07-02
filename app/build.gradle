@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-    def room_version = "2.5.1"
+    def room_version = '2.5.2'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.biometric:biometric:1.2.0-alpha05'
     implementation "androidx.viewpager2:viewpager2:1.0.0"

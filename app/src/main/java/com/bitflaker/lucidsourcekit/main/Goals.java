@@ -455,6 +455,7 @@ public class Goals extends Fragment {
                for (AppCompatCheckBox chk : goalChecks) {
                    currentGoalsContainer.addView(chk);
                }
+               difficultySpeedometer.setDescription("Today's goals combined\ndifficulty rating");
                difficultySpeedometer.setData(25, currentDifficulty, 3);
 
                String[] numParts = getDecimalNumParts(100 * (float)achievedCountAtmc.get() / yesterdayCountAtmc.get(), 2);

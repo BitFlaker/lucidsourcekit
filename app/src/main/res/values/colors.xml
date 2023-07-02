@@ -53,6 +53,7 @@
     <color name="background_old">#222222</color>
     <color name="background_paper">#2C2C2C</color>
     <color name="white_70p">#B3FFFFFF</color>
+    <color name="white_60p">#99FFFFFF</color>
     <color name="white_50p">#4DFFFFFF</color>
     <color name="white_40p">#66FFFFFF</color>
     <color name="white_5p">#12FFFFFF</color>

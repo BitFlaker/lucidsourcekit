@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.charts.Speedometer;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
 import com.bitflaker.lucidsourcekit.general.Tools;
@@ -36,6 +37,7 @@ public class NotificationManager extends AppCompatActivity {
     private int customDailyNotificationsCount;
     private MainDatabase db;
     private RecyclerViewAdapterNotificationCategories rcvaNotificationCategories;
+    private Speedometer notificationsDelivered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +104,11 @@ public class NotificationManager extends AppCompatActivity {
             String autoOpenId = getIntent().getStringExtra("AUTO_OPEN_ID");
             rcvaNotificationCategories.openSettingsForCategoryId(autoOpenId);
         }
+
+        notificationsDelivered = findViewById(R.id.spdo_notifications_delivered);
+        notificationsDelivered.setData(25f, 3, 12);
+        notificationsDelivered.setDecimalPlaces(0);
+        notificationsDelivered.setDescription("notifications\nalready received today");
     }
 
     private void createAndShowBottomSheetConfigurator(NotificationCategory category) {

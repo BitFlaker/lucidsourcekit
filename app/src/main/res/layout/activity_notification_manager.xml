@@ -60,99 +60,18 @@
                     android:padding="4dp"
                     android:showDividers="middle">
 
-                    <LinearLayout
+                    <com.bitflaker.lucidsourcekit.charts.Speedometer
+                        android:id="@+id/spdo_notifications_delivered"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:divider="@drawable/divider_large"
-                        android:orientation="horizontal"
-                        android:showDividers="middle">
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            app:cardBackgroundColor="?attr/backgroundColor"
-                            app:cardCornerRadius="@dimen/cardRadius"
-                            app:cardElevation="0dp"
-                            app:strokeColor="?attr/slightElevated"
-                            app:strokeWidth="1dp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="16dp"
-                                android:gravity="center_horizontal"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="6"
-                                    android:textColor="?attr/primaryTextColor"
-                                    android:textSize="26sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Daily notifications"
-                                    android:textSize="14sp" />
-                            </LinearLayout>
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            app:cardBackgroundColor="?attr/backgroundColor"
-                            app:cardCornerRadius="@dimen/cardRadius"
-                            app:cardElevation="0dp"
-                            app:strokeColor="?attr/slightElevated"
-                            app:strokeWidth="1dp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="16dp"
-                                android:gravity="center_horizontal"
-                                android:orientation="vertical">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center_horizontal"
-                                    android:orientation="horizontal">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="1"
-                                        android:textColor="?attr/primaryTextColor"
-                                        android:textSize="26sp"
-                                        android:textStyle="bold" />
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="/4"
-                                        android:textColor="?attr/secondaryTextColor"
-                                        android:textSize="16sp"
-                                        android:textStyle="normal" />
-                                </LinearLayout>
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Categories enabled"
-                                    android:textSize="14sp" />
-                            </LinearLayout>
-                        </com.google.android.material.card.MaterialCardView>
-                    </LinearLayout>
+                        android:layout_height="125dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="24dp"/>
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="visible"
                         app:cardBackgroundColor="?attr/backgroundColor"
                         app:cardCornerRadius="@dimen/cardRadius"
                         app:cardElevation="0dp"
@@ -167,10 +86,157 @@
                             android:layout_marginRight="16dp"
                             android:layout_marginBottom="10dp"
                             android:textAlignment="center"
-                            android:text="Customize notifications to suit your needs. Only receive notifications about selected topics whenever you really want to receive them."
+                            android:text="Customize notifications to suit your needs. Only receive notifications for selected topics whenever you want to receive them."
                             android:textColor="?attr/tertiaryTextColor"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            android:drawableStart="@drawable/ic_outline_info_24"
+                            android:drawablePadding="6dp"
+                            android:drawableTint="?attr/tertiaryTextColor"/>
                     </com.google.android.material.card.MaterialCardView>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginEnd="24dp">
+
+                        <TextView
+                            android:id="@+id/txt_daily_notifications"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/round_notifications_24"
+                            android:drawableTint="?attr/secondaryTextColor"
+                            android:drawablePadding="6dp"
+                            android:gravity="center_vertical"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="8dp"
+                            android:text="Daily amount"
+                            android:textSize="13sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintWidth_percent="0.56" />
+
+                        <TextView
+                            android:id="@+id/txt_daily_notifications_val"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="12"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textStyle="bold"
+                            android:textAlignment="textEnd"
+                            app:layout_constraintBottom_toBottomOf="@+id/txt_daily_notifications"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/txt_daily_notifications"
+                            app:layout_constraintWidth_percent="0.44" />
+
+                        <TextView
+                            android:id="@+id/txt_categories_enabled"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/baseline_toggle_on_24"
+                            android:drawableTint="?attr/secondaryTextColor"
+                            android:drawablePadding="6dp"
+                            android:gravity="center_vertical"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="8dp"
+                            android:text="Categories"
+                            android:textSize="13sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/txt_daily_notifications"
+                            app:layout_constraintWidth_percent="0.56" />
+
+                        <TextView
+                            android:id="@+id/txt_categories_enabled_val"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="1/4"
+                            android:textStyle="bold"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textAlignment="textEnd"
+                            app:layout_constraintBottom_toBottomOf="@+id/txt_categories_enabled"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/txt_categories_enabled"
+                            app:layout_constraintWidth_percent="0.44" />
+
+                        <TextView
+                            android:id="@+id/txt_notification_timespan"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/round_timelapse_24"
+                            android:drawableTint="?attr/secondaryTextColor"
+                            android:drawablePadding="6dp"
+                            android:gravity="center_vertical"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="8dp"
+                            android:text="Timeframe"
+                            android:textSize="13sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/txt_categories_enabled"
+                            app:layout_constraintWidth_percent="0.56" />
+
+                        <TextView
+                            android:id="@+id/txt_notification_timespan_val"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="08:30 - 18:45"
+                            android:textStyle="bold"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textAlignment="textEnd"
+                            app:layout_constraintBottom_toBottomOf="@+id/txt_notification_timespan"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/txt_notification_timespan"
+                            app:layout_constraintWidth_percent="0.44" />
+
+                        <TextView
+                            android:id="@+id/txt_obfuscation_level"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/round_disabled_visible_24"
+                            android:drawablePadding="6dp"
+                            android:drawableTint="?attr/secondaryTextColor"
+                            android:gravity="center_vertical"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="8dp"
+                            android:text="Obfuscation"
+                            android:textSize="13sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/txt_notification_timespan"
+                            app:layout_constraintWidth_percent="0.56" />
+
+                        <TextView
+                            android:id="@+id/txt_obfuscation_level_val"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="64%"
+                            android:textStyle="bold"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textAlignment="textEnd"
+                            app:layout_constraintBottom_toBottomOf="@+id/txt_obfuscation_level"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/txt_obfuscation_level"
+                            app:layout_constraintWidth_percent="0.44" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="12dp"
+                        android:text="Pause notifications"
+                        android:textColor="?attr/secondaryTextColor"
+                        app:icon="@drawable/ic_baseline_pause_24"
+                        app:iconTint="?attr/secondaryTextColor"
+                        app:rippleColor="#21FFFFFF"
+                        app:backgroundTint="?attr/backgroundColor"
+                        app:cornerRadius="32dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/rcv_notification_categories"
+                        app:strokeColor="?attr/secondaryTextColor"
+                        app:strokeWidth="1dp"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -179,7 +245,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="26dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="0dp"
                 android:text="Notification categories"
                 android:textColor="?attr/primaryTextColor"
                 android:textStyle="bold"
@@ -191,12 +257,34 @@
                 android:id="@+id/rcv_notification_categories"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="14dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
                 android:nestedScrollingEnabled="false"
                 android:overScrollMode="never"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txt_notification_categories_heading" />
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="28dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="16dp"
+                android:text="Disable all notifications"
+                android:textColor="?attr/colorError"
+                app:rippleColor="#21C32C2C"
+                app:backgroundTint="?attr/backgroundColor"
+                app:cornerRadius="32dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rcv_notification_categories"
+                app:strokeColor="?attr/colorError"
+                app:strokeWidth="1dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,12 +13,12 @@
         android:layout_height="wrap_content"
         app:cardBackgroundColor="?attr/backgroundColor"
         app:cardCornerRadius="@dimen/cardRadius"
-        app:cardElevation="1dp"
+        app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:strokeColor="?attr/slightElevated"
-        app:strokeWidth="2dp">
+        app:strokeWidth="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,7 +29,7 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                app:cardBackgroundColor="?attr/slightElevated"
+                app:cardBackgroundColor="?attr/backgroundColor"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="0dp">
 
@@ -62,6 +62,7 @@
                     android:id="@+id/txt_notification_category_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
                     android:text="Reminder for writing down your dream to the dream journal in order to improve dream recall"
                     android:textSize="14sp" />
 
