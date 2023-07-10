@@ -1,7 +1,10 @@
 package com.bitflaker.lucidsourcekit.notification;
 
+import android.Manifest;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -9,14 +12,17 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.alarms.updated.AlarmHandler;
 import com.bitflaker.lucidsourcekit.charts.Speedometer;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
@@ -33,6 +39,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class NotificationManager extends AppCompatActivity {
+    private static final int PERMISSION_REQUEST_CODE = 772;
     private Calendar notificationsTimeFrom, notificationsTimeTo;
     private int customDailyNotificationsCount;
     private MainDatabase db;
@@ -109,6 +116,24 @@ public class NotificationManager extends AppCompatActivity {
         notificationsDelivered.setData(25f, 3, 12);
         notificationsDelivered.setDecimalPlaces(0);
         notificationsDelivered.setDescription("notifications\nalready received today");
+
+        requestPermissionIfRequired();
+    }
+
+    private void requestPermissionIfRequired() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.POST_NOTIFICATIONS }, PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                finish();
+            }
+        }
     }
 
     private void createAndShowBottomSheetConfigurator(NotificationCategory category) {
@@ -246,6 +271,7 @@ public class NotificationManager extends AppCompatActivity {
             db.getNotificationCategoryDao().update(category).blockingAwait();
             bottomSheetDialog.dismiss();
             rcvaNotificationCategories.notifyCategoryChanged(category);
+            AlarmHandler.scheduleNextNotification(this).blockingSubscribe();
         });
         bottomSheetDialog.show();
     }

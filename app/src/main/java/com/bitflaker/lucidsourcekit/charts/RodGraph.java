@@ -28,6 +28,8 @@ public class RodGraph extends View {
     private int iconSize;
     private Bitmap[] icons;
     private int minHeight = 0;
+    private int extraSpacing;
+    private boolean invertedOrder = false;
 
     public RodGraph(Context context){
         super(context);
@@ -52,6 +54,7 @@ public class RodGraph extends View {
         dataLabelPaint.setTextAlign(Paint.Align.CENTER);
         dataLabelPaint.setAntiAlias(true);
         axisLinePaint.setStrokeWidth(Tools.dpToPx(getContext(), 3));
+        extraSpacing = Tools.dpToPx(getContext(), 28);
     }
 
     public void setData(List<DataValue> data, float lineWidth, int iconSize, Drawable[] icons) {
@@ -95,7 +98,7 @@ public class RodGraph extends View {
         float rodPaddingRight = Tools.dpToPx(getContext(), 10);
 
         for (int i = 0; i < data.size(); i++) {
-            DataValue current = data.get(i);
+            DataValue current = data.get(invertedOrder ? data.size() - 1 - i : i);
             int minRadMargin = Tools.dpToPx(getContext(), 4);
             int iconPlaceholder = icons != null ? iconSize + Tools.dpToPx(getContext(), 5) : 0;
             marginForRodRadius = Math.max(iconPlaceholder / 2.0f, minRadMargin);
@@ -114,7 +117,6 @@ public class RodGraph extends View {
         }
 
         drawIcons(canvas, marginForRodRadius, bottomPointWithTextMargin);
-        clacMinHeight();
     }
 
     private void clacMinHeight() {
@@ -130,6 +132,13 @@ public class RodGraph extends View {
             }
             setMinimumHeight(minHeight);
         }
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        clacMinHeight();
+        setMeasuredDimension(widthMeasureSpec, minHeight + extraSpacing);
     }
 
     private void drawIcons(Canvas canvas, float marginForRodRadius, float bottomPointWithTextMargin) {
@@ -161,4 +170,19 @@ public class RodGraph extends View {
         return yText;
     }
 
+    public int getExtraSpacing() {
+        return extraSpacing;
+    }
+
+    public void setExtraSpacing(int extraSpacing) {
+        this.extraSpacing = extraSpacing;
+    }
+
+    public boolean isInvertedOrder() {
+        return invertedOrder;
+    }
+
+    public void setInvertedOrder(boolean invertedOrder) {
+        this.invertedOrder = invertedOrder;
+    }
 }

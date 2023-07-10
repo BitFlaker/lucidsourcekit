@@ -158,7 +158,6 @@ public class Speedometer extends View {
         for (int i = 0; i < description.length; i++) {
             canvas.drawText(description[i], getWidth() / 2.0f - descriptionTextBounds[i].exactCenterX(), bigLabelPos + accHeight + 36, dataDescriptionPaint);
             accHeight += descriptionTextBounds[i].height() + 10;
-            System.out.println(descriptionTextBounds[i].height());
         }
     }
 

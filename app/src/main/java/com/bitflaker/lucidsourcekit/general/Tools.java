@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -43,9 +44,16 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class Tools {
+    private static final int NOTIFICATION_ID_START = 500000;
     private static int THEME_DIALOG;
     private static int THEME_POPUP;
     private static int THEME;
+    private static final HashMap<String, Integer> notificationIdMap = new HashMap<String, Integer>() {{
+        put("DJR", NOTIFICATION_ID_START + 11);
+        put("RCR", NOTIFICATION_ID_START + 12);
+        put("DGR", NOTIFICATION_ID_START + 13);
+        put("CR", NOTIFICATION_ID_START + 14);
+    }};
 
     public static void setThemeColors(int theme){
         if(theme == R.style.Theme_LucidSourceKit_Light) {
@@ -548,11 +556,16 @@ public class Tools {
 
     public static long getTimeFromMidnight(long timeInMillis) {
         Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(getMidnightTime() + timeInMillis);
+        return cal.getTimeInMillis();
+    }
+
+    public static long getMidnightTime() {
+        Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
-        cal.setTimeInMillis(cal.getTimeInMillis() + timeInMillis);
         return cal.getTimeInMillis();
     }
 
@@ -563,5 +576,13 @@ public class Tools {
             }
         }
         return null;
+    }
+
+    public static int getUniqueNotificationId(String notificationCategoryId) {
+        Integer val = notificationIdMap.get(notificationCategoryId);
+        if(val != null) {
+            return val;
+        }
+        return -1;
     }
 }

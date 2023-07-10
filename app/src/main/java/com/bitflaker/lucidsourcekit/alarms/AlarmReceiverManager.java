@@ -1,45 +1,98 @@
 package com.bitflaker.lucidsourcekit.alarms;
 
+import android.Manifest;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
+import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.alarms.updated.AlarmHandler;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarmDetails;
+import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationMessage;
+import com.bitflaker.lucidsourcekit.general.Tools;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.NavigableMap;
+import java.util.Random;
+import java.util.TreeMap;
 
 public class AlarmReceiverManager extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        if(intent.getAction() == null){
-//            printStoredActiveAlarms(context);
-            if(intent.hasExtra("REPETITION_PATTERN") && intent.hasExtra("REPETITION_PATTERN_INDEX") && intent.hasExtra("REPETITION_INTERVAL") && intent.hasExtra("REQUEST_CODE") && intent.hasExtra("INITIAL_TIME") && intent.hasExtra("STORED_ALARM_ID")){
+        if (intent.getAction() == null) {
+            if (intent.hasExtra("REPETITION_PATTERN") && intent.hasExtra("REPETITION_PATTERN_INDEX") && intent.hasExtra("REPETITION_INTERVAL") && intent.hasExtra("REQUEST_CODE") && intent.hasExtra("INITIAL_TIME") && intent.hasExtra("STORED_ALARM_ID")) {
                 // a repeating alarm was triggered
                 openAlarmViewer(context, intent.getLongExtra("STORED_ALARM_ID", -1));
                 printAlarmTriggeredStatement(context, true);
                 updateAndRescheduleNextAlarm(context, intent);
-            }
-            else if(intent.hasExtra("STORED_ALARM_ID")) {
+            } else if (intent.hasExtra("STORED_ALARM_ID")) {
                 // a one time alarm was triggered
                 openAlarmViewer(context, intent.getLongExtra("STORED_ALARM_ID", -1));
                 printAlarmTriggeredStatement(context, false);
                 removeOneTimeAlarm(context, intent);
-            }
-            else if (intent.hasExtra("SNOOZING_STORED_ALARM_ID")){
+            } else if (intent.hasExtra("SNOOZING_STORED_ALARM_ID")) {
                 // a snoozing alarm should go off again
                 openAlarmViewer(context, intent.getLongExtra("SNOOZING_STORED_ALARM_ID", -1));
+            } else if (intent.hasExtra("NOTIFICATION_CATEGORY_ID")) {
+                System.out.println("TRYING TO SHOW NOTIFICATION");
+                showNotificationForCategory(context, intent.getStringExtra("NOTIFICATION_CATEGORY_ID"));
+                AlarmHandler.scheduleNextNotification(context).blockingSubscribe();
             }
-        }
-        else if(intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED) || intent.getAction().equalsIgnoreCase(Intent.ACTION_MY_PACKAGE_REPLACED)){
+        } else if (intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED) || intent.getAction().equalsIgnoreCase(Intent.ACTION_MY_PACKAGE_REPLACED)) {
             // TODO: check if the alarm gets rescheduled after updating the app
 //            Toast.makeText(context, "ACTION: " + intent.getAction(), Toast.LENGTH_LONG).show();
             rescheduleAllStoredAlarms(context);
+            AlarmHandler.scheduleNextNotification(context).blockingSubscribe();
         }
+    }
+
+    public static void showNotificationForCategory(Context context, String notificationCategoryId) {
+        MainDatabase db = MainDatabase.getInstance(context);
+        db.getNotificationCategoryDao().getById(notificationCategoryId).subscribe(notificationCategory -> {
+            if(notificationCategory.isEnabled()) {
+                db.getNotificationMessageDao().getAllOfCategory(notificationCategoryId).subscribe(messages -> {
+                    Calendar cal = Calendar.getInstance();
+                    System.out.println("NOTIFICATION NOW: " + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND));
+                    NotificationMessage msg = getWeightedNotificationMessage(messages);
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(context, notificationCategoryId)
+                            .setSmallIcon(R.drawable.icon_no_bg)
+                            .setContentTitle("Reminder")
+                            .setContentText(msg.getMessage())
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText(msg.getMessage()))
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+                    int notifyId = Tools.getUniqueNotificationId(notificationCategoryId);
+                    NotificationManager nMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                    nMgr.cancel(notifyId);
+                    notificationManager.notify(notifyId, builder.build());
+                }).dispose();
+            }
+        }).dispose();
+    }
+
+    private static NotificationMessage getWeightedNotificationMessage(List<NotificationMessage> messages) {
+        NavigableMap<Integer, NotificationMessage> map = new TreeMap<>();
+        Random rnd = new Random();
+        int totalWeight = 0;
+        for (NotificationMessage msg : messages) {
+            totalWeight += msg.getWeight();
+            map.put(totalWeight, msg);
+        }
+        return map.higherEntry(rnd.nextInt(totalWeight)).getValue();
     }
 
     private void openAlarmViewer(Context context, long storedAlarmId) {

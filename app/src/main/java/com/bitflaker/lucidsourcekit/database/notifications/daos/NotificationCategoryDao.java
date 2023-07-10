@@ -19,6 +19,9 @@ public interface NotificationCategoryDao {
     @Query("SELECT * FROM NotificationCategory ORDER BY id")
     Single<List<NotificationCategory>> getAll();
 
+    @Query("SELECT * FROM NotificationCategory WHERE id = :notificationCategoryId")
+    Single<NotificationCategory> getById(String notificationCategoryId);
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     Completable insertAll(NotificationCategory... NotificationCategories);
 

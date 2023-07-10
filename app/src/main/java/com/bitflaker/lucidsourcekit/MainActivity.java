@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         editor.apply();
-        
+
         // TODO: only insert when necessary
         // TODO: add loading indicator
         new Thread(() -> {
@@ -169,15 +169,18 @@ public class MainActivity extends AppCompatActivity {
                                         db.getAlarmToneTypesDao().insertAll(AlarmToneTypes.populateData()).subscribe(() -> {
                                             db.getNotificationObfuscationDao().insertAll(NotificationObfuscations.populateData()).subscribe(() -> {
                                                 db.getNotificationCategoryDao().insertAll(NotificationCategory.populateData()).subscribe(() -> {
-                                                    db.getGoalDao().getGoalCount().subscribe((count) -> {
-                                                        if (count == 0) {
-                                                            DefaultGoals defaultGoals = new DefaultGoals(this);
-                                                            db.getGoalDao().insertAll(defaultGoals.getGoalsList()).subscribe(() -> {
+                                                    AlarmHandler.createNotificationChannels(this).subscribe(() -> {
+                                                        AlarmHandler.reEnableNotificationsIfNotRunning(getApplicationContext());
+                                                        db.getGoalDao().getGoalCount().subscribe((count) -> {
+                                                            if (count == 0) {
+                                                                DefaultGoals defaultGoals = new DefaultGoals(this);
+                                                                db.getGoalDao().insertAll(defaultGoals.getGoalsList()).subscribe(() -> {
+                                                                    dataSetupHandler(db, preferences, count);
+                                                                }).dispose();
+                                                            } else {
                                                                 dataSetupHandler(db, preferences, count);
-                                                            }).dispose();
-                                                        } else {
-                                                            dataSetupHandler(db, preferences, count);
-                                                        }
+                                                            }
+                                                        }).dispose();
                                                     }).dispose();
                                                 }).dispose();
                                             }).dispose();

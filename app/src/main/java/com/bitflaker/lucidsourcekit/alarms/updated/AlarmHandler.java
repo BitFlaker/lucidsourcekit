@@ -1,9 +1,15 @@
 package com.bitflaker.lucidsourcekit.alarms.updated;
 
 import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
+import android.preference.PreferenceManager;
 
 import com.bitflaker.lucidsourcekit.alarms.AlarmCreator;
 import com.bitflaker.lucidsourcekit.alarms.AlarmReceiverManager;
@@ -11,6 +17,9 @@ import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarm;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarmDetails;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
+import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
+import com.bitflaker.lucidsourcekit.notification.NotificationOrderManager;
+import com.bitflaker.lucidsourcekit.notification.NotificationScheduleData;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -20,7 +29,9 @@ import java.util.List;
 import io.reactivex.rxjava3.core.Completable;
 
 public class AlarmHandler {
+    public static final String NEXT_UP_NOTIFICATION_CATEGORY = "NEXT_UP_NOTIFICATION_CATEGORY";
     public static final int SNOOZING_ALARM_REQUEST_CODE_START_VALUE = 1000000000;
+    public static final int NOTIFICATION_REQUEST_CODE = 2121212121;
 
     public static void clickAction(Context context) {
         Date currentTime = Calendar.getInstance().getTime();
@@ -121,7 +132,6 @@ public class AlarmHandler {
                             db.getStoredAlarmDao().setActiveState((int) storedAlarmId, true).blockingSubscribe(() -> {
                                 intent.putExtra("REQUEST_CODE", alarmReqCode);
                                 final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarmReqCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-//                                manager.setExact(AlarmManager.RTC_WAKEUP, finalfinalFirstAlarmTime, pendingIntent);
                                 Intent editor = new Intent(context, AlarmCreator.class);
                                 editor.putExtra("ALARM_ID", storedAlarmId);
                                 final PendingIntent pendingIntentEditor = PendingIntent.getBroadcast(context, alarmEditorReqCode, editor, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -136,7 +146,6 @@ public class AlarmHandler {
                 db.getActiveAlarmDao().update(new ActiveAlarm(requestCode, firstAlarmTime, interval, repetitionPatternCurrentIndex)).blockingSubscribe(() -> {
                     intent.putExtra("REQUEST_CODE", requestCode);
                     final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-//                    manager.setExact(AlarmManager.RTC_WAKEUP, finalfinalFirstAlarmTime, pendingIntent);
                     Intent editor = new Intent(context, AlarmCreator.class);
                     editor.putExtra("ALARM_ID", storedAlarmId);
                     final PendingIntent pendingIntentEditor = PendingIntent.getBroadcast(context, requestCode + 1, editor, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -176,7 +185,6 @@ public class AlarmHandler {
                         db.getActiveAlarmDao().insert(new ActiveAlarm(alarmReqCode, finalTime, -1, -1)).blockingSubscribe(() -> {
                             db.getStoredAlarmDao().updateRequestCode((int) storedAlarmId, alarmReqCode).blockingSubscribe(() -> {
                                 final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarmReqCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-//                                manager.setExact(AlarmManager.RTC_WAKEUP, finalTime, pendingIntent);
                                 Intent editor = new Intent(context, AlarmCreator.class);
                                 editor.putExtra("ALARM_ID", storedAlarmId);
                                 final PendingIntent pendingIntentEditor = PendingIntent.getBroadcast(context, alarmEditorReqCode, editor, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -189,11 +197,67 @@ public class AlarmHandler {
             else {
                 db.getActiveAlarmDao().update(new ActiveAlarm(requestCode, finalTime, -1, -1)).blockingSubscribe(() -> {
                     final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-//                    manager.setExact(AlarmManager.RTC_WAKEUP, finalTime, pendingIntent);
                     Intent editor = new Intent(context, AlarmCreator.class);
                     editor.putExtra("ALARM_ID", storedAlarmId);
                     final PendingIntent pendingIntentEditor = PendingIntent.getBroadcast(context, requestCode + 1, editor, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                     manager.setAlarmClock(new AlarmManager.AlarmClockInfo(finalTime, pendingIntentEditor), pendingIntent);
+                });
+            }
+        });
+    }
+
+    /**
+     * schedules a one shot alarm exactly on a specific time
+     * @param context the current context
+     */
+    public static Completable scheduleNextNotification(Context context) {
+        return Completable.fromAction(() -> {
+            MainDatabase db = MainDatabase.getInstance(context);
+            AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            db.getNotificationCategoryDao().getAll().blockingSubscribe(notificationCategories -> {
+                NotificationOrderManager notificationOrderManager = NotificationOrderManager.load(notificationCategories);
+                NotificationScheduleData nsd = notificationOrderManager.getNextNotification();
+                if(nsd != null) {
+                    // Print the next notification send time
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(nsd.getScheduleTime());
+                    System.out.println(cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND));
+
+                    preferences.edit().putString(NEXT_UP_NOTIFICATION_CATEGORY, nsd.getId()).apply();
+
+                    Intent intent = new Intent(context, AlarmReceiverManager.class);
+                    intent.putExtra("NOTIFICATION_CATEGORY_ID", nsd.getId());
+                    final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    manager.set(AlarmManager.RTC_WAKEUP, nsd.getScheduleTime(), pendingIntent);
+                }
+                else {
+                    String id = preferences.getString(NEXT_UP_NOTIFICATION_CATEGORY, "NONE");
+                    if(!id.equals("NONE")) {
+                        Intent intent = new Intent(context, AlarmReceiverManager.class);
+                        intent.putExtra("NOTIFICATION_CATEGORY_ID", id);
+                        final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                        pendingIntent.cancel();
+                        manager.cancel(pendingIntent);
+                        preferences.edit().putString(NEXT_UP_NOTIFICATION_CATEGORY, "NONE").apply();
+                    }
+                }
+            });
+        });
+    }
+
+    public static Completable createNotificationChannels(Context context) {
+        return Completable.fromAction(() -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                MainDatabase db = MainDatabase.getInstance(context);
+                db.getNotificationCategoryDao().getAll().blockingSubscribe(notificationCategories -> {
+                    for (NotificationCategory cat : notificationCategories) {
+                        NotificationChannel channel = new NotificationChannel(cat.getId(), cat.getDescription(), NotificationManager.IMPORTANCE_DEFAULT);
+                        channel.enableLights(true);
+                        channel.setLightColor(Color.argb(255, 76, 59, 168));
+                        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+                        notificationManager.createNotificationChannel(channel);
+                    }
                 });
             }
         });
@@ -257,6 +321,22 @@ public class AlarmHandler {
                     MainDatabase.getInstance(context).getStoredAlarmDao().setActiveState(alarm.alarmId, false).blockingSubscribe();
                 }
             });
+        });
+    }
+
+    public static void reEnableNotificationsIfNotRunning(Context context) {
+        MainDatabase db = MainDatabase.getInstance(context);
+        db.getNotificationCategoryDao().getAll().blockingSubscribe(notificationCategories -> {
+            NotificationOrderManager notificationOrderManager = NotificationOrderManager.load(notificationCategories);
+            NotificationScheduleData nsd = notificationOrderManager.getNextNotification();
+            if(nsd != null) {
+                Intent intent = new Intent(context, AlarmReceiverManager.class);
+                intent.putExtra("NOTIFICATION_CATEGORY_ID", nsd.getId());
+                boolean notificationsUp = PendingIntent.getBroadcast(context, NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE) != null;
+                if (!notificationsUp) {
+                    scheduleNextNotification(context);
+                }
+            }
         });
     }
 

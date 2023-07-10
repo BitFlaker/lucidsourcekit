@@ -246,7 +246,7 @@ public class Statistics extends Fragment {
 
     private void generateRodChart(int amount, float lineWidth, ViewGroup container, Drawable[] icons, List<Double> averageValues) {
         RodGraph rg = new RodGraph(getContext());
-        LinearLayout.LayoutParams lParamsw = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams lParamsw = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
         lParamsw.weight = 1;
         lParamsw.topMargin = Tools.dpToPx(getContext(), 8);
         rg.setLayoutParams(lParamsw);
