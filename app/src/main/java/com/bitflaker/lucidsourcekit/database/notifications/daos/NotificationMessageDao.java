@@ -8,6 +8,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationMessage;
+import com.bitflaker.lucidsourcekit.general.NotificationObfuscationLookup;
 
 import java.util.List;
 
@@ -30,6 +31,9 @@ public interface NotificationMessageDao {
 
     @Query("SELECT COUNT(*) FROM NotificationMessage WHERE notificationCategoryId = :notificationCategoryId AND obfuscationTypeId = :obfuscationTypeId")
     Single<Integer> getCountOfMessagesForCategoryAndObfuscationType(String notificationCategoryId, int obfuscationTypeId);
+
+    @Query("SELECT notificationCategoryId, obfuscationTypeId, COUNT(*) AS messageCount FROM NotificationMessage GROUP BY notificationCategoryId, obfuscationTypeId")
+    Single<List<NotificationObfuscationLookup.NotificationObfuscationCount>> getMessageCountsForObfuscationType();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     Completable insertAll(List<NotificationMessage> notificationMessages);

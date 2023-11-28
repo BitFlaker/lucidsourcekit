@@ -1,20 +1,27 @@
 package com.bitflaker.lucidsourcekit.notification;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -37,6 +44,8 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class NotificationManager extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 772;
@@ -45,6 +54,8 @@ public class NotificationManager extends AppCompatActivity {
     private MainDatabase db;
     private RecyclerViewAdapterNotificationCategories rcvaNotificationCategories;
     private Speedometer notificationsDelivered;
+    private TextView compliantNotificationCountSettings, totalNotificationCountSettings;
+    private int currentDeliveryProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,18 +117,100 @@ public class NotificationManager extends AppCompatActivity {
         RecyclerView rcvNotificationCategories = findViewById(R.id.rcv_notification_categories);
         rcvNotificationCategories.setAdapter(rcvaNotificationCategories);
         rcvNotificationCategories.setLayoutManager(new LinearLayoutManager(this));
+        rcvaNotificationCategories.setNotificationCategoryChangedListener(this::updateNotificationStats);
 
         if(getIntent().hasExtra("AUTO_OPEN_ID")){
             String autoOpenId = getIntent().getStringExtra("AUTO_OPEN_ID");
             rcvaNotificationCategories.openSettingsForCategoryId(autoOpenId);
         }
 
+        currentDeliveryProgress = (int) getNotificationDeliveryProgress();
         notificationsDelivered = findViewById(R.id.spdo_notifications_delivered);
-        notificationsDelivered.setData(25f, 3, 12);
+        notificationsDelivered.setData(25f, currentDeliveryProgress, 100);
+        notificationsDelivered.setPercentageData(true);
         notificationsDelivered.setDecimalPlaces(0);
-        notificationsDelivered.setDescription("notifications\nalready received today");
+        notificationsDelivered.setDescription("notifications\nalready delivered today");
+
+        Calendar curr = Calendar.getInstance();
+        long delay = (60 - curr.get(Calendar.SECOND) - 1) * 1000 + 1000 - curr.get(Calendar.MILLISECOND);
+        new Handler().postDelayed(deliveryStatusUpdated, delay);
+
+        ImageButton moreNotificationOptions = findViewById(R.id.btn_more_notification_options);
+        moreNotificationOptions.setOnClickListener(e -> {
+            PopupMenu popup = new PopupMenu(new ContextThemeWrapper(this, Tools.getPopupTheme()), moreNotificationOptions);
+            popup.getMenuInflater().inflate(R.menu.more_notification_options, popup.getMenu());
+            popup.setOnMenuItemClickListener(item -> {
+                if(item.getItemId() == R.id.itm_pause_notifications) {
+                    // TODO: pause all notifications
+                }
+                else if (item.getItemId() == R.id.itm_disable_notifications) {
+                    // TODO: disable all notifications
+                }
+                return true;
+            });
+            popup.show();
+        });
 
         requestPermissionIfRequired();
+        updateNotificationStats();
+    }
+
+    private final Runnable deliveryStatusUpdated = new Runnable() {
+        @Override
+        public void run() {
+            calculateAndApplyNewStatus();
+            new Handler().postDelayed(deliveryStatusUpdated, 60 * 1000);
+        }
+    };
+
+    private void calculateAndApplyNewStatus() {
+        int newDeliveryProgress = (int) getNotificationDeliveryProgress();
+        if(currentDeliveryProgress != newDeliveryProgress) {
+            currentDeliveryProgress = newDeliveryProgress;
+            notificationsDelivered.updateValue(currentDeliveryProgress);
+        }
+    }
+
+    private double getNotificationDeliveryProgress() {
+        long notificationTimeframeFrom = rcvaNotificationCategories.getNotificationTimeframeFrom();
+        long notificationTimeframeTo = rcvaNotificationCategories.getNotificationTimeframeTo();
+        long currentTimeInMillis = Tools.getTimeOfDayMillis(Calendar.getInstance());
+
+        if(currentTimeInMillis <= notificationTimeframeFrom) {
+            return 0;
+        }
+        else if (currentTimeInMillis >= notificationTimeframeTo) {
+            return 100;
+        }
+
+        long redTo = notificationTimeframeTo - notificationTimeframeFrom;
+        long redCurrent = currentTimeInMillis - notificationTimeframeFrom;
+
+        return 100.0 * redCurrent / redTo;
+    }
+
+    private void updateNotificationStats() {
+        int totalDailyNotificationCount = rcvaNotificationCategories.getDailyNotificationCount();
+        long enabledCategoriesCount = rcvaNotificationCategories.getEnabledCategoriesCount();
+        int totalCategoriesCount = rcvaNotificationCategories.getItemCount();
+        long notificationTimeframeFrom = rcvaNotificationCategories.getNotificationTimeframeFrom();
+        long notificationTimeframeTo = rcvaNotificationCategories.getNotificationTimeframeTo();
+        int obfuscationPercentage = rcvaNotificationCategories.getObfuscationPercentage();
+
+        TextView dailyNotifications = findViewById(R.id.txt_daily_notifications_val);
+        TextView categoriesEnabled = findViewById(R.id.txt_categories_enabled_val);
+        TextView notificationTimespan = findViewById(R.id.txt_notification_timespan_val);
+        TextView obfuscationLevel = findViewById(R.id.txt_obfuscation_level_val);
+
+        dailyNotifications.setText(String.format(Locale.ENGLISH, "%d", totalDailyNotificationCount));
+        categoriesEnabled.setText(String.format(Locale.ENGLISH, "%d/%d", enabledCategoriesCount, totalCategoriesCount));
+        long nTimeframeFromHours = TimeUnit.MILLISECONDS.toHours(notificationTimeframeFrom);
+        long nTimeframeFromMinutes = TimeUnit.MILLISECONDS.toMinutes(notificationTimeframeFrom) - TimeUnit.HOURS.toMinutes(nTimeframeFromHours);
+        long nTimeframeToHours = TimeUnit.MILLISECONDS.toHours(notificationTimeframeTo);
+        long nTimeframeToMinutes = TimeUnit.MILLISECONDS.toMinutes(notificationTimeframeTo) - TimeUnit.HOURS.toMinutes(nTimeframeToHours);
+        notificationTimespan.setText(String.format(Locale.ENGLISH, "%02d:%02d - %02d:%02d", nTimeframeFromHours, nTimeframeFromMinutes, nTimeframeToHours, nTimeframeToMinutes));
+        obfuscationLevel.setText(String.format(Locale.ENGLISH, "%d%%", obfuscationPercentage));
+        calculateAndApplyNewStatus();
     }
 
     private void requestPermissionIfRequired() {
@@ -135,6 +228,17 @@ public class NotificationManager extends AppCompatActivity {
             }
         }
     }
+
+    ActivityResultLauncher<Intent> notificationMessageEditorLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    String categoryId = data.getStringExtra("CATEGORY_ID");
+                    int obfuscationTypeId = data.getIntExtra("OBFUSCATION_TYPE_ID", 0);
+                    compliantNotificationCountSettings.setText(String.format(Locale.ENGLISH, "%d", db.getNotificationMessageDao().getCountOfMessagesForCategoryAndObfuscationType(categoryId, obfuscationTypeId).blockingGet()));
+                    totalNotificationCountSettings.setText("/ " + db.getNotificationMessageDao().getCountOfMessagesForCategory(categoryId).blockingGet());
+                }
+            });
 
     private void createAndShowBottomSheetConfigurator(NotificationCategory category) {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
@@ -183,7 +287,7 @@ public class NotificationManager extends AppCompatActivity {
         labelNotificationTimeFrom.setText(tf.format(notificationsTimeFrom.getTime()));
         labelNotificationTimeTo.setText(tf.format(notificationsTimeTo.getTime()));
 
-        labelCompliantNotificationCount.setText(db.getNotificationMessageDao().getCountOfMessagesForCategoryAndObfuscationType(category.getId(), category.getObfuscationTypeId()).blockingGet().toString());
+        labelCompliantNotificationCount.setText(String.format(Locale.ENGLISH, "%d", db.getNotificationMessageDao().getCountOfMessagesForCategoryAndObfuscationType(category.getId(), category.getObfuscationTypeId()).blockingGet()));
         labelTotalNotificationCount.setText("/ " + db.getNotificationMessageDao().getCountOfMessagesForCategory(category.getId()).blockingGet());
 
         notificationSettingsIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(), category.getDrawable(), getTheme()));
@@ -262,12 +366,20 @@ public class NotificationManager extends AppCompatActivity {
         }
         editNotificationMessages.setOnClickListener(e -> {
             Intent intent = new Intent(this, NotificationManagerEditor.class);
-            intent.putExtra("notificationCategoryId", category.getId());
-            startActivity(intent);
+            intent.putExtra("CATEGORY_ID", category.getId());
+            intent.putExtra("OBFUSCATION_TYPE_ID", category.getObfuscationTypeId());
+            compliantNotificationCountSettings = labelCompliantNotificationCount;
+            totalNotificationCountSettings = labelTotalNotificationCount;
+            notificationMessageEditorLauncher.launch(intent);
         });
         cancelButton.setOnClickListener(e -> bottomSheetDialog.cancel());
         saveButton.setOnClickListener(e -> {
             // TODO save changes
+            int compliantMessageCount = db.getNotificationMessageDao().getCountOfMessagesForCategoryAndObfuscationType(category.getId(), category.getObfuscationTypeId()).blockingGet();
+            if(compliantMessageCount == 0 && category.isEnabled()) {
+                Toast.makeText(this, "No messages comply with current settings, disabling category", Toast.LENGTH_LONG).show();
+                category.setEnabled(false);
+            }
             db.getNotificationCategoryDao().update(category).blockingAwait();
             bottomSheetDialog.dismiss();
             rcvaNotificationCategories.notifyCategoryChanged(category);

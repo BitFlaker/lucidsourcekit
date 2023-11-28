@@ -1,5 +1,6 @@
 package com.bitflaker.lucidsourcekit.notification;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -41,11 +42,20 @@ public class NotificationManagerEditor extends AppCompatActivity {
 
         db = MainDatabase.getInstance(this);
 
-        if(!getIntent().hasExtra("notificationCategoryId")){
+        if(!getIntent().hasExtra("CATEGORY_ID")){
+            Intent data = new Intent();
+            data.putExtra("CATEGORY_ID", "");
+            data.putExtra("OBFUSCATION_TYPE_ID", getIntent().getIntExtra("OBFUSCATION_TYPE_ID", 0));
+            setResult(RESULT_CANCELED, data);
             finish();
         }
 
-        notificationCategoryId = getIntent().getStringExtra("notificationCategoryId");
+        Intent data = new Intent();
+        data.putExtra("CATEGORY_ID", getIntent().getStringExtra("CATEGORY_ID"));
+        data.putExtra("OBFUSCATION_TYPE_ID", getIntent().getIntExtra("OBFUSCATION_TYPE_ID", 0));
+        setResult(RESULT_OK, data);
+
+        notificationCategoryId = getIntent().getStringExtra("CATEGORY_ID");
 
         List<NotificationMessage> notificationMessages = db.getNotificationMessageDao().getAllOfCategory(notificationCategoryId).blockingGet();
 

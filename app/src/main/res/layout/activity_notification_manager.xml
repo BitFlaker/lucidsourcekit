@@ -24,9 +24,9 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
         android:layout_marginBottom="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,14 +35,13 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:paddingBottom="24dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/crd_notification_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:layout_marginRight="6dp"
                 app:cardBackgroundColor="?attr/backgroundColor"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="0dp"
@@ -55,10 +54,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:divider="@drawable/divider_large"
-                    android:orientation="vertical"
-                    android:padding="4dp"
-                    android:showDividers="middle">
+                    android:orientation="vertical">
 
                     <com.bitflaker.lucidsourcekit.charts.Speedometer
                         android:id="@+id/spdo_notifications_delivered"
@@ -68,175 +64,284 @@
                         android:layout_marginRight="20dp"
                         android:layout_marginBottom="24dp"/>
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="visible"
-                        app:cardBackgroundColor="?attr/backgroundColor"
-                        app:cardCornerRadius="@dimen/cardRadius"
-                        app:cardElevation="0dp"
-                        app:strokeColor="?attr/slightElevated"
-                        app:strokeWidth="1dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="16dp"
-                            android:layout_marginBottom="10dp"
-                            android:textAlignment="center"
-                            android:text="Customize notifications to suit your needs. Only receive notifications for selected topics whenever you want to receive them."
-                            android:textColor="?attr/tertiaryTextColor"
-                            android:textSize="14sp"
-                            android:drawableStart="@drawable/ic_outline_info_24"
-                            android:drawablePadding="6dp"
-                            android:drawableTint="?attr/tertiaryTextColor"/>
-                    </com.google.android.material.card.MaterialCardView>
-
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginEnd="24dp">
+                        android:layout_marginHorizontal="8dp">
 
-                        <TextView
-                            android:id="@+id/txt_daily_notifications"
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/materialCardView2"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/round_notifications_24"
-                            android:drawableTint="?attr/secondaryTextColor"
-                            android:drawablePadding="6dp"
-                            android:gravity="center_vertical"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="8dp"
-                            android:text="Daily amount"
-                            android:textSize="13sp"
+                            app:cardBackgroundColor="?attr/backgroundColor"
+                            app:cardCornerRadius="@dimen/cardRadius"
+                            app:cardElevation="0dp"
+                            app:layout_constraintEnd_toStartOf="@+id/materialCardView3"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintWidth_percent="0.56" />
+                            app:strokeColor="?attr/slightElevated"
+                            app:strokeWidth="1dp">
 
-                        <TextView
-                            android:id="@+id/txt_daily_notifications_val"
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginRight="12dp"
+                                android:layout_marginBottom="8dp">
+
+                                <ImageView
+                                    android:id="@+id/imageView2"
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:src="@drawable/round_notifications_24"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:tint="?attr/tertiaryTextColor" />
+
+                                <TextView
+                                    android:id="@+id/textView2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="12dp"
+                                    android:drawablePadding="6dp"
+                                    android:drawableTint="?attr/secondaryTextColor"
+                                    android:elevation="20dp"
+                                    android:gravity="center_vertical"
+                                    android:text="Daily amount"
+                                    android:textSize="13sp"
+                                    app:layout_constraintStart_toEndOf="@+id/imageView2"
+                                    app:layout_constraintTop_toBottomOf="@+id/txt_daily_notifications_val" />
+
+                                <TextView
+                                    android:id="@+id/txt_daily_notifications_val"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="12dp"
+                                    android:text="12"
+                                    android:textAlignment="textEnd"
+                                    android:textColor="?attr/primaryTextColor"
+                                    android:textSize="16sp"
+                                    app:layout_constraintStart_toEndOf="@+id/imageView2"
+                                    app:layout_constraintTop_toTopOf="parent" />
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/materialCardView3"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="12"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textStyle="bold"
-                            android:textAlignment="textEnd"
-                            app:layout_constraintBottom_toBottomOf="@+id/txt_daily_notifications"
+                            android:layout_marginStart="12dp"
+                            app:cardBackgroundColor="?attr/backgroundColor"
+                            app:cardCornerRadius="@dimen/cardRadius"
+                            app:cardElevation="0dp"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/txt_daily_notifications"
-                            app:layout_constraintWidth_percent="0.44" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/materialCardView2"
+                            app:strokeColor="?attr/slightElevated"
+                            app:strokeWidth="1dp">
 
-                        <TextView
-                            android:id="@+id/txt_categories_enabled"
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginRight="12dp"
+                                android:layout_marginBottom="8dp">
+
+                                <ImageView
+                                    android:id="@+id/imageView3"
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:src="@drawable/round_check_24"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:tint="?attr/tertiaryTextColor" />
+
+                                <TextView
+                                    android:id="@+id/textView3"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="12dp"
+                                    android:drawablePadding="6dp"
+                                    android:drawableTint="?attr/secondaryTextColor"
+                                    android:elevation="20dp"
+                                    android:gravity="center_vertical"
+                                    android:text="Categories"
+                                    android:textSize="13sp"
+                                    app:layout_constraintStart_toEndOf="@+id/imageView3"
+                                    app:layout_constraintTop_toBottomOf="@+id/txt_categories_enabled_val" />
+
+                                <TextView
+                                    android:id="@+id/txt_categories_enabled_val"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="12dp"
+                                    android:text="1/4"
+                                    android:textAlignment="textEnd"
+                                    android:textColor="?attr/primaryTextColor"
+                                    android:textSize="16sp"
+                                    app:layout_constraintStart_toEndOf="@+id/imageView3"
+                                    app:layout_constraintTop_toTopOf="parent" />
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/materialCardView4"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/baseline_toggle_on_24"
-                            android:drawableTint="?attr/secondaryTextColor"
-                            android:drawablePadding="6dp"
-                            android:gravity="center_vertical"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="8dp"
-                            android:text="Categories"
-                            android:textSize="13sp"
+                            android:layout_marginTop="12dp"
+                            app:cardBackgroundColor="?attr/backgroundColor"
+                            app:cardCornerRadius="@dimen/cardRadius"
+                            app:cardElevation="0dp"
+                            app:layout_constraintEnd_toStartOf="@+id/materialCardView5"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/txt_daily_notifications"
-                            app:layout_constraintWidth_percent="0.56" />
+                            app:layout_constraintTop_toBottomOf="@+id/materialCardView2"
+                            app:strokeColor="?attr/slightElevated"
+                            app:strokeWidth="1dp">
 
-                        <TextView
-                            android:id="@+id/txt_categories_enabled_val"
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginRight="12dp"
+                                android:layout_marginBottom="8dp">
+
+                                <ImageView
+                                    android:id="@+id/imageView4"
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:src="@drawable/round_timelapse_24"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:tint="?attr/tertiaryTextColor" />
+
+                                <TextView
+                                    android:id="@+id/textView4"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="12dp"
+                                    android:drawablePadding="6dp"
+                                    android:drawableTint="?attr/secondaryTextColor"
+                                    android:elevation="20dp"
+                                    android:gravity="center_vertical"
+                                    android:text="Timeframe"
+                                    android:textSize="13sp"
+                                    app:layout_constraintStart_toEndOf="@+id/imageView4"
+                                    app:layout_constraintTop_toBottomOf="@+id/txt_notification_timespan_val" />
+
+                                <TextView
+                                    android:id="@+id/txt_notification_timespan_val"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="12dp"
+                                    android:text="08:30 - 18:45"
+                                    android:textAlignment="textEnd"
+                                    android:textColor="?attr/primaryTextColor"
+                                    android:textSize="16sp"
+                                    app:layout_constraintStart_toEndOf="@+id/imageView4"
+                                    app:layout_constraintTop_toTopOf="parent" />
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/materialCardView5"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="1/4"
-                            android:textStyle="bold"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textAlignment="textEnd"
-                            app:layout_constraintBottom_toBottomOf="@+id/txt_categories_enabled"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginStart="12dp"
+                            app:cardBackgroundColor="?attr/backgroundColor"
+                            app:cardCornerRadius="@dimen/cardRadius"
+                            app:cardElevation="0dp"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/txt_categories_enabled"
-                            app:layout_constraintWidth_percent="0.44" />
+                            app:layout_constraintStart_toEndOf="@id/materialCardView4"
+                            app:layout_constraintTop_toBottomOf="@+id/materialCardView3"
+                            app:strokeColor="?attr/slightElevated"
+                            app:strokeWidth="1dp">
 
-                        <TextView
-                            android:id="@+id/txt_notification_timespan"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/round_timelapse_24"
-                            android:drawableTint="?attr/secondaryTextColor"
-                            android:drawablePadding="6dp"
-                            android:gravity="center_vertical"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="8dp"
-                            android:text="Timeframe"
-                            android:textSize="13sp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/txt_categories_enabled"
-                            app:layout_constraintWidth_percent="0.56" />
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginRight="12dp"
+                                android:layout_marginBottom="8dp">
 
-                        <TextView
-                            android:id="@+id/txt_notification_timespan_val"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="08:30 - 18:45"
-                            android:textStyle="bold"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textAlignment="textEnd"
-                            app:layout_constraintBottom_toBottomOf="@+id/txt_notification_timespan"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/txt_notification_timespan"
-                            app:layout_constraintWidth_percent="0.44" />
+                                <ImageView
+                                    android:id="@+id/imageView5"
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:src="@drawable/round_disabled_visible_24"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:tint="?attr/tertiaryTextColor" />
 
-                        <TextView
-                            android:id="@+id/txt_obfuscation_level"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/round_disabled_visible_24"
-                            android:drawablePadding="6dp"
-                            android:drawableTint="?attr/secondaryTextColor"
-                            android:gravity="center_vertical"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="8dp"
-                            android:text="Obfuscation"
-                            android:textSize="13sp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/txt_notification_timespan"
-                            app:layout_constraintWidth_percent="0.56" />
+                                <TextView
+                                    android:id="@+id/textView5"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="12dp"
+                                    android:drawablePadding="6dp"
+                                    android:drawableTint="?attr/secondaryTextColor"
+                                    android:elevation="20dp"
+                                    android:gravity="center_vertical"
+                                    android:text="Obfuscation"
+                                    android:textSize="13sp"
+                                    app:layout_constraintStart_toEndOf="@+id/imageView5"
+                                    app:layout_constraintTop_toBottomOf="@+id/txt_obfuscation_level_val" />
 
-                        <TextView
-                            android:id="@+id/txt_obfuscation_level_val"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="64%"
-                            android:textStyle="bold"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textAlignment="textEnd"
-                            app:layout_constraintBottom_toBottomOf="@+id/txt_obfuscation_level"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/txt_obfuscation_level"
-                            app:layout_constraintWidth_percent="0.44" />
+                                <TextView
+                                    android:id="@+id/txt_obfuscation_level_val"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="12dp"
+                                    android:text="64%"
+                                    android:textAlignment="textEnd"
+                                    android:textColor="?attr/primaryTextColor"
+                                    android:textSize="16sp"
+                                    app:layout_constraintStart_toEndOf="@+id/imageView5"
+                                    app:layout_constraintTop_toTopOf="parent" />
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </com.google.android.material.card.MaterialCardView>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginEnd="12dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginHorizontal="24dp"
                         android:text="Pause notifications"
                         android:textColor="?attr/secondaryTextColor"
                         app:icon="@drawable/ic_baseline_pause_24"
                         app:iconTint="?attr/secondaryTextColor"
                         app:rippleColor="#21FFFFFF"
-                        app:backgroundTint="?attr/backgroundColor"
+                        app:backgroundTint="?attr/slightElevated"
                         app:cornerRadius="32dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/rcv_notification_categories"
                         app:strokeColor="?attr/secondaryTextColor"
-                        app:strokeWidth="1dp"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                        app:strokeWidth="0dp"
+                        android:visibility="gone"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginHorizontal="24dp"
+                        android:text="Disable notifications"
+                        android:textColor="?attr/secondaryTextColor"
+                        app:icon="@drawable/ic_baseline_cross_24"
+                        app:iconTint="?attr/secondaryTextColor"
+                        app:rippleColor="#21FFFFFF"
+                        app:backgroundTint="?attr/slightElevated"
+                        app:cornerRadius="32dp"
+                        app:strokeColor="?attr/colorError"
+                        app:strokeWidth="0dp"
+                        android:visibility="gone" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -244,47 +349,39 @@
                 android:id="@+id/txt_notification_categories_heading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="26dp"
-                android:layout_marginStart="0dp"
                 android:text="Notification categories"
                 android:textColor="?attr/primaryTextColor"
-                android:textStyle="bold"
                 android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_more_notification_options"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/btn_more_notification_options" />
+
+            <ImageButton
+                android:id="@+id/btn_more_notification_options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/ripple_round"
+                android:backgroundTint="?attr/backgroundColor"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_baseline_more_vert_24"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/crd_notification_info" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcv_notification_categories"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginStart="6dp"
-                android:layout_marginEnd="6dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:nestedScrollingEnabled="false"
                 android:overScrollMode="never"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txt_notification_categories_heading" />
-
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="28dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginBottom="16dp"
-                android:text="Disable all notifications"
-                android:textColor="?attr/colorError"
-                app:rippleColor="#21C32C2C"
-                app:backgroundTint="?attr/backgroundColor"
-                app:cornerRadius="32dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rcv_notification_categories"
-                app:strokeColor="?attr/colorError"
-                app:strokeWidth="1dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_more_notification_options" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

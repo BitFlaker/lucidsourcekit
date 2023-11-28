@@ -41,6 +41,7 @@ public class Speedometer extends View {
     private int decimalPlaces = 1;
     private float descriptionMarginTop = 25;
     private boolean drawProgressOnNoProgress = false;
+    private boolean isPercentageData;
 
     public Speedometer(Context context) {
         super(context);
@@ -85,6 +86,7 @@ public class Speedometer extends View {
         descriptionTextBounds = new Rect[0];
         textBoundsOf = new Rect();
         description = new String[0];
+        isPercentageData = false;
     }
 
     public void setData(float lineWidth, float value, float maxValue) {
@@ -104,6 +106,14 @@ public class Speedometer extends View {
         for (int i = 0; i < descriptionTextBounds.length; i++) {
             descriptionTextBounds[i] = new Rect();
         }
+    }
+
+    public void updateValue(float value) {
+        this.value = value;
+        this.percentage = (value - 1) / (this.maxValue - 1);
+        this.circlePercentage = this.percentage / 2.0f + 0.5f;
+        gradientShader = null;
+        invalidate();
     }
 
     @Override
@@ -134,7 +144,7 @@ public class Speedometer extends View {
         }
 
         String text = String.format(Locale.ENGLISH, "%." + decimalPlaces + "f", value);   // TODO: , and . as separators have to be taken into consideration
-        String textOf = " / " + String.format(Locale.ENGLISH, "%." + decimalPlaces + "f", maxValue);
+        String textOf = isPercentageData ? " %" : " / " + String.format(Locale.ENGLISH, "%." + decimalPlaces + "f", maxValue);
         int accHeight = 0;
 
         dataLabelPaint.getTextBounds(text, 0, text.length(), textBounds);
@@ -151,8 +161,8 @@ public class Speedometer extends View {
             // If there is no description, change the position of the value to the center
             bigLabelPos -= (paddedHeight - (textBounds.height() * 2) - dataLinePaint.getStrokeWidth()) / 2.0f;
         }
-        canvas.drawText(text, getWidth()/2.0f - textBounds.exactCenterX() - textBoundsOf.exactCenterX(), bigLabelPos, dataLabelPaint);
-        canvas.drawText(textOf, getWidth()/2.0f + textBounds.exactCenterX() - textBoundsOf.exactCenterX(), bigLabelPos, dataLabelPaintOf);
+        canvas.drawText(text, getWidth() / 2.0f - textBounds.exactCenterX() - textBoundsOf.exactCenterX(), bigLabelPos, dataLabelPaint);
+        canvas.drawText(textOf, getWidth() / 2.0f + textBounds.exactCenterX() - textBoundsOf.exactCenterX(), bigLabelPos, dataLabelPaintOf);
 
         accHeight += getDescriptionMarginTop(); //textBounds.height() / 2.0f;
         for (int i = 0; i < description.length; i++) {
@@ -183,5 +193,9 @@ public class Speedometer extends View {
 
     public void setDrawProgressOnNoProgress(boolean drawProgressOnNoProgress) {
         this.drawProgressOnNoProgress = drawProgressOnNoProgress;
+    }
+
+    public void setPercentageData(boolean isPercentageData) {
+        this.isPercentageData = isPercentageData;
     }
 }
