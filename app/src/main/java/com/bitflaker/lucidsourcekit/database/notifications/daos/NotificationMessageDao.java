@@ -19,8 +19,11 @@ public interface NotificationMessageDao {
     @Query("SELECT * FROM NotificationMessage ORDER BY notificationCategoryId, obfuscationTypeId, id")
     Single<List<NotificationMessage>> getAll();
 
-    @Query("SELECT * FROM NotificationMessage WHERE notificationCategoryId = :notificationCategoryId ORDER BY notificationCategoryId, obfuscationTypeId, id")
+    @Query("SELECT * FROM NotificationMessage WHERE notificationCategoryId = :notificationCategoryId ORDER BY obfuscationTypeId, id")
     Single<List<NotificationMessage>> getAllOfCategory(String notificationCategoryId);
+
+    @Query("SELECT * FROM NotificationMessage WHERE notificationCategoryId = :notificationCategoryId AND obfuscationTypeId = :obfuscationTypeId ORDER BY notificationCategoryId, id")
+    Single<List<NotificationMessage>> getAllOfCategoryAndObfuscationType(String notificationCategoryId, int obfuscationTypeId);
 
     @Query("SELECT COUNT(*) FROM NotificationMessage WHERE notificationCategoryId = :notificationCategoryId")
     Single<Integer> getCountOfMessagesForCategory(String notificationCategoryId);

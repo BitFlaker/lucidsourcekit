@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
@@ -61,24 +62,28 @@ public class AlarmReceiverManager extends BroadcastReceiver {
         MainDatabase db = MainDatabase.getInstance(context);
         db.getNotificationCategoryDao().getById(notificationCategoryId).subscribe(notificationCategory -> {
             if(notificationCategory.isEnabled()) {
-                db.getNotificationMessageDao().getAllOfCategory(notificationCategoryId).subscribe(messages -> {
-                    Calendar cal = Calendar.getInstance();
-                    System.out.println("NOTIFICATION NOW: " + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND));
-                    NotificationMessage msg = getWeightedNotificationMessage(messages);
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(context, notificationCategoryId)
-                            .setSmallIcon(R.drawable.icon_no_bg)
-                            .setContentTitle("Reminder")
-                            .setContentText(msg.getMessage())
-                            .setStyle(new NotificationCompat.BigTextStyle().bigText(msg.getMessage()))
-                            .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                        return;
-                    }
-                    int notifyId = Tools.getUniqueNotificationId(notificationCategoryId);
-                    NotificationManager nMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    nMgr.cancel(notifyId);
-                    notificationManager.notify(notifyId, builder.build());
+                db.getNotificationCategoryDao().getById(notificationCategoryId).subscribe(notCat -> {
+                    db.getNotificationMessageDao().getAllOfCategoryAndObfuscationType(notCat.getId(), notCat.getObfuscationTypeId()).subscribe(messages -> {
+                        if(messages.size() == 0) {
+                            Log.e("LSC_NOTIFICATION", "No notification messages available for category " + notCat.getId() + " with obfuscation id " + notCat.getObfuscationTypeId());
+                            return;
+                        }
+                        NotificationMessage msg = getWeightedNotificationMessage(messages);
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, notificationCategoryId)
+                                .setSmallIcon(R.drawable.icon_no_bg)
+                                .setContentTitle("Reminder")
+                                .setContentText(msg.getMessage())
+                                .setStyle(new NotificationCompat.BigTextStyle().bigText(msg.getMessage()))
+                                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
+                        int notifyId = Tools.getUniqueNotificationId(notificationCategoryId);
+                        NotificationManager nMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                        nMgr.cancel(notifyId);
+                        notificationManager.notify(notifyId, builder.build());
+                    }).dispose();
                 }).dispose();
             }
         }).dispose();

@@ -143,7 +143,7 @@ public class NotificationManagerEditor extends AppCompatActivity {
             if(message != null){
                 int origObfuscationTypeId = message.getObfuscationTypeId();
                 message.setMessage(editNotificationMessage.getText().toString());
-                int weight = customNotificationWeight.isChecked() ? customNotificationWeightValue : getSelectedWeight(customNotificationWeightChips);
+                int weight = customNotificationWeightSwitch.isChecked() ? (customNotificationWeight.isChecked() ? customNotificationWeightValue : getSelectedWeight(customNotificationWeightChips)) : 1;
                 if(weight != -1){ message.setWeight(weight); }
                 if(obfuscationMin.isChecked()) { message.setObfuscationTypeId(0); }
                 else if(obfuscationMed.isChecked()){ message.setObfuscationTypeId(1); }
