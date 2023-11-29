@@ -10,16 +10,18 @@ public class NotificationOrderManager {
     private final static long MIN_NOTIFICATION_FUTURE_TIME = 60 * 1000;
     private final List<NotificationScheduleData> scheduleData;
     private final List<Long> markers;
+    private boolean hasNotifications;
 
     public NotificationOrderManager() {
         scheduleData = new ArrayList<>();
         markers = new ArrayList<>();
+        hasNotifications = false;
     }
 
     public static NotificationOrderManager load(List<NotificationCategory> notificationCategories) {
         NotificationOrderManager notOrdMan = new NotificationOrderManager();
         for (NotificationCategory cat : notificationCategories) {
-            if(cat.isEnabled() && cat.getDailyNotificationCount() > 0){
+            if(cat.isEnabled() && cat.getDailyNotificationCount() > 0) {
                 notOrdMan.scheduleNotificationTimeSpan(cat.getTimeFrom(), cat.getTimeTo(), cat.getDailyNotificationCount(), cat.getId());
             }
         }
@@ -27,6 +29,9 @@ public class NotificationOrderManager {
     }
 
     public void scheduleNotificationTimeSpan(long timeFrom, long timeTo, int count, String id) {
+        if(count > 0) {
+            hasNotifications = true;
+        }
         insertMarkerIfNonExistent(timeFrom);
         insertMarkerIfNonExistent(timeTo);
         long duration = timeTo - timeFrom;
@@ -111,5 +116,9 @@ public class NotificationOrderManager {
         NotificationScheduleData nsd = data.get(0);
         nsd.setNextDay(true);
         return nsd;
+    }
+
+    public boolean hasNotifications() {
+        return hasNotifications;
     }
 }

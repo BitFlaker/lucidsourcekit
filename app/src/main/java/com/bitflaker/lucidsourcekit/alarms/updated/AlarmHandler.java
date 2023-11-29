@@ -213,36 +213,42 @@ public class AlarmHandler {
     public static Completable scheduleNextNotification(Context context) {
         return Completable.fromAction(() -> {
             MainDatabase db = MainDatabase.getInstance(context);
-            AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             db.getNotificationCategoryDao().getAll().blockingSubscribe(notificationCategories -> {
                 NotificationOrderManager notificationOrderManager = NotificationOrderManager.load(notificationCategories);
                 NotificationScheduleData nsd = notificationOrderManager.getNextNotification();
-                if(nsd != null) {
-                    // Print the next notification send time
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTimeInMillis(nsd.getScheduleTime());
-                    System.out.println(cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND));
-
-                    preferences.edit().putString(NEXT_UP_NOTIFICATION_CATEGORY, nsd.getId()).apply();
-
-                    Intent intent = new Intent(context, AlarmReceiverManager.class);
-                    intent.putExtra("NOTIFICATION_CATEGORY_ID", nsd.getId());
-                    final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                    manager.set(AlarmManager.RTC_WAKEUP, nsd.getScheduleTime(), pendingIntent);
-                }
-                else {
-                    String id = preferences.getString(NEXT_UP_NOTIFICATION_CATEGORY, "NONE");
-                    if(!id.equals("NONE")) {
-                        Intent intent = new Intent(context, AlarmReceiverManager.class);
-                        intent.putExtra("NOTIFICATION_CATEGORY_ID", id);
-                        final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                        pendingIntent.cancel();
-                        manager.cancel(pendingIntent);
-                        preferences.edit().putString(NEXT_UP_NOTIFICATION_CATEGORY, "NONE").apply();
-                    }
-                }
+                scheduleNextNotification(context, nsd).blockingAwait();
             });
+        });
+    }
+
+    /**
+     * schedules a one shot alarm exactly on a specific time
+     * @param context the current context
+     * @param nsd the notification schedule
+     */
+    public static Completable scheduleNextNotification(Context context, NotificationScheduleData nsd) {
+        return Completable.fromAction(() -> {
+            AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            if(nsd != null) {
+                preferences.edit().putString(NEXT_UP_NOTIFICATION_CATEGORY, nsd.getId()).apply();
+
+                Intent intent = new Intent(context, AlarmReceiverManager.class);
+                intent.putExtra("NOTIFICATION_CATEGORY_ID", nsd.getId());
+                final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                manager.set(AlarmManager.RTC_WAKEUP, nsd.getScheduleTime(), pendingIntent);
+            }
+            else {
+                String id = preferences.getString(NEXT_UP_NOTIFICATION_CATEGORY, "NONE");
+                if(!id.equals("NONE")) {
+                    Intent intent = new Intent(context, AlarmReceiverManager.class);
+                    intent.putExtra("NOTIFICATION_CATEGORY_ID", id);
+                    final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    pendingIntent.cancel();
+                    manager.cancel(pendingIntent);
+                    preferences.edit().putString(NEXT_UP_NOTIFICATION_CATEGORY, "NONE").apply();
+                }
+            }
         });
     }
 

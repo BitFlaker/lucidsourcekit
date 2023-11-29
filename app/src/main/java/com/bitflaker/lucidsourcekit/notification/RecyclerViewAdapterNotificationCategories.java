@@ -46,10 +46,12 @@ public class RecyclerViewAdapterNotificationCategories extends RecyclerView.Adap
         holder.description.setText(current.getItemDescription());
         holder.count.setText(current.getDailyNotificationCount() == 0 || !current.isEnabled() ? "No notifications" : current.getDailyNotificationCount() + " daily notifications");
         Drawable enabledStateDrawable = ResourcesCompat.getDrawable(context.getResources(), current.isEnabled() ? R.drawable.round_check_24 : R.drawable.round_clear_24, context.getTheme());
+//        DrawableCompat.setTintList(enabledStateDrawable, Tools.getAttrColorStateList(current.isEnabled() ? R.attr.colorSuccess : R.attr.colorError, context.getTheme()));
+//        enabledStateDrawable.setColorFilter(new PorterDuffColorFilter(Tools.getAttrColor(current.isEnabled() ? R.attr.colorSuccess : R.attr.colorError, context.getTheme()), PorterDuff.Mode.CLEAR));
         holder.count.setCompoundDrawablesRelativeWithIntrinsicBounds(enabledStateDrawable, null, null, null);
         holder.categoryIcon.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), current.getDrawable(), context.getTheme()));
 
-        holder.card.setBackground(ResourcesCompat.getDrawable(context.getResources(), current.isEnabled() ? R.drawable.shade_enabled : R.drawable.shade_disabled, context.getTheme()));
+        holder.card.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.shade_disabled, context.getTheme()));
 
         holder.card.setOnClickListener(e -> current.getCategoryClickedListener().notificationCategoryClicked());
     }

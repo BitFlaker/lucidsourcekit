@@ -24,7 +24,7 @@ public class NotificationObfuscationLookup {
             mappedDataLookup.put(item.notificationCategoryId, dataItems);
         }
     }
-    
+
     public long getNotificationCount(String notificationCategoryId, long obfuscationTypeId) {
         if(mappedDataLookup.containsKey(notificationCategoryId)) {
             HashMap<Long, Long> obfuscationCounts = mappedDataLookup.get(notificationCategoryId);

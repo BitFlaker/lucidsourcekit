@@ -44,7 +44,7 @@
                     android:id="@+id/txt_notification_category_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:textColor="?attr/tertiaryTextColor"
                     android:text="Reminder for writing down your dream to the dream journal in order to improve dream recall"
                     android:textSize="14sp" />
 
@@ -52,13 +52,13 @@
                     android:id="@+id/txt_notification_category_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="8dp"
                     android:drawablePadding="8dp"
                     android:gravity="center"
                     android:text="No notifications"
-                    android:textColor="?attr/tertiaryTextColor"
+                    android:textColor="?attr/secondaryTextColor"
                     android:textSize="14sp"
-                    app:drawableTint="?attr/tertiaryTextColor"
+                    app:drawableTint="?attr/secondaryTextColor"
                     app:drawableStartCompat="@drawable/round_clear_24" />
             </LinearLayout>
 

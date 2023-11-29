@@ -22,8 +22,8 @@
                 <item>
                     <shape android:shape="rectangle">
                         <gradient
-                            android:startColor="#48C32C2C"
-                            android:endColor="#00C32C2C"
+                            android:startColor="#ff313237"
+                            android:endColor="#36313237"
                             android:type="linear"
                             android:angle="225">
                         </gradient>
@@ -41,8 +41,8 @@
                 <item android:bottom="2dp" android:left="2dp" android:right="2dp" android:top="2dp">
                     <shape android:shape="rectangle" >
                         <gradient
-                            android:startColor="#36C32C2C"
-                            android:endColor="#00C32C2C"
+                            android:startColor="#ff313237"
+                            android:endColor="#12313237"
                             android:type="linear"
                             android:angle="315">
                         </gradient>

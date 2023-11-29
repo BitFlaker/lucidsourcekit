@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -12,13 +13,17 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.preference.PreferenceManager;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.alarms.updated.AlarmHandler;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarmDetails;
+import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationMessage;
 import com.bitflaker.lucidsourcekit.general.Tools;
+import com.bitflaker.lucidsourcekit.notification.NotificationOrderManager;
+import com.bitflaker.lucidsourcekit.notification.NotificationScheduleData;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -46,9 +51,8 @@ public class AlarmReceiverManager extends BroadcastReceiver {
                 // a snoozing alarm should go off again
                 openAlarmViewer(context, intent.getLongExtra("SNOOZING_STORED_ALARM_ID", -1));
             } else if (intent.hasExtra("NOTIFICATION_CATEGORY_ID")) {
-                System.out.println("TRYING TO SHOW NOTIFICATION");
-                showNotificationForCategory(context, intent.getStringExtra("NOTIFICATION_CATEGORY_ID"));
-                AlarmHandler.scheduleNextNotification(context).blockingSubscribe();
+                String notificationCategoryId = intent.getStringExtra("NOTIFICATION_CATEGORY_ID");
+                showNotificationIfEnabled(context, notificationCategoryId);
             }
         } else if (intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED) || intent.getAction().equalsIgnoreCase(Intent.ACTION_MY_PACKAGE_REPLACED)) {
             // TODO: check if the alarm gets rescheduled after updating the app
@@ -56,6 +60,30 @@ public class AlarmReceiverManager extends BroadcastReceiver {
             rescheduleAllStoredAlarms(context);
             AlarmHandler.scheduleNextNotification(context).blockingSubscribe();
         }
+    }
+
+    private static void showNotificationIfEnabled(Context context, String notificationCategoryId) {
+        MainDatabase db = MainDatabase.getInstance(context);
+        db.getNotificationCategoryDao().getAll().blockingSubscribe(notificationCategories -> {
+            NotificationOrderManager notificationOrderManager = NotificationOrderManager.load(notificationCategories);
+            if(notificationOrderManager.hasNotifications()) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                boolean allNotificationsPaused = preferences.getBoolean("NOTIFICATION_PAUSED_ALL", false);
+                NotificationScheduleData nsd = notificationOrderManager.getNextNotification();
+                boolean categoryFound = false, categoryEnabled = false;
+                for (NotificationCategory category : notificationCategories) {
+                    if(category.getId().equals(notificationCategoryId)) {
+                        categoryFound = true;
+                        categoryEnabled = category.isEnabled();
+                        break;
+                    }
+                }
+                if(categoryFound && categoryEnabled && !allNotificationsPaused) {
+                    showNotificationForCategory(context, notificationCategoryId);
+                }
+                AlarmHandler.scheduleNextNotification(context, nsd).blockingSubscribe();
+            }
+        });
     }
 
     public static void showNotificationForCategory(Context context, String notificationCategoryId) {

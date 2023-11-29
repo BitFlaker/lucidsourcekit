@@ -163,7 +163,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/materialCardView2"
+            android:id="@+id/mcv_forms_journal"
             android:layout_width="104dp"
             android:layout_height="104dp"
             android:layout_marginStart="28dp"
@@ -215,7 +215,7 @@
             app:cardBackgroundColor="?attr/slightElevated"
             app:cardCornerRadius="64dp"
             app:layout_constraintBottom_toTopOf="@+id/btn_close_viewer"
-            app:layout_constraintEnd_toStartOf="@+id/materialCardView2"
+            app:layout_constraintEnd_toStartOf="@+id/mcv_forms_journal"
             app:layout_constraintStart_toEndOf="@+id/materialCardView">
 
             <LinearLayout

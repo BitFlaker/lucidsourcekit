@@ -24,9 +24,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
+        android:layout_marginTop="4dp"
         android:layout_marginBottom="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,6 +40,9 @@
                 android:id="@+id/crd_notification_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
                 app:cardBackgroundColor="?attr/backgroundColor"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:cardElevation="0dp"
@@ -49,11 +50,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:strokeColor="?attr/slightElevated"
-                app:strokeWidth="0dp">
+                app:strokeWidth="2dp">
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
                     android:orientation="vertical">
 
                     <com.bitflaker.lucidsourcekit.charts.Speedometer
@@ -62,26 +67,55 @@
                         android:layout_height="125dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:layout_marginBottom="24dp"/>
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cl_notifications_stats"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginHorizontal="8dp">
+                        android:layout_marginTop="24dp"
+                        android:layout_marginHorizontal="8dp"
+                        app:layout_constraintTop_toBottomOf="@+id/spdo_notifications_delivered">
+
+                        <View
+                            android:id="@+id/v_divider_horizontal_1"
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_marginHorizontal="8dp"
+                            android:layout_marginVertical="12dp"
+                            android:background="?attr/slightElevated"
+                            app:layout_constraintBottom_toTopOf="@+id/mcv_timeframe"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/mcv_daily_notification_count" />
+
+                        <View
+                            android:id="@+id/v_divider_vertical"
+                            android:layout_width="1dp"
+                            android:layout_height="0dp"
+                            android:layout_marginHorizontal="6dp"
+                            android:layout_marginVertical="4dp"
+                            android:background="?attr/slightElevated"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/mcv_enabled_categories"
+                            app:layout_constraintStart_toEndOf="@+id/mcv_daily_notification_count"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/materialCardView2"
+                            android:id="@+id/mcv_daily_notification_count"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             app:cardBackgroundColor="?attr/backgroundColor"
                             app:cardCornerRadius="@dimen/cardRadius"
                             app:cardElevation="0dp"
-                            app:layout_constraintEnd_toStartOf="@+id/materialCardView3"
+                            app:layout_constraintEnd_toStartOf="@+id/v_divider_vertical"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toTopOf="@+id/v_divider_horizontal_1"
                             app:strokeColor="?attr/slightElevated"
-                            app:strokeWidth="1dp">
+                            app:strokeWidth="0dp">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
@@ -111,7 +145,7 @@
                                     android:elevation="20dp"
                                     android:gravity="center_vertical"
                                     android:text="Daily amount"
-                                    android:textSize="13sp"
+                                    android:textSize="12sp"
                                     app:layout_constraintStart_toEndOf="@+id/imageView2"
                                     app:layout_constraintTop_toBottomOf="@+id/txt_daily_notifications_val" />
 
@@ -123,25 +157,24 @@
                                     android:text="12"
                                     android:textAlignment="textEnd"
                                     android:textColor="?attr/primaryTextColor"
-                                    android:textSize="16sp"
+                                    android:textSize="14sp"
                                     app:layout_constraintStart_toEndOf="@+id/imageView2"
                                     app:layout_constraintTop_toTopOf="parent" />
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </com.google.android.material.card.MaterialCardView>
 
                         <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/materialCardView3"
+                            android:id="@+id/mcv_enabled_categories"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
                             app:cardBackgroundColor="?attr/backgroundColor"
                             app:cardCornerRadius="@dimen/cardRadius"
                             app:cardElevation="0dp"
                             app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/v_divider_vertical"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/materialCardView2"
                             app:strokeColor="?attr/slightElevated"
-                            app:strokeWidth="1dp">
+                            app:strokeWidth="0dp">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
@@ -171,7 +204,7 @@
                                     android:elevation="20dp"
                                     android:gravity="center_vertical"
                                     android:text="Categories"
-                                    android:textSize="13sp"
+                                    android:textSize="12sp"
                                     app:layout_constraintStart_toEndOf="@+id/imageView3"
                                     app:layout_constraintTop_toBottomOf="@+id/txt_categories_enabled_val" />
 
@@ -183,25 +216,25 @@
                                     android:text="1/4"
                                     android:textAlignment="textEnd"
                                     android:textColor="?attr/primaryTextColor"
-                                    android:textSize="16sp"
+                                    android:textSize="14sp"
                                     app:layout_constraintStart_toEndOf="@+id/imageView3"
                                     app:layout_constraintTop_toTopOf="parent" />
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </com.google.android.material.card.MaterialCardView>
 
                         <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/materialCardView4"
+                            android:id="@+id/mcv_timeframe"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
                             app:cardBackgroundColor="?attr/backgroundColor"
                             app:cardCornerRadius="@dimen/cardRadius"
                             app:cardElevation="0dp"
-                            app:layout_constraintEnd_toStartOf="@+id/materialCardView5"
+                            app:layout_constraintEnd_toEndOf="@+id/mcv_daily_notification_count"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/materialCardView2"
+                            app:layout_constraintTop_toBottomOf="@+id/v_divider_horizontal_1"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:strokeColor="?attr/slightElevated"
-                            app:strokeWidth="1dp">
+                            app:strokeWidth="0dp">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
@@ -231,7 +264,7 @@
                                     android:elevation="20dp"
                                     android:gravity="center_vertical"
                                     android:text="Timeframe"
-                                    android:textSize="13sp"
+                                    android:textSize="12sp"
                                     app:layout_constraintStart_toEndOf="@+id/imageView4"
                                     app:layout_constraintTop_toBottomOf="@+id/txt_notification_timespan_val" />
 
@@ -243,26 +276,25 @@
                                     android:text="08:30 - 18:45"
                                     android:textAlignment="textEnd"
                                     android:textColor="?attr/primaryTextColor"
-                                    android:textSize="16sp"
+                                    android:textSize="14sp"
                                     app:layout_constraintStart_toEndOf="@+id/imageView4"
                                     app:layout_constraintTop_toTopOf="parent" />
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </com.google.android.material.card.MaterialCardView>
 
                         <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/materialCardView5"
+                            android:id="@+id/mcv_obfuscation"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="12dp"
-                            android:layout_marginStart="12dp"
                             app:cardBackgroundColor="?attr/backgroundColor"
                             app:cardCornerRadius="@dimen/cardRadius"
                             app:cardElevation="0dp"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/materialCardView4"
-                            app:layout_constraintTop_toBottomOf="@+id/materialCardView3"
+                            app:layout_constraintStart_toStartOf="@+id/mcv_enabled_categories"
+                            app:layout_constraintTop_toBottomOf="@+id/v_divider_horizontal_1"
                             app:strokeColor="?attr/slightElevated"
-                            app:strokeWidth="1dp">
+                            app:strokeWidth="0dp">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
@@ -292,7 +324,7 @@
                                     android:elevation="20dp"
                                     android:gravity="center_vertical"
                                     android:text="Obfuscation"
-                                    android:textSize="13sp"
+                                    android:textSize="12sp"
                                     app:layout_constraintStart_toEndOf="@+id/imageView5"
                                     app:layout_constraintTop_toBottomOf="@+id/txt_obfuscation_level_val" />
 
@@ -304,64 +336,64 @@
                                     android:text="64%"
                                     android:textAlignment="textEnd"
                                     android:textColor="?attr/primaryTextColor"
-                                    android:textSize="16sp"
+                                    android:textSize="14sp"
                                     app:layout_constraintStart_toEndOf="@+id/imageView5"
                                     app:layout_constraintTop_toTopOf="parent" />
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </com.google.android.material.card.MaterialCardView>
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <com.google.android.material.button.MaterialButton
+                    <TextView
+                        android:id="@+id/txt_notifications_disabled_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginHorizontal="24dp"
-                        android:text="Pause notifications"
+                        android:layout_marginStart="6dp"
+                        android:layout_marginTop="18dp"
+                        android:layout_marginEnd="6dp"
+                        android:text="Notifications are currently paused"
+                        android:textAlignment="center"
                         android:textColor="?attr/secondaryTextColor"
-                        app:icon="@drawable/ic_baseline_pause_24"
-                        app:iconTint="?attr/secondaryTextColor"
-                        app:rippleColor="#21FFFFFF"
-                        app:backgroundTint="?attr/slightElevated"
-                        app:cornerRadius="32dp"
-                        app:strokeColor="?attr/secondaryTextColor"
-                        app:strokeWidth="0dp"
-                        android:visibility="gone"/>
-
-                    <com.google.android.material.button.MaterialButton
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:layout_marginHorizontal="24dp"
-                        android:text="Disable notifications"
-                        android:textColor="?attr/secondaryTextColor"
-                        app:icon="@drawable/ic_baseline_cross_24"
-                        app:iconTint="?attr/secondaryTextColor"
-                        app:rippleColor="#21FFFFFF"
-                        app:backgroundTint="?attr/slightElevated"
-                        app:cornerRadius="32dp"
-                        app:strokeColor="?attr/colorError"
-                        app:strokeWidth="0dp"
-                        android:visibility="gone" />
-                </LinearLayout>
+                        android:textSize="14sp"
+                        android:textStyle="italic"
+                        android:visibility="visible"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/cl_notifications_stats" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:id="@+id/txt_notification_categories_heading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Notification categories"
+                android:layout_marginStart="24dp"
+                android:text="Categories"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp"
+                android:textSize="23sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/btn_more_notification_options"
+                app:layout_constraintBottom_toTopOf="@+id/txt_notification_categories_description"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/btn_more_notification_options" />
+
+            <TextView
+                android:id="@+id/txt_notification_categories_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:text="All notification categories"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_more_notification_options"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_notification_categories_heading" />
 
             <ImageButton
                 android:id="@+id/btn_more_notification_options"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="12dp"
                 android:background="@drawable/ripple_round"
                 android:backgroundTint="?attr/backgroundColor"
                 android:minWidth="48dp"
@@ -374,14 +406,14 @@
                 android:id="@+id/rcv_notification_categories"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
                 android:nestedScrollingEnabled="false"
                 android:overScrollMode="never"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_more_notification_options" />
+                app:layout_constraintTop_toBottomOf="@+id/txt_notification_categories_description" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
