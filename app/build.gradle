@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.bitflaker.lucidsourcekit"
@@ -32,14 +32,17 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.preference:preference:1.2.1'
-    def room_version = '2.5.2'
+    def room_version = '2.6.1'
+    def datastore_version = '1.0.0'
+    implementation "androidx.datastore:datastore-preferences:$datastore_version"
+    implementation "androidx.datastore:datastore-preferences-rxjava3:$datastore_version"
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.biometric:biometric:1.2.0-alpha05'
     implementation "androidx.viewpager2:viewpager2:1.0.0"
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.material:material:1.10.0'
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation "androidx.room:room-runtime:$room_version"

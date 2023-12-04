@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DefaultGoals {
-    public static final float[] difficulties = new float[]{
+    public static final float[] difficulties = new float[] {
             1.6f,
             3f,
             1.2f,

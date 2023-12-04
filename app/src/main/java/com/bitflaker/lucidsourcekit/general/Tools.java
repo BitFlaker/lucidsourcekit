@@ -2,7 +2,6 @@ package com.bitflaker.lucidsourcekit.general;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -12,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.preference.PreferenceManager;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.View;
@@ -27,6 +25,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreKeys;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -88,12 +87,7 @@ public class Tools {
     }
 
     public static void loadLanguage(Activity activity){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
-        String lang = preferences.getString("lang", null);
-        if (lang == null) {
-            lang = "en";
-            preferences.edit().putString("lang", lang).commit();
-        }
+        String lang = DataStoreManager.getInstance().getSetting(DataStoreKeys.LANGUAGE).blockingFirst();
         Locale locale = new Locale(lang);
         Locale.setDefault(locale);
         Configuration config = new Configuration();
@@ -289,8 +283,15 @@ public class Tools {
      * @param count the amount of goals to choose
      * @return the chosen goals suiting the specified constraints
      */
-    public static List<Goal> getSuitableGoals(Context context, List<Goal> providedGoals, float difficultyConstraint, float difficultyVariance, int accuracy, float variance, int count) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+    public static List<Goal> getSuitableGoals(List<Goal> providedGoals) {
+        DataStoreManager dsManager = DataStoreManager.getInstance();
+
+        float difficultyConstraint = dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_TENDENCY).blockingFirst();
+        float difficultyVariance = dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VARIANCE).blockingFirst();
+        int accuracy = dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_ACCURACY).blockingFirst();
+        float variance = dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_VARIANCE).blockingFirst();
+        int count = dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_COUNT).blockingFirst();
+
         List<Goal> fitGoals = new ArrayList<>();
         float randomizedDiffConstraint = Math.min(3.0f, Math.max(1.0f, difficultyConstraint + (difficultyVariance > 0.0f ? (float)(ThreadLocalRandom.current().nextDouble(-difficultyVariance, difficultyVariance)) : 0.0f)));
         float difficultyLimit = randomizedDiffConstraint * count;
@@ -303,7 +304,10 @@ public class Tools {
 
         for (int i = 0; i < goals.size(); i++) {
             difficulties[i] = (int)(goals.get(i).difficulty * accuracy);
-            double valFunction = preferences.getFloat("goal_function_value_a", -1.0f) * Math.pow(i, 2) + preferences.getFloat("goal_function_value_b", -1.0f) * i + preferences.getFloat("goal_function_value_c", -1.0f);
+            float valA = dsManager.getSetting(DataStoreKeys.GOAL_FUNCTION_VALUE_A).blockingFirst();
+            float valB = dsManager.getSetting(DataStoreKeys.GOAL_FUNCTION_VALUE_B).blockingFirst();
+            float valC = dsManager.getSetting(DataStoreKeys.GOAL_FUNCTION_VALUE_C).blockingFirst();
+            double valFunction = valA * Math.pow(i, 2) + valB * i + valC;
             double val = (Math.max(0, valFunction * ((1.0f/(goals.size()/6.0f)) * Math.pow(2.0f - Math.abs((difficulties[i]/(float)accuracy) - randomizedDiffConstraint), 2)) + ThreadLocalRandom.current().nextDouble(-variance, variance)));
             goalVal[i] = (int)(val);
         }
@@ -356,37 +360,6 @@ public class Tools {
         }
 
         return fitGoals.stream().limit(count).collect(Collectors.toList());
-    }
-
-    public static List<Goal> getSuitableGoals(Context context, List<Goal> providedGoals, int goalsCount, float goalsDiff1Weight, float goalsDiff2Weight, float goalsDiff3Weight) {
-        float a = (-goalsDiff1Weight + 2 * goalsDiff2Weight - goalsDiff3Weight) / -2;
-        float b = goalsDiff2Weight - goalsDiff1Weight - 3 * a;
-        float c = goalsDiff1Weight - a - b;
-
-        List<Double> weightedGoals = new ArrayList<>();
-
-        if(goalsCount > providedGoals.size()){
-            throw new IllegalArgumentException("The goals count must be smaller or equal to the size of the list of proved goals");
-        }
-
-        double weightSum = 0;
-        for (Goal goal : providedGoals) {
-            // ignoring the fact that multiple goals could have the value 0, as they are ignored anyways
-            double weight = Math.max(a * Math.pow(goal.difficulty, 2) + b * goal.difficulty + c, 0);
-            weightSum += weight;
-            weightedGoals.add(weightSum);
-        }
-
-        Random r = new Random();
-        List<Goal> chosenGoals = new ArrayList<>();
-        for (int i = 0; i < goalsCount; i++) {
-            double chosenWeight = weightedGoals.get(weightedGoals.size() - 1) * r.nextDouble();
-            int closestValueIndex = getClosestHigherNumber(weightedGoals, chosenWeight);
-            chosenGoals.add(providedGoals.get(closestValueIndex));
-            providedGoals.remove(closestValueIndex);
-            weightedGoals.remove(closestValueIndex);
-        }
-        return chosenGoals;
     }
 
     public static int getClosestHigherNumber(List<Double> numbers, double target) {

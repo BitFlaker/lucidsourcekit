@@ -10,8 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bitflaker.lucidsourcekit.R;
@@ -22,67 +20,62 @@ public class SetupAuthData extends Fragment {
     private AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.5F);
     private AuthTypes selectedAuthType = AuthTypes.Pin;
     private String enteredPin;
+    private TextView txtAuthDataTitle;
+    private TextView txtAuthDataDescription;
+    private LinearLayout llPinLayout;
+    private EditText txtPassword;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_setup_auth_data, container, false);
+        View view = inflater.inflate(R.layout.fragment_setup_auth_data, container, false);
+
+        txtAuthDataTitle = view.findViewById(R.id.txt_auth_data_title);
+        txtAuthDataDescription = view.findViewById(R.id.txt_auth_data_description);
+        llPinLayout = view.findViewById(R.id.ll_setup_pinLayout);
+        txtPassword = view.findViewById(R.id.txt_setup_password);
+
+        showCredentialsSetup(selectedAuthType);
+
+        return view;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        switch (selectedAuthType){
+    public void updateLanguages() {
+        if(getView() != null) {
+            ((TextView)getView().findViewById(R.id.txt_setup_password)).setHint(getContext().getResources().getString(R.string.login_password_hint));
+            showCredentialsSetup(selectedAuthType);
+        }
+    }
+
+    public void showCredentialsSetup(AuthTypes authType) {
+        selectedAuthType = authType;
+        switch (selectedAuthType) {
             case Password: showPasswordSetup(); break;
             case Pin: showPinSetup(); break;
             case None: showFinishSetup(); break;
         }
     }
 
-    public void updateLanguages() {
-        if(getView() != null){
-            ((TextView)getView().findViewById(R.id.txt_setup_password)).setHint(getContext().getResources().getString(R.string.login_password_hint));
-            switch (selectedAuthType) {
-                case Password: showPasswordSetup(); break;
-                case Pin: showPinSetup(); break;
-                case None: showFinishSetup(); break;
-            }
-        }
-    }
-
     public void showPasswordSetup() {
-        selectedAuthType = AuthTypes.Password;
-        if(getView() != null) {
-            ((TextView) getView().findViewById(R.id.txt_auth_data_title)).setText(getContext().getResources().getString(R.string.setup_auth_data_title_password));
-//            ((TextView) getView().findViewById(R.id.txt_privacy_settings_setup)).setVisibility(View.GONE);
-            ((TextView) getView().findViewById(R.id.txt_privacy_settings_setup)).setText(R.string.setup_privacy_password);
-            ((LinearLayout) getView().findViewById(R.id.ll_setup_pinLayout)).setVisibility(View.GONE);
-            TextView pwBox = ((EditText) getView().findViewById(R.id.txt_setup_password));
-            pwBox.setText("");
-            pwBox.setVisibility(View.VISIBLE);
-        }
+        txtAuthDataTitle.setText(getContext().getResources().getString(R.string.setup_auth_data_title_password));
+        txtAuthDataDescription.setText(R.string.setup_privacy_password);
+        llPinLayout.setVisibility(View.GONE);
+        txtPassword.setText("");
+        txtPassword.setVisibility(View.VISIBLE);
     }
 
     public void showFinishSetup() {
-        selectedAuthType = AuthTypes.None;
-        if(getView() != null) {
-            ((TextView) getView().findViewById(R.id.txt_auth_data_title)).setText(getContext().getResources().getString(R.string.setup_finish_setup_title));
-//            ((TextView) getView().findViewById(R.id.txt_privacy_settings_setup)).setVisibility(View.VISIBLE);
-            ((TextView) getView().findViewById(R.id.txt_privacy_settings_setup)).setText(R.string.setup_finish_content);
-            ((LinearLayout) getView().findViewById(R.id.ll_setup_pinLayout)).setVisibility(View.GONE);
-            ((EditText) getView().findViewById(R.id.txt_setup_password)).setVisibility(View.GONE);
-        }
+        txtAuthDataTitle.setText(getContext().getResources().getString(R.string.setup_finish_setup_title));
+        txtAuthDataDescription.setText(R.string.setup_finish_content);
+        llPinLayout.setVisibility(View.GONE);
+        txtPassword.setVisibility(View.GONE);
     }
 
     public void showPinSetup() {
-        selectedAuthType = AuthTypes.Pin;
-        if(getView() != null) {
-            ((TextView) getView().findViewById(R.id.txt_auth_data_title)).setText(getContext().getResources().getString(R.string.setup_auth_data_title_pin));
-//            ((TextView) getView().findViewById(R.id.txt_privacy_settings_setup)).setVisibility(View.GONE);
-            ((TextView) getView().findViewById(R.id.txt_privacy_settings_setup)).setText(R.string.setup_privacy_pin);
-            ((LinearLayout) getView().findViewById(R.id.ll_setup_pinLayout)).setVisibility(View.VISIBLE);
-            ((EditText) getView().findViewById(R.id.txt_setup_password)).setVisibility(View.GONE);
-            setupPinAuthentication();
-        }
+        txtAuthDataTitle.setText(getContext().getResources().getString(R.string.setup_auth_data_title_pin));
+        txtAuthDataDescription.setText(R.string.setup_privacy_pin);
+        llPinLayout.setVisibility(View.VISIBLE);
+        txtPassword.setVisibility(View.GONE);
+        setupPinAuthentication();
     }
 
     private void setupPinAuthentication() {

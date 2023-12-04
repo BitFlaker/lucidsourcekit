@@ -1,15 +1,22 @@
 package com.bitflaker.lucidsourcekit.main;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter;
@@ -17,16 +24,17 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainViewer extends AppCompatActivity {
+    private static final String PAGE_OVERVIEW = "overview";
+    private static final String PAGE_LOGGING = "journal";
+    private static final String PAGE_STATS = "statistics";
+    private static final String PAGE_GOALS = "goals";
+    private static final String PAGE_BINAURAL_BEATS = "binaural";
+
+    private ActivityResultLauncher<Intent> backupSaveDialogLauncher;
 
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
     private ImageButton moreOptions;
-    private final String pageOverview = "overview";
-    private final String pageLogging = "journal";
-    private final String pageStats = "statistics";
-    private final String pageGoals = "goals";
-    private final String pageBinauralBeats = "binaural";
-
     private ViewPagerAdapter vpAdapter;
 
     private MainOverview vwOverview;
@@ -43,11 +51,13 @@ public class MainViewer extends AppCompatActivity {
         Tools.makeStatusBarTransparent(this);
         initVars();
 
-        vpAdapter.addFragment(vwOverview, pageOverview);
-        vpAdapter.addFragment(vwLogging, pageLogging);
-        vpAdapter.addFragment(vwPageStats, pageStats);
-        vpAdapter.addFragment(vwPageGoals, pageGoals);
-        vpAdapter.addFragment(vwPageBinauralBeats, pageBinauralBeats);
+        backupSaveDialogLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::backupSaveDialogResult);
+
+        vpAdapter.addFragment(vwOverview, PAGE_OVERVIEW);
+        vpAdapter.addFragment(vwLogging, PAGE_LOGGING);
+        vpAdapter.addFragment(vwPageStats, PAGE_STATS);
+        vpAdapter.addFragment(vwPageGoals, PAGE_GOALS);
+        vpAdapter.addFragment(vwPageBinauralBeats, PAGE_BINAURAL_BEATS);
         viewPager2.setAdapter(vpAdapter);
         viewPager2.setOffscreenPageLimit(6);
 
@@ -57,9 +67,15 @@ public class MainViewer extends AppCompatActivity {
             androidx.appcompat.widget.PopupMenu popup = new androidx.appcompat.widget.PopupMenu(new ContextThemeWrapper(this, Tools.getPopupTheme()), moreOptions);
             popup.getMenuInflater().inflate(R.menu.more_options_popup_menu, popup.getMenu());
             popup.setOnMenuItemClickListener(item -> {
-                String itemTitle = item.getTitle().toString();
-                if(itemTitle.equals(MainViewer.this.getResources().getString(R.string.third_party_licenses))) {
+                if (item.getItemId() == R.id.itm_third_party) {
                     startActivity(new Intent(this, OssLicensesMenuActivity.class));
+                }
+                else if (item.getItemId() == R.id.itm_export_data) {
+                    Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("application/zip");
+                    intent.putExtra(Intent.EXTRA_TITLE, "backupdata.zip");
+                    backupSaveDialogLauncher.launch(intent);
                 }
                 return true;
             });
@@ -68,17 +84,33 @@ public class MainViewer extends AppCompatActivity {
 
         if(getIntent().hasExtra("INITIAL_PAGE")) {
             String title = getIntent().getStringExtra("INITIAL_PAGE");
-            System.out.println("INITIAL_PAGE: " + title);
             int position = vpAdapter.getTabIndex(title);
             tabLayout.selectTab(tabLayout.getTabAt(position));
             viewPager2.setCurrentItem(position);
-            if(title.equalsIgnoreCase(pageLogging)) {
+            if(title != null && title.equalsIgnoreCase(PAGE_LOGGING)) {
                 int ordinal = getIntent().getIntExtra("type", -1);
                 if(ordinal >= 0 && ordinal < JournalTypes.values().length) {
                     vwLogging.showJournalCreatorWhenLoaded(JournalTypes.values()[ordinal]);
                 }
             }
         }
+    }
+
+    private void backupSaveDialogResult(ActivityResult result) {
+        if(result.getResultCode() == Activity.RESULT_OK) {
+            Intent data = result.getData();
+            if(data != null) {
+                Uri uri = data.getData();
+                if(uri != null) {
+                    MainDatabase db = MainDatabase.getInstance(this);
+                    if(!db.backupDatabase(this, uri)) {
+                        Toast.makeText(this, "Backup failed!", Toast.LENGTH_SHORT).show();
+                    }
+                    return;
+                }
+            }
+        }
+        Toast.makeText(this, "Failed to get backup file path", Toast.LENGTH_SHORT).show();
     }
 
     @NonNull

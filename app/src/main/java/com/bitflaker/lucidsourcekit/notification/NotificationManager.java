@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,7 +25,6 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,6 +34,8 @@ import com.bitflaker.lucidsourcekit.charts.Speedometer;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
 import com.bitflaker.lucidsourcekit.general.Tools;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreKeys;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -140,22 +140,20 @@ public class NotificationManager extends AppCompatActivity {
 
         notificationsDisabledNotice = findViewById(R.id.txt_notifications_disabled_info);
         ImageButton moreNotificationOptions = findViewById(R.id.btn_more_notification_options);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        notificationsDisabledNotice.setVisibility(preferences.getBoolean("NOTIFICATION_PAUSED_ALL", false) ? View.VISIBLE : View.GONE);
+        DataStoreManager dsManager = DataStoreManager.getInstance();
+        notificationsDisabledNotice.setVisibility(dsManager.getSetting(DataStoreKeys.NOTIFICATION_PAUSED_ALL).blockingFirst() ? View.VISIBLE : View.GONE);
         moreNotificationOptions.setOnClickListener(e -> {
             PopupMenu popup = new PopupMenu(new ContextThemeWrapper(this, Tools.getPopupTheme()), moreNotificationOptions);
             popup.getMenuInflater().inflate(R.menu.more_notification_options, popup.getMenu());
-            popup.getMenu().findItem(R.id.itm_pause_notifications).setTitle(preferences.getBoolean("NOTIFICATION_PAUSED_ALL", false) ? "Resume notifications" : "Pause notifications");
+            popup.getMenu().findItem(R.id.itm_pause_notifications).setTitle(dsManager.getSetting(DataStoreKeys.NOTIFICATION_PAUSED_ALL).blockingFirst() ? "Resume notifications" : "Pause notifications");
             popup.setOnMenuItemClickListener(item -> {
                 if(item.getItemId() == R.id.itm_pause_notifications) {
-                    boolean allNotificationsPaused = preferences.getBoolean("NOTIFICATION_PAUSED_ALL", false);
+                    boolean allNotificationsPaused = dsManager.getSetting(DataStoreKeys.NOTIFICATION_PAUSED_ALL).blockingFirst();
                     new AlertDialog.Builder(this, Tools.getThemeDialog())
                             .setTitle(allNotificationsPaused ? "Resume notifications" : "Pause notifications")
                             .setMessage(allNotificationsPaused ? "Do you really want to resume all notifications?" : "Do you really want to pause all notifications for the time being? You can re-enable all notifications any time later.")
                             .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-                                SharedPreferences.Editor preferenceEditor = preferences.edit();
-                                preferenceEditor.putBoolean("NOTIFICATION_PAUSED_ALL", !allNotificationsPaused);
-                                preferenceEditor.apply();
+                                dsManager.updateSetting(DataStoreKeys.NOTIFICATION_PAUSED_ALL, !allNotificationsPaused).blockingSubscribe();
                                 popup.getMenu().findItem(R.id.itm_pause_notifications).setTitle(!allNotificationsPaused ? "Resume notifications" : "Pause notifications");
                                 notificationsDisabledNotice.setVisibility(!allNotificationsPaused ? View.VISIBLE : View.GONE);
                             })

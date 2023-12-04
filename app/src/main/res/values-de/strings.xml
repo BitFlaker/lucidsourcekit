@@ -107,6 +107,7 @@
     <string name="setup_finish_content">Der Setup der Anwendung ist abgeschlossen. Um alle Angaben zu speichern und die Anwendung zu starten, klicke auf den Fertigstellen Button.</string>
     <string name="setup_privacy_password">Geben Sie im Textfeld unten ein Passwort ein, dass Sie bei jedem öffnen der App eingeben müssen</string>
     <string name="setup_privacy_pin">Setzen Sie einen PIN den Sie bei jedem öffnen der App eingeben müssen</string>
+    <string name="export_data">Daten exportieren</string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>

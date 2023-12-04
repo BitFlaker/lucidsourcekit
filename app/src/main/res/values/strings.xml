@@ -106,6 +106,7 @@
     <string name="setup_finish_content">The setup of the app is done. To save everything and launch the app, click the finish button.</string>
     <string name="setup_privacy_password">Enter a password below which has to be entered every time you want to open this app</string>
     <string name="setup_privacy_pin">Set a pin below which has to be entered every time you want to open this app</string>
+    <string name="export_data">Export data</string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>

@@ -79,6 +79,5 @@
         android:layout_marginBottom="25dp"
         android:background="@drawable/rounded_button_primary_2"
         android:text="@string/setup_get_started_title"
-        android:textColor="?attr/primaryTextColor"
-        app:backgroundTint="#1F5D96" />
+        android:textColor="?attr/primaryTextColor" />
 </RelativeLayout>

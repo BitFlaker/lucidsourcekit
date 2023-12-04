@@ -1,8 +1,6 @@
 package com.bitflaker.lucidsourcekit.setup;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +14,8 @@ import androidx.fragment.app.Fragment;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.general.Tools;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreKeys;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
 
 public class SetupLanguage extends Fragment {
     OnLanguageChangedListener mListener;
@@ -36,8 +36,7 @@ public class SetupLanguage extends Fragment {
                 // TODO: set originally set language and don't overwrite with default selection
                 String lang = languageSpinner.getSelectedItem().toString().split("\\(")[1];
                 lang = lang.substring(0, lang.length() - 1);
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-                preferences.edit().putString("lang", lang).commit();
+                DataStoreManager.getInstance().updateSetting(DataStoreKeys.LANGUAGE, lang).blockingSubscribe();
                 Tools.loadLanguage(getActivity());
                 if(mListener!=null) {
                     mListener.onEvent(lang);

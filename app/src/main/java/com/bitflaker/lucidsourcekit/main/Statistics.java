@@ -2,7 +2,6 @@ package com.bitflaker.lucidsourcekit.main;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +22,8 @@ import com.bitflaker.lucidsourcekit.charts.RodGraph;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.TagCount;
 import com.bitflaker.lucidsourcekit.general.Tools;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreKeys;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
 import com.google.android.material.chip.ChipGroup;
 
 import java.text.SimpleDateFormat;
@@ -95,8 +96,8 @@ public class Statistics extends Fragment {
         clarityIcons = Tools.getIconsDreamClarity(getContext());
         qualityIcons = Tools.getIconsSleepQuality(getContext());
 
-        currentStreak.setText(Long.toString(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong("app_open_streak", 0)));
-        longestStreak.setText(Long.toString(PreferenceManager.getDefaultSharedPreferences(getContext()).getLong("longest_app_open_streak", 0)));
+        currentStreak.setText(Long.toString(DataStoreManager.getInstance().getSetting(DataStoreKeys.APP_OPEN_STREAK).blockingFirst()));
+        longestStreak.setText(Long.toString(DataStoreManager.getInstance().getSetting(DataStoreKeys.APP_OPEN_STREAK_LONGEST).blockingFirst()));
 
         // TODO: add loading indicators while gathering data
         // TODO: refresh stats after entry modified/added/deleted

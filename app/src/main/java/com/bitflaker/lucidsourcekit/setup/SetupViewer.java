@@ -1,11 +1,9 @@
 package com.bitflaker.lucidsourcekit.setup;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,9 +18,13 @@ import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.general.AuthTypes;
 import com.bitflaker.lucidsourcekit.general.Crypt;
 import com.bitflaker.lucidsourcekit.general.Tools;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreKeys;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.tabs.TabLayout;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -31,12 +33,11 @@ public class SetupViewer extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
-    private MaterialButton btnNext;
     private LinearLayout pageDotContainer;
-    private ArrayList<ImageView> pageDots;
+    private final ArrayList<ImageView> pageDots = new ArrayList<>();
     private AuthTypes selectedAuthType = AuthTypes.Pin;
 
-    private AtomicBoolean consented = new AtomicBoolean(false);
+    private final AtomicBoolean consented = new AtomicBoolean(false);
     private final int pageCount = 5;
     private final String pageLang = "Language";
     private final String pageConsent = "Consent";
@@ -45,15 +46,15 @@ public class SetupViewer extends AppCompatActivity {
     private final String pageAuthData = "AuthData";
 
     private ViewPagerAdapter vpAdapter;
-    private SetupLanguage setLang;
-    private SetupConsent setConsent;
-    private SetupOpenSource setOpenSource;
-    private SetupPrivacy setPrivacy;
-    private SetupAuthData setAuthData;
+    private final SetupLanguage setLang = new SetupLanguage();
+    private final SetupConsent setConsent = new SetupConsent();
+    private final SetupOpenSource setOpenSource = new SetupOpenSource();
+    private final SetupPrivacy setPrivacy = new SetupPrivacy();
+    private final SetupAuthData setAuthData = new SetupAuthData();
 
-    private AtomicReference<TabLayout.Tab> tabOpenSource;
-    private AtomicReference<TabLayout.Tab> tabPrivacy;
-    private AtomicReference<TabLayout.Tab> tabAuthData;
+    private final AtomicReference<TabLayout.Tab> tabOpenSource = new AtomicReference<>();
+    private final AtomicReference<TabLayout.Tab> tabPrivacy = new AtomicReference<>();
+    private final AtomicReference<TabLayout.Tab> tabAuthData = new AtomicReference<>();
 
 
     @Override
@@ -62,26 +63,21 @@ public class SetupViewer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup_viewer);
         Tools.makeStatusBarTransparent(this);
-        initVars();
+
+        tabLayout = findViewById(R.id.tablayout);
+        viewPager2 = findViewById(R.id.viewpager);
+        MaterialButton btnNext = findViewById(R.id.btn_next);
+        pageDotContainer = findViewById(R.id.page_dot_container);
 
         setPrivacy.setOnAuthTypeChangedListener(authType -> {
             selectedAuthType = authType;
-            switch (authType) {
-                case Pin:
-                    setAuthData.showPinSetup();
-                    break;
-                case Password:
-                    setAuthData.showPasswordSetup();
-                    break;
-                case None:
-                    setAuthData.showFinishSetup();
-                    break;
-            }
+            setAuthData.showCredentialsSetup(authType);
         });
 
-        setLang.setLanguageChangedListener(languageChanged());
-        setConsent.setOnConsentChangedListener(consentChanged());
+        setLang.setLanguageChangedListener(this::languageChanged);
+        setConsent.setOnConsentChangedListener(this::consentChanged);
 
+        vpAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
         vpAdapter.addFragment(setLang, pageLang);
         vpAdapter.addFragment(setConsent, pageConsent);
         viewPager2.setAdapter(vpAdapter);
@@ -93,62 +89,70 @@ public class SetupViewer extends AppCompatActivity {
 
         tabLayout.addOnTabSelectedListener(tabSelected());
         viewPager2.registerOnPageChangeCallback(changeTab());
-        btnNext.setOnClickListener(progressToNextPage());
+        btnNext.setOnClickListener(this::progressToNextPage);
     }
 
-    @NonNull
-    private View.OnClickListener progressToNextPage() {
-        return e -> {
-            if (tabLayout.getSelectedTabPosition() + 1 < vpAdapter.getItemCount()) {
-                tabLayout.selectTab(tabLayout.getTabAt(tabLayout.getSelectedTabPosition() + 1));
-            } else if (tabLayout.getSelectedTabPosition() + 1 == pageCount) {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-                SharedPreferences.Editor editor = preferences.edit();
-                switch (selectedAuthType) {
-                    case Password:
-                        if (setAuthData.getPassword().length() == 0) {
-                            Toast.makeText(SetupViewer.this, getResources().getString(R.string.password_too_short), Toast.LENGTH_SHORT).show();
-                        } else {
-                            try {
-                                byte[] salt = Crypt.generateSalt();
-                                String pwHash = Crypt.encryptString(setAuthData.getPassword(), salt);
-                                editor.putString("auth_type", "password");
-                                editor.putString("auth_hash", pwHash);
-                                editor.putString("auth_salt", Base64.encodeToString(salt, Base64.NO_WRAP));
-                                editor.putString("auth_use_biometrics", setPrivacy.getUseBiometrics() ? "true" : "false");
-                                editor.apply();
-                                startGetStarted();
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                        break;
-                    case Pin:
-                        if (setAuthData.getPin().length() == 0) {
-                            Toast.makeText(SetupViewer.this, getResources().getString(R.string.pin_too_short), Toast.LENGTH_SHORT).show();
-                        } else {
-                            try {
-                                byte[] secretKey = Crypt.generateSecretKey();
-                                String pinCipher = Crypt.encryptStringBlowfish(setAuthData.getPin(), secretKey);
-                                editor.putString("auth_type", "pin");
-                                editor.putString("auth_cipher", pinCipher);
-                                editor.putString("auth_key", Base64.encodeToString(secretKey, Base64.NO_WRAP));
-                                editor.putString("auth_use_biometrics", setPrivacy.getUseBiometrics() ? "true" : "false");
-                                editor.apply();
-                                startGetStarted();
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                        break;
-                    case None:
-                        editor.putString("auth_type", "none");
-                        editor.apply();
-                        startGetStarted();
-                        break;
-                }
+    private void progressToNextPage(View view) {
+        // Invalid pages
+        if (tabLayout.getSelectedTabPosition() < 0 || tabLayout.getSelectedTabPosition() >= vpAdapter.getItemCount()) {
+            Log.e("SetupViewer", "Invalid tab position \"" + tabLayout.getSelectedTabPosition() + "\" on item count \"" + vpAdapter.getItemCount() + "\"");
+            return;
+        }
+
+        // Handle every page except the last one
+        if (tabLayout.getSelectedTabPosition() + 1 < vpAdapter.getItemCount()) {
+            tabLayout.selectTab(tabLayout.getTabAt(tabLayout.getSelectedTabPosition() + 1));
+            return;
+        }
+
+        // Handle the last page
+        handleAuthenticationPage();
+    }
+
+    private void handleAuthenticationPage() {
+        try {
+            switch (selectedAuthType) {
+                case Password: storePassword(); break;
+                case Pin: storePIN(); break;
+                case None: storeWithoutAuthentication(); break;
             }
-        };
+            startGetStarted();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void storeWithoutAuthentication() {
+        DataStoreManager dsManager = DataStoreManager.getInstance();
+        dsManager.updateSetting(DataStoreKeys.AUTHENTICATION_TYPE, "none").blockingSubscribe();
+    }
+
+    private void storePIN() throws NoSuchAlgorithmException {
+        if (setAuthData.getPin().length() == 0) {
+            Toast.makeText(SetupViewer.this, getResources().getString(R.string.pin_too_short), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        DataStoreManager dsManager = DataStoreManager.getInstance();
+        byte[] secretKey = Crypt.generateSecretKey();
+        String pinCipher = Crypt.encryptStringBlowfish(setAuthData.getPin(), secretKey);
+        dsManager.updateSetting(DataStoreKeys.AUTHENTICATION_TYPE, "pin").blockingSubscribe();
+        dsManager.updateSetting(DataStoreKeys.AUTHENTICATION_HASH, pinCipher).blockingSubscribe();
+        dsManager.updateSetting(DataStoreKeys.AUTHENTICATION_SALT, Base64.encodeToString(secretKey, Base64.NO_WRAP)).blockingSubscribe();
+        dsManager.updateSetting(DataStoreKeys.AUTHENTICATION_USE_BIOMETRICS, setPrivacy.getUseBiometrics()).blockingSubscribe();
+    }
+
+    private void storePassword() throws NoSuchAlgorithmException, InvalidKeySpecException {
+        if (setAuthData.getPassword().length() == 0) {
+            Toast.makeText(SetupViewer.this, getResources().getString(R.string.password_too_short), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        DataStoreManager dsManager = DataStoreManager.getInstance();
+        byte[] salt = Crypt.generateSalt();
+        String pwHash = Crypt.encryptString(setAuthData.getPassword(), salt);
+        dsManager.updateSetting(DataStoreKeys.AUTHENTICATION_TYPE, "password").blockingSubscribe();
+        dsManager.updateSetting(DataStoreKeys.AUTHENTICATION_HASH, pwHash).blockingSubscribe();
+        dsManager.updateSetting(DataStoreKeys.AUTHENTICATION_SALT, Base64.encodeToString(salt, Base64.NO_WRAP)).blockingSubscribe();
+        dsManager.updateSetting(DataStoreKeys.AUTHENTICATION_USE_BIOMETRICS, setPrivacy.getUseBiometrics()).blockingSubscribe();
     }
 
     @NonNull
@@ -172,7 +176,8 @@ public class SetupViewer extends AppCompatActivity {
                 if (tabLayout.getSelectedTabPosition() + 1 == pageCount) {
                     ((MaterialButton) findViewById(R.id.btn_next)).setText(R.string.setup_next_finish);
                     ((MaterialButton) findViewById(R.id.btn_next)).setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                } else {
+                }
+                else {
                     ((MaterialButton) findViewById(R.id.btn_next)).setText(R.string.setup_next);
                     ((MaterialButton) findViewById(R.id.btn_next)).setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_arrow_forward_24, 0);
                 }
@@ -195,82 +200,54 @@ public class SetupViewer extends AppCompatActivity {
             dotPage.setBackgroundResource(R.drawable.page_dot);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Tools.dpToPx(this, 8), Tools.dpToPx(this, 8));
             lp.setMargins(Tools.dpToPx(this, 2), 0, Tools.dpToPx(this, 2), 0);
-
-            ColorStateList stateList;
-            if(i == 0){ stateList = Tools.getAttrColorStateList(R.attr.colorPrimary, getTheme()); }
-            else{ stateList = Tools.getAttrColorStateList(R.attr.slightElevated, getTheme()); }
-            dotPage.setBackgroundTintList(stateList);
-
+            dotPage.setBackgroundTintList(Tools.getAttrColorStateList(i == 0 ? R.attr.colorPrimary : R.attr.slightElevated, getTheme()));
             pageDotContainer.addView(dotPage, lp);
             pageDots.add(dotPage);
         }
     }
 
-    @NonNull
-    private SetupConsent.OnConsentChangedListener consentChanged() {
-        return currentConsent -> {
-            if (currentConsent) {
-                vpAdapter.addFragment(setOpenSource, pageOpenSource);
-                vpAdapter.addFragment(setPrivacy, pagePrivacy);
-                vpAdapter.addFragment(setAuthData, pageAuthData);
+    private void consentChanged(boolean currentConsent) {
+        if (currentConsent) {
+            vpAdapter.addFragment(setOpenSource, pageOpenSource);
+            vpAdapter.addFragment(setPrivacy, pagePrivacy);
+            vpAdapter.addFragment(setAuthData, pageAuthData);
 
-                tabOpenSource.set(tabLayout.newTab().setText(pageOpenSource));
-                tabPrivacy.set(tabLayout.newTab().setText(pagePrivacy));
-                tabAuthData.set(tabLayout.newTab().setText(pageAuthData));
+            tabOpenSource.set(tabLayout.newTab().setText(pageOpenSource));
+            tabPrivacy.set(tabLayout.newTab().setText(pagePrivacy));
+            tabAuthData.set(tabLayout.newTab().setText(pageAuthData));
 
-                tabLayout.addTab(tabOpenSource.get());
-                tabLayout.addTab(tabPrivacy.get());
-                tabLayout.addTab(tabAuthData.get());
+            tabLayout.addTab(tabOpenSource.get());
+            tabLayout.addTab(tabPrivacy.get());
+            tabLayout.addTab(tabAuthData.get());
 
-                consented.set(true);
-            } else {
-                vpAdapter.removeFragment(setOpenSource, pageOpenSource);
-                vpAdapter.removeFragment(setPrivacy, pagePrivacy);
-                vpAdapter.removeFragment(setAuthData, pageAuthData);
+            consented.set(true);
+        }
+        else {
+            vpAdapter.removeFragment(setOpenSource, pageOpenSource);
+            vpAdapter.removeFragment(setPrivacy, pagePrivacy);
+            vpAdapter.removeFragment(setAuthData, pageAuthData);
 
-                tabLayout.removeTab(tabOpenSource.get());
-                tabLayout.removeTab(tabPrivacy.get());
-                tabLayout.removeTab(tabAuthData.get());
+            tabLayout.removeTab(tabOpenSource.get());
+            tabLayout.removeTab(tabPrivacy.get());
+            tabLayout.removeTab(tabAuthData.get());
 
-                consented.set(false);
-            }
-        };
+            consented.set(false);
+        }
     }
 
-    @NonNull
-    private SetupLanguage.OnLanguageChangedListener languageChanged() {
-        return e -> {
-            ((MaterialButton) findViewById(R.id.btn_next)).setText(getResources().getString(R.string.setup_next));
-            ((SetupLanguage) vpAdapter.getFragment(pageLang)).updateLanguages();
-            ((SetupConsent) vpAdapter.getFragment(pageConsent)).updateLanguages();
-            if (consented.get()) {
-                ((SetupOpenSource) vpAdapter.getFragment(pageOpenSource)).updateLanguages();
-                ((SetupPrivacy) vpAdapter.getFragment(pagePrivacy)).updateLanguages();
-                ((SetupAuthData) vpAdapter.getFragment(pageAuthData)).updateLanguages();
-            }
-        };
-    }
-
-    private void initVars() {
-        tabLayout = findViewById(R.id.tablayout);
-        viewPager2 = findViewById(R.id.viewpager);
-        btnNext = findViewById(R.id.btn_next);
-        pageDotContainer = findViewById(R.id.page_dot_container);
-        pageDots = new ArrayList<>();
-
-        vpAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
-        setLang = new SetupLanguage();
-        setConsent = new SetupConsent();
-        setOpenSource = new SetupOpenSource();
-        setPrivacy = new SetupPrivacy();
-        setAuthData = new SetupAuthData();
-
-        tabOpenSource = new AtomicReference<>();
-        tabPrivacy = new AtomicReference<>();
-        tabAuthData = new AtomicReference<>();
+    private void languageChanged(String langCode) {
+        ((MaterialButton) findViewById(R.id.btn_next)).setText(getResources().getString(R.string.setup_next));
+        ((SetupLanguage) vpAdapter.getFragment(pageLang)).updateLanguages();
+        ((SetupConsent) vpAdapter.getFragment(pageConsent)).updateLanguages();
+        if (consented.get()) {
+            ((SetupOpenSource) vpAdapter.getFragment(pageOpenSource)).updateLanguages();
+            ((SetupPrivacy) vpAdapter.getFragment(pagePrivacy)).updateLanguages();
+            ((SetupAuthData) vpAdapter.getFragment(pageAuthData)).updateLanguages();
+        }
     }
 
     public void startGetStarted() {
+        DataStoreManager.getInstance().updateSetting(DataStoreKeys.APP_SETUP_FINISHED, true).blockingSubscribe();
         Intent intent = new Intent(SetupViewer.this, SetupGetStarted.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

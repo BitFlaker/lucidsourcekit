@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -13,7 +12,6 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.preference.PreferenceManager;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.alarms.updated.AlarmHandler;
@@ -22,6 +20,8 @@ import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarm
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationMessage;
 import com.bitflaker.lucidsourcekit.general.Tools;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreKeys;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
 import com.bitflaker.lucidsourcekit.notification.NotificationOrderManager;
 import com.bitflaker.lucidsourcekit.notification.NotificationScheduleData;
 
@@ -67,8 +67,7 @@ public class AlarmReceiverManager extends BroadcastReceiver {
         db.getNotificationCategoryDao().getAll().blockingSubscribe(notificationCategories -> {
             NotificationOrderManager notificationOrderManager = NotificationOrderManager.load(notificationCategories);
             if(notificationOrderManager.hasNotifications()) {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                boolean allNotificationsPaused = preferences.getBoolean("NOTIFICATION_PAUSED_ALL", false);
+                boolean allNotificationsPaused = DataStoreManager.getInstance().getSetting(DataStoreKeys.NOTIFICATION_PAUSED_ALL).blockingFirst();
                 NotificationScheduleData nsd = notificationOrderManager.getNextNotification();
                 boolean categoryFound = false, categoryEnabled = false;
                 for (NotificationCategory category : notificationCategories) {

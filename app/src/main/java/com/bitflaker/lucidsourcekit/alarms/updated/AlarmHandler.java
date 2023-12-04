@@ -6,10 +6,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
-import android.preference.PreferenceManager;
 
 import com.bitflaker.lucidsourcekit.alarms.AlarmCreator;
 import com.bitflaker.lucidsourcekit.alarms.AlarmReceiverManager;
@@ -18,6 +16,8 @@ import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarm
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarmDetails;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreKeys;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
 import com.bitflaker.lucidsourcekit.notification.NotificationOrderManager;
 import com.bitflaker.lucidsourcekit.notification.NotificationScheduleData;
 
@@ -228,10 +228,10 @@ public class AlarmHandler {
      */
     public static Completable scheduleNextNotification(Context context, NotificationScheduleData nsd) {
         return Completable.fromAction(() -> {
+            DataStoreManager dsManager = DataStoreManager.getInstance();
             AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             if(nsd != null) {
-                preferences.edit().putString(NEXT_UP_NOTIFICATION_CATEGORY, nsd.getId()).apply();
+                dsManager.updateSetting(DataStoreKeys.NOTIFICATION_NEXT_CATEGORY, nsd.getId()).blockingSubscribe();
 
                 Intent intent = new Intent(context, AlarmReceiverManager.class);
                 intent.putExtra("NOTIFICATION_CATEGORY_ID", nsd.getId());
@@ -239,14 +239,14 @@ public class AlarmHandler {
                 manager.set(AlarmManager.RTC_WAKEUP, nsd.getScheduleTime(), pendingIntent);
             }
             else {
-                String id = preferences.getString(NEXT_UP_NOTIFICATION_CATEGORY, "NONE");
+                String id = dsManager.getSetting(DataStoreKeys.NOTIFICATION_NEXT_CATEGORY).blockingFirst();
                 if(!id.equals("NONE")) {
                     Intent intent = new Intent(context, AlarmReceiverManager.class);
                     intent.putExtra("NOTIFICATION_CATEGORY_ID", id);
                     final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                     pendingIntent.cancel();
                     manager.cancel(pendingIntent);
-                    preferences.edit().putString(NEXT_UP_NOTIFICATION_CATEGORY, "NONE").apply();
+                    dsManager.updateSetting(DataStoreKeys.NOTIFICATION_NEXT_CATEGORY, "NONE").blockingSubscribe();
                 }
             }
         });

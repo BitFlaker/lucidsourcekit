@@ -1,17 +1,14 @@
 package com.bitflaker.lucidsourcekit;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.PointF;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Base64;
+import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
@@ -42,16 +39,16 @@ import com.bitflaker.lucidsourcekit.database.notifications.entities.Notification
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationObfuscations;
 import com.bitflaker.lucidsourcekit.general.Crypt;
 import com.bitflaker.lucidsourcekit.general.Tools;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreKeys;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreMigrator;
 import com.bitflaker.lucidsourcekit.main.MainViewer;
 import com.bitflaker.lucidsourcekit.setup.SetupViewer;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.button.MaterialButton;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -61,24 +58,11 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
-
-    private final AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.5F);
     private final char[] pinLayout = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ', '0', '<' };
     private final StringBuilder enteredPin = new StringBuilder();
     private String storedHash = "";
     private byte[] storedSalt;
     private int pinButtonSize = 68;
-
-    public static String convertStreamToString(InputStream is) throws Exception {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line).append("\n");
-        }
-        reader.close();
-        return sb.toString();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,16 +80,16 @@ public class MainActivity extends AppCompatActivity {
         setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        DataStoreManager.initialize(this);
+        DataStoreMigrator.migrateSharedPreferencesToDataStore(this);
+        DataStoreMigrator.migrateSetupFinishedToDataStore(this);
+
         Tools.loadLanguage(MainActivity.this);
         Tools.makeStatusBarTransparent(MainActivity.this);
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-
         findViewById(R.id.btn_fingerprint_unlock).setOnClickListener(e -> startBiometricAuthentication());
-        if(!getResources().getBoolean(R.bool.is_h720dp)){
-            pinButtonSize = 54;
-        }
+        pinButtonSize = getResources().getBoolean(R.bool.is_h720dp) ? 68 : 54;
 
         // TODO: set language of controls
 
@@ -117,13 +101,12 @@ public class MainActivity extends AppCompatActivity {
         cldrNow.set(Calendar.SECOND, 0);
         cldrNow.set(Calendar.MILLISECOND, 0);
 
-        long storedTime = preferences.getLong("latest_day_first_open", 0);
-        System.out.println("CURRENT STREAK: " + preferences.getLong("app_open_streak", 0));
+        DataStoreManager dsManager = DataStoreManager.getInstance();
+        long storedTime = dsManager.getSetting(DataStoreKeys.FIRST_OPEN_LATEST_DAY).blockingFirst();
         if(storedTime == 0) {
-            editor.putLong("latest_day_first_open", cldrNow.getTimeInMillis());
-            editor.putLong("app_open_streak", 0);
-            editor.putLong("longest_app_open_streak", 0);
-            System.out.println("TIME WAS NOT YET SET");
+            dsManager.updateSetting(DataStoreKeys.FIRST_OPEN_LATEST_DAY, cldrNow.getTimeInMillis()).blockingSubscribe();
+            dsManager.updateSetting(DataStoreKeys.APP_OPEN_STREAK, 0L).blockingSubscribe();
+            dsManager.updateSetting(DataStoreKeys.APP_OPEN_STREAK_LONGEST, 0L).blockingSubscribe();
         }
         else {
             // TODO: take daylight saving time and different country times in consideration
@@ -131,107 +114,94 @@ public class MainActivity extends AppCompatActivity {
             long diff = cldrNow.getTimeInMillis() - cldrStored.getTimeInMillis();
             long dayLength = TimeUnit.DAYS.toMillis(1);
             if(diff == dayLength) {
-                long currentAppOpenStreak = preferences.getLong("app_open_streak", 0) + 1;
-                editor.putLong("latest_day_first_open", cldrNow.getTimeInMillis());
-                editor.putLong("app_open_streak", currentAppOpenStreak);
-                if(currentAppOpenStreak > preferences.getLong("longest_app_open_streak", 0)){
-                    editor.putLong("longest_app_open_streak", currentAppOpenStreak);
+                long appOpenStreak = dsManager.getSetting(DataStoreKeys.APP_OPEN_STREAK).blockingFirst();
+                long currentAppOpenStreak = appOpenStreak + 1;
+                dsManager.updateSetting(DataStoreKeys.FIRST_OPEN_LATEST_DAY, cldrNow.getTimeInMillis()).blockingSubscribe();
+                dsManager.updateSetting(DataStoreKeys.APP_OPEN_STREAK, currentAppOpenStreak).blockingSubscribe();
+                long appOpenStreakLongest = dsManager.getSetting(DataStoreKeys.APP_OPEN_STREAK_LONGEST).blockingFirst();
+                if(currentAppOpenStreak > appOpenStreakLongest){
+                    dsManager.updateSetting(DataStoreKeys.APP_OPEN_STREAK_LONGEST, currentAppOpenStreak).blockingSubscribe();
                 }
             }
             else if (diff > dayLength || diff < 0) {
-                editor.putLong("latest_day_first_open", cldrNow.getTimeInMillis());
-                editor.putLong("app_open_streak", 0);
+                dsManager.updateSetting(DataStoreKeys.FIRST_OPEN_LATEST_DAY, cldrNow.getTimeInMillis()).blockingSubscribe();
+                dsManager.updateSetting(DataStoreKeys.APP_OPEN_STREAK, 0L).blockingSubscribe();
             }
         }
-        editor.apply();
 
         // TODO: only insert when necessary
         // TODO: add loading indicator
         new Thread(() -> {
             MainDatabase db = MainDatabase.getInstance(MainActivity.this);
-//            db.getStoredAlarmDao().getAll().subscribe(all -> {
-//            db.getActiveAlarmDao().getAll().subscribe(all2 -> {
-//            db.getStoredAlarmDao().deleteAll().subscribe(() -> {
-//            db.getActiveAlarmDao().deleteAllButUnreferenced().subscribe(() -> {
-//            db.getShuffleHasGoalDao().deleteAll().subscribe(() -> db.getShuffleDao().deleteAll().subscribe(() -> {
-//            db.getGoalDao().getAllSingle().subscribe((goals, throwable) -> {
-            db.getActiveAlarmDao().insert(ActiveAlarm.createUnreferencedAlarm()).subscribe(() -> {
-                db.getActiveAlarmDao().getAllDetails().subscribe(activeAlarms -> {
-                    for (ActiveAlarmDetails details : activeAlarms) {
-                        System.out.println("INITIAL ALARM TIME: " + details.initialTime);
-                    }
-                    AlarmHandler.reEnableAlarmsIfNotRunning(getApplicationContext(), activeAlarms);
-                    db.getDreamTypeDao().insertAll(DreamType.populateData()).subscribe(() -> {
-                        db.getDreamMoodDao().insertAll(DreamMood.populateData()).subscribe(() -> {
-                            db.getDreamClarityDao().insertAll(DreamClarity.populateData()).subscribe(() -> {
-                                db.getSleepQualityDao().insertAll(SleepQuality.populateData()).subscribe(() -> {
-                                    db.getWeekdaysDao().insertAll(Weekdays.populateData()).subscribe(() -> {
-                                        db.getAlarmToneTypesDao().insertAll(AlarmToneTypes.populateData()).subscribe(() -> {
-                                            db.getNotificationObfuscationDao().insertAll(NotificationObfuscations.populateData()).subscribe(() -> {
-                                                db.getNotificationCategoryDao().insertAll(NotificationCategory.populateData()).subscribe(() -> {
-                                                    AlarmHandler.createNotificationChannels(this).subscribe(() -> {
-                                                        AlarmHandler.reEnableNotificationsIfNotRunning(getApplicationContext());
-                                                        db.getGoalDao().getGoalCount().subscribe((count) -> {
-                                                            if (count == 0) {
-                                                                DefaultGoals defaultGoals = new DefaultGoals(this);
-                                                                db.getGoalDao().insertAll(defaultGoals.getGoalsList()).subscribe(() -> {
-                                                                    dataSetupHandler(db, preferences, count);
-                                                                }).dispose();
-                                                            } else {
-                                                                dataSetupHandler(db, preferences, count);
-                                                            }
-                                                        }).dispose();
-                                                    }).dispose();
-                                                }).dispose();
-                                            }).dispose();
-                                        }).dispose();
-                                    }).dispose();
-                                }).dispose();
-                            }).dispose();
-                        }).dispose();
-                    }).dispose();
-                }).dispose();
-            }).dispose();
-//            }).dispose();
-//            }).dispose();
-//            }).dispose();
-//            }).dispose();
-//            }).dispose();
+
+            db.getActiveAlarmDao().insert(ActiveAlarm.createUnreferencedAlarm()).blockingSubscribe();
+            List<ActiveAlarmDetails> activeAlarms = db.getActiveAlarmDao().getAllDetails().blockingGet();
+            AlarmHandler.reEnableAlarmsIfNotRunning(getApplicationContext(), activeAlarms);
+
+            // Populate all default data in database
+            db.getDreamTypeDao().insertAll(DreamType.populateData()).blockingSubscribe();
+            db.getDreamMoodDao().insertAll(DreamMood.populateData()).blockingSubscribe();
+            db.getDreamClarityDao().insertAll(DreamClarity.populateData()).blockingSubscribe();
+            db.getSleepQualityDao().insertAll(SleepQuality.populateData()).blockingSubscribe();
+            db.getWeekdaysDao().insertAll(Weekdays.populateData()).blockingSubscribe();
+            db.getAlarmToneTypesDao().insertAll(AlarmToneTypes.populateData()).blockingSubscribe();
+            db.getNotificationObfuscationDao().insertAll(NotificationObfuscations.populateData()).blockingSubscribe();
+            db.getNotificationCategoryDao().insertAll(NotificationCategory.populateData()).blockingSubscribe();
+            if (db.getGoalDao().getGoalCount().blockingGet() == 0) {    // Only add default goals in case no goals are present in the database
+                db.getGoalDao().insertAll(new DefaultGoals(this).getGoalsList()).blockingSubscribe();
+            }
+
+            AlarmHandler.createNotificationChannels(this).blockingSubscribe();
+            AlarmHandler.reEnableNotificationsIfNotRunning(getApplicationContext());
+
+            String path = getFilesDir().getAbsolutePath() + "/Recordings";
+            File recFolder = new File(path);
+            if(!recFolder.exists() && !recFolder.mkdir()) {
+                runOnUiThread(() -> {
+                    Log.e("MainActivity", "Unable to create recordings directory!");
+                    setResult(RESULT_CANCELED);
+                    finish();
+                });
+                return;
+            }
+            shuffleGoalsForToday(db);
         }).start();
     }
 
-    private void applicationLogin(SharedPreferences preferences) {
-        String path = getFilesDir().getAbsolutePath() + "/.app_setup_done";
-        File file = new File(path);
-        if(file.exists()) {
-            switch (preferences.getString("auth_type", "")) {
-                case "password":
-                    setupPasswordAuthentication();
-                    if(preferences.getString("auth_use_biometrics", "").equals("true")) {
-                        setupBiometricAuthentication();
-                    }
-                    storedHash = preferences.getString("auth_hash", "");
-                    storedSalt = Base64.decode(preferences.getString("auth_salt", ""), Base64.DEFAULT);
-                    break;
-                case "pin":
-                    setupPinAuthentication();
-                    if(preferences.getString("auth_use_biometrics", "").equals("true")) {
-                        setupBiometricAuthentication();
-                    }
-                    storedHash = preferences.getString("auth_cipher", "");
-                    storedSalt = Base64.decode(preferences.getString("auth_key", ""), Base64.DEFAULT);
-                    break;
-                default:
-                    startLoadingAnimation();
-                    startMainApp();
-                    break;
-            }
-        }
-        else {
+    private void applicationLogin() {
+        DataStoreManager dsManager = DataStoreManager.getInstance();
+        if(!dsManager.getSetting(DataStoreKeys.APP_SETUP_FINISHED).blockingFirst()) {
             Intent intent = new Intent(MainActivity.this, SetupViewer.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
+            return;
+        }
+
+        boolean useBiometrics = dsManager.getSetting(DataStoreKeys.AUTHENTICATION_USE_BIOMETRICS).blockingFirst();
+        String hash = dsManager.getSetting(DataStoreKeys.AUTHENTICATION_HASH).blockingFirst();
+        String salt = dsManager.getSetting(DataStoreKeys.AUTHENTICATION_SALT).blockingFirst();
+        switch (dsManager.getSetting(DataStoreKeys.AUTHENTICATION_TYPE).blockingFirst()) {
+            case "password":
+                setupPasswordAuthentication();
+                if(useBiometrics) {
+                    setupBiometricAuthentication();
+                }
+                storedHash = hash;
+                storedSalt = Base64.decode(salt, Base64.DEFAULT);
+                break;
+            case "pin":
+                setupPinAuthentication();
+                if(useBiometrics) {
+                    setupBiometricAuthentication();
+                }
+                storedHash = hash;
+                storedSalt = Base64.decode(salt, Base64.DEFAULT);
+                break;
+            default:
+                startLoadingAnimation();
+                startMainApp();
+                break;
         }
     }
 
@@ -248,71 +218,20 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    private void dataSetupHandler(MainDatabase db, SharedPreferences preferences, int goalsCount) {
-        SharedPreferences.Editor editor = preferences.edit();
-        db.getGoalDao().getCountUntilDifficulty(2.0f).subscribe(amount -> {
-            if(anyGoalSettingMissing(preferences)) {
-                float easyValue = 100.0f;
-                float normalValue = 100.0f;
-                float hardValue = 100.0f;
-                editor.putBoolean("goal_difficulty_auto_adjust", true);
-                editor.putFloat("goal_difficulty_easy_value", easyValue);
-                editor.putFloat("goal_difficulty_normal_value", normalValue);
-                editor.putFloat("goal_difficulty_hard_value", hardValue);
-                editor.putFloat("goal_difficulty_tendency", 1.8f);
-                editor.putFloat("goal_difficulty_variance", 0.15f);
-                editor.putInt("goal_difficulty_count", 3);
-                editor.putFloat("goal_difficulty_value_variance", 10.0f);
-                editor.putInt("goal_difficulty_accuracy", 100);
-                PointF weight1 = new PointF(0f, easyValue);
-                PointF weight2 = new PointF(amount-1, normalValue);
-                PointF weight3 = new PointF(goalsCount-1, hardValue);
-                double[] points = Tools.calculateQuadraticFunction(weight1, weight2, weight3);
-                editor.putFloat("goal_function_value_a", (float)points[0]);
-                editor.putFloat("goal_function_value_b", (float)points[1]);
-                editor.putFloat("goal_function_value_c", (float)points[2]);
+    private void shuffleGoalsForToday(MainDatabase db) {
+        Pair<Long, Long> dayTimeSpans = Tools.getTimeSpanFrom(0, true);
+        Shuffle shuffle = db.getShuffleDao().getLastShuffleInDay(dayTimeSpans.first, dayTimeSpans.second).blockingGet();
+        if(shuffle == null) {
+            List<Goal> goals = db.getGoalDao().getAllSingle().blockingGet();
+            List<Goal> goalsResult = Tools.getSuitableGoals(goals);
+            Long newShuffleId = db.getShuffleDao().insert(new Shuffle(dayTimeSpans.first, dayTimeSpans.second)).blockingGet();
+            List<ShuffleHasGoal> hasGoals = new ArrayList<>();
+            for (Goal goal : goalsResult) {
+                hasGoals.add(new ShuffleHasGoal(newShuffleId.intValue(), goal.goalId));
             }
-            editor.apply();
-            Pair<Long, Long> dayTimeSpans = Tools.getTimeSpanFrom(0, true);
-            db.getShuffleDao().getLastShuffleInDay(dayTimeSpans.first, dayTimeSpans.second).subscribe((shuffle, throwable) -> {
-                if(shuffle == null) {
-                    db.getGoalDao().getAllSingle().subscribe((goals, throwable2) -> {
-                        List<Goal> goalsResult = Tools.getSuitableGoals(this, goals, preferences.getFloat("goal_difficulty_tendency", 1.8f), preferences.getFloat("goal_difficulty_variance", 0.15f), preferences.getInt("goal_difficulty_accuracy", 100), preferences.getFloat("goal_difficulty_value_variance", 3.0f), preferences.getInt("goal_difficulty_count", 3));
-                        db.getShuffleDao().insert(new Shuffle(dayTimeSpans.first, dayTimeSpans.second)).subscribe(newShuffleId -> {
-                            int id = newShuffleId.intValue();
-                            List<ShuffleHasGoal> hasGoals = new ArrayList<>();
-                            for (Goal goal : goalsResult) {
-                                hasGoals.add(new ShuffleHasGoal(id, goal.goalId));
-                            }
-                            db.getShuffleHasGoalDao().insertAll(hasGoals).blockingSubscribe(() -> {
-                                // TODO: hide loading indicator
-                                runOnUiThread(() -> applicationLogin(preferences));
-                            });
-                        }).dispose();
-                    }).dispose();
-                }
-                else {
-                    System.out.println("SHUFFLE " + shuffle.shuffleId + " already present");
-                    // TODO: hide loading indicator
-                    runOnUiThread(() -> applicationLogin(preferences) );
-                }
-            }).dispose();
-        }).dispose();
-    }
-
-    private boolean anyGoalSettingMissing(SharedPreferences preferences) {
-        return !preferences.contains("goal_difficulty_easy_value") ||
-                !preferences.contains("goal_difficulty_normal_value") ||
-                !preferences.contains("goal_difficulty_hard_value") ||
-                !preferences.contains("goal_difficulty_tendency") ||
-                !preferences.contains("goal_difficulty_count") ||
-                !preferences.contains("goal_difficulty_accuracy") ||
-                !preferences.contains("goal_difficulty_value_variance") ||
-                !preferences.contains("goal_difficulty_variance") ||
-                !preferences.contains("goal_function_value_a") ||
-                !preferences.contains("goal_function_value_b") ||
-                !preferences.contains("goal_difficulty_auto_adjust") ||
-                !preferences.contains("goal_function_value_c");
+            db.getShuffleHasGoalDao().insertAll(hasGoals).blockingSubscribe();
+        }
+        runOnUiThread(this::applicationLogin);
     }
 
     private void setupPasswordAuthentication() {
@@ -339,23 +258,28 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupBiometricAuthentication() {
         BiometricManager biometricManager = BiometricManager.from(this);
-//        ((LinearLayout)findViewById(R.id.ll_pin_auth_container)).addView(generateUseBiometricsButton());
-//        ((LinearLayout)findViewById(R.id.ll_pw_auth_container)).addView(generateUseBiometricsButton());
-
-        // TODO: check if phone even supports biometrics (also do so in first time setup and settings)
-        switch (biometricManager.canAuthenticate()) {
+        switch (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
             case BiometricManager.BIOMETRIC_SUCCESS:
                 findViewById(R.id.btn_fingerprint_unlock).setVisibility(View.VISIBLE);
                 startBiometricAuthentication();
                 break;
             case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
-                // show error no biometric hardware
+                Toast.makeText(this, "Biometric failed: No hardware available", Toast.LENGTH_LONG).show();
                 break;
             case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
-                // show error currently unavailable
+                Toast.makeText(this, "Biometric failed: Hardware unavailable", Toast.LENGTH_LONG).show();
                 break;
             case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
-                // show error biometrics not enrolled
+                Toast.makeText(this, "Biometric failed: No biometric/device credentials enrolled", Toast.LENGTH_LONG).show();
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED:
+                Toast.makeText(this, "Biometric failed: Security update required", Toast.LENGTH_LONG).show();
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED:
+                Toast.makeText(this, "Biometric failed: Not supported", Toast.LENGTH_LONG).show();
+                break;
+            case BiometricManager.BIOMETRIC_STATUS_UNKNOWN:
+                Toast.makeText(this, "Biometric failed: Biometric status unknown", Toast.LENGTH_LONG).show();
                 break;
         }
     }
@@ -370,24 +294,13 @@ public class MainActivity extends AppCompatActivity {
                 startMainApp();
             }
         });
-        final BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder().setTitle("Biometric Login").setDescription("Log in using your biometric credential").setNegativeButtonText("Cancel").build();
+        final BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Biometric Login")
+                .setDescription("Log in using your biometric credentials")
+                .setNegativeButtonText("Cancel")
+                .build();
         biometricPrompt.authenticate(promptInfo);
     }
-
-//    @NonNull
-//    private MaterialButton generateUseBiometricsButton() {
-//        MaterialButton mat = new MaterialButton(this, null, R.attr.typeStyle);
-//        mat.setText("use biometrics instead");
-//        mat.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-//        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        lParams.gravity = Gravity.CENTER_HORIZONTAL;
-//        lParams.topMargin = Tools.dpToPx(this, 8);
-//        mat.setLayoutParams(lParams);
-//        mat.setOnClickListener(e -> {
-//            startBiometricAuthentication();
-//        });
-//        return mat;
-//    }
 
     private void setupPinAuthentication() {
         findViewById(R.id.ll_pw_auth_container).setVisibility(View.GONE);

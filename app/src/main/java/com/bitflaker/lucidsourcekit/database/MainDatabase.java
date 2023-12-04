@@ -1,8 +1,12 @@
 package com.bitflaker.lucidsourcekit.database;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -52,6 +56,17 @@ import com.bitflaker.lucidsourcekit.database.notifications.daos.NotificationObfu
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationMessage;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationObfuscations;
+import com.bitflaker.lucidsourcekit.general.Zipper;
+import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
+
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Database(entities = {JournalEntryTag.class, DreamType.class, SleepQuality.class,
         DreamMood.class, DreamClarity.class, AudioLocation.class, JournalEntry.class,
@@ -61,6 +76,9 @@ import com.bitflaker.lucidsourcekit.database.notifications.entities.Notification
         NotificationMessage.class, NotificationCategory.class}, version = 14, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class MainDatabase extends RoomDatabase {
+
+    private final static String MAIN_DATABASE_NAME = "journalDatabase.db";
+
     // Dream Journal tables
     public abstract JournalEntryTagDao getJournalEntryTagDao();
     public abstract DreamTypeDao getDreamTypeDao();
@@ -110,7 +128,7 @@ public abstract class MainDatabase extends RoomDatabase {
     }
 
     private static MainDatabase create(final Context context) {
-        return Room.databaseBuilder(context, MainDatabase.class, "journalDatabase.db")
+        return Room.databaseBuilder(context, MainDatabase.class, MAIN_DATABASE_NAME)
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigrationFrom(4)
                 .addMigrations(MIGRATION_5_6)
@@ -135,6 +153,49 @@ public abstract class MainDatabase extends RoomDatabase {
         instance.getDreamMoodDao().insertAll(dreamMoods);
         instance.getDreamClarityDao().insertAll(dreamClarities);
         instance.getDreamTypeDao().insertAll(dreamTypes);
+    }
+
+    public boolean backupDatabase(Context context, Uri fileUri) {
+        if (instance == null) return false;
+
+        List<String> backupFiles = new ArrayList<>();
+
+        File dbFile = context.getDatabasePath(MAIN_DATABASE_NAME);
+        File dbWalFile = new File(dbFile.getPath() + "-wal");
+        File dbShmFile = new File(dbFile.getPath() + "-shm");
+        File preferenceExport = exportSharedPreferences(context);
+        File dataStoreExport = new File(context.getFilesDir(), "datastore/" + DataStoreManager.DATA_STORE_FILE_NAME + ".preferences_pb");
+
+        backupFiles.add(dbFile.getAbsolutePath());
+        if(dbWalFile.exists()) { backupFiles.add(dbWalFile.getAbsolutePath()); }
+        if(dbShmFile.exists()) { backupFiles.add(dbShmFile.getAbsolutePath()); }
+        if(preferenceExport.exists()) { backupFiles.add(preferenceExport.getAbsolutePath()); }
+        if(dataStoreExport.exists()) { backupFiles.add(dataStoreExport.getAbsolutePath()); }
+
+        try {
+            Zipper.createZipFile(backupFiles.toArray(new String[0]), context.getContentResolver().openOutputStream(fileUri));
+            if(preferenceExport.exists() && !preferenceExport.delete()) {
+                Log.e("MainDatabase_Backup", "Unable to delete preferenceExport file after backup!");
+            }
+            return true;
+        } catch (IOException e) {
+            Log.e("MainDatabase_Backup", "Data backup failed", e);
+        }
+        return false;
+    }
+
+    @NonNull
+    private static File exportSharedPreferences(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        Map<String, ?> allPreferences = preferences.getAll();
+        JSONObject preferencesJson = new JSONObject(allPreferences);
+        try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("preferences.json", Context.MODE_PRIVATE))) {
+            outputStreamWriter.write(preferencesJson.toString());
+        } catch (Exception e) {
+            Log.e("MAIN_DATABASE_BACKUP", "Preferences export failed", e);
+        }
+        String preferenceExportLocation = context.getFilesDir().getAbsolutePath() + File.separator + "preferences.json";
+        return new File(preferenceExportLocation);
     }
 
     static final Migration MIGRATION_5_6 = new Migration(5, 6) {
