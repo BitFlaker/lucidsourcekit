@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -32,7 +33,7 @@ public class Zipper {
         }
     }
 
-    public static void unzipFile(String zipFile, String extractPath) {
+    public static boolean unzipFile(InputStream zipFile, String extractPath) {
         byte[] data = new byte[BUFFER_SIZE];
         try {
             // Make sure extractPath ends with `File.separator` to make sure it is a directory and
@@ -45,7 +46,7 @@ public class Zipper {
                 throw new IOException("Unable to create extraction location directories! Path: \"" + extractLocation.getAbsolutePath() + "\"");
             }
 
-            try (ZipInputStream inputStream = new ZipInputStream(new FileInputStream(zipFile))) {
+            try (ZipInputStream inputStream = new ZipInputStream(zipFile)) {
                 ZipEntry entry;
                 while ((entry = inputStream.getNextEntry()) != null) {
                     File unzippedFile = new File(extractPath + entry.getName());
@@ -72,11 +73,17 @@ public class Zipper {
                         }
                         inputStream.closeEntry();
                     }
+                    catch (Exception e) {
+                        Log.e("ZIPPER", "Failed to extract file \"" + unzippedFile.getAbsolutePath() + "\"", e);
+                        return false;
+                    }
                 }
+                return true;
             }
         }
         catch (Exception e) {
             Log.e("ZIPPER", "Failed to unzip file", e);
+            return false;
         }
     }
 }

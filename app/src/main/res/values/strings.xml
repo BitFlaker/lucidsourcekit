@@ -107,6 +107,7 @@
     <string name="setup_privacy_password">Enter a password below which has to be entered every time you want to open this app</string>
     <string name="setup_privacy_pin">Set a pin below which has to be entered every time you want to open this app</string>
     <string name="export_data">Export data</string>
+    <string name="import_data">Import data</string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>

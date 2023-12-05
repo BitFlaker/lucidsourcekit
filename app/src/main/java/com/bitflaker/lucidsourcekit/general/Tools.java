@@ -28,6 +28,10 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import com.bitflaker.lucidsourcekit.general.datastore.DataStoreKeys;
 import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -557,5 +561,29 @@ public class Tools {
             return val;
         }
         return -1;
+    }
+
+    public static boolean deleteFile(File file) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if(files != null) {
+                for (File child : files) {
+                    deleteFile(child);
+                }
+            }
+        }
+        return file.delete();
+    }
+
+    public static void copyFile(File src, File dest) throws IOException {
+        try (FileInputStream inputStream = new FileInputStream(src)) {
+            try (FileOutputStream outputStream = new FileOutputStream(dest)) {
+                byte[] buffer = new byte[2048];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            }
+        }
     }
 }

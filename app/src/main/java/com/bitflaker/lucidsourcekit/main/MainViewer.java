@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ public class MainViewer extends AppCompatActivity {
     private static final String PAGE_BINAURAL_BEATS = "binaural";
 
     private ActivityResultLauncher<Intent> backupSaveDialogLauncher;
+    private ActivityResultLauncher<Intent> backupLoadDialogLauncher;
 
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
@@ -52,6 +54,7 @@ public class MainViewer extends AppCompatActivity {
         initVars();
 
         backupSaveDialogLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::backupSaveDialogResult);
+        backupLoadDialogLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::backupLoadDialogResult);
 
         vpAdapter.addFragment(vwOverview, PAGE_OVERVIEW);
         vpAdapter.addFragment(vwLogging, PAGE_LOGGING);
@@ -77,6 +80,12 @@ public class MainViewer extends AppCompatActivity {
                     intent.putExtra(Intent.EXTRA_TITLE, "backupdata.zip");
                     backupSaveDialogLauncher.launch(intent);
                 }
+                else if (item.getItemId() == R.id.itm_import_data) {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("application/zip");
+                    backupLoadDialogLauncher.launch(intent);
+                }
                 return true;
             });
             popup.show();
@@ -99,15 +108,38 @@ public class MainViewer extends AppCompatActivity {
     private void backupSaveDialogResult(ActivityResult result) {
         if(result.getResultCode() == Activity.RESULT_OK) {
             Intent data = result.getData();
-            if(data != null) {
-                Uri uri = data.getData();
-                if(uri != null) {
-                    MainDatabase db = MainDatabase.getInstance(this);
-                    if(!db.backupDatabase(this, uri)) {
-                        Toast.makeText(this, "Backup failed!", Toast.LENGTH_SHORT).show();
-                    }
-                    return;
+            Uri uri;
+            if(data != null && (uri = data.getData()) != null) {
+                if(!MainDatabase.getInstance(this).backupDatabase(this, uri)) {
+                    Toast.makeText(this, "Backup failed!", Toast.LENGTH_SHORT).show();
                 }
+                return;
+            }
+        }
+        Toast.makeText(this, "Failed to get backup file path", Toast.LENGTH_SHORT).show();
+    }
+
+    private void backupLoadDialogResult(ActivityResult result) {
+        if(result.getResultCode() == Activity.RESULT_OK) {
+            Intent data = result.getData();
+            Uri uri;
+            if(data != null && (uri = data.getData()) != null) {
+                if(!MainDatabase.getInstance(this).restoreDatabase(this, uri)) {
+                    Toast.makeText(this, "Backup restore failed!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageName());
+                    if(intent != null) {
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
+                    else {
+                        Log.w("MainViewer_Backup_Restore", "Unable to restart app after successful backup restore. Intent was null");
+                        Toast.makeText(this, "Unable to restart app. Open it again manually", Toast.LENGTH_LONG).show();
+                    }
+                    System.exit(0);
+                }
+                return;
             }
         }
         Toast.makeText(this, "Failed to get backup file path", Toast.LENGTH_SHORT).show();

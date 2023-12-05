@@ -220,18 +220,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void shuffleGoalsForToday(MainDatabase db) {
         Pair<Long, Long> dayTimeSpans = Tools.getTimeSpanFrom(0, true);
-        Shuffle shuffle = db.getShuffleDao().getLastShuffleInDay(dayTimeSpans.first, dayTimeSpans.second).blockingGet();
-        if(shuffle == null) {
-            List<Goal> goals = db.getGoalDao().getAllSingle().blockingGet();
-            List<Goal> goalsResult = Tools.getSuitableGoals(goals);
-            Long newShuffleId = db.getShuffleDao().insert(new Shuffle(dayTimeSpans.first, dayTimeSpans.second)).blockingGet();
-            List<ShuffleHasGoal> hasGoals = new ArrayList<>();
-            for (Goal goal : goalsResult) {
-                hasGoals.add(new ShuffleHasGoal(newShuffleId.intValue(), goal.goalId));
+        db.getShuffleDao().getLastShuffleInDay(dayTimeSpans.first, dayTimeSpans.second).subscribe((shuffle, e) -> {
+            if(shuffle == null) {
+                List<Goal> goals = db.getGoalDao().getAllSingle().blockingGet();
+                List<Goal> goalsResult = Tools.getSuitableGoals(goals);
+                Long newShuffleId = db.getShuffleDao().insert(new Shuffle(dayTimeSpans.first, dayTimeSpans.second)).blockingGet();
+                List<ShuffleHasGoal> hasGoals = new ArrayList<>();
+                for (Goal goal : goalsResult) {
+                    hasGoals.add(new ShuffleHasGoal(newShuffleId.intValue(), goal.goalId));
+                }
+                db.getShuffleHasGoalDao().insertAll(hasGoals).blockingSubscribe();
             }
-            db.getShuffleHasGoalDao().insertAll(hasGoals).blockingSubscribe();
-        }
-        runOnUiThread(this::applicationLogin);
+            runOnUiThread(this::applicationLogin);
+        }).dispose();
     }
 
     private void setupPasswordAuthentication() {

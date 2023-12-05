@@ -7,6 +7,9 @@
         android:id="@+id/itm_export_data"
         android:title="@string/export_data"/>
     <item
+        android:id="@+id/itm_import_data"
+        android:title="@string/import_data"/>
+    <item
         android:id="@+id/itm_third_party"
         android:title="@string/third_party_licenses"/>
     <item
