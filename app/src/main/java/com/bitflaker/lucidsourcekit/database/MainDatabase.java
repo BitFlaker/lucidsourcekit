@@ -219,7 +219,7 @@ public abstract class MainDatabase extends RoomDatabase {
         } catch (Exception e) {
             Log.e("MainDatabase_Backup_Restore", "Data restore from backup failed", e);
         }
-        
+
         return false;
     }
 

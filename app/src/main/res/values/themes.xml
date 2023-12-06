@@ -22,7 +22,7 @@
         <item name="colorOnError">@color/white</item>
         <item name="colorWarning">@color/lighter_orange</item>
         <item name="colorSuccess">@color/lighter_green</item>
-        <item name="main_overview_graphic">@drawable/deep_night_mountains_new_dark</item>
+        <item name="main_overview_graphic">@drawable/deep_night_mountains_light</item>
         <item name="bottomSheetDialogTheme">@style/BottomSheetDialogStyle</item>
         <item name="typeStyle">@style/Widget.MaterialComponents.Button.TextButton</item>
     </style>
@@ -40,12 +40,6 @@
         <item name="android:textColor">?attr/primaryTextColor</item>
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
-    </style>
-
-    <style name="ThemedChipEntry.Dark" parent="Widget.MaterialComponents.Chip.Entry">
-        <item name="slightElevated">@color/white_40p</item>
-        <item name="android:background">@color/white_40p</item>
-        <item name="android:textColor">?attr/primaryTextColor</item>
     </style>
 
     <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">

@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="gray">#424242</color>
     <color name="darker_gray">#222222</color>
@@ -13,56 +8,33 @@
 
     <color name="darker_white">#449795AC</color>
     <color name="clay_white">#A9B4C3</color>
-    <color name="darker_gray_white">#C6CBCF</color>
-    <color name="gray_white">#e5e5e5</color>
-    <color name="clay_gray_white">#F3F3F3</color>
     <color name="darker_white_2x">#BEBEBF</color>
-    <color name="darker_white_3x">#445D5D5E</color>
     <color name="light_gray">#6B7585</color>
     <color name="dark_purple_blue">#363883</color>
     <color name="dark_purple_blue_transparent">#3B6F2FE6</color>
-    <color name="light_blue_600">#FF039BE5</color>
-    <color name="light_blue_900">#FF01579B</color>
-    <color name="light_blue_A200">#FF40C4FF</color>
-    <color name="light_blue_A400">#FF00B0FF</color>
-    <color name="black_overlay">#66000000</color>
     <color name="dark_blue">#253145</color>
-    <color name="very_dark_blue">#0B0E12</color>
     <color name="lighter_blue">#3A76AD</color>
     <color name="creamy_blue">#4C88E1</color>
     <color name="dark_blue_lighter">#1d2633</color>
-    <color name="dark_blue_glow">#778191</color>
     <color name="mountain_dark_blue">#0c0f14</color>
     <color name="mountain_dark_blue_lighter">#161d2a</color>
     <color name="transparent">#00000000</color>
-    <color name="red">#C80707</color>
     <color name="lighter_red">#C32C2C</color>
     <color name="lighter_orange">#C37F2C</color>
     <color name="lighter_green">#35B158</color>
     <color name="darker_green">#43DD6F</color>
-    <color name="scratched_blue">#142740</color>
-    <color name="lit_scratched_blue">#23334b</color>
-    <color name="darker_scratched_blue">#0e213b</color>
 
-    <color name="blue_400">#42A5F5</color>
     <color name="blue_500">#2196F3</color>
     <color name="blue_var">#218DD5</color>
     <color name="teal_300">#4db6ac</color>
     <color name="teal_var">#357F78</color>
     <color name="background">#202125</color>
-    <color name="background_old">#222222</color>
     <color name="background_paper">#2C2C2C</color>
-    <color name="white_70p">#B3FFFFFF</color>
     <color name="white_60p">#99FFFFFF</color>
     <color name="white_50p">#4DFFFFFF</color>
     <color name="white_40p">#66FFFFFF</color>
-    <color name="white_5p">#12FFFFFF</color>
     <color name="grayed_blue">#313237</color>
     <color name="white_6p">#43444A</color>
     <color name="prim_30p">#0D2196F3</color>
     <color name="background_brighter">#292a2f</color>
-    <color name="wave_color_beta">#3B90E8</color>
-    <color name="wave_color_alpha">#5A5FDF</color>
-    <color name="wave_color_theta">#887949CF</color>
-    <color name="wave_color_delta">#74329F</color>
 </resources>

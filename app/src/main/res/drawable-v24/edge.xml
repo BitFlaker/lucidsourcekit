@@ -1,5 +1,0 @@
-<vector xmlns:ns0="http://schemas.android.com/apk/res/android" ns0:name="svg8" ns0:width="30.0dp" ns0:height="30.0dp" ns0:viewportWidth="999.999949606" ns0:viewportHeight="1000.0">
-  <group ns0:name="layer1">
-    <path ns0:name="rect1372" ns0:pathData="M0.0 0.0C0.0 0.0 0.0 999.999963839 0.0 999.999963839C0.0 999.999963839 999.999963839 999.999963839 999.999963839 999.999963839C734.78348359 999.999963839 480.429579889 894.643127283 292.893208222 707.106755617C105.356836556 519.57038395 0.0 265.216480249 0.0 0.0C0.0 0.0 0.0 0.0 0.0 0.0" ns0:fillColor="#d1d1d1" ns0:fillAlpha="1.0" ns0:strokeWidth="1.28779839381" ns0:strokeAlpha="1.0" ns0:strokeLineCap="square" ns0:strokeLineJoin="miter" ns0:strokeMiterLimit="0"/>
-  </group>
-</vector>
