@@ -22,6 +22,9 @@ public interface JournalEntryTagDao {
     @Query("SELECT description FROM JournalEntryTag")
     Single<List<String>> getAllTagTexts();
 
+    @Query("SELECT COUNT(*) FROM JournalEntryTag")
+    Single<Integer> getTotalTagCount();
+
     @Query("SELECT * FROM JournalEntryTag WHERE description IN (:descriptions)")
     Single<List<JournalEntryTag>> getIdsByDescription(List<String> descriptions);
 

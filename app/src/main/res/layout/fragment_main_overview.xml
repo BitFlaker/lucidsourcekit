@@ -62,9 +62,9 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_gravity="fill"
-                    android:backgroundTint="?attr/slightElevated"
-                    android:gravity="center_vertical"
-                    app:cardCornerRadius="@dimen/cardRadius_Var2"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="?attr/slightElevated"
+                    app:cardCornerRadius="@dimen/cardRadius"
                     app:cardElevation="@dimen/cardElevationRegular">
 
                     <TextView
@@ -90,7 +90,8 @@
                     android:layout_gravity="fill"
                     android:backgroundTint="?attr/slightElevated"
                     android:gravity="center_vertical"
-                    app:cardCornerRadius="@dimen/cardRadius_Var2"
+                    app:strokeWidth="0dp"
+                    app:cardCornerRadius="@dimen/cardRadius"
                     app:cardElevation="@dimen/cardElevationRegular">
 
                     <TextView
@@ -116,7 +117,8 @@
                     android:layout_gravity="fill"
                     android:backgroundTint="?attr/slightElevated"
                     android:gravity="center_vertical"
-                    app:cardCornerRadius="@dimen/cardRadius_Var2"
+                    app:strokeWidth="0dp"
+                    app:cardCornerRadius="@dimen/cardRadius"
                     app:cardElevation="@dimen/cardElevationRegular">
 
                     <TextView
@@ -143,7 +145,8 @@
                     android:layout_gravity="fill"
                     android:backgroundTint="?attr/slightElevated"
                     android:gravity="center_vertical"
-                    app:cardCornerRadius="@dimen/cardRadius_Var2"
+                    app:strokeWidth="0dp"
+                    app:cardCornerRadius="@dimen/cardRadius"
                     app:cardElevation="@dimen/cardElevationRegular">
 
                     <TextView
@@ -229,6 +232,7 @@
                     android:layout_marginRight="20dp"
                     android:layout_marginBottom="24dp"
                     android:backgroundTint="?attr/slightElevated"
+                    app:strokeWidth="0dp"
                     app:cardCornerRadius="@dimen/cardRadius"
                     app:cardElevation="@dimen/cardElevationRegular">
 
@@ -455,10 +459,12 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="25dp"
-                android:backgroundTint="?attr/slightElevated"
+                android:backgroundTint="?attr/backgroundColor"
                 android:padding="15dp"
                 app:cardCornerRadius="@dimen/cardRadius"
-                app:cardElevation="@dimen/cardElevationRegular">
+                app:strokeWidth="2dp"
+                app:strokeColor="?attr/slightElevated"
+                app:cardElevation="@dimen/cardElevationOutline">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -509,10 +515,12 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="25dp"
-                android:backgroundTint="?attr/slightElevated"
+                android:backgroundTint="?attr/backgroundColor"
                 android:padding="15dp"
                 app:cardCornerRadius="@dimen/cardRadius"
-                app:cardElevation="@dimen/cardElevationRegular">
+                app:strokeWidth="2dp"
+                app:strokeColor="?attr/slightElevated"
+                app:cardElevation="@dimen/cardElevationOutline">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -563,10 +571,12 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="25dp"
-                android:backgroundTint="?attr/slightElevated"
+                android:backgroundTint="?attr/backgroundColor"
                 android:padding="15dp"
                 app:cardCornerRadius="@dimen/cardRadius"
-                app:cardElevation="@dimen/cardElevationRegular">
+                app:strokeWidth="2dp"
+                app:strokeColor="?attr/slightElevated"
+                app:cardElevation="@dimen/cardElevationOutline">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -618,10 +628,12 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="25dp"
                 android:layout_marginBottom="25dp"
-                android:backgroundTint="?attr/slightElevated"
+                android:backgroundTint="?attr/backgroundColor"
                 android:padding="15dp"
                 app:cardCornerRadius="@dimen/cardRadius"
-                app:cardElevation="@dimen/cardElevationRegular">
+                app:strokeWidth="2dp"
+                app:strokeColor="?attr/slightElevated"
+                app:cardElevation="@dimen/cardElevationOutline">
 
                 <LinearLayout
                     android:layout_width="match_parent"

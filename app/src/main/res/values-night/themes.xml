@@ -49,11 +49,12 @@
 
 
 
-    <style name="Theme.LucidSourceKit.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.LucidSourceKit.Dark" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/blue_500</item>
         <item name="colorPrimaryVariant">@color/blue_var</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorSecondary">@color/teal_300</item>
+        <item name="colorPrimaryHighlight">@color/blue_500_variant</item>
+        <item name="colorSecondary">@color/teal_new</item>
         <item name="colorSecondaryVariant">@color/teal_var</item>
         <item name="colorOnSecondary">@color/white</item>
         <item name="backgroundColor">@color/background</item>
@@ -98,10 +99,13 @@
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
     </style>
 
-    <style name="Custom.Chip.Choice.Elevated" parent="Widget.MaterialComponents.Chip.Choice">
+    <style name="Custom.Chip.Choice" parent="Widget.Material3.Chip.Filter">
+        <item name="chipCornerRadius">@dimen/cardRadius</item>
+        <item name="checkedIconVisible">false</item>
         <item name="android:textColor">@color/chip_text_default_gone</item>
         <item name="chipBackgroundColor">@color/chip_background_default_gone</item>
         <item name="rippleColor">@color/ripple_color_white</item>
+        <item name="chipStrokeWidth">0dp</item>
     </style>
 
     <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
@@ -112,12 +116,33 @@
         <item name="android:textColor">@color/blue_500</item>
     </style>
 
-    <style name="Tooltip.Dark" parent="Widget.MaterialComponents.Tooltip">
+    <style name="Tooltip.Dark" parent="Widget.Material3.Tooltip">
         <item name="backgroundTint">?attr/slightElevated2x</item>
     </style>
 
+    <style name="LSK.MaterialCardView.Outlined" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardCornerRadius">@dimen/cardRadius</item>
+        <item name="cardElevation">@dimen/cardElevationOutline</item>
+        <item name="cardBackgroundColor">?attr/backgroundColor</item>
+        <item name="contentPadding">@dimen/cardDefaultPadding</item>
+    </style>
+
+    <style name="LSK.MaterialCardView.Filled" parent="Widget.Material3.CardView.Filled">
+        <item name="cardCornerRadius">@dimen/cardRadius</item>
+        <item name="cardBackgroundColor">?attr/slightElevated</item>
+        <item name="cardElevation">@dimen/cardElevationOutline</item>
+        <item name="contentPadding">@dimen/cardDefaultPadding</item>
+    </style>
+
+    <style name="LSK.MaterialCardView.Filled.Elevated" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">@dimen/cardRadius</item>
+        <item name="cardBackgroundColor">?attr/slightElevated</item>
+        <item name="cardElevation">@dimen/cardElevationRegular</item>
+        <item name="contentPadding">@dimen/cardDefaultPadding</item>
+    </style>
+
     <!-- Bottom Sheet styles -->
-    <style name="BottomSheetDialogStyle" parent="Theme.MaterialComponents.BottomSheetDialog">
+    <style name="BottomSheetDialogStyle" parent="Theme.Material3.Dark.BottomSheetDialog">
         <item name="slightElevated">@color/grayed_blue</item>
         <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
         <item name="android:windowIsFloating">false</item>
@@ -126,14 +151,15 @@
         <item name="android:theme">@style/Theme.LucidSourceKit.Dark</item>
     </style>
 
-    <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
+    <style name="ModalBottomSheetDialog" parent="Widget.Material3.BottomSheet.Modal">
         <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
         <item name="android:backgroundTint">@color/background</item>
+        <item name="shouldRemoveExpandedCorners">true</item>
     </style>
 
-    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">18dp</item>
+        <item name="cornerSize">@dimen/cardRadius</item>
     </style>
 
 

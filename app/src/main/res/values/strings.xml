@@ -25,7 +25,7 @@
     <string name="about">About</string>
     <string name="main_image_description">hills and mountains at night</string>
     <string name="overview">Overview</string>
-    <string name="active_events">active events</string>
+    <string name="active_events">Active events</string>
     <string name="reality_check_reminder">Reality-Check reminder</string>
     <string name="active_alarms">Active alarms</string>
     <string name="collection">Collection</string>
@@ -71,7 +71,7 @@
     <string name="recurring">Recurring</string>
     <string name="total_journal_entries_description">This number indicates the amount of entries you have made in your dream journal. The more you have, the better they can be analyzed in your statistics.</string>
     <string name="lucid_journal_entries_description">This number indicates the amount of lucid dreams you have recorded in your dream journal. The more you practice, the higher the chance of getting lucid will become.</string>
-    <string name="app_opening_streak_description">This number indicates on how many consecutive days you have opened this app at least once.</string>
+    <string name="app_opening_streak_description">The amount of consecutive days you have opened this app. Make a habit of using this app</string>
     <string name="goals_reached">goals have been reached</string>
     <string name="goals_reached_description">This number indicates how many goals you have reached in total. These goals guide you at becoming more conscious throughout the day and therefore improving your awareness.</string>
     <string name="total_entries_count"><![CDATA[This data is based on a total of <TOTAL_COUNT> dream journal entries.]]></string>

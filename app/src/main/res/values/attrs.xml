@@ -22,6 +22,7 @@
     <attr name="secondaryTextColor" format="reference"/>
     <attr name="tertiaryTextColor" format="reference"/>
     <attr name="slightElevated" format="reference"/>
+    <attr name="colorPrimaryHighlight" format="reference"/>
     <attr name="slightElevated2x" format="reference"/>
     <attr name="colorPrimaryTranslucent" format="reference"/>
     <attr name="colorSuccess" format="reference"/>

@@ -19,6 +19,9 @@ public class DataStoreKeys {
     public static final Preferences.Key<Float> GOAL_DIFFICULTY_VALUE_EASY = PreferencesKeys.floatKey("GOAL_DIFFICULTY_VALUE_EASY");
     public static final Preferences.Key<Float> GOAL_DIFFICULTY_VALUE_NORMAL = PreferencesKeys.floatKey("GOAL_DIFFICULTY_VALUE_NORMAL");
     public static final Preferences.Key<Float> GOAL_DIFFICULTY_VALUE_HARD = PreferencesKeys.floatKey("GOAL_DIFFICULTY_VALUE_HARD");
+    public static final Preferences.Key<Float> GOAL_DIFFICULTY_VALUE_COMMON = PreferencesKeys.floatKey("GOAL_DIFFICULTY_VALUE_COMMON");
+    public static final Preferences.Key<Float> GOAL_DIFFICULTY_VALUE_UNCOMMON = PreferencesKeys.floatKey("GOAL_DIFFICULTY_VALUE_UNCOMMON");
+    public static final Preferences.Key<Float> GOAL_DIFFICULTY_VALUE_RARE = PreferencesKeys.floatKey("GOAL_DIFFICULTY_VALUE_RARE");
     public static final Preferences.Key<Float> GOAL_DIFFICULTY_VALUE_VARIANCE = PreferencesKeys.floatKey("GOAL_DIFFICULTY_VALUE_VARIANCE");
     public static final Preferences.Key<Float> GOAL_DIFFICULTY_VARIANCE = PreferencesKeys.floatKey("GOAL_DIFFICULTY_VARIANCE");
     public static final Preferences.Key<Float> GOAL_DIFFICULTY_TENDENCY = PreferencesKeys.floatKey("GOAL_DIFFICULTY_TENDENCY");
@@ -51,6 +54,9 @@ public class DataStoreKeys {
         this.put(GOAL_DIFFICULTY_VALUE_EASY, 100.0f);
         this.put(GOAL_DIFFICULTY_VALUE_NORMAL, 100.0f);
         this.put(GOAL_DIFFICULTY_VALUE_HARD, 100.0f);
+        this.put(GOAL_DIFFICULTY_VALUE_COMMON, 0.3333333f);
+        this.put(GOAL_DIFFICULTY_VALUE_UNCOMMON, 0.3333333f);
+        this.put(GOAL_DIFFICULTY_VALUE_RARE, 0.3333333f);
         this.put(GOAL_DIFFICULTY_VALUE_VARIANCE, 10.0f);
         this.put(GOAL_DIFFICULTY_VARIANCE, 0.15f);
         this.put(GOAL_DIFFICULTY_TENDENCY, 1.8f);

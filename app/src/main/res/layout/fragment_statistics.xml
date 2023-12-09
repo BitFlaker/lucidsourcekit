@@ -30,153 +30,224 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="24dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="20dp"
-                android:backgroundTint="?attr/slightElevated"
-                app:cardCornerRadius="@dimen/cardRadius"
-                app:cardElevation="@dimen/cardElevationRegular">
+                android:layout_marginTop="8dp"
+                android:layout_marginHorizontal="24dp"
+                style="@style/LSK.MaterialCardView.Filled">
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginBottom="15dp"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content">
 
                     <TextView
+                        android:id="@+id/txt_totals_heading"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Streak"
+                        android:text="Total overall values"
                         android:textAlignment="center"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
+                    <GridLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="@string/app_opening_streak_description"
-                        android:textAlignment="center"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="14sp" />
+                        android:layout_marginTop="12dp"
+                        android:columnCount="5"
+                        android:rowCount="2"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/txt_totals_heading">
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/txt_total_journal_entries"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_columnWeight="1"
+                            android:text="32"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:textAlignment="center" />
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="0dp"
+                            android:layout_rowWeight="1"
+                            android:background="?attr/backgroundColor" />
+
+                        <TextView
+                            android:id="@+id/txt_total_tag_count"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_columnWeight="1"
+                            android:text="2"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:textAlignment="center" />
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="0dp"
+                            android:layout_rowWeight="1"
+                            android:background="?attr/backgroundColor" />
+
+                        <TextView
+                            android:id="@+id/txt_total_goal_count"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_columnWeight="1"
+                            android:text="12"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/txt_total_journal_entries_heading"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_columnWeight="1"
+                            android:text="journal entries"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="14sp"
+                            android:textAlignment="center" />
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="0dp"
+                            android:layout_rowWeight="1"
+                            android:background="?attr/backgroundColor" />
+
+                        <TextView
+                            android:id="@+id/txt_total_tag_count_heading"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_columnWeight="1"
+                            android:text="tags"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="14sp"
+                            android:textAlignment="center" />
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="0dp"
+                            android:layout_rowWeight="1"
+                            android:background="?attr/backgroundColor" />
+
+                        <TextView
+                            android:id="@+id/txt_total_goal_count_heading"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_columnWeight="1"
+                            android:text="goals"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="14sp"
+                            android:textAlignment="center" />
+                    </GridLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginRight="0dp"
-                android:orientation="horizontal">
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="48dp"
+                android:text="Streak"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="23sp"
+                android:textStyle="bold" />
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="3dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="?attr/slightElevated"
-                    app:cardCornerRadius="@dimen/cardRadius"
-                    app:cardElevation="@dimen/cardElevationRegular">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:text="@string/app_opening_streak_description"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="14sp" />
 
-                    <LinearLayout
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="24dp"
+                style="@style/LSK.MaterialCardView.Filled">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.bitflaker.lucidsourcekit.charts.IconProgressRod
+                        android:id="@+id/ipr_streak_progress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:orientation="vertical">
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:text="Current streak"
-                            android:textAlignment="center"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/txt_current_streak"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginBottom="10dp"
-                            android:text="235"
-                            android:textAlignment="center"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="32sp"
-                            app:drawableStartCompat="@drawable/big_flame" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="?attr/slightElevated"
-                    app:cardCornerRadius="@dimen/cardRadius"
-                    app:cardElevation="@dimen/cardElevationRegular">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/txt_current_streak"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:orientation="vertical">
+                        android:layout_marginTop="24dp"
+                        android:text="32"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/ipr_streak_progress" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:text="Longest streak"
-                            android:textAlignment="center"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/txt_current_streak_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="current"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="@+id/txt_current_streak"
+                        app:layout_constraintTop_toBottomOf="@+id/txt_current_streak" />
 
-                        <TextView
-                            android:id="@+id/txt_longest_streak"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginBottom="10dp"
-                            android:text="689"
-                            android:textAlignment="center"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="32sp"
-                            app:drawableStartCompat="@drawable/big_flame" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/txt_best_streak"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableTint="?attr/secondaryTextColor"
+                        android:text="2"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="24sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/txt_current_streak"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txt_best_streak_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="best"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/txt_best_streak" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:id="@+id/txt_stats_timespans_heading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="40dp"
-                android:text="Statistics by time"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="48dp"
+                android:text="Dream journal"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="23sp"
                 android:textStyle="bold" />
@@ -185,86 +256,89 @@
                 android:id="@+id/txt_stats_timespans_subheading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:text="Averages in selected timespan"
+                android:layout_marginHorizontal="20dp"
+                android:text="Average values of dream journal data in the selected timespan"
                 android:textColor="?attr/secondaryTextColor"
                 android:textSize="14sp" />
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chp_grp_time_span"
-                android:layout_width="wrap_content"
+            <HorizontalScrollView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="25dp"
-                app:checkedChip="@+id/chp_last_7_days"
-                app:selectionRequired="true"
-                app:singleSelection="true">
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="24dp"
+                android:nestedScrollingEnabled="true"
+                android:scrollbars="none">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chp_last_7_days"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chp_grp_time_span"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Last 7 days"
-                    android:textAlignment="center" />
+                    app:checkedChip="@+id/chp_last_7_days"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chp_last_31_days"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Last 31 days" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chp_last_7_days"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="7 days"
+                        android:textAlignment="center"
+                        style="@style/Custom.Chip.Choice" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chp_all_time"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="All time" />
-            </com.google.android.material.chip.ChipGroup>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chp_last_31_days"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="31 days"
+                        style="@style/Custom.Chip.Choice" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chp_all_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="All time"
+                        style="@style/Custom.Chip.Choice" />
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/crd_lucid_dream_ratio"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="20dp"
-                android:backgroundTint="?attr/slightElevated"
-                app:cardCornerRadius="@dimen/cardRadius"
-                app:cardElevation="@dimen/cardElevationRegular">
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="12dp"
+                style="@style/LSK.MaterialCardView.Filled">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Amount of lucid dreams"
+                        android:text="Lucid dream ratio"
                         android:textAlignment="center"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <LinearLayout
-                        android:id="@+id/ll_stat_ldream_count_container"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
                         android:layout_gravity="center_horizontal"
                         android:orientation="horizontal">
 
                         <com.bitflaker.lucidsourcekit.charts.CircleGraph
                             android:id="@+id/ccg_lucid_percentage"
                             android:layout_width="110dp"
-                            android:layout_height="110dp"
-                            android:layout_margin="20dp" />
+                            android:layout_height="110dp" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_margin="10dp"
+                            android:layout_marginStart="48dp"
                             android:gravity="center_vertical"
                             android:orientation="vertical">
 
@@ -287,58 +361,36 @@
                                 app:drawableTint="?attr/colorPrimary" />
                         </LinearLayout>
                     </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/txt_not_enough_data_ldream_count"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="35dp"
-                        android:layout_marginBottom="35dp"
-                        android:drawablePadding="10dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/not_enough_data_available"
-                        android:textAlignment="center"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="14sp"
-                        android:visibility="gone"
-                        app:drawableTopCompat="@drawable/ic_baseline_stream_24" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/crd_overall_journal_ratings"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="20dp"
-                android:backgroundTint="?attr/slightElevated"
-                app:cardCornerRadius="@dimen/cardRadius"
-                app:cardElevation="@dimen/cardElevationRegular">
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                style="@style/LSK.MaterialCardView.Filled">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginBottom="20dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="15dp"
-                        android:text="Averages"
+                        android:text="Overall average ratings"
                         android:textAlignment="center"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <LinearLayout
-                        android:id="@+id/ll_stat_avg_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="12dp"
                         android:divider="@drawable/divider_medium"
                         android:gravity="top"
                         android:orientation="vertical"
@@ -364,41 +416,20 @@
                             android:layout_width="match_parent"
                             android:layout_height="25dp" />
                     </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/txt_not_enough_data_avg_data"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="35dp"
-                        android:layout_marginBottom="35dp"
-                        android:drawablePadding="10dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/not_enough_data_available"
-                        android:textAlignment="center"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="14sp"
-                        android:visibility="gone"
-                        app:drawableTopCompat="@drawable/ic_baseline_stream_24" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/crd_avg_dream_mood"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="20dp"
-                android:backgroundTint="?attr/slightElevated"
-                app:cardCornerRadius="@dimen/cardRadius"
-                app:cardElevation="@dimen/cardElevationRegular">
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                style="@style/LSK.MaterialCardView.Filled">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginBottom="15dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -411,46 +442,25 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <LinearLayout
-                        android:id="@+id/ll_avg_moods"
+                    <com.bitflaker.lucidsourcekit.charts.RodGraph
+                        android:id="@+id/rg_avg_dream_moods"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal" />
-
-                    <TextView
-                        android:id="@+id/txt_not_enough_data_avg_moods"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="35dp"
-                        android:layout_marginBottom="35dp"
-                        android:drawablePadding="10dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/not_enough_data_available"
-                        android:textAlignment="center"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="14sp"
-                        android:visibility="gone"
-                        app:drawableTopCompat="@drawable/ic_baseline_stream_24" />
+                        android:layout_marginTop="8dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/crd_avg_dream_clarity"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="20dp"
-                android:backgroundTint="?attr/slightElevated"
-                app:cardCornerRadius="@dimen/cardRadius"
-                app:cardElevation="@dimen/cardElevationRegular">
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                style="@style/LSK.MaterialCardView.Filled">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginBottom="15dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -463,46 +473,26 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <LinearLayout
-                        android:id="@+id/ll_avg_clarities"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal" />
 
-                    <TextView
-                        android:id="@+id/txt_not_enough_data_avg_clarities"
+                    <com.bitflaker.lucidsourcekit.charts.RodGraph
+                        android:id="@+id/rg_avg_clarities"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="35dp"
-                        android:layout_marginBottom="35dp"
-                        android:drawablePadding="10dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/not_enough_data_available"
-                        android:textAlignment="center"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="14sp"
-                        android:visibility="gone"
-                        app:drawableTopCompat="@drawable/ic_baseline_stream_24" />
+                        android:layout_marginTop="8dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/crd_avg_sleep_quality"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="20dp"
-                android:backgroundTint="?attr/slightElevated"
-                app:cardCornerRadius="@dimen/cardRadius"
-                app:cardElevation="@dimen/cardElevationRegular">
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                style="@style/LSK.MaterialCardView.Filled">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginBottom="15dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -515,53 +505,105 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <LinearLayout
-                        android:id="@+id/ll_avg_sleep_quality"
+                    <com.bitflaker.lucidsourcekit.charts.RodGraph
+                        android:id="@+id/rg_avg_sleep_qualities"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal" />
-
-                    <TextView
-                        android:id="@+id/txt_not_enough_data_avg_squality"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="35dp"
-                        android:layout_marginBottom="35dp"
-                        android:drawablePadding="10dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/not_enough_data_available"
-                        android:textAlignment="center"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="14sp"
-                        android:visibility="gone"
-                        app:drawableTopCompat="@drawable/ic_baseline_stream_24" />
+                        android:layout_marginTop="8dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/crd_most_used_tags"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="20dp"
-                android:backgroundTint="?attr/slightElevated"
-                app:cardCornerRadius="@dimen/cardRadius"
-                app:cardElevation="@dimen/cardElevationRegular">
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                style="@style/LSK.MaterialCardView.Filled">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginBottom="15dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:text="Goals stats"
+                        android:text="Most frequently used tags"
+                        android:textAlignment="center"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_most_used_tags"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/crd_no_data_journal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                style="@style/LSK.MaterialCardView.Filled">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="No data available. Add dream journal entries to see statistics about them here"
+                    android:textAlignment="center"
+                    android:textColor="?attr/secondaryTextColor"
+                    android:textSize="14sp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/txt_stats_goals_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="48dp"
+                android:text="Daily goals"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="23sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_stats_goals_subheading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:text="Average values of goal statistics data in the selected timespan"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="14sp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                style="@style/LSK.MaterialCardView.Filled">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Overall goal data"
                         android:textAlignment="center"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="16sp"
@@ -586,89 +628,28 @@
                             android:layout_width="match_parent"
                             android:layout_height="25dp" />
                     </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/txt_not_enough_data_goals_reached"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="35dp"
-                        android:layout_marginBottom="35dp"
-                        android:drawablePadding="10dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/not_enough_data_available"
-                        android:textAlignment="center"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="14sp"
-                        android:visibility="gone"
-                        app:drawableTopCompat="@drawable/ic_baseline_stream_24" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/crd_no_data_goals"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="20dp"
-                android:backgroundTint="?attr/slightElevated"
-                app:cardCornerRadius="@dimen/cardRadius"
-                app:cardElevation="@dimen/cardElevationRegular">
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                style="@style/LSK.MaterialCardView.Filled">
 
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginBottom="15dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Most frequently used tags"
-                        android:textAlignment="center"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:id="@+id/ll_most_used_tags"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:orientation="vertical">
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/txt_not_enough_data_most_used_tags"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="35dp"
-                        android:layout_marginBottom="35dp"
-                        android:drawablePadding="10dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/not_enough_data_available"
-                        android:textAlignment="center"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="14sp"
-                        android:visibility="gone"
-                        app:drawableTopCompat="@drawable/ic_baseline_stream_24" />
-                </LinearLayout>
+                    android:drawablePadding="10dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="No data available. Perform your daily goals in order to see statistics about them here"
+                    android:textAlignment="center"
+                    android:textColor="?attr/secondaryTextColor"
+                    android:textSize="14sp" />
             </com.google.android.material.card.MaterialCardView>
-
-            <TextView
-                android:id="@+id/txt_total_journal_entries_stat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="25dp"
-                android:text="@string/total_entries_count"
-                android:textAlignment="center"
-                android:textColor="?attr/secondaryTextColor"
-                android:textSize="14sp" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

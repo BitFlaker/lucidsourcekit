@@ -1,7 +1,5 @@
 package com.bitflaker.lucidsourcekit.charts;
 
-import static com.bitflaker.lucidsourcekit.charts.LineGraph.manipulateAlphaArray;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -35,7 +33,8 @@ public class TextLegend extends View {
     private float yMax;
     private int[] colors;
     private String[] labels;
-    private RectF currentRectPos = new RectF(-1, -1, -1, -1);
+//    private RectF currentRectPos = new RectF(-1, -1, -1, -1);
+    private RectF[] symbolRectPos;
     private Rect textBounds;
     private int currentSelectedIndex = -1;
 
@@ -108,26 +107,34 @@ public class TextLegend extends View {
         super.onDraw(canvas);
 
         if(backgroundGradient == null){
-            backgroundGradient = new LinearGradient(0f, 0f, getWidth(), 0f, manipulateAlphaArray(colors, 0.3f), new float[] { 0.0f, 0.33f, 0.66f, 1f }, Shader.TileMode.CLAMP);
+            backgroundGradient = new LinearGradient(0f, 0f, getWidth(), 0f, LineGraph.manipulateAlphaArray(colors, 0.3f), new float[] { 0.0f, 0.33f, 0.66f, 1f }, Shader.TileMode.CLAMP);
             randomBackgroundPaint.setShader(backgroundGradient);
         }
         canvas.drawRect(0, 0, getWidth(), getHeight(), randomBackgroundPaint);
 
         dataLabelPaint.setColor(secondaryTextColor);
-        for (int i = 0; i < labels.length; i++){
-            float xFrom = i/xMax * getWidth();
-            float xTo = (i+1)/xMax * getWidth();
-            currentRectPos.set(xFrom, 0, xTo, getHeight());
+
+        if(symbolRectPos == null) {
+            symbolRectPos = new RectF[labels.length];
+            for (int i = 0; i < labels.length; i++) {
+                float xFrom = i / xMax * getWidth();
+                float xTo = (i + 1) / xMax * getWidth();
+                symbolRectPos[i] = new RectF();
+                symbolRectPos[i].set(xFrom, 0, xTo, getHeight());
+            }
+        }
+
+        for (int i = 0; i < labels.length; i++) {
             if(i != currentSelectedIndex) {
                 dataLabelPaint.getTextBounds(labels[i], 0, labels[i].length(), textBounds);
-                canvas.drawText(labels[i], currentRectPos.centerX(), currentRectPos.centerY() - textBounds.exactCenterY(), dataLabelPaint);
+                canvas.drawText(labels[i], symbolRectPos[i].centerX(), symbolRectPos[i].centerY() - textBounds.exactCenterY(), dataLabelPaint);
             }
             else {
                 dataLabelPaint.setColor(primaryTextColor);
                 float rad = getHeight()/2.0f;
-                canvas.drawRoundRect(currentRectPos, rad, rad, legendPaints.get(i % legendPaints.size()));
+                canvas.drawRoundRect(symbolRectPos[i], rad, rad, legendPaints.get(i % legendPaints.size()));
                 dataLabelPaint.getTextBounds(labels[i], 0, labels[i].length(), textBounds);
-                canvas.drawText(labels[i], currentRectPos.centerX(), currentRectPos.centerY() - textBounds.exactCenterY(), dataLabelPaint);
+                canvas.drawText(labels[i], symbolRectPos[i].centerX(), symbolRectPos[i].centerY() - textBounds.exactCenterY(), dataLabelPaint);
                 dataLabelPaint.setColor(secondaryTextColor);
             }
         }

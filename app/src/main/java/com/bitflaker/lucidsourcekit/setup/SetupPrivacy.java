@@ -44,7 +44,7 @@ public class SetupPrivacy extends Fragment {
                     case Pin: chkUseBiometrics.setEnabled(true); break;
                     case None: chkUseBiometrics.setEnabled(false); break;
                 }
-                if(mListener!=null) {
+                if(mListener != null) {
                     mListener.onEvent(AuthTypes.values()[i]);
                 }
             }

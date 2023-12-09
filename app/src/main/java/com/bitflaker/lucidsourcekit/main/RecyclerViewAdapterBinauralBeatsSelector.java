@@ -31,7 +31,7 @@ public class RecyclerViewAdapterBinauralBeatsSelector extends RecyclerView.Adapt
     @Override
     public MainViewHolderBinauralBeats onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.binaural_entry, parent, false);
+        View view = inflater.inflate(R.layout.entry_binaural, parent, false);
         return new MainViewHolderBinauralBeats(view);
     }
 

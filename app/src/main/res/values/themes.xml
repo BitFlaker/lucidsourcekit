@@ -1,5 +1,5 @@
 <resources>
-    <style name="Theme.LucidSourceKit.Light" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.LucidSourceKit.Light" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/blue_500</item>
         <item name="colorPrimaryVariant">@color/blue_var</item>
         <item name="colorOnPrimary">@color/white</item>
@@ -27,7 +27,7 @@
         <item name="typeStyle">@style/Widget.MaterialComponents.Button.TextButton</item>
     </style>
 
-    <style name="PopupMenu.Dark" parent="Widget.AppCompat.PopupMenu">
+    <style name="PopupMenu.Dark" parent="Widget.Material3.PopupMenu">
         <item name="android:textColor">?attr/primaryTextColor</item>
         <item name="popupMenuBackground">@drawable/medium_rounded_rectangle_padded</item>
         <item name="android:backgroundTint">?attr/backgroundColor</item>
@@ -50,13 +50,13 @@
         <item name="android:textColor">@color/blue_500</item>
     </style>
 
-    <style name="Tooltip.Dark" parent="Widget.MaterialComponents.Tooltip">
+    <style name="Tooltip.Dark" parent="Widget.Material3.Tooltip">
         <item name="backgroundTint">?attr/slightElevated2x</item>
     </style>
 
     <!-- Bottom Sheet styles -->
 
-    <style name="BottomSheetDialogStyle" parent="Theme.MaterialComponents.BottomSheetDialog">
+    <style name="BottomSheetDialogStyle" parent="Theme.Material3.Light.BottomSheetDialog">
         <item name="android:backgroundTint">@color/background</item>
         <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
         <item name="android:windowIsFloating">false</item>
@@ -65,11 +65,11 @@
         <item name="android:theme">@style/Theme.LucidSourceKit.Dark</item>
     </style>
 
-    <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
+    <style name="ModalBottomSheetDialog" parent="Widget.Material3.BottomSheet.Modal">
         <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
     </style>
 
-    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">18dp</item>
     </style>

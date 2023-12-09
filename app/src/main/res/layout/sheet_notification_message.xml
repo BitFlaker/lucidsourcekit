@@ -49,13 +49,13 @@
         android:layout_marginTop="36dp"
         android:layout_marginRight="20dp"
         app:cardBackgroundColor="@color/transparent"
-        app:cardCornerRadius="@dimen/cardRadius_Var2"
+        app:cardCornerRadius="@dimen/cardRadius"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_custom_notification_message"
         app:strokeColor="?attr/slightElevated"
-        app:strokeWidth="1dp">
+        app:strokeWidth="0dp">
 
         <LinearLayout
             android:id="@+id/ll_notification_obfuscation"
@@ -71,7 +71,7 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chp_obfuscate_transparent"
-                style="@style/Custom.Chip.Choice.Elevated"
+                style="@style/Custom.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -81,7 +81,7 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chp_obfuscate_neutral"
-                style="@style/Custom.Chip.Choice.Elevated"
+                style="@style/Custom.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -91,7 +91,7 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chp_obfuscate_max"
-                style="@style/Custom.Chip.Choice.Elevated"
+                style="@style/Custom.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

@@ -213,8 +213,7 @@
                 android:layout_marginBottom="45dp"
                 android:layout_weight="1"
                 app:flexDirection="column"
-                app:justifyContent="space_evenly"
-                android:visibility="gone">
+                app:justifyContent="space_evenly">
 
                 <LinearLayout
                     android:id="@+id/ll_track_details"

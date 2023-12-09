@@ -58,9 +58,9 @@ public class MainViewer extends AppCompatActivity {
 
         vpAdapter.addFragment(vwOverview, PAGE_OVERVIEW);
         vpAdapter.addFragment(vwLogging, PAGE_LOGGING);
-        vpAdapter.addFragment(vwPageStats, PAGE_STATS);
         vpAdapter.addFragment(vwPageGoals, PAGE_GOALS);
         vpAdapter.addFragment(vwPageBinauralBeats, PAGE_BINAURAL_BEATS);
+        vpAdapter.addFragment(vwPageStats, PAGE_STATS);
         viewPager2.setAdapter(vpAdapter);
         viewPager2.setOffscreenPageLimit(6);
 

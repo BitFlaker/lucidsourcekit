@@ -25,8 +25,10 @@
     <color name="darker_green">#43DD6F</color>
 
     <color name="blue_500">#2196F3</color>
+    <color name="blue_500_variant">#332196F3</color>
     <color name="blue_var">#218DD5</color>
     <color name="teal_300">#4db6ac</color>
+    <color name="teal_new">#26A69A</color>
     <color name="teal_var">#357F78</color>
     <color name="background">#202125</color>
     <color name="background_paper">#2C2C2C</color>

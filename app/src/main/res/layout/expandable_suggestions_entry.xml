@@ -9,9 +9,10 @@
         android:id="@+id/crd_binaural_selection_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:backgroundTint="?attr/slightElevated2x"
+        app:cardBackgroundColor="?attr/slightElevated"
         app:cardCornerRadius="0dp"
         app:cardElevation="0dp"
+        app:strokeWidth="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,10 +29,8 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/ic_baseline_notifications_active_24"
-                app:tint="?attr/tertiaryTextColor"
-                android:background="@drawable/rounded_spinner"
                 android:padding="6dp"
-                android:backgroundTint="?attr/slightElevated"/>
+                app:tint="?attr/tertiaryTextColor"/>
 
             <TextView
                 android:id="@+id/txt_suggestion_text"

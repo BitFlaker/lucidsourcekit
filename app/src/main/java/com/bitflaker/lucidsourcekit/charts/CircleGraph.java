@@ -33,6 +33,10 @@ public class CircleGraph extends View {
         dataLinePaintBackgroundEraser.setAntiAlias(true);
         dataLinePaintSpaceEraser.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         dataLinePaintSpaceEraser.setAntiAlias(true);
+        val1 = 2;
+        val2 = 3;
+        lineWidth = Tools.dpToPx(context, 15);
+        dataLinePaintSpaceEraser.setStrokeWidth(Tools.dpToPx(getContext(), Tools.dpToPx(context, 1.25)));
     }
 
     public void setData(int val1, int val2, float lineWidth, float space) {

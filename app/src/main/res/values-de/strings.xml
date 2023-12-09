@@ -73,7 +73,7 @@
     <string name="goals_reached">Ziele erreicht</string>
     <string name="total_journal_entries_description">Diese Zahl gibt die Anzahl an Einträgen im Traumtagebuch an. Je mehr es sind, desto besser können diese in den Statistiken analysiert werden.</string>
     <string name="lucid_journal_entries_description">Diese Zahl gibt die Anzahl an Klarträumen an, welche im Traumtagebuch aufgezeichnet wurden. Je mehr du übst, desto höher wird die Wahrscheinlichkeit einen Klartraum zu erleben.</string>
-    <string name="app_opening_streak_description">Diese Zahl gibt die Anzahl an aufeinanderfolgenden Tagen an, an denen die App mindestens einmal geöffnet wurde.</string>
+    <string name="app_opening_streak_description">Die Anzahl an aufeinanderfolgenden Tagen, an denen die App mindestens einmal geöffnet wurde. Mach dir das zur Gewohnheit</string>
     <string name="goals_reached_description">Diese Zahl gibt die Anzahl an bisher erreichten Zielen an. Diese Ziele unterstützen dich dabei, den ganzen Tag über bewusster und aufmerksamer zu sein.</string>
     <string name="total_entries_count"><![CDATA[This data is based on a total of <TOTAL_COUNT> dream journal entries.]]></string>
     <string name="goal_achievement_stats"><![CDATA[You achieved this goal <COUNT> out of <TOTAL> times. Your success rate is <PERCENTAGE>%]]></string>

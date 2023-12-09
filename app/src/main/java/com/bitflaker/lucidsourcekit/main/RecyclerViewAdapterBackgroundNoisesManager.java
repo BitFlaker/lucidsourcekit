@@ -31,7 +31,7 @@ public class RecyclerViewAdapterBackgroundNoisesManager extends RecyclerView.Ada
     @Override
     public MainViewHolderBackgroundNoises onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.background_noise_entry, parent, false);
+        View view = inflater.inflate(R.layout.entry_background_noise, parent, false);
         return new MainViewHolderBackgroundNoises(view);
     }
 

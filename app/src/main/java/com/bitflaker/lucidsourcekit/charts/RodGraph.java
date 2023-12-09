@@ -65,7 +65,7 @@ public class RodGraph extends View {
         if(icons != null){ yMax = icons.length - 1; }
         else { yMax = getMaxValueFrom(data); }
         xMax = data.size();
-        dataLinePaintBackground.setStrokeWidth(Tools.dpToPx(getContext(), lineWidth));
+        dataLinePaintBackground.setStrokeWidth(Tools.dpToPx(getContext(), lineWidth / 3.0f * 2));
         dataLinePaint.setStrokeWidth(Tools.dpToPx(getContext(), lineWidth));
         invalidate();
     }
@@ -120,14 +120,14 @@ public class RodGraph extends View {
     }
 
     private void clacMinHeight() {
-        if(minHeight == 0){
-            if(icons != null){
+        if(minHeight == 0) {
+            if(icons != null) {
                 minHeight = (int)Math.ceil(iconSize * icons.length + this.textHeight);
-                if(this.textHeight == 0){
+                if(this.textHeight == 0) {
                     minHeight += iconSize;
                 }
             }
-            else{
+            else {
                 minHeight = iconSize * 5;
             }
             setMinimumHeight(minHeight);
@@ -184,5 +184,9 @@ public class RodGraph extends View {
 
     public void setInvertedOrder(boolean invertedOrder) {
         this.invertedOrder = invertedOrder;
+    }
+
+    public int getMinHeight() {
+        return minHeight;
     }
 }

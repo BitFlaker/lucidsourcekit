@@ -13,15 +13,6 @@
         android:layout_above="@id/ll_nav_bottom"
         android:layout_marginBottom="-2dp" />
 
-    <!--
-    <View
-        android:id="@+id/shadow"
-        android:layout_width="fill_parent"
-        android:layout_height="2.3dp"
-        android:layout_above="@+id/ll_nav_bottom"
-        android:background="@drawable/shadow">
-    </View>-->
-
     <LinearLayout
         android:id="@+id/ll_nav_bottom"
         android:layout_width="match_parent"
@@ -54,12 +45,6 @@
                 android:icon="@drawable/ic_round_book_24" />
 
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/ti_stats"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:icon="@drawable/ic_round_insert_chart_24" />
-
-            <com.google.android.material.tabs.TabItem
                 android:id="@+id/ti_goals"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -70,6 +55,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/frequency_symbol" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/ti_stats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_round_insert_chart_24" />
         </com.google.android.material.tabs.TabLayout>
 
         <ImageButton

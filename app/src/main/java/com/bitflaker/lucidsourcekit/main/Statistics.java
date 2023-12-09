@@ -2,6 +2,7 @@ package com.bitflaker.lucidsourcekit.main;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,18 +13,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.charts.CircleGraph;
 import com.bitflaker.lucidsourcekit.charts.DataValue;
+import com.bitflaker.lucidsourcekit.charts.IconProgressRod;
 import com.bitflaker.lucidsourcekit.charts.RangeProgress;
 import com.bitflaker.lucidsourcekit.charts.RodGraph;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AverageEntryValues;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.TagCount;
+import com.bitflaker.lucidsourcekit.database.goals.entities.resulttables.ShuffleHasGoalStats;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.datastore.DataStoreKeys;
 import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.ChipGroup;
 
 import java.text.SimpleDateFormat;
@@ -35,24 +39,30 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class Statistics extends Fragment {
-    public LinearLayout avgMoodsContainer, avgClaritiesContainer, avgQualitiesContainer, goalsContainer, mostUsedTagsContainer, ldreamCountContainer, avgContainer, goalsReachedContainer;
-    public ChipGroup chartTimeSpan;
-    public CircleGraph lucidPercentage;
-    public TextView totalEntriesNotice, currentStreak, longestStreak, neLucidDreamCount, neAvgData, neAvgClarities, neAvgMoods, neAvgSQualities, neGoalsReached, neMostUsedTags;
-    public RangeProgress rpDreamMood, rpDreamClarity, rpSleepQuality, rpDreamsPerNight, rpGoalsReached, rpAvgDiff;
+    private RodGraph rgAvgDreamMoods, rgAvgDreamClarities, rgAvgSleepQualities;
+    private MaterialCardView crdLucidDreamRatio, crdOverallJournalRatings, crdAvgDreamMoods, crdAvgDreamClarity, crdAvgSleepQuality, crdMostUsedTags, crdNoDataJournal, crdNoDataGoals;
+    private LinearLayout mostUsedTagsContainer;
+    private LinearLayout goalsReachedContainer;
+    private ChipGroup chartTimeSpan;
+    private CircleGraph lucidPercentage;
+    private IconProgressRod iprStreak;
+    private TextView currentStreak, bestStreak, totalJournalEntries, totalTagCount, totalGoalCount;
+    private RangeProgress rpDreamMood, rpDreamClarity, rpSleepQuality, rpDreamsPerNight, rpGoalsReached, rpAvgDiff;
     private MainDatabase db;
     private List<Double> avgClarities = new ArrayList<>();
     private List<Double> avgMoods = new ArrayList<>();
     private List<Double> avgQualities = new ArrayList<>();
     private List<Double> dreamCounts = new ArrayList<>();
-    private long startTimeSpan = 0;
-    private long endTimeSpan = 0;
     private Drawable[] moodIcons;
     private Drawable[] clarityIcons;
     private Drawable[] qualityIcons;
-    private MutableLiveData<Boolean> gatheredNewTimeSpanStats = new MutableLiveData<>(false);
     private int selectedDaysCount = 7;
+    private CompositeDisposable compositeDisposable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,171 +74,211 @@ public class Statistics extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         getView().findViewById(R.id.txt_stats_heading).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
+        compositeDisposable = new CompositeDisposable();
+
         mostUsedTagsContainer = getView().findViewById(R.id.ll_most_used_tags);
-        avgMoodsContainer = getView().findViewById(R.id.ll_avg_moods);
-        avgClaritiesContainer = getView().findViewById(R.id.ll_avg_clarities);
-        avgQualitiesContainer = getView().findViewById(R.id.ll_avg_sleep_quality);
-        goalsContainer = getView().findViewById(R.id.ll_goals_reached);
+        rgAvgDreamMoods = getView().findViewById(R.id.rg_avg_dream_moods);
+        rgAvgDreamClarities = getView().findViewById(R.id.rg_avg_clarities);
+        rgAvgSleepQualities = getView().findViewById(R.id.rg_avg_sleep_qualities);
         chartTimeSpan = getView().findViewById(R.id.chp_grp_time_span);
         lucidPercentage = getView().findViewById(R.id.ccg_lucid_percentage);
-        totalEntriesNotice = getView().findViewById(R.id.txt_total_journal_entries_stat);
+        iprStreak = getView().findViewById(R.id.ipr_streak_progress);
         currentStreak = getView().findViewById(R.id.txt_current_streak);
-        longestStreak = getView().findViewById(R.id.txt_longest_streak);
+        bestStreak = getView().findViewById(R.id.txt_best_streak);
         rpDreamMood = getView().findViewById(R.id.rp_dream_mood);
         rpDreamClarity = getView().findViewById(R.id.rp_dream_clarity);
         rpSleepQuality = getView().findViewById(R.id.rp_sleep_quality);
         rpDreamsPerNight = getView().findViewById(R.id.rp_dreams_per_night);
-        neLucidDreamCount = getView().findViewById(R.id.txt_not_enough_data_ldream_count);
-        ldreamCountContainer = getView().findViewById(R.id.ll_stat_ldream_count_container);
-        avgContainer = getView().findViewById(R.id.ll_stat_avg_container);
-        neAvgData = getView().findViewById(R.id.txt_not_enough_data_avg_data);
-        neAvgClarities = getView().findViewById(R.id.txt_not_enough_data_avg_clarities);
-        neAvgMoods = getView().findViewById(R.id.txt_not_enough_data_avg_moods);
-        neAvgSQualities = getView().findViewById(R.id.txt_not_enough_data_avg_squality);
-        neGoalsReached = getView().findViewById(R.id.txt_not_enough_data_goals_reached);
-        neMostUsedTags = getView().findViewById(R.id.txt_not_enough_data_most_used_tags);
         goalsReachedContainer = getView().findViewById(R.id.ll_goals_reached);
         rpGoalsReached = getView().findViewById(R.id.rp_goals_reached);
         rpAvgDiff = getView().findViewById(R.id.rp_avg_goal_diff);
+        totalJournalEntries = getView().findViewById(R.id.txt_total_journal_entries);
+        totalTagCount = getView().findViewById(R.id.txt_total_tag_count);
+        totalGoalCount = getView().findViewById(R.id.txt_total_goal_count);
+
+        crdLucidDreamRatio = getView().findViewById(R.id.crd_lucid_dream_ratio);
+        crdOverallJournalRatings = getView().findViewById(R.id.crd_overall_journal_ratings);
+        crdAvgDreamMoods = getView().findViewById(R.id.crd_avg_dream_mood);
+        crdAvgDreamClarity = getView().findViewById(R.id.crd_avg_dream_clarity);
+        crdAvgSleepQuality = getView().findViewById(R.id.crd_avg_sleep_quality);
+        crdMostUsedTags = getView().findViewById(R.id.crd_most_used_tags);
+        crdNoDataJournal = getView().findViewById(R.id.crd_no_data_journal);
+
+        crdNoDataGoals = getView().findViewById(R.id.crd_no_data_goals);
+
         db = MainDatabase.getInstance(getContext());
 
         moodIcons = Tools.getIconsDreamMood(getContext());
         clarityIcons = Tools.getIconsDreamClarity(getContext());
         qualityIcons = Tools.getIconsSleepQuality(getContext());
 
-        currentStreak.setText(Long.toString(DataStoreManager.getInstance().getSetting(DataStoreKeys.APP_OPEN_STREAK).blockingFirst()));
-        longestStreak.setText(Long.toString(DataStoreManager.getInstance().getSetting(DataStoreKeys.APP_OPEN_STREAK_LONGEST).blockingFirst()));
+        long currentStreakValue = DataStoreManager.getInstance().getSetting(DataStoreKeys.APP_OPEN_STREAK).blockingFirst();
+        long bestStreakValue = DataStoreManager.getInstance().getSetting(DataStoreKeys.APP_OPEN_STREAK_LONGEST).blockingFirst();
+        currentStreak.setText(Long.toString(currentStreakValue));
+        bestStreak.setText(Long.toString(bestStreakValue));
+        iprStreak.setData(bestStreakValue, currentStreakValue);
 
         // TODO: add loading indicators while gathering data
         // TODO: refresh stats after entry modified/added/deleted
 
-        getAveragesForLastNDays(selectedDaysCount, 0);
-        gatheredNewTimeSpanStats.observe(getActivity(), aBoolean -> {
-            if(gatheredNewTimeSpanStats.getValue()) {
-                // TODO: optimize code for less redundancy
-                if(!Tools.hasNoData(avgMoods)) {
-                    neAvgMoods.setVisibility(View.GONE);
-                    avgMoodsContainer.setVisibility(View.VISIBLE);
-                    generateRodChart(avgMoods.size(), Tools.dpToPx(getContext(), 3f), avgMoodsContainer, moodIcons, avgMoods);
-                }
-                else {
-                    neAvgMoods.setVisibility(View.VISIBLE);
-                    avgMoodsContainer.setVisibility(View.GONE);
-                }
+        compositeDisposable.add(getAveragesForLastNDays(selectedDaysCount, 0)
+                .subscribeOn(Schedulers.io())
+//                .observeOn(Schedulers.from(new HandlerExecutor(Looper.getMainLooper())))
+                .subscribe(this::updateStats));
 
-                if(!Tools.hasNoData(avgClarities)){
-                    neAvgClarities.setVisibility(View.GONE);
-                    avgClaritiesContainer.setVisibility(View.VISIBLE);
-                    generateRodChart(avgClarities.size(), Tools.dpToPx(getContext(), 3f), avgClaritiesContainer, clarityIcons, avgClarities);
-                }
-                else {
-                    neAvgClarities.setVisibility(View.VISIBLE);
-                    avgClaritiesContainer.setVisibility(View.GONE);
-                }
-
-                if(!Tools.hasNoData(avgQualities)){
-                    neAvgSQualities.setVisibility(View.GONE);
-                    avgQualitiesContainer.setVisibility(View.VISIBLE);
-                    generateRodChart(avgQualities.size(), Tools.dpToPx(getContext(), 3f), avgQualitiesContainer, qualityIcons, avgQualities);
-                }
-                else {
-                    neAvgSQualities.setVisibility(View.VISIBLE);
-                    avgQualitiesContainer.setVisibility(View.GONE);
-                }
-
-                if(Tools.hasNoData(avgMoods) && Tools.hasNoData(avgClarities) && Tools.hasNoData(avgQualities) && Tools.hasNoData(dreamCounts)){
-                    neAvgData.setVisibility(View.VISIBLE);
-                    avgContainer.setVisibility(View.GONE);
-                }
-                else {
-                    neAvgData.setVisibility(View.GONE);
-                    avgContainer.setVisibility(View.VISIBLE);
-
-                    float averageMood = calcAverage(avgMoods, true);
-                    float averageClarity = calcAverage(avgClarities, true);
-                    float averageQuality = calcAverage(avgQualities, true);
-                    float averageDreamCount = calcAverage(dreamCounts, false);
-                    // TODO: extract string resources
-                    rpDreamMood.setData(4, averageMood, "DREAM MOOD", moodIcons[Math.round(averageMood)], null);
-                    rpDreamClarity.setData(3, averageClarity, "DREAM CLARITY", clarityIcons[Math.round(averageClarity)], null);
-                    rpSleepQuality.setData(3, averageQuality, "SLEEP QUALITY", qualityIcons[Math.round(averageQuality)], null);
-                    rpDreamsPerNight.setData(Collections.max(dreamCounts).floatValue(), averageDreamCount, "DREAMS PER NIGHT", null, String.format(Locale.ENGLISH, "%.2f", averageDreamCount));
-                }
-
-                Pair<Long, Long> timeSpan = Tools.getTimeSpanFrom(selectedDaysCount - 1, true);
-                db.getJournalEntryDao().getLucidEntriesCount(timeSpan.first, timeSpan.second).subscribe((lucidEntriesCount, throwable) -> {
-                    db.getJournalEntryDao().getEntriesCount(timeSpan.first, timeSpan.second).subscribe((totalEntriesCount, throwable2) -> {
-                        // TODO: maybe display numbers as well?
-                        if(totalEntriesCount != 0) {
-                            neLucidDreamCount.setVisibility(View.GONE);
-                            ldreamCountContainer.setVisibility(View.VISIBLE);
-                            lucidPercentage.setData(lucidEntriesCount, totalEntriesCount-lucidEntriesCount, Tools.dpToPx(getContext(), 15), Tools.dpToPx(getContext(), 1.25));
-                        }
-                        else {
-                            ldreamCountContainer.setVisibility(View.GONE);
-                            neLucidDreamCount.setVisibility(View.VISIBLE);
-                        }
-                        totalEntriesNotice.setText(getResources().getString(R.string.total_entries_count).replace("<TOTAL_COUNT>", totalEntriesCount.toString()));
-                    });
-                });
-
-                db.getJournalEntryHasTagDao().getMostUsedTagsList(timeSpan.first, timeSpan.second, 10).subscribe((tagCounts, throwable) -> {
-                    // TODO: only make 1 object that draws all of the graphs
-                    mostUsedTagsContainer.removeAllViews();
-                    if(tagCounts.size() > 0){
-                        mostUsedTagsContainer.setVisibility(View.VISIBLE);
-                        neMostUsedTags.setVisibility(View.GONE);
-                        int maxCount = tagCounts.get(0).getCount();
-                        for (TagCount p : tagCounts) {
-                            RangeProgress rngProg = new RangeProgress(getContext());
-                            LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Tools.dpToPx(getContext(), 25));
-                            int margin = Tools.dpToPx(getContext(), 5);
-                            llParams.setMargins(0, margin, 0, margin);
-                            rngProg.setLayoutParams(llParams);
-                            mostUsedTagsContainer.addView(rngProg);
-                            rngProg.setData(maxCount, p.getCount(), p.getTag(), null, Integer.toString(p.getCount()));
-                        }
-                    }
-                    else {
-                        mostUsedTagsContainer.setVisibility(View.GONE);
-                        neMostUsedTags.setVisibility(View.VISIBLE);
-                    }
-                });
-
-                db.getShuffleHasGoalDao().getShufflesFromBetween(timeSpan.first, timeSpan.second).subscribe((shuffleHasGoalStats, throwable) -> {
-                    if(shuffleHasGoalStats.goalCount == 0) {
-                        neGoalsReached.setVisibility(View.VISIBLE);
-                        goalsReachedContainer.setVisibility(View.GONE);
-                    }
-                    else {
-                        neGoalsReached.setVisibility(View.GONE);
-                        goalsReachedContainer.setVisibility(View.VISIBLE);
-                        rpGoalsReached.setData(shuffleHasGoalStats.goalCount, shuffleHasGoalStats.achievedCount, "ACHIEVED", null, String.format(Locale.ENGLISH, "%d/%d", shuffleHasGoalStats.achievedCount, shuffleHasGoalStats.goalCount));
-                        rpAvgDiff.setData(3, (float)shuffleHasGoalStats.avgDifficulty, "AVERAGE DIFFICULTY LEVEL", null, String.format(Locale.ENGLISH, "%.2f", shuffleHasGoalStats.avgDifficulty));
-                    }
-                });
+        chartTimeSpan.setOnCheckedStateChangeListener((chipGroup, checkedIds) -> {
+            if(checkedIds.size() != 1) {
+                Log.e("Statistics", "Chart Timespan chip group has more than one selected item");
+                return;
             }
-        });
 
-        chartTimeSpan.setOnCheckedChangeListener((chipGroup, i) -> {
-            avgMoodsContainer.removeAllViews();
-            avgClaritiesContainer.removeAllViews();
-            avgQualitiesContainer.removeAllViews();
-            switch (i) {
-                case R.id.chp_last_7_days:
-                    selectedDaysCount = 7;
-                    getAveragesForLastNDays(selectedDaysCount, 0);
-                    break;
-                case R.id.chp_last_31_days:
-                    selectedDaysCount = 31;
-                    getAveragesForLastNDays(selectedDaysCount, 0);
-                    break;
-                case R.id.chp_all_time:
-                    selectedDaysCount = 250;
-                    getAveragesForLastNDays(selectedDaysCount, 0);
-                    break;
+            int selectedId = checkedIds.get(0);
+            if(selectedId == R.id.chp_last_7_days) {
+                selectedDaysCount = 7;
             }
+            else if(selectedId == R.id.chp_last_31_days) {
+                selectedDaysCount = 31;
+            }
+            else if(selectedId == R.id.chp_all_time) {
+                selectedDaysCount = 60;    // TODO: make it actually all time (but fix performance issues)
+            }
+            compositeDisposable.add(getAveragesForLastNDays(selectedDaysCount, 0)
+                    .subscribeOn(Schedulers.io())
+//                    .observeOn(Schedulers.from(new HandlerExecutor(Looper.getMainLooper())))
+                    .subscribe(this::updateStats));
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        compositeDisposable.clear();
+        super.onDestroyView();
+    }
+
+    private void updateStats() {
+        Pair<Long, Long> timeSpan = Tools.getTimeSpanFrom(selectedDaysCount - 1, true);
+
+        generateStaticStats().blockingSubscribe();
+        generateDreamJournalStats(timeSpan).blockingSubscribe();
+        generateDailyGoalsStats(timeSpan).blockingSubscribe();
+    }
+
+    private Completable generateStaticStats() {
+        return Completable.fromAction(() -> {
+            int journalEntriesCount = db.getJournalEntryDao().getTotalEntriesCount().blockingGet();
+            int tagCount = db.getJournalEntryTagDao().getTotalTagCount().blockingGet();
+            int goalCount = db.getGoalDao().getGoalCount().blockingGet();
+
+            getActivity().runOnUiThread(() -> {
+                totalJournalEntries.setText(String.format(Locale.getDefault(), "%d", journalEntriesCount));
+                totalTagCount.setText(String.format(Locale.getDefault(), "%d", tagCount));
+                totalGoalCount.setText(String.format(Locale.getDefault(), "%d", goalCount));
+            });
+        });
+    }
+
+    private Completable generateDailyGoalsStats(Pair<Long, Long> timeSpan) {
+        return Completable.fromAction(() -> {
+            ShuffleHasGoalStats goalShuffleData = db.getShuffleHasGoalDao().getShufflesFromBetween(timeSpan.first, timeSpan.second).blockingGet();
+
+            boolean hasGoalShuffleData = goalShuffleData.goalCount > 0;
+
+            getActivity().runOnUiThread(() -> {
+                if (hasGoalShuffleData) {
+                    rpGoalsReached.setData(goalShuffleData.goalCount, goalShuffleData.achievedCount, "ACHIEVED", null, String.format(Locale.ENGLISH, "%d/%d", goalShuffleData.achievedCount, goalShuffleData.goalCount));
+                    rpAvgDiff.setData(3, (float) goalShuffleData.avgDifficulty, "AVERAGE DIFFICULTY LEVEL", null, String.format(Locale.ENGLISH, "%.2f", goalShuffleData.avgDifficulty));
+
+                    goalsReachedContainer.setVisibility(View.VISIBLE);
+                }
+                else {
+                    crdNoDataGoals.setVisibility(View.VISIBLE);
+
+                    // Hide all stats on daily goals as there is no data available
+                    goalsReachedContainer.setVisibility(View.GONE);
+                }
+            });
+        });
+    }
+
+    private Completable generateDreamJournalStats(Pair<Long, Long> timeSpan) {
+        return Completable.fromAction(() -> {
+            int lucidEntriesCount = db.getJournalEntryDao().getLucidEntriesCount(timeSpan.first, timeSpan.second).blockingGet();
+            int totalEntriesCount = db.getJournalEntryDao().getEntriesCount(timeSpan.first, timeSpan.second).blockingGet();
+            List<TagCount> tagCounts = db.getJournalEntryHasTagDao().getMostUsedTagsList(timeSpan.first, timeSpan.second, 10).blockingGet();
+
+            boolean hasJournalEntries = totalEntriesCount != 0;
+            boolean hasAvgMoodsData = !Tools.hasNoData(avgMoods);
+            boolean hasAvgDreamClarityData = !Tools.hasNoData(avgClarities);
+            boolean hasAvgSleepQualityData = !Tools.hasNoData(avgQualities);
+            boolean hasAvgJournalRatings = !Tools.hasNoData(avgMoods) && !Tools.hasNoData(avgClarities) && !Tools.hasNoData(avgQualities) && !Tools.hasNoData(dreamCounts);
+            boolean hasTagData = tagCounts.size() > 0;
+
+            getActivity().runOnUiThread(() -> {
+                if (hasJournalEntries) {
+                    crdNoDataJournal.setVisibility(View.GONE);
+                    lucidPercentage.setData(lucidEntriesCount, totalEntriesCount - lucidEntriesCount, Tools.dpToPx(getContext(), 15), Tools.dpToPx(getContext(), 1.25));
+                    if (hasAvgMoodsData) {
+                        generateRodChart(rgAvgDreamMoods, Tools.dpToPx(getContext(), 3f), moodIcons, avgMoods);
+                    }
+                    if (hasAvgDreamClarityData) {
+                        generateRodChart(rgAvgDreamClarities, Tools.dpToPx(getContext(), 3f), clarityIcons, avgClarities);
+                    }
+                    if (hasAvgSleepQualityData) {
+                        generateRodChart(rgAvgSleepQualities, Tools.dpToPx(getContext(), 3f), qualityIcons, avgQualities);
+                    }
+                    if (hasAvgJournalRatings) {
+                        generateAverageJournalRatingsStats();
+                    }
+                    if (hasTagData) {
+                        mostUsedTagsContainer.removeAllViews();
+                        generateMostUsedTagsStats(tagCounts);
+                    }
+
+                    crdLucidDreamRatio.setVisibility(View.VISIBLE);
+                    crdAvgDreamMoods.setVisibility(hasAvgMoodsData ? View.VISIBLE : View.GONE);
+                    crdAvgDreamClarity.setVisibility(hasAvgDreamClarityData ? View.VISIBLE : View.GONE);
+                    crdAvgSleepQuality.setVisibility(hasAvgSleepQualityData ? View.VISIBLE : View.GONE);
+                    crdOverallJournalRatings.setVisibility(hasAvgJournalRatings ? View.VISIBLE : View.GONE);
+                    crdMostUsedTags.setVisibility(hasTagData ? View.VISIBLE : View.GONE);
+                }
+                else {
+                    crdNoDataJournal.setVisibility(View.VISIBLE);
+
+                    // Hide all stats on dream journal as there is no data available
+                    crdAvgDreamMoods.setVisibility(View.GONE);
+                    crdAvgDreamClarity.setVisibility(View.GONE);
+                    crdAvgSleepQuality.setVisibility(View.GONE);
+                    crdOverallJournalRatings.setVisibility(View.GONE);
+                    crdLucidDreamRatio.setVisibility(View.GONE);
+                    crdMostUsedTags.setVisibility(View.GONE);
+                }
+            });
+        });
+    }
+
+    private void generateMostUsedTagsStats(List<TagCount> tagCounts) {
+        int maxCount = tagCounts.get(0).getCount();
+        for (TagCount p : tagCounts) {
+            RangeProgress rngProg = new RangeProgress(getContext());
+            LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Tools.dpToPx(getContext(), 25));
+            int margin = Tools.dpToPx(getContext(), 5);
+            llParams.setMargins(0, margin, 0, margin);
+            rngProg.setLayoutParams(llParams);
+            mostUsedTagsContainer.addView(rngProg);
+            rngProg.setData(maxCount, p.getCount(), p.getTag(), null, Integer.toString(p.getCount()));
+        }
+    }
+
+    private void generateAverageJournalRatingsStats() {
+        float averageMood = calcAverage(avgMoods, true);
+        float averageClarity = calcAverage(avgClarities, true);
+        float averageQuality = calcAverage(avgQualities, true);
+        float averageDreamCount = calcAverage(dreamCounts, false);
+
+        rpDreamMood.setData(4, averageMood, "DREAM MOOD", moodIcons[Math.round(averageMood)], null);
+        rpDreamClarity.setData(3, averageClarity, "DREAM CLARITY", clarityIcons[Math.round(averageClarity)], null);
+        rpSleepQuality.setData(3, averageQuality, "SLEEP QUALITY", qualityIcons[Math.round(averageQuality)], null);
+        rpDreamsPerNight.setData(Collections.max(dreamCounts).floatValue(), averageDreamCount, "DREAMS PER NIGHT", null, String.format(Locale.ENGLISH, "%.2f", averageDreamCount));
     }
 
     private float calcAverage(List<Double> vals, boolean ignoreMissedDays) {
@@ -245,30 +295,24 @@ public class Statistics extends Fragment {
         return (float)(sum / (double)i);
     }
 
-    private void generateRodChart(int amount, float lineWidth, ViewGroup container, Drawable[] icons, List<Double> averageValues) {
-        RodGraph rg = new RodGraph(getContext());
-        LinearLayout.LayoutParams lParamsw = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
-        lParamsw.weight = 1;
-        lParamsw.topMargin = Tools.dpToPx(getContext(), 8);
-        rg.setLayoutParams(lParamsw);
-        container.addView(rg);
+    private void generateRodChart(RodGraph rg, float lineWidth, Drawable[] icons, List<Double> averageValues) {
         List<DataValue> data = new ArrayList<>();
         Calendar cldr = new GregorianCalendar(TimeZone.getDefault());
         cldr.setTime(Calendar.getInstance().getTime());
         SimpleDateFormat df = new SimpleDateFormat("d\nMMM");
-        for (int j = 0; j < amount; j++) {
+        for (int j = 0; j < averageValues.size(); j++) {
             String label = null;
-            if(amount <= 7){
+            if(averageValues.size() <= 7){
                 label = df.format(cldr.getTime());
             }
-            else if (amount <= 31) {
+            else if (averageValues.size() <= 31) {
                 if(j % 6 == 0) {
                     label = df.format(cldr.getTime());
                 }
             }
             else {
                 // TODO: use 1/7 of total entry count and guarantee that last day is written and probably do not use rod graph or use averages of days (=> loss of accuracy)
-                if(j % 10 == 0){
+                if(j % 10 == 0) {
                     label = df.format(cldr.getTime());
                 }
             }
@@ -276,37 +320,30 @@ public class Statistics extends Fragment {
             cldr.add(Calendar.DAY_OF_MONTH, -1);
         }
         rg.setData(data, lineWidth, Tools.dpToPx(getContext(), 24), icons);
+        rg.setMinimumHeight(rg.getMinHeight());
     }
 
-    private void getAveragesForLastNDays(int amount, int daysBeforeToday) {
-        gatheredNewTimeSpanStats.setValue(false);
-        Pair<Long, Long> timeSpan = Tools.getTimeSpanFrom(daysBeforeToday, false);
-        if(daysBeforeToday == 0) {
-            avgQualities.clear();
-            avgMoods.clear();
-            avgClarities.clear();
-            dreamCounts.clear();
-            endTimeSpan = timeSpan.second;
-        }
-        db.getJournalEntryDao().getAverageEntryInTimeSpan(timeSpan.first, timeSpan.second).subscribe((averageEntryValues, throwable) -> {
-            if(averageEntryValues.getDreamCount() > 0){
-                avgQualities.add(averageEntryValues.getAvgQualities());
-                avgMoods.add(averageEntryValues.getAvgMoods());
-                avgClarities.add(averageEntryValues.getAvgClarities());
-                dreamCounts.add(averageEntryValues.getDreamCount());
+    private Completable getAveragesForLastNDays(int amount, int daysBeforeToday) {
+        return Completable.fromAction(() -> {
+            boolean isLastDayToCheck = daysBeforeToday == amount - 1;
+            Pair<Long, Long> timeSpan = Tools.getTimeSpanFrom(daysBeforeToday, false);
+            AverageEntryValues averageEntryValues = db.getJournalEntryDao().getAverageEntryInTimeSpan(timeSpan.first, timeSpan.second).blockingGet();
+
+            if(daysBeforeToday == 0) {
+                avgQualities.clear();
+                avgMoods.clear();
+                avgClarities.clear();
+                dreamCounts.clear();
             }
-            else {
-                avgQualities.add(-1.0);
-                avgMoods.add(-1.0);
-                avgClarities.add(-1.0);
-                dreamCounts.add(-1.0);
-            }
-            if(daysBeforeToday == amount-1) {
-                startTimeSpan = timeSpan.first;
-                gatheredNewTimeSpanStats.setValue(true);
-            }
-            else {
-                getAveragesForLastNDays(amount, daysBeforeToday + 1);
+
+            boolean hasJournalEntries = averageEntryValues.getDreamCount() > 0;
+            avgQualities.add(hasJournalEntries ? averageEntryValues.getAvgQualities() : -1.0);
+            avgMoods.add(hasJournalEntries ? averageEntryValues.getAvgMoods() : -1.0);
+            avgClarities.add(hasJournalEntries ? averageEntryValues.getAvgClarities() : -1.0);
+            dreamCounts.add(hasJournalEntries ? averageEntryValues.getDreamCount() : -1.0);
+
+            if(!isLastDayToCheck) {
+                getAveragesForLastNDays(amount, daysBeforeToday + 1).blockingSubscribe();
             }
         });
     }

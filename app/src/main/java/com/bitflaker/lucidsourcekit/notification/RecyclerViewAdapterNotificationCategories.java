@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +16,7 @@ import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
 import com.bitflaker.lucidsourcekit.general.NotificationObfuscationLookup;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.Comparator;
 import java.util.List;
@@ -51,7 +51,7 @@ public class RecyclerViewAdapterNotificationCategories extends RecyclerView.Adap
         holder.count.setCompoundDrawablesRelativeWithIntrinsicBounds(enabledStateDrawable, null, null, null);
         holder.categoryIcon.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), current.getDrawable(), context.getTheme()));
 
-        holder.card.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.shade_disabled, context.getTheme()));
+//        holder.card.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.shade_disabled, context.getTheme()));
 
         holder.card.setOnClickListener(e -> current.getCategoryClickedListener().notificationCategoryClicked());
     }
@@ -126,13 +126,13 @@ public class RecyclerViewAdapterNotificationCategories extends RecyclerView.Adap
     }
 
     public static class MainViewHolderNotificationCategories extends RecyclerView.ViewHolder {
-        ConstraintLayout card;
+        MaterialCardView card;
         TextView heading, description, count;
         ImageView categoryIcon;
 
         public MainViewHolderNotificationCategories(@NonNull View itemView) {
             super(itemView);
-            card = itemView.findViewById(R.id.cl_notification_entry);
+            card = itemView.findViewById(R.id.crd_notification_entry);
             heading = itemView.findViewById(R.id.txt_notification_category_heading);
             description = itemView.findViewById(R.id.txt_notification_category_description);
             count = itemView.findViewById(R.id.txt_notification_category_count);

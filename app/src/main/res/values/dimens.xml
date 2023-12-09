@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="cardRadius">15dp</dimen>
-    <dimen name="cardRadius_Var2">30dp</dimen>
     <dimen name="cardElevationRegular">2dp</dimen>
     <dimen name="rounded_ripple_inset">0dp</dimen>
     <dimen name="rating_point_space">0dp</dimen>
     <dimen name="rating_point_size">10dp</dimen>
     <dimen name="tone_creation_setting_padding">20dp</dimen>
+    <dimen name="cardElevationOutline">0dp</dimen>
+    <dimen name="cardDefaultPadding">24dp</dimen>
 </resources>

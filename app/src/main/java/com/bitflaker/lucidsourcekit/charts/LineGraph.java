@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.Nullable;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.general.Tools;
@@ -53,7 +54,17 @@ public class LineGraph extends View {
     private double lastSetProgress = 0;
     private Matrix lgradOpacMatrix, lgradOpacMatrix2, lgradOpacMatrix3;
     private Path polyPath;
+    private boolean isSetUp = false;
 
+    public LineGraph(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        setup();
+    }
+
+    public LineGraph(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        setup();
+    }
 
     public LineGraph(Context context){
         super(context);
@@ -66,6 +77,7 @@ public class LineGraph extends View {
     }
 
     private void setup() {
+        setLayerType(View. LAYER_TYPE_SOFTWARE, null);
         dataPainter.setColor(Color.BLUE);
         axisLinePaint.setColor(Color.GRAY);
         axisLinePaint.setStrokeWidth(Tools.dpToPx(getContext(), 3));
@@ -104,7 +116,7 @@ public class LineGraph extends View {
         colorsLineProgress = new int[] { Color.argb(0,0,0,0), Color.argb(185, 30, 30, 30) };
         colorsFadeProgress = new int[] { Color.argb(255,255,255,255), Color.argb(100, 255, 255, 255) };
         colorsPolyProgress = new int[] {  Color.argb(0,0,0,0), Color.argb(200, 25, 25, 25) };
-        emptyProgressTwoFields = new float[2];
+        emptyProgressTwoFields = new float[] { 0.0f, 0.0f };
         emptyProgressTwoFields2 = new float[2];
 
         List<Float> values = new ArrayList<>();
@@ -121,6 +133,7 @@ public class LineGraph extends View {
         if(!wasScaledOnce && doNotIndicateProgress) { scalePositions = true; }
         else if(!doNotIndicateProgress) { scalePositions = true; }
         lgradOpac = new LinearGradient(0f, 0f, 1f, 0f, colorsLineProgress, emptyProgressTwoFields, Shader.TileMode.CLAMP);
+        isSetUp = true;
         invalidate();
     }
 
@@ -139,15 +152,19 @@ public class LineGraph extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        float radiusMargin = dataLinePaint.getStrokeWidth()/2.0f;
+        if(!isSetUp) {
+            return;
+        }
 
-        if(positions == null || colors == null || data == null){
+        float radiusMargin = dataLinePaint.getStrokeWidth() / 2.0f;
+
+        if(positions == null || colors == null || data == null) {
             return;
         }
 
         if(scalePositions) {
-            float ratio = 1-bottomLineSpacing/(getHeight()-padding_bottom);
-            for (int i = 0; i < positions.length; i++){
+            float ratio = 1 - bottomLineSpacing / (getHeight()-padding_bottom);
+            for (int i = 0; i < positions.length; i++) {
                 if(i == 0) {
                     positionsBuffer[i] = positions[i] * ratio;
                 }
@@ -168,10 +185,10 @@ public class LineGraph extends View {
             wasScaledOnce = true;
         }
 
-        float drawAreaHeight = (getHeight()-padding_bottom) - dataLinePaint.getStrokeWidth() - bottomLineSpacing;
+        float drawAreaHeight = (getHeight() - padding_bottom) - dataLinePaint.getStrokeWidth() - bottomLineSpacing;
         float drawAreaWidth = getWidth() - dataLinePaint.getStrokeWidth();
         boolean drewProgress = false;
-        float realXProgress = (float)progress / xMax * (getWidth()-radiusMargin);
+        float realXProgress = (float)progress / xMax * (getWidth() - radiusMargin);
 
         if(progress != lastSetProgress) {
             lgradOpac.getLocalMatrix(lgradOpacMatrix);

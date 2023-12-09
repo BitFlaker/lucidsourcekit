@@ -48,10 +48,19 @@ public class SetupAuthData extends Fragment {
 
     public void showCredentialsSetup(AuthTypes authType) {
         selectedAuthType = authType;
-        switch (selectedAuthType) {
-            case Password: showPasswordSetup(); break;
-            case Pin: showPinSetup(); break;
-            case None: showFinishSetup(); break;
+        View view = getView();
+        if(view != null) {
+            txtAuthDataTitle = view.findViewById(R.id.txt_auth_data_title);
+            txtAuthDataDescription = view.findViewById(R.id.txt_auth_data_description);
+            llPinLayout = view.findViewById(R.id.ll_setup_pinLayout);
+            txtPassword = view.findViewById(R.id.txt_setup_password);
+        }
+        if(view != null && txtAuthDataTitle != null && txtAuthDataDescription != null && llPinLayout != null && txtPassword != null) {
+            switch (selectedAuthType) {
+                case Password: showPasswordSetup(); break;
+                case Pin: showPinSetup(); break;
+                case None: showFinishSetup(); break;
+            }
         }
     }
 
@@ -71,7 +80,7 @@ public class SetupAuthData extends Fragment {
     }
 
     public void showPinSetup() {
-        txtAuthDataTitle.setText(getContext().getResources().getString(R.string.setup_auth_data_title_pin));
+        txtAuthDataTitle.setText(R.string.setup_auth_data_title_pin);
         txtAuthDataDescription.setText(R.string.setup_privacy_pin);
         llPinLayout.setVisibility(View.VISIBLE);
         txtPassword.setVisibility(View.GONE);

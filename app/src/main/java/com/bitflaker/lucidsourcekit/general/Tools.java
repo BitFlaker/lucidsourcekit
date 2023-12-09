@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.View;
@@ -585,5 +586,20 @@ public class Tools {
                 }
             }
         }
+    }
+
+    public static Drawable resizeDrawable(Resources resources, Drawable drawable, int width, int height) {
+        Bitmap bitmap;
+        if(drawable.getClass().equals(VectorDrawable.class)) {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+        }
+        else {
+            bitmap = ((BitmapDrawable) drawable).getBitmap();
+        }
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
+        return new BitmapDrawable(resources, scaledBitmap);
     }
 }

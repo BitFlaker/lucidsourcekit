@@ -1,7 +1,6 @@
 package com.bitflaker.lucidsourcekit.main;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +54,7 @@ public class RecyclerViewAdapterGoalAdvice extends RecyclerView.Adapter<Recycler
         holder.heading.setText(goalAdvices.get(position).getHeading());
 //        holder.description.setText(gaolAdvices.get(position).getDescription());
         holder.icon.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), goalAdvices.get(position).getIcon(), context.getTheme()));
-        holder.topCardColor.setBackgroundTintList(ColorStateList.valueOf(goalAdvices.get(position).getColor()));
+//        holder.topCardColor.setBackgroundTintList(ColorStateList.valueOf(goalAdvices.get(position).getColor()));
         holder.card.setOnClickListener(e -> {
             goalAdvices.get(position).getOnAdviceSelectedListener().adviceSelected(goalAdvices.get(position));
         });
@@ -70,7 +69,7 @@ public class RecyclerViewAdapterGoalAdvice extends RecyclerView.Adapter<Recycler
         TextView heading;//, title, description;
         MaterialCardView card;
         ImageView icon;
-        View topCardColor;
+//        View topCardColor;
 
         public MainViewHolderGoalAdvices(@NonNull View itemView) {
             super(itemView);
@@ -79,7 +78,7 @@ public class RecyclerViewAdapterGoalAdvice extends RecyclerView.Adapter<Recycler
             heading = itemView.findViewById(R.id.txt_adv_heading);
 //            description = itemView.findViewById(R.id.txt_adv_description);
             icon = itemView.findViewById(R.id.img_adv_icon);
-            topCardColor = itemView.findViewById(R.id.vw_adv_top_card_color);
+//            topCardColor = itemView.findViewById(R.id.vw_adv_top_card_color);
         }
     }
 

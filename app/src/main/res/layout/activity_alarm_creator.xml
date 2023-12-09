@@ -378,6 +378,7 @@
                     android:id="@+id/crd_alarm_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:strokeWidth="0dp"
                     app:cardBackgroundColor="@android:color/transparent"
                     app:cardCornerRadius="0dp"
                     app:cardElevation="0dp">
@@ -417,6 +418,7 @@
                     android:id="@+id/crd_alarm_tone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:strokeWidth="0dp"
                     app:cardBackgroundColor="@android:color/transparent"
                     app:cardCornerRadius="0dp"
                     app:cardElevation="0dp">
@@ -454,6 +456,7 @@
                     android:id="@+id/crd_alarm_volume"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:strokeWidth="0dp"
                     app:cardBackgroundColor="@android:color/transparent"
                     app:cardCornerRadius="0dp"
                     app:cardElevation="0dp">
@@ -508,6 +511,7 @@
                     android:id="@+id/crd_alarm_volume_increase"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:strokeWidth="0dp"
                     app:cardBackgroundColor="@android:color/transparent"
                     app:cardCornerRadius="0dp"
                     app:cardElevation="0dp">
@@ -545,6 +549,7 @@
                     android:id="@+id/crd_alarm_vibrate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:strokeWidth="0dp"
                     app:cardBackgroundColor="@android:color/transparent"
                     app:cardCornerRadius="0dp"
                     app:cardElevation="0dp">
@@ -581,6 +586,7 @@
                     android:id="@+id/crd_alarm_use_flashlight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:strokeWidth="0dp"
                     app:cardBackgroundColor="@android:color/transparent"
                     app:cardCornerRadius="0dp"
                     app:cardElevation="0dp">

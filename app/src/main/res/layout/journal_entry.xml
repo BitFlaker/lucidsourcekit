@@ -37,10 +37,11 @@
             android:id="@+id/crd_journal_entry_card"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:cardCornerRadius="@dimen/cardRadius"
-            app:cardElevation="@dimen/cardElevationRegular"
             android:layout_margin="10dp"
-            android:backgroundTint="?attr/slightElevated">
+            android:backgroundTint="?attr/slightElevated"
+            app:strokeWidth="0dp"
+            app:cardCornerRadius="@dimen/cardRadius"
+            app:cardElevation="@dimen/cardElevationRegular">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

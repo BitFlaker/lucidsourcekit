@@ -1,35 +1,26 @@
 package com.bitflaker.lucidsourcekit.main;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,7 +28,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.charts.QuadraticFunctionCurve;
 import com.bitflaker.lucidsourcekit.charts.Speedometer;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
@@ -47,13 +37,15 @@ import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.datastore.DataStoreKeys;
 import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
 import com.bitflaker.lucidsourcekit.notification.NotificationManager;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.slider.Slider;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
@@ -175,180 +167,89 @@ public class Goals extends Fragment {
 
     private void setupAdjustAlgorithmSheet() {
         bsdAdjustAlgorithm = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
-        bsdAdjustAlgorithm.setContentView(R.layout.algorithm_adjustment_sheet);
+        bsdAdjustAlgorithm.setContentView(R.layout.sheet_algorithm_adjustment);
 
-        Slider easySld = bsdAdjustAlgorithm.findViewById(R.id.sld_algo_diff_easy);
-        Slider normalSld = bsdAdjustAlgorithm.findViewById(R.id.sld_algo_diff_normal);
-        Slider hardSld = bsdAdjustAlgorithm.findViewById(R.id.sld_algo_diff_hard);
-        QuadraticFunctionCurve qfc = bsdAdjustAlgorithm.findViewById(R.id.rp_difficulty_level);
+        Slider sldCommon = bsdAdjustAlgorithm.findViewById(R.id.sld_algo_diff_common);
+        Slider sldUncommon = bsdAdjustAlgorithm.findViewById(R.id.sld_algo_diff_uncommon);
+        Slider sldRare = bsdAdjustAlgorithm.findViewById(R.id.sld_algo_diff_rare);
+        Slider sldGoalCount = bsdAdjustAlgorithm.findViewById(R.id.sld_goal_count);
+        MaterialSwitch swtAutoAdjustGoalDifficulty = bsdAdjustAlgorithm.findViewById(R.id.swt_auto_adjust_goal_difficulty);
+        TextView txtValueCommon = bsdAdjustAlgorithm.findViewById(R.id.txt_sld_value_common);
+        TextView txtValueUncommon = bsdAdjustAlgorithm.findViewById(R.id.txt_sld_value_uncommon);
+        TextView txtValueRare = bsdAdjustAlgorithm.findViewById(R.id.txt_sld_value_rare);
+        TextView txtValueGoalCount = bsdAdjustAlgorithm.findViewById(R.id.txt_sld_value_goal_count);
+        MaterialButton btnSave = bsdAdjustAlgorithm.findViewById(R.id.btn_save_algo_adjust);
+        Slider[] weightSliders = new Slider[] { sldCommon, sldUncommon, sldRare };
+
+        sldCommon.addOnChangeListener((slider, value, fromUser) -> {
+            txtValueCommon.setText(String.format(Locale.getDefault(), "%.0f%%", slider.getValue() * 100));
+            if(fromUser) { setSliderProportions(weightSliders, slider); }
+        });
+        sldUncommon.addOnChangeListener((slider, value, fromUser) -> {
+            txtValueUncommon.setText(String.format(Locale.getDefault(), "%.0f%%", slider.getValue() * 100));
+            if(fromUser) { setSliderProportions(weightSliders, slider); }
+        });
+        sldRare.addOnChangeListener((slider, value, fromUser) -> {
+            txtValueRare.setText(String.format(Locale.getDefault(), "%.0f%%", slider.getValue() * 100));
+            if(fromUser) { setSliderProportions(weightSliders, slider); }
+        });
+        sldGoalCount.addOnChangeListener((slider, value, fromUser) -> {
+            txtValueGoalCount.setText(String.format(Locale.getDefault(), "%d", (int) sldGoalCount.getValue()));
+        });
 
         DataStoreManager dsManager = DataStoreManager.getInstance();
+        sldCommon.setValue(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_COMMON).blockingFirst());
+        sldUncommon.setValue(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_UNCOMMON).blockingFirst());
+        sldRare.setValue(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_RARE).blockingFirst());
+        sldGoalCount.setValue(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_COUNT).blockingFirst());
+        swtAutoAdjustGoalDifficulty.setChecked(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_AUTO_ADJUST).blockingFirst());
 
-        easySld.setValue(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_EASY).blockingFirst());
-        normalSld.setValue(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_NORMAL).blockingFirst());
-        hardSld.setValue(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_HARD).blockingFirst());
-        qfc.setData(3, 120.5f, dsManager.getSetting(DataStoreKeys.GOAL_FUNCTION_VALUE_A).blockingFirst(), dsManager.getSetting(DataStoreKeys.GOAL_FUNCTION_VALUE_B).blockingFirst(), dsManager.getSetting(DataStoreKeys.GOAL_FUNCTION_VALUE_C).blockingFirst(), cachedGoals.size());
-        qfc.setZeroMinValue(true);
-        easySld.setOnTouchListener(preventScrollOnTouch());
-        normalSld.setOnTouchListener(preventScrollOnTouch());
-        hardSld.setOnTouchListener(preventScrollOnTouch());
-
-        ((Slider) bsdAdjustAlgorithm.findViewById(R.id.sld_algo_avg_goal_difficulty_spread)).setValue(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VARIANCE).blockingFirst());
-        ((Slider) bsdAdjustAlgorithm.findViewById(R.id.sld_algo_avg_goal_difficulty)).setValue(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_TENDENCY).blockingFirst());
-        ((SwitchCompat) bsdAdjustAlgorithm.findViewById(R.id.swt_auto_adjust_goal_diff)).setChecked(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_AUTO_ADJUST).blockingFirst());
-
-        bsdAdjustAlgorithm.findViewById(R.id.btn_cancel_algo_adjust).setOnClickListener(e2 -> {
-            bsdAdjustAlgorithm.cancel();
-        });
-
-        bsdAdjustAlgorithm.findViewById(R.id.btn_save_algo_adjust).setOnClickListener(e2 -> {
-            dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_VARIANCE, ((Slider) bsdAdjustAlgorithm.findViewById(R.id.sld_algo_avg_goal_difficulty_spread)).getValue()).blockingSubscribe();
-            dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_TENDENCY, ((Slider) bsdAdjustAlgorithm.findViewById(R.id.sld_algo_avg_goal_difficulty)).getValue()).blockingSubscribe();
-            dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_AUTO_ADJUST, ((SwitchCompat) bsdAdjustAlgorithm.findViewById(R.id.swt_auto_adjust_goal_diff)).isChecked()).blockingSubscribe();
-
-            dsManager.updateSetting(DataStoreKeys.GOAL_FUNCTION_VALUE_A, qfc.getA()).blockingSubscribe();
-            dsManager.updateSetting(DataStoreKeys.GOAL_FUNCTION_VALUE_B, qfc.getB()).blockingSubscribe();
-            dsManager.updateSetting(DataStoreKeys.GOAL_FUNCTION_VALUE_C, qfc.getC()).blockingSubscribe();
-            dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_EASY, easySld.getValue()).blockingSubscribe();
-            dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_NORMAL, normalSld.getValue()).blockingSubscribe();
-            dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_HARD, hardSld.getValue()).blockingSubscribe();
-            if(newGoalAmount != -1) {
-                dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_COUNT, newGoalAmount).blockingSubscribe();
-            }
-            if(newSignificantDifficultyDigits != -1) {
-                dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_ACCURACY, newSignificantDifficultyDigits).blockingSubscribe();
-            }
-
-            try {
-                EditText valVariance = bsdAdjustAlgorithm.findViewById(R.id.txt_goal_valuation_variance_algo);
-                dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_VARIANCE, Float.valueOf(valVariance.getText().toString())).blockingSubscribe();
-            }
-            catch(Exception ex){
-                // TODO handle invalid input data
-            }
+        btnSave.setOnClickListener(e2 -> {
+            dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_AUTO_ADJUST, swtAutoAdjustGoalDifficulty.isChecked()).blockingSubscribe();
+            dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_COMMON, sldCommon.getValue()).blockingSubscribe();
+            dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_UNCOMMON, sldUncommon.getValue()).blockingSubscribe();
+            dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_RARE, sldRare.getValue()).blockingSubscribe();
+            dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_COUNT, (int) sldGoalCount.getValue()).blockingSubscribe();
             bsdAdjustAlgorithm.dismiss();
         });
-
-        easySld.addOnChangeListener((slider, value, fromUser) -> updateQuadraticFunction(easySld, normalSld, hardSld, qfc));
-        normalSld.addOnChangeListener((slider, value, fromUser) -> updateQuadraticFunction(easySld, normalSld, hardSld, qfc));
-        hardSld.addOnChangeListener((slider, value, fromUser) -> updateQuadraticFunction(easySld, normalSld, hardSld, qfc));
-
-        ((MaterialButton) bsdAdjustAlgorithm.findViewById(R.id.btn_expander_advanced)).setOnClickListener(e2 -> {
-            LinearLayout expanded = bsdAdjustAlgorithm.findViewById(R.id.ll_advanced_adjustments);
-            int visibility = (expanded.getVisibility() + View.GONE) % (View.GONE * 2);
-            expanded.setVisibility(visibility);
-            switch (visibility){
-                case View.VISIBLE:
-                    Drawable contract = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_keyboard_arrow_up_24, getContext().getTheme());
-                    ((MaterialButton) e2).setCompoundDrawablesWithIntrinsicBounds(null, null, contract, null);
-                    BottomSheetBehavior.from((FrameLayout)bsdAdjustAlgorithm.findViewById(com.google.android.material.R.id.design_bottom_sheet)).setState(BottomSheetBehavior.STATE_EXPANDED);
-                    BottomSheetBehavior.from((FrameLayout)bsdAdjustAlgorithm.findViewById(com.google.android.material.R.id.design_bottom_sheet)).setDraggable(false);
-                    break;
-                case View.GONE:
-                    Drawable expand = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_keyboard_arrow_down_24, getContext().getTheme());
-                    ((MaterialButton) e2).setCompoundDrawablesWithIntrinsicBounds(null, null, expand, null);
-                    BottomSheetBehavior.from((FrameLayout)bsdAdjustAlgorithm.findViewById(com.google.android.material.R.id.design_bottom_sheet)).setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    BottomSheetBehavior.from((FrameLayout)bsdAdjustAlgorithm.findViewById(com.google.android.material.R.id.design_bottom_sheet)).setDraggable(true);
-                    break;
-                default:
-                    break;
-            }
-        });
-
-        ((MaterialButton) bsdAdjustAlgorithm.findViewById(R.id.btn_change_goal_count)).setOnClickListener(e2 -> createNumberPickerDialog(NumberPickableFields.GOAL_COUNT, 1, 10, newGoalAmount == -1 ? dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_COUNT).blockingFirst() : newGoalAmount));
-        ((EditText) bsdAdjustAlgorithm.findViewById(R.id.txt_goal_valuation_variance_algo)).setText(String.format(Locale.ENGLISH, "%.1f", dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_VARIANCE).blockingFirst()));
-        ((MaterialButton) bsdAdjustAlgorithm.findViewById(R.id.btn_change_difficulty_significant_digits)).setOnClickListener(e2 -> createNumberPickerDialog(NumberPickableFields.GOAL_SIGNIFICANT_DIGITS, 1, 6, newSignificantDifficultyDigits == -1 ? getPotency(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_ACCURACY).blockingFirst()) : getPotency(newSignificantDifficultyDigits)));
-        ((TextView) bsdAdjustAlgorithm.findViewById(R.id.txt_goal_difficulty_significant_algo)).setText(Integer.toString(getPotency(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_ACCURACY).blockingFirst())));
-        ((TextView) bsdAdjustAlgorithm.findViewById(R.id.txt_goal_count_algo)).setText(Integer.toString(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_COUNT).blockingFirst()));
 
         bsdAdjustAlgorithm.show();
     }
 
-    private int getPotency(int number) {
-        int i = 0;
-        int num = number;
-        while(num % 10 == 0 && num != 0) {
-            i++;
-            num = num / 10;
+    private void setSliderProportions(Slider[] sliders, Slider slider) {
+        if(sliders == null || slider == null || sliders.length == 0) {
+            return;
         }
-        return i;
-    }
 
-    @NonNull
-    private View.OnTouchListener preventScrollOnTouch() {
-        return (v, event) -> {
-            int action = event.getAction();
-            switch (action) {
-                case MotionEvent.ACTION_DOWN:
-                    v.getParent().requestDisallowInterceptTouchEvent(true);
-                    break;
-                case MotionEvent.ACTION_UP:
-                    v.getParent().requestDisallowInterceptTouchEvent(false);
-                    break;
-            }
-
-            v.onTouchEvent(event);
-            return true;
-        };
-    }
-
-    public void createNumberPickerDialog(NumberPickableFields field, int min, int max, int currValue)
-    {
-        final NumberPicker numberPicker = new NumberPicker(getActivity());
-        numberPicker.setMaxValue(max);
-        numberPicker.setMinValue(min);
-        numberPicker.setValue(currValue);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setView(numberPicker);
-        builder.setTitle("Change goal count");
-        builder.setMessage("Set an amount: ");
-        builder.setPositiveButton(getResources().getString(R.string.ok), (dialog, which) -> updateGoalCount(numberPicker.getValue(), field));
-        builder.setNegativeButton(getResources().getString(R.string.cancel), null);
-        builder.create();
-        builder.show();
-    }
-
-    public void updateGoalCount(int amount, NumberPickableFields field) {
-        switch (field){
-            case GOAL_COUNT:
-                newGoalAmount = amount;
-                ((TextView) bsdAdjustAlgorithm.findViewById(R.id.txt_goal_count_algo)).setText(Integer.toString(newGoalAmount));
-                break;
-            case GOAL_SIGNIFICANT_DIGITS:
-                newSignificantDifficultyDigits = (int) Math.pow(10, amount);
-                ((TextView) bsdAdjustAlgorithm.findViewById(R.id.txt_goal_difficulty_significant_algo)).setText(Integer.toString(amount));
-                break;
-            default:
-                break;
-        }
-    }
-
-    public void updateQuadraticFunction(Slider easySlider, Slider normalSlider, Slider hardSlider, QuadraticFunctionCurve qfc) {
-        calculateQuadraticCurve(easySlider, normalSlider, hardSlider, qfc);
-    }
-
-    private void calculateQuadraticCurve(Slider easySlider, Slider normalSlider, Slider hardSlider, QuadraticFunctionCurve qfc) {
-        if (cachedUpToDiffCount == -1) {
-            cachedUpToDiffCount = getCountUpToDifficulty(2.0f);
-        }
-        PointF weight1 = new PointF(0f, easySlider.getValue());
-        PointF weight2 = new PointF(cachedUpToDiffCount - 1, normalSlider.getValue());
-        PointF weight3 = new PointF(cachedGoals.size() - 1, hardSlider.getValue());
-        double[] points = Tools.calculateQuadraticFunction(weight1, weight2, weight3);
-        qfc.setData(3, 120.5f, (float)points[0], (float)points[1], (float)points[2], cachedGoals.size());
-    }
-
-    private int getCountUpToDifficulty(float diff) {
-        for (int i = 0; i < cachedGoals.size(); i++) {
-            if (cachedGoals.get(i).difficulty > diff) {
-                return i;
+        float total = 0.0f;
+        int otherSliderCounter = 0;
+        Slider[] otherSliders = new Slider[sliders.length - 1];
+        for (Slider otherSlider : sliders) {
+            if (otherSlider != slider) {
+                otherSliders[otherSliderCounter++] = otherSlider;
+                total += otherSlider.getValue();
             }
         }
-        return cachedGoals.size();
+
+        float[] parts = new float[otherSliders.length];
+        if(total == 0) {
+            Arrays.fill(parts, 1.0f / otherSliders.length);
+        }
+        else {
+            for (int i = 0; i < otherSliders.length; i++) {
+                parts[i] = otherSliders[i].getValue() / total;
+            }
+        }
+
+        float diff = 1 - (total + slider.getValue());
+
+        for (int i = 0; i < otherSliders.length; i++) {
+            Slider current = otherSliders[i];
+            current.setValue(Math.min(Math.max(current.getValue() + parts[i] * diff, 0), 1));
+        }
     }
 
-   private void updateStats(Pair<Long, Long> todayTimeSpan) {
+    private void updateStats(Pair<Long, Long> todayTimeSpan) {
        Pair<Long, Long> pastTimeSpan = Tools.getTimeSpanFrom(1, false);
        db.getShuffleHasGoalDao().getShuffleFrom(todayTimeSpan.first, todayTimeSpan.second).subscribe((detailedShuffleHasGoals, throwable) -> {
            List<AppCompatCheckBox> goalChecks = new ArrayList<>();
@@ -362,10 +263,13 @@ public class Goals extends Fragment {
            float totalDifficultySum = 0;
            int count = 0;
            for (DetailedShuffleHasGoal detailedShuffleHasGoal : detailedShuffleHasGoals) {
-               AppCompatCheckBox chk = new AppCompatCheckBox(getContext());
+               MaterialCheckBox chk = new MaterialCheckBox(getContext());
                chk.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-               chk.setButtonDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.checkbox_button, getContext().getTheme()));
-               chk.setCompoundDrawableTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), android.R.color.transparent, getContext().getTheme())));
+               chk.setButtonDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.checkbox_button_round, getContext().getTheme()));
+               chk.setButtonTintList(ResourcesCompat.getColorStateList(getContext().getResources(), R.color.checkbox_icon_check_change, getContext().getTheme()));
+               chk.setButtonIconDrawable(Tools.resizeDrawable(getResources(), ResourcesCompat.getDrawable(getResources(), R.drawable.round_check_24, getContext().getTheme()), Tools.dpToPx(getContext(), 18), Tools.dpToPx(getContext(), 18)));
+               chk.setButtonIconTintList(ResourcesCompat.getColorStateList(getContext().getResources(), R.color.checkbox_button_icon_check, getContext().getTheme()));
+//               chk.setCompoundDrawableTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), android.R.color.transparent, getContext().getTheme())));
                chk.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
                chk.setHighlightColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
                int dp20 = Tools.dpToPx(getContext(), 20);
@@ -526,42 +430,5 @@ public class Goals extends Fragment {
                 }).dispose();
             }).dispose();
         }).dispose();
-    }
-
-//    private RecyclerView.OnItemTouchListener horizontalScrollViewPger = new RecyclerView.OnItemTouchListener() {
-//        int lastX = 0;
-//        @Override
-//        public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-//            switch (e.getAction()) {
-//                case MotionEvent.ACTION_DOWN:
-//                    lastX = (int) e.getX();
-//                    break;
-//                case MotionEvent.ACTION_MOVE:
-//                    boolean isScrollingRight = e.getX() < lastX;
-//                    if ((isScrollingRight && ((LinearLayoutManager) quickScrollAdjustmentsContainer.getLayoutManager()).findLastCompletelyVisibleItemPosition() == quickScrollAdjustmentsContainer.getAdapter().getItemCount() - 1) ||
-//                            (!isScrollingRight && ((LinearLayoutManager) quickScrollAdjustmentsContainer.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0)) {
-//                        mainViewPager.setUserInputEnabled(true);
-//                    } else {
-//                        mainViewPager.setUserInputEnabled(false);
-//                    }
-//                    break;
-//                case MotionEvent.ACTION_UP:
-//                    lastX = 0;
-//                    mainViewPager.setUserInputEnabled(true);
-//                    break;
-//            }
-//            return false;
-//        }
-//
-//        @Override
-//        public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) { }
-//
-//        @Override
-//        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) { }
-//    };
-
-    private enum NumberPickableFields {
-        GOAL_COUNT,
-        GOAL_SIGNIFICANT_DIGITS
     }
 }
