@@ -13,7 +13,6 @@ import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
 
 import com.bitflaker.lucidsourcekit.R;
@@ -293,18 +292,9 @@ public class LineGraph extends View {
     public static int[] manipulateAlphaArray(int[] colors, float factor){
         int[] newColors = new int[colors.length];
         for (int i = 0; i < colors.length; i++) {
-            newColors[i] = manipulateAlpha(/*Color.rgb(15,15,32)*/colors[i], factor);
+            newColors[i] = Tools.manipulateAlpha(colors[i], factor);
         }
         return newColors;
-    }
-
-    @ColorInt
-    public static int manipulateAlpha(@ColorInt int color, float factor) {
-        int alpha = Math.round(Color.alpha(color) * factor);
-        int red = Color.red(color);
-        int green = Color.green(color);
-        int blue = Color.blue(color);
-        return Color.argb(alpha, red, green, blue);
     }
 
     public void setBottomLinePadding(int padding) {

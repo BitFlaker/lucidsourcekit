@@ -52,19 +52,20 @@ public class EditGoals extends AppCompatActivity {
         addGoal.setOnClickListener(e -> {
             if(!isInSelectionMode) {
                 final BottomSheetDialog addGoalSheet = new BottomSheetDialog(EditGoals.this, R.style.BottomSheetDialogStyle);
-                addGoalSheet.setContentView(R.layout.goals_editor_sheet);
+                addGoalSheet.setContentView(R.layout.sheet_goals_editor);
                 MaterialButton deleteButton = addGoalSheet.findViewById(R.id.btn_delete_goal);
                 MaterialButton saveButton = addGoalSheet.findViewById(R.id.btn_save_goal);
                 EditText goalDescription = addGoalSheet.findViewById(R.id.txt_goal_description);
                 Slider goalDifficultySlider = addGoalSheet.findViewById(R.id.sld_goal_difficulty);
                 ImageButton toggleLockDifficulty = addGoalSheet.findViewById(R.id.btn_toggle_lock_difficulty);
                 TextView goalEditorTitle = addGoalSheet.findViewById(R.id.txt_goal_editor_title);
-                TextView successRateInfo = addGoalSheet.findViewById(R.id.txt_success_rate_info);
+                ImageButton goalInfo = addGoalSheet.findViewById(R.id.btn_show_goal_details);
                 AtomicBoolean isLocked = new AtomicBoolean(false);
 
+                changeSliderColor(goalDifficultySlider, goalDifficultySlider.getValue(), false);
                 goalDifficultySlider.addOnChangeListener(this::changeSliderColor);
                 goalDifficultySlider.setValue(1);
-                successRateInfo.setVisibility(View.GONE);
+                goalInfo.setVisibility(View.GONE);
                 deleteButton.setVisibility(View.GONE);
                 goalEditorTitle.setText("Add goal");  // TODO extract string resource
                 setLockIconAccordingly(toggleLockDifficulty, isLocked);
@@ -131,32 +132,40 @@ public class EditGoals extends AppCompatActivity {
         });
         editGoalsAdapter.setOnEntryClickedListener((goal, position) -> {
             final BottomSheetDialog editGoalSheet = new BottomSheetDialog(EditGoals.this, R.style.BottomSheetDialogStyle);
-            editGoalSheet.setContentView(R.layout.goals_editor_sheet);
+            editGoalSheet.setContentView(R.layout.sheet_goals_editor);
             MaterialButton deleteButton = editGoalSheet.findViewById(R.id.btn_delete_goal);
             MaterialButton saveButton = editGoalSheet.findViewById(R.id.btn_save_goal);
             EditText goalDescription = editGoalSheet.findViewById(R.id.txt_goal_description);
             Slider goalDifficultySlider = editGoalSheet.findViewById(R.id.sld_goal_difficulty);
             ImageButton toggleLockDifficulty = editGoalSheet.findViewById(R.id.btn_toggle_lock_difficulty);
             TextView goalEditorTitle = editGoalSheet.findViewById(R.id.txt_goal_editor_title);
-            TextView successRateInfo = editGoalSheet.findViewById(R.id.txt_success_rate_info);
+            ImageButton goalInfo = editGoalSheet.findViewById(R.id.btn_show_goal_details);
+//            TextView successRateInfo = editGoalSheet.findViewById(R.id.txt_success_rate_info);
             AtomicBoolean isLocked = new AtomicBoolean(goal.difficultyLocked);
 
             // TODO: check if this goal was on schedule at all
-            successRateInfo.setVisibility(View.GONE);
-            db.getShuffleHasGoalDao().getAchieveStatsOfGoal(goal.goalId).subscribe((goalStats, throwable) -> {
-                if(goalStats.totalCount == 0){
-                    successRateInfo.setText("This goal has not been on your schedule yet");
-                }
-                else {
-                    successRateInfo.setText(getResources().getString(R.string.goal_achievement_stats)
-                            .replace("<COUNT>", Integer.toString(goalStats.achievedCount))
-                            .replace("<TOTAL>", Integer.toString(goalStats.totalCount))
-                            .replace("<PERCENTAGE>", String.format(Locale.ENGLISH, "%.1f", (100.0f * goalStats.achievedCount / (float)goalStats.totalCount))));
-                }
-                successRateInfo.setVisibility(View.VISIBLE);
+            goalInfo.setVisibility(View.VISIBLE);
+            goalInfo.setOnClickListener(e -> {
+                db.getShuffleHasGoalDao().getAchieveStatsOfGoal(goal.goalId).subscribe((goalStats, throwable) -> {
+                    String message;
+                    if(goalStats.totalCount == 0) {
+                        message = "This goal has not been on your schedule yet";
+                    }
+                    else {
+                        message = getResources().getString(R.string.goal_achievement_stats)
+                                .replace("<COUNT>", Integer.toString(goalStats.achievedCount))
+                                .replace("<TOTAL>", Integer.toString(goalStats.totalCount))
+                                .replace("<PERCENTAGE>", String.format(Locale.ENGLISH, "%.1f", (100.0f * goalStats.achievedCount / (float)goalStats.totalCount)));
+                    }
+                    new AlertDialog.Builder(EditGoals.this, Tools.getThemeDialog()).setTitle("Goal details").setMessage(message)
+                            .setPositiveButton(getResources().getString(R.string.ok), null)
+                            .show();
+                }).dispose();
             });
-            goalEditorTitle.setText("Edit goal");  // TODO extract string resource
+
+            goalEditorTitle.setText("Edit goal");
             goalDescription.setText(goal.description);
+            changeSliderColor(goalDifficultySlider, goalDifficultySlider.getValue(), false);
             goalDifficultySlider.addOnChangeListener(this::changeSliderColor);
             goalDifficultySlider.setValue(goal.difficulty);
             setLockIconAccordingly(toggleLockDifficulty, isLocked);
@@ -196,18 +205,27 @@ public class EditGoals extends AppCompatActivity {
         if (isLocked.get()) {
             toggleLockDifficulty.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_lock_24, getTheme()));
             toggleLockDifficulty.setImageTintList(Tools.getAttrColorStateList(R.attr.primaryTextColor, getTheme()));
+            toggleLockDifficulty.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getTheme()));
         } else {
             toggleLockDifficulty.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_lock_open_24, getTheme()));
             toggleLockDifficulty.setImageTintList(Tools.getAttrColorStateList(R.attr.secondaryTextColor, getTheme()));
+            toggleLockDifficulty.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.backgroundColor, getTheme()));
         }
     }
 
     public void changeSliderColor(@NonNull Slider slider, float value, boolean fromUser) {
-        @ColorInt int color = Tools.getColorAtGradientPosition(value,
-                slider.getValueFrom(), slider.getValueTo(), Tools.getAttrColor(R.attr.colorSuccess, getTheme()),
-                Tools.getAttrColor(R.attr.colorWarning, getTheme()), Tools.getAttrColor(R.attr.colorError, getTheme()));
-        ColorStateList csl = ColorStateList.valueOf(color);
-        slider.setTrackTintList(csl);
-        slider.setThumbTintList(csl);
+        @ColorInt int color = Tools.getColorAtGradientPosition(
+                value,
+                slider.getValueFrom(),
+                slider.getValueTo(),
+                Tools.getAttrColor(R.attr.colorSuccess, getTheme()),
+                Tools.getAttrColor(R.attr.colorWarning, getTheme()),
+                Tools.getAttrColor(R.attr.colorError, getTheme()
+        ));
+        ColorStateList activeTrackColor = ColorStateList.valueOf(color);
+        ColorStateList inactiveTrackColor = ColorStateList.valueOf(Tools.manipulateAlpha(color, 0.32f));
+        slider.setTrackInactiveTintList(inactiveTrackColor);
+        slider.setTrackActiveTintList(activeTrackColor);
+        slider.setThumbTintList(activeTrackColor);
     }
 }

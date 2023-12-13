@@ -57,6 +57,8 @@ import java.util.TimeZone;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.rxjava3.core.Maybe;
+
 public class MainActivity extends AppCompatActivity {
     private final char[] pinLayout = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ', '0', '<' };
     private final StringBuilder enteredPin = new StringBuilder();
@@ -221,19 +223,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void shuffleGoalsForToday(MainDatabase db) {
         Pair<Long, Long> dayTimeSpans = Tools.getTimeSpanFrom(0, true);
-        db.getShuffleDao().getLastShuffleInDay(dayTimeSpans.first, dayTimeSpans.second).subscribe((shuffle, e) -> {
-            if(shuffle == null) {
-                List<Goal> goals = db.getGoalDao().getAllSingle().blockingGet();
-                List<Goal> goalsResult = Tools.getSuitableGoals(goals);
-                Long newShuffleId = db.getShuffleDao().insert(new Shuffle(dayTimeSpans.first, dayTimeSpans.second)).blockingGet();
-                List<ShuffleHasGoal> hasGoals = new ArrayList<>();
-                for (Goal goal : goalsResult) {
-                    hasGoals.add(new ShuffleHasGoal(newShuffleId.intValue(), goal.goalId));
-                }
-                db.getShuffleHasGoalDao().insertAll(hasGoals).blockingSubscribe();
+        Maybe<Shuffle> maybeShuffle = db.getShuffleDao().getLastShuffleInDay(dayTimeSpans.first, dayTimeSpans.second);
+        if(maybeShuffle.isEmpty().blockingGet()) {
+            List<Goal> goalsResult = Tools.getNewShuffleGoals(db);
+            Long newShuffleId = db.getShuffleDao().insert(new Shuffle(dayTimeSpans.first, dayTimeSpans.second)).blockingGet();
+            List<ShuffleHasGoal> hasGoals = new ArrayList<>();
+            for (Goal goal : goalsResult) {
+                hasGoals.add(new ShuffleHasGoal(newShuffleId.intValue(), goal.goalId));
             }
-            runOnUiThread(this::applicationLogin);
-        }).dispose();
+            db.getShuffleHasGoalDao().insertAll(hasGoals).blockingSubscribe();
+        }
+        runOnUiThread(this::applicationLogin);
     }
 
     private void setupPasswordAuthentication() {

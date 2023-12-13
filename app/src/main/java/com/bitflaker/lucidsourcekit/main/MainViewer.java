@@ -181,7 +181,7 @@ public class MainViewer extends AppCompatActivity {
         vwOverview = new MainOverview();
         vwLogging = new DreamJournal();
         vwPageStats = new Statistics();
-        vwPageGoals = new Goals(viewPager2);
+        vwPageGoals = new Goals();
         vwPageBinauralBeats = new BinauralBeatsView();
     }
 }

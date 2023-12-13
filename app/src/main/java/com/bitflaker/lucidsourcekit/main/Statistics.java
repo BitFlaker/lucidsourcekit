@@ -123,7 +123,6 @@ public class Statistics extends Fragment {
 
         compositeDisposable.add(getAveragesForLastNDays(selectedDaysCount, 0)
                 .subscribeOn(Schedulers.io())
-//                .observeOn(Schedulers.from(new HandlerExecutor(Looper.getMainLooper())))
                 .subscribe(this::updateStats));
 
         chartTimeSpan.setOnCheckedStateChangeListener((chipGroup, checkedIds) -> {
@@ -144,7 +143,6 @@ public class Statistics extends Fragment {
             }
             compositeDisposable.add(getAveragesForLastNDays(selectedDaysCount, 0)
                     .subscribeOn(Schedulers.io())
-//                    .observeOn(Schedulers.from(new HandlerExecutor(Looper.getMainLooper())))
                     .subscribe(this::updateStats));
         });
     }

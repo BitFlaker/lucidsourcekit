@@ -3,7 +3,6 @@ package com.bitflaker.lucidsourcekit.charts;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -15,8 +14,6 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
-
-import androidx.annotation.ColorInt;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.general.Tools;
@@ -69,7 +66,7 @@ public class RangeProgress extends View {
         dataLabelPaint.setFakeBoldText(true);
         dataLabelPaint.setAntiAlias(true);
         progressColors = new int[] {Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), Tools.getAttrColor(R.attr.backgroundColor, getContext().getTheme())};
-        textColors = new int[] { Tools.getAttrColor(R.attr.colorOnSecondary, getContext().getTheme()), manipulateAlpha(Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme()), 0.7f) };
+        textColors = new int[] { Tools.getAttrColor(R.attr.colorOnSecondary, getContext().getTheme()), Tools.manipulateAlpha(Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme()), 0.7f) };
         positions = new float[] { 0f, 0f };
     }
 
@@ -157,15 +154,6 @@ public class RangeProgress extends View {
         }
 
         lastWidth = getWidth();
-    }
-
-    @ColorInt
-    public static int manipulateAlpha(@ColorInt int color, float factor) {
-        int alpha = Math.round(Color.alpha(color) * factor);
-        int red = Color.red(color);
-        int green = Color.green(color);
-        int blue = Color.blue(color);
-        return Color.argb(alpha, red, green, blue);
     }
 
     public static Bitmap drawableToBitmap (Drawable drawable, int size) {

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".main.Goals">
 
     <TextView
@@ -69,21 +70,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="125dp" />
 
-                    <!--                    Look out for the following situations throughout the day to train your awareness -->
-
-                    <!--                    <TextView-->
-                    <!--                        android:layout_width="match_parent"-->
-                    <!--                        android:layout_height="wrap_content"-->
-                    <!--                        android:layout_marginStart="15dp"-->
-                    <!--                        android:layout_marginTop="40dp"-->
-                    <!--                        android:layout_marginEnd="15dp"-->
-                    <!--                        android:layout_marginBottom="40dp"-->
-                    <!--                        android:background="@drawable/small_rounded_rectangle"-->
-                    <!--                        android:backgroundTint="#1A4DB6AC"-->
-                    <!--                        android:padding="8dp"-->
-                    <!--                        android:text="Below are some metrics that compare today's goals to the average of the past few days"-->
-                    <!--                        android:textColor="?attr/colorSecondary" />-->
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -96,16 +82,6 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1">
-
-                            <!-- TODO: calculate dateset difficulty: db contains 10 easy, 5 medium and 3 tough ones and you get 2 tough ones and 1 medium it would be -->
-
-                            <!--    10*1 + 5*2 + 3*3 = 29
-                                    29 / 18 = 1,611111...
-                                    2*3 + 1*2 = 8
-                                    8 / 3 = 2,6666666...
-                                    100 * 2,666666... / 1,611111... = 165,5172%
-                                        => 165,52 %
-                            -->
 
                             <ImageView
                                 android:id="@+id/img_selection_diff_comparison"
@@ -151,7 +127,7 @@
                                 android:layout_below="@+id/ll_selection_diff_comparison"
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="8dp"
-                                android:text="Selection difficulty"
+                                android:text="Shuffle occurrence rating"
                                 android:textAlignment="center"
                                 android:textColor="?attr/secondaryTextColor"
                                 android:textSize="12sp" />
@@ -161,17 +137,6 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1">
-
-                            <!-- TODO: calculate occurrence frequency: 58 times a dataset of 3 records each was shown already => 174, each now selected entry gets checked and calcs: -->
-
-                            <!--    174 total selections
-                                    goal 1: 5x
-                                    goal 2: 2x
-                                    goal 3: 7x
-                                    goal total: 14x
-                                    => 14 * 100 / 174 = 8,045977
-                                    => 8,046 %
-                            -->
 
                             <ImageView
                                 android:id="@+id/img_occ_freq_comparison"
@@ -217,7 +182,7 @@
                                 android:layout_below="@+id/ll_occurrence_freq_comparison"
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="8dp"
-                                android:text="Occurrence frequency"
+                                android:text="Goal recurrence frequency"
                                 android:textAlignment="center"
                                 android:textColor="?attr/secondaryTextColor"
                                 android:textSize="12sp" />
@@ -233,9 +198,8 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
                     android:layout_marginTop="30dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginHorizontal="24dp"
                     android:layout_marginBottom="24dp"
                     app:contentPadding="0dp"
                     style="@style/LSK.MaterialCardView.Filled">
@@ -358,11 +322,11 @@
                 android:textSize="14sp" />
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/crd_past_goals_achieved"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="12dp"
                 style="@style/LSK.MaterialCardView.Filled">
 
                 <LinearLayout
@@ -431,11 +395,11 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/crd_past_goals_occurrence_rating"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="24dp"
                 style="@style/LSK.MaterialCardView.Filled">
 
                 <LinearLayout
@@ -461,7 +425,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-medium"
-                            android:text="Goals Difficulty"
+                            android:text="Average occurrence rating"
                             android:textColor="?attr/primaryTextColor"
                             android:textSize="18sp" />
 
@@ -504,11 +468,11 @@
             </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
+                android:id="@+id/ll_past_goals_ratings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="24dp"
                 android:divider="@drawable/divider_large"
                 android:orientation="horizontal"
                 android:showDividers="middle">
@@ -579,7 +543,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="Selection\nDifficulty"
+                            android:text="Shuffle occurrence rating"
                             android:textColor="?attr/secondaryTextColor"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -639,12 +603,32 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="Occurrence frequency"
+                            android:text="Goal recurrence frequency"
                             android:textColor="?attr/secondaryTextColor"
                             android:textSize="14sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/crd_no_data_past_goals"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="24dp"
+                android:visibility="gone"
+                style="@style/LSK.MaterialCardView.Filled">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="No data available. No goals were provided yesterday as the app was either not opened or the data is unavailable."
+                    android:textAlignment="center"
+                    android:textColor="?attr/secondaryTextColor"
+                    android:textSize="14sp" />
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -668,7 +652,7 @@
                 android:id="@+id/rcv_goal_advices"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginBottom="30dp"
                 android:overScrollMode="never"
                 android:nestedScrollingEnabled="false"/>

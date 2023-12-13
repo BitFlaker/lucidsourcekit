@@ -13,6 +13,7 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.Shuffle;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao
@@ -21,7 +22,7 @@ public interface ShuffleDao {
     Single<List<Shuffle>> getAll();
 
     @Query("SELECT * FROM Shuffle WHERE dayStartTimestamp = :dayStartTimestamp and dayEndTimestamp = :dayEndTimestamp ORDER BY shuffleId DESC LIMIT 1")
-    Single<Shuffle> getLastShuffleInDay(long dayStartTimestamp, long dayEndTimestamp);
+    Maybe<Shuffle> getLastShuffleInDay(long dayStartTimestamp, long dayEndTimestamp);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     Completable insertAll(Shuffle... shuffles);

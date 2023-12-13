@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -15,32 +16,33 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.charts.Speedometer;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
+import com.bitflaker.lucidsourcekit.database.goals.entities.Shuffle;
 import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.resulttables.DetailedShuffleHasGoal;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.datastore.DataStoreKeys;
 import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
+import com.bitflaker.lucidsourcekit.main.goals.GoalStatisticsCalculator;
 import com.bitflaker.lucidsourcekit.notification.NotificationManager;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.checkbox.MaterialCheckBox;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.slider.Slider;
 
@@ -48,64 +50,66 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicReference;
+
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class Goals extends Fragment {
-    private FloatingActionButton floatingEdit;
     private Speedometer difficultySpeedometer;
-    private LinearLayout currentGoalsContainer;
+    private LinearLayout currentGoalsContainer, pastGoalRatings;
     private MainDatabase db;
     private TextView currentSelectionDiff, currentOccurrenceFreq, currentSelectionDiffPart, currentOccurrenceFreqPart, yGoalsAchieved, yGoalsAchievedPart, yGoalsDiff, yGoalsDiffPart, yGoalsOccFreq, yGoalsOccFreqPart, yGoalsSelDiff, yGoalsSelDiffPart;
     private ImageView selectionDiffComparison, occFreqComparison;
     private ImageButton reshuffle;
-    private List<Goal> cachedGoals;
-    private int cachedUpToDiffCount = -1;
     private ImageButton adjustAlgorithm;
-    private int newGoalAmount = -1, newSignificantDifficultyDigits = -1;
     private BottomSheetDialog bsdAdjustAlgorithm;
     private RecyclerView quickScrollAdjustmentsContainer;
-    private ViewPager2 mainViewPager;
-
-    public Goals() {
-
-    }
-
-    public Goals(ViewPager2 mainViewPager) {
-        this.mainViewPager = mainViewPager;
-    }
+    private CompositeDisposable compositeDisposable;
+    private MaterialCardView pastGoalsAchieved, pastGoalsOccurrenceRating, noDataPastGoals;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_goals_new, container, false);
+        View view = inflater.inflate(R.layout.fragment_goals, container, false);
+
+        view.findViewById(R.id.txt_goals_heading).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
+
+        pastGoalRatings = view.findViewById(R.id.ll_past_goals_ratings);
+        pastGoalsAchieved = view.findViewById(R.id.crd_past_goals_achieved);
+        pastGoalsOccurrenceRating = view.findViewById(R.id.crd_past_goals_occurrence_rating);
+        noDataPastGoals = view.findViewById(R.id.crd_no_data_past_goals);
+        difficultySpeedometer = view.findViewById(R.id.som_difficulty);
+        currentGoalsContainer = view.findViewById(R.id.ll_current_goals_container);
+        currentSelectionDiff = view.findViewById(R.id.txt_current_selection_diff_full);
+        currentOccurrenceFreq = view.findViewById(R.id.txt_occurrence_freq_full);
+        currentSelectionDiffPart = view.findViewById(R.id.txt_current_selection_diff_part);
+        currentOccurrenceFreqPart = view.findViewById(R.id.txt_occurrence_freq_part);
+        selectionDiffComparison = view.findViewById(R.id.img_selection_diff_comparison);
+        occFreqComparison = view.findViewById(R.id.img_occ_freq_comparison);
+        reshuffle = view.findViewById(R.id.btn_reshuffle_goals);
+        adjustAlgorithm = view.findViewById(R.id.btn_adjust_algorithm);
+        quickScrollAdjustmentsContainer = view.findViewById(R.id.rcv_goal_advices);
+        yGoalsAchieved = view.findViewById(R.id.txt_ygoals_achieved);
+        yGoalsAchievedPart = view.findViewById(R.id.txt_ygoals_achieved_part);
+        yGoalsDiff = view.findViewById(R.id.txt_ygoals_difficulty);
+        yGoalsDiffPart = view.findViewById(R.id.txt_ygoals_difficulty_part);
+        yGoalsOccFreq = view.findViewById(R.id.txt_ygoals_occ_freq);
+        yGoalsOccFreqPart = view.findViewById(R.id.txt_ygoals_occ_freq_part);
+        yGoalsSelDiff = view.findViewById(R.id.txt_ygoals_sel_difficulty);
+        yGoalsSelDiffPart = view.findViewById(R.id.txt_ygoals_sel_difficulty_part);
+
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getView().findViewById(R.id.txt_goals_heading).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
-        floatingEdit = getView().findViewById(R.id.btn_add_journal_entry);
-        difficultySpeedometer = getView().findViewById(R.id.som_difficulty);
-        currentGoalsContainer = getView().findViewById(R.id.ll_current_goals_container);
-        currentSelectionDiff = getView().findViewById(R.id.txt_current_selection_diff_full);
-        currentOccurrenceFreq = getView().findViewById(R.id.txt_occurrence_freq_full);
-        currentSelectionDiffPart = getView().findViewById(R.id.txt_current_selection_diff_part);
-        currentOccurrenceFreqPart = getView().findViewById(R.id.txt_occurrence_freq_part);
-        selectionDiffComparison = getView().findViewById(R.id.img_selection_diff_comparison);
-        occFreqComparison = getView().findViewById(R.id.img_occ_freq_comparison);
-        reshuffle = getView().findViewById(R.id.btn_reshuffle_goals);
-        adjustAlgorithm = getView().findViewById(R.id.btn_adjust_algorithm);
-        quickScrollAdjustmentsContainer = getView().findViewById(R.id.rcv_goal_advices);
-        yGoalsAchieved = getView().findViewById(R.id.txt_ygoals_achieved);
-        yGoalsAchievedPart = getView().findViewById(R.id.txt_ygoals_achieved_part);
-        yGoalsDiff = getView().findViewById(R.id.txt_ygoals_difficulty);
-        yGoalsDiffPart = getView().findViewById(R.id.txt_ygoals_difficulty_part);
-        yGoalsOccFreq = getView().findViewById(R.id.txt_ygoals_occ_freq);
-        yGoalsOccFreqPart = getView().findViewById(R.id.txt_ygoals_occ_freq_part);
-        yGoalsSelDiff = getView().findViewById(R.id.txt_ygoals_sel_difficulty);
-        yGoalsSelDiffPart = getView().findViewById(R.id.txt_ygoals_sel_difficulty_part);
+        compositeDisposable = new CompositeDisposable();
 
-        @ColorInt int primVar = Tools.getAttrColor(R.attr.colorPrimaryVariant, getContext().getTheme());
+        difficultySpeedometer.setDescription("Today's goals average\noccurrence rating");
+
         List<GoalAdvice> advices = new ArrayList<>();
         advices.add(new GoalAdvice("NOTIFICATIONS", "Configure notifications", "Configure notifications to remind you to look out for the targets", R.drawable.ic_baseline_notifications_active_24, Color.TRANSPARENT, advice -> {
             startActivity(new Intent(getContext(), NotificationManager.class));
@@ -116,45 +120,19 @@ public class Goals extends Fragment {
         RecyclerViewAdapterGoalAdvice goalAdvice = new RecyclerViewAdapterGoalAdvice(getContext(), advices);
 
         quickScrollAdjustmentsContainer.setAdapter(goalAdvice);
-//        quickScrollAdjustmentsContainer.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         quickScrollAdjustmentsContainer.setLayoutManager(new LinearLayoutManager(getContext()));
-//        quickScrollAdjustmentsContainer.addOnItemTouchListener(horizontalScrollViewPger);
 
         db = MainDatabase.getInstance(getContext());
-        adjustAlgorithm.setOnClickListener(e -> {
-            if (cachedGoals == null) {
-                db.getGoalDao().getAllSingle().subscribe((goals, throwable2) -> {
-                    cachedGoals = goals;
-                    setupAdjustAlgorithmSheet();
-                });
-            }
-            else {
-                setupAdjustAlgorithmSheet();
-            }
-        });
+        adjustAlgorithm.setOnClickListener(e -> setupAdjustAlgorithmSheet());
 
-        Pair<Long, Long> todayTimeSpan = Tools.getTimeSpanFrom(0, false);
-        updateStats(todayTimeSpan);
+        updateStats();
 
         reshuffle.setOnClickListener(e -> {
             PopupMenu popup = new PopupMenu(new ContextThemeWrapper(getContext(), Tools.getPopupTheme()), reshuffle);
-
             popup.getMenuInflater().inflate(R.menu.more_goals_options, popup.getMenu());
             popup.setOnMenuItemClickListener(item -> {
                 if(item.getItemId() == R.id.itm_shuffle) {
-                    // TODO show loading indicator
-                    Thread t = new Thread(() -> {
-                        // TODO reset cached goals if entering the goal editor
-                        if (cachedGoals == null) {
-                            db.getGoalDao().getAllSingle().subscribe((goals, throwable2) -> {
-                                cachedGoals = goals;
-                                storeNewShuffle(goals, todayTimeSpan);
-                            });
-                        } else {
-                            storeNewShuffle(cachedGoals, todayTimeSpan);
-                        }
-                    });
-                    t.start();
+                    new Thread(() -> storeNewShuffle()).start();
                 }
                 else if (item.getItemId() == R.id.itm_edit_goals) {
                     startActivity(new Intent(getContext(), EditGoals.class));
@@ -205,15 +183,30 @@ public class Goals extends Fragment {
         swtAutoAdjustGoalDifficulty.setChecked(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_AUTO_ADJUST).blockingFirst());
 
         btnSave.setOnClickListener(e2 -> {
-            dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_AUTO_ADJUST, swtAutoAdjustGoalDifficulty.isChecked()).blockingSubscribe();
-            dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_COMMON, sldCommon.getValue()).blockingSubscribe();
-            dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_UNCOMMON, sldUncommon.getValue()).blockingSubscribe();
-            dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_RARE, sldRare.getValue()).blockingSubscribe();
-            dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_COUNT, (int) sldGoalCount.getValue()).blockingSubscribe();
+            saveGoalAlgorithm(sldCommon.getValue(), sldUncommon.getValue(), sldRare.getValue(), (int) sldGoalCount.getValue(), swtAutoAdjustGoalDifficulty.isChecked());
             bsdAdjustAlgorithm.dismiss();
         });
 
+        // TODO only ask whether or not to save changes if actual changes were made
+        bsdAdjustAlgorithm.setOnCancelListener(e -> {
+            new AlertDialog.Builder(getContext(), Tools.getThemeDialog()).setTitle("Save changes").setMessage("Do you want to save all changes made to the goal algorithm?")
+                    .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
+                        saveGoalAlgorithm(sldCommon.getValue(), sldUncommon.getValue(), sldRare.getValue(), (int) sldGoalCount.getValue(), swtAutoAdjustGoalDifficulty.isChecked());
+                    })
+                    .setNegativeButton(getResources().getString(R.string.no), null)
+                    .show();
+        });
+
         bsdAdjustAlgorithm.show();
+    }
+
+    private static void saveGoalAlgorithm(float valueCommon, float valueUncommon, float valueRare, int goalCount, boolean autoAdjustGoalDifficulty) {
+        DataStoreManager dsManager = DataStoreManager.getInstance();
+        dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_AUTO_ADJUST, autoAdjustGoalDifficulty).blockingSubscribe();
+        dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_COMMON, valueCommon).blockingSubscribe();
+        dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_UNCOMMON, valueUncommon).blockingSubscribe();
+        dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_RARE, valueRare).blockingSubscribe();
+        dsManager.updateSetting(DataStoreKeys.GOAL_DIFFICULTY_COUNT, goalCount).blockingSubscribe();
     }
 
     private void setSliderProportions(Slider[] sliders, Slider slider) {
@@ -249,186 +242,136 @@ public class Goals extends Fragment {
         }
     }
 
-    private void updateStats(Pair<Long, Long> todayTimeSpan) {
-       Pair<Long, Long> pastTimeSpan = Tools.getTimeSpanFrom(1, false);
-       db.getShuffleHasGoalDao().getShuffleFrom(todayTimeSpan.first, todayTimeSpan.second).subscribe((detailedShuffleHasGoals, throwable) -> {
-           List<AppCompatCheckBox> goalChecks = new ArrayList<>();
-           float currentDifficulty;
-           AtomicReference<Float> strAvgDiff = new AtomicReference<>((float) 0);
-           AtomicReference<Integer> yesterdayCountAtmc = new AtomicReference<>(0);
-           AtomicReference<Integer> achievedCountAtmc = new AtomicReference<>(0);
-           AtomicReference<Float> yesterdaysDifficulty = new AtomicReference<>((float) 0);
-           AtomicReference<Float> currentOccFreq = new AtomicReference<>((float) 0);
-           AtomicReference<Float> pastOccFreq = new AtomicReference<>((float) 0);
-           float totalDifficultySum = 0;
-           int count = 0;
-           for (DetailedShuffleHasGoal detailedShuffleHasGoal : detailedShuffleHasGoals) {
-               MaterialCheckBox chk = new MaterialCheckBox(getContext());
-               chk.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-               chk.setButtonDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.checkbox_button_round, getContext().getTheme()));
-               chk.setButtonTintList(ResourcesCompat.getColorStateList(getContext().getResources(), R.color.checkbox_icon_check_change, getContext().getTheme()));
-               chk.setButtonIconDrawable(Tools.resizeDrawable(getResources(), ResourcesCompat.getDrawable(getResources(), R.drawable.round_check_24, getContext().getTheme()), Tools.dpToPx(getContext(), 18), Tools.dpToPx(getContext(), 18)));
-               chk.setButtonIconTintList(ResourcesCompat.getColorStateList(getContext().getResources(), R.color.checkbox_button_icon_check, getContext().getTheme()));
-//               chk.setCompoundDrawableTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), android.R.color.transparent, getContext().getTheme())));
-               chk.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
-               chk.setHighlightColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
-               int dp20 = Tools.dpToPx(getContext(), 20);
-               int dp15 = Tools.dpToPx(getContext(), 15);
-               chk.setPadding(dp15, dp20,0, dp20);
-               chk.setPaintFlags(detailedShuffleHasGoal.achieved ? chk.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG : chk.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-               chk.setText(detailedShuffleHasGoal.description);
-               chk.setChecked(detailedShuffleHasGoal.achieved);
-               chk.setTextColor(Tools.getAttrColor(detailedShuffleHasGoal.achieved ? R.attr.tertiaryTextColor : R.attr.primaryTextColor, getContext().getTheme()));
-               chk.setTypeface(Typeface.create(chk.getTypeface(), detailedShuffleHasGoal.achieved ? Typeface.NORMAL : Typeface.BOLD));
-               chk.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17);
-               chk.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-                   db.getShuffleHasGoalDao().setAchievedState(detailedShuffleHasGoal.shuffleId, detailedShuffleHasGoal.goalId, isChecked);
-                   chk.setTextColor(Tools.getAttrColor(isChecked ? R.attr.tertiaryTextColor : R.attr.primaryTextColor, getContext().getTheme()));
-                   chk.setTypeface(Typeface.create(chk.getTypeface(), isChecked ? Typeface.NORMAL : Typeface.BOLD));
-                   chk.setPaintFlags(isChecked ? chk.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG : chk.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-//                   LinearLayout parent = ((LinearLayout) chk.getParent());
-//                   if(isChecked) {
-//                       parent.removeView(chk);
-//                       parent.addView(chk);
-//                   }
-//                   else if (parent.indexOfChild(chk) != 0 && ((AppCompatCheckBox) parent.getChildAt(parent.indexOfChild(chk) - 1)).isChecked()) {
-//                       parent.removeView(chk);
-//                       parent.addView(chk, 0);
-//                   }
-               });
-               goalChecks.add(chk);
-               totalDifficultySum += detailedShuffleHasGoal.difficulty;
-               count++;
-           }
-           currentDifficulty = totalDifficultySum / count;
-           db.getGoalDao().getAverageDifficulty().subscribe((avgDiff, throwable1) -> {
-               strAvgDiff.set(avgDiff.floatValue());
-               db.getShuffleHasGoalDao().getShuffleFrom(pastTimeSpan.first, pastTimeSpan.second).subscribe((pastShuffleGoals, throwable2) -> {
-                   float yesterdaysTotalDifficultySum = 0;
-                   int yesterdayCount = 0;
-                   int achievedCount = 0;
-                   for (DetailedShuffleHasGoal goal : pastShuffleGoals) {
-                       yesterdaysTotalDifficultySum += goal.difficulty;
-                        if(goal.achieved) {
-                            achievedCount++;
-                        }
-                       yesterdayCount++;
-                   }
-                   float yesterdayDiff = yesterdaysTotalDifficultySum / yesterdayCount;
-                   yesterdayCountAtmc.set(yesterdayCount);
-                   achievedCountAtmc.set(achievedCount);
-                   yesterdaysDifficulty.set(yesterdayDiff);
-                   db.getShuffleHasGoalDao().getAmountOfTotalDrawnGoals().subscribe((shuffleCount, throwable3) -> {
-                       List<Integer> currentGoalIds = new ArrayList<>();
-                       List<Integer> pastGoalIds = new ArrayList<>();
-                       int redrawReduction = 0;
-                       for (DetailedShuffleHasGoal goal : detailedShuffleHasGoals) {
-                           currentGoalIds.add(goal.goalId);
-                       }
-                       for (DetailedShuffleHasGoal goal : pastShuffleGoals) {
-                           if(currentGoalIds.contains(goal.goalId)) {
-                               redrawReduction++;
-                           }
-                           pastGoalIds.add(goal.goalId);
-                       }
-                       int finalRedrawReduction = redrawReduction;
-                       db.getShuffleHasGoalDao().getCountOfGoalsDrawn(currentGoalIds).subscribe((drawCounts, throwable4) -> {
-                           int totalDrawCount = 0;
-                           for (Integer iVal : drawCounts) {
-                               totalDrawCount += iVal;
-                           }
-                           currentOccFreq.set(100 * totalDrawCount / (float) shuffleCount);
+    private void updateStats() {
+        Pair<Long, Long> tsToday = Tools.getTimeSpanFrom(0, false);
+        Pair<Long, Long> tsYesterday = Tools.getTimeSpanFrom(1, false);
 
-                           db.getShuffleHasGoalDao().getCountOfGoalsDrawn(pastGoalIds).subscribe((pastDrawCounts, throwable5) -> {
-                               int totalPastDrawCount = 0;
-                               for (Integer iVal : pastDrawCounts) {
-                                   totalPastDrawCount += iVal;
-                               }
-                               pastOccFreq.set(100 * (totalPastDrawCount - finalRedrawReduction) / (float) (shuffleCount - drawCounts.size()));
-                           }).dispose();
-                       }).dispose();
-                   }).dispose();
-               }).dispose();
-           }).dispose();
-           getActivity().runOnUiThread(() -> {
-               // TODO: hide loading indicators
-               currentGoalsContainer.removeAllViews();
-               for (AppCompatCheckBox chk : goalChecks) {
-                   currentGoalsContainer.addView(chk);
-               }
-               difficultySpeedometer.setDescription("Today's goals combined\ndifficulty rating");
-               difficultySpeedometer.setData(25, currentDifficulty, 3);
+        GoalStatisticsCalculator statsCalcToday = new GoalStatisticsCalculator(db, tsToday.first, tsToday.second);
+        GoalStatisticsCalculator statsCalcYesterday = new GoalStatisticsCalculator(db, tsYesterday.first, tsYesterday.second);
 
-               String[] numParts = getDecimalNumParts(100 * (float)achievedCountAtmc.get() / yesterdayCountAtmc.get(), 2);
-               if(!Float.isNaN(yesterdaysDifficulty.get())){
-                   yGoalsDiff.setText(String.format(Locale.ENGLISH, "%.1f", yesterdaysDifficulty.get()));
-                   yGoalsDiffPart.setText(String.format(Locale.ENGLISH, "%s%s", "/", yesterdayCountAtmc.get()));
-               }
-               else {
-                   yGoalsDiff.setVisibility(View.GONE);
-                   yGoalsDiffPart.setText("- / -");
-               }
-               yGoalsAchieved.setText(numParts[0]);
-               yGoalsAchievedPart.setText(String.format(Locale.ENGLISH, "%s%s", numParts[1], "%"));
+        compositeDisposable.add(Single.zip(
+                statsCalcToday.calculate().subscribeOn(Schedulers.io()),
+                statsCalcYesterday.calculate().subscribeOn(Schedulers.io()),
+                (statsToday, statsYesterday) -> new GoalStatisticsCalculator[] { statsToday, statsYesterday })
+                .subscribeOn(Schedulers.io())
+                .subscribe(calculatedStatistics -> getActivity().runOnUiThread(() -> {
+                    updateGoalStatsYesterdayUI(calculatedStatistics[1]);
+                    updateGoalStatsTodayUI(calculatedStatistics[0], calculatedStatistics[1]);
+                })));
+    }
 
-               // #### selection difficulty setup
-               numParts = getDecimalNumParts(100 * currentDifficulty / strAvgDiff.get(), 1);
-               currentSelectionDiff.setText(numParts[0]);
-               currentSelectionDiffPart.setText(String.format(Locale.ENGLISH, "%s%s", numParts[1], "%"));
-               if(yesterdaysDifficulty.get() < currentDifficulty) {
-                   selectionDiffComparison.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_arrow_downward_24, getContext().getTheme()));
-               }
-               else {
-                   selectionDiffComparison.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_arrow_upward_24, getContext().getTheme()));
-               }
-               selectionDiffComparison.setImageTintList(Tools.getAttrColorStateList(R.attr.colorSecondaryVariant, getContext().getTheme()));
-               numParts = getDecimalNumParts(100 * yesterdaysDifficulty.get() / strAvgDiff.get(), 1);
-               yGoalsSelDiff.setText(numParts[0]);
-               yGoalsSelDiffPart.setText(String.format(Locale.ENGLISH, "%s%s", numParts[1], "%"));
+    private void updateGoalStatsYesterdayUI(GoalStatisticsCalculator statsCalculator) {
+        if(setPastGoalsVisibility(statsCalculator.hasGoals())) {
+            yGoalsDiff.setText(String.format(Locale.getDefault(), "%.1f", statsCalculator.getDifficulty()));
 
-               // #### occurrence frequency setup
-               numParts = getDecimalNumParts(currentOccFreq.get(), 2);
-               currentOccurrenceFreq.setText(numParts[0]);
-               currentOccurrenceFreqPart.setText(String.format(Locale.ENGLISH, "%s%s", numParts[1], "%"));
-               if(pastOccFreq.get() < currentOccFreq.get()) {
-                   occFreqComparison.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_arrow_downward_24, getContext().getTheme()));
-               }
-               else {
-                   occFreqComparison.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_arrow_upward_24, getContext().getTheme()));
-               }
-               occFreqComparison.setImageTintList(Tools.getAttrColorStateList(R.attr.colorSecondaryVariant, getContext().getTheme()));
-               numParts = getDecimalNumParts(pastOccFreq.get(), 2);
-               yGoalsOccFreq.setText(numParts[0]);
-               yGoalsOccFreqPart.setText(String.format(Locale.ENGLISH, "%s%s", numParts[1], "%"));
-           });
-       }).dispose();
-   }
+            String[] numParts = getDecimalNumParts(100 * statsCalculator.getRatioAchieved(), 2);
+            yGoalsAchieved.setText(numParts[0]);
+            yGoalsAchievedPart.setText(String.format(Locale.getDefault(), "%s%%", numParts[1]));
+
+            numParts = getDecimalNumParts(100 * statsCalculator.getShuffleOccurrenceRating(), 1);
+            yGoalsSelDiff.setText(numParts[0]);
+            yGoalsSelDiffPart.setText(String.format(Locale.getDefault(), "%s%%", numParts[1]));
+
+            numParts = getDecimalNumParts(statsCalculator.getRecurrenceFrequency(), 2);
+            yGoalsOccFreq.setText(numParts[0]);
+            yGoalsOccFreqPart.setText(String.format(Locale.getDefault(), "%s%%", numParts[1]));
+        }
+    }
+
+    private boolean setPastGoalsVisibility(boolean hasGoals) {
+        pastGoalRatings.setVisibility(hasGoals ? View.VISIBLE : View.GONE);
+        pastGoalsAchieved.setVisibility(hasGoals ? View.VISIBLE : View.GONE);
+        pastGoalsOccurrenceRating.setVisibility(hasGoals ? View.VISIBLE : View.GONE);
+        noDataPastGoals.setVisibility(hasGoals ? View.GONE : View.VISIBLE);
+        return hasGoals;
+    }
+
+    private void updateGoalStatsTodayUI(GoalStatisticsCalculator current, GoalStatisticsCalculator comparedTo) {
+        difficultySpeedometer.setData(25, current.getDifficulty(), 3);
+
+        currentGoalsContainer.removeAllViews();
+        current.getGoals().forEach(goal -> currentGoalsContainer.addView(generateGoalCheckbox(goal)));
+
+        String[] numParts = getDecimalNumParts(100 * current.getShuffleOccurrenceRating(), 1);
+        currentSelectionDiff.setText(numParts[0]);
+        currentSelectionDiffPart.setText(String.format(Locale.getDefault(), "%s%%", numParts[1]));
+        selectionDiffComparison.setImageDrawable(getDiffIndicator(current.getDifficulty(), comparedTo.getDifficulty(), comparedTo.hasGoals()));
+
+        numParts = getDecimalNumParts(current.getRecurrenceFrequency(), 2);
+        currentOccurrenceFreq.setText(numParts[0]);
+        currentOccurrenceFreqPart.setText(String.format(Locale.getDefault(), "%s%%", numParts[1]));
+        occFreqComparison.setImageDrawable(getDiffIndicator(current.getRecurrenceFrequency(), comparedTo.getRecurrenceFrequency(), comparedTo.hasGoals()));
+    }
+
+    @Nullable
+    private Drawable getDiffIndicator(float current, float comparedTo, boolean hasPastGoals) {
+        @DrawableRes int iconResId = R.drawable.round_mode_standby_24;
+        if(hasPastGoals) {
+            iconResId = comparedTo < current ? R.drawable.ic_round_arrow_upward_24 : R.drawable.ic_round_arrow_downward_24;
+        }
+        return ResourcesCompat.getDrawable(getResources(), iconResId, getContext().getTheme());
+    }
+
+    @NonNull
+    private MaterialCheckBox generateGoalCheckbox(DetailedShuffleHasGoal detailedShuffleHasGoal) {
+        int dp24 = Tools.dpToPx(getContext(), 24);
+        int dp12 = Tools.dpToPx(getContext(), 12);
+
+        MaterialCheckBox chk = new MaterialCheckBox(getContext());
+        chk.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        chk.setButtonDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.checkbox_button_round, getContext().getTheme()));
+        chk.setButtonTintList(ResourcesCompat.getColorStateList(getContext().getResources(), R.color.checkbox_icon_check_change, getContext().getTheme()));
+        chk.setButtonIconDrawable(Tools.resizeDrawable(getResources(), ResourcesCompat.getDrawable(getResources(), R.drawable.round_check_24, getContext().getTheme()), Tools.dpToPx(getContext(), 18), Tools.dpToPx(getContext(), 18)));
+        chk.setButtonIconTintList(ResourcesCompat.getColorStateList(getContext().getResources(), R.color.checkbox_button_icon_check, getContext().getTheme()));
+        chk.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
+        chk.setHighlightColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
+        chk.setPadding(dp12, dp24,0, dp24);
+        chk.setPaintFlags(detailedShuffleHasGoal.achieved ? chk.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG : chk.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+        chk.setText(detailedShuffleHasGoal.description);
+        chk.setChecked(detailedShuffleHasGoal.achieved);
+        chk.setTextColor(Tools.getAttrColor(detailedShuffleHasGoal.achieved ? R.attr.tertiaryTextColor : R.attr.primaryTextColor, getContext().getTheme()));
+        chk.setTypeface(Typeface.create(chk.getTypeface(), detailedShuffleHasGoal.achieved ? Typeface.NORMAL : Typeface.BOLD));
+        chk.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        chk.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            db.getShuffleHasGoalDao().setAchievedState(detailedShuffleHasGoal.shuffleId, detailedShuffleHasGoal.goalId, isChecked);
+            chk.setTextColor(Tools.getAttrColor(isChecked ? R.attr.tertiaryTextColor : R.attr.primaryTextColor, getContext().getTheme()));
+            chk.setTypeface(Typeface.create(chk.getTypeface(), isChecked ? Typeface.NORMAL : Typeface.BOLD));
+            chk.setPaintFlags(isChecked ? chk.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG : chk.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+        });
+
+        return chk;
+    }
 
     private String[] getDecimalNumParts(float value, int decimals) {
         String[] numParts = new String[2];
-        int fullSelDiff = (int)value;
-        numParts[0] = String.format(Locale.ENGLISH, "%d", fullSelDiff);
-        numParts[1] = Float.isNaN(value % fullSelDiff) ? "" : String.format(Locale.ENGLISH, "%." + decimals + "f", value % fullSelDiff).substring(1);
+        int fullSelDiff = (int) value;
+        String decimalsFormat = "%." + decimals + "f";
+        numParts[0] = String.format(Locale.getDefault(), "%d", fullSelDiff);
+        numParts[1] = Float.isNaN(value % fullSelDiff) ? "" : String.format(Locale.getDefault(), decimalsFormat, value % fullSelDiff).substring(1);
         return numParts;
     }
 
-    private void setAdviceData(int pastGoalCount, float pastDifficulty, int achievedCount) {
-        // TODO: check values and give appropriate advice in shortcut form of dropdown menu
+    private void storeNewShuffle() {
+        Pair<Long, Long> todayTimeSpan = Tools.getTimeSpanFrom(0, false);
+        Maybe<Shuffle> alreadyPresentShuffle = db.getShuffleDao().getLastShuffleInDay(todayTimeSpan.first, todayTimeSpan.second);
+        int id = getShuffleIdWithNoGoals(todayTimeSpan, alreadyPresentShuffle);
+        List<Goal> goalsResult = Tools.getNewShuffleGoals(db);
+        List<ShuffleHasGoal> hasGoals = new ArrayList<>();
+        goalsResult.forEach(goal -> hasGoals.add(new ShuffleHasGoal(id, goal.goalId)));
+        db.getShuffleHasGoalDao().insertAll(hasGoals).blockingSubscribe();
+        updateStats();
     }
 
-    private void storeNewShuffle(List<Goal> goals, Pair<Long, Long> todayTimeSpan) {
-        List<Goal> goalsResult = Tools.getSuitableGoals(goals);
-        db.getShuffleDao().getLastShuffleInDay(todayTimeSpan.first, todayTimeSpan.second).subscribe(alreadyPresentShuffle -> {
-            int id = alreadyPresentShuffle.shuffleId;
-            List<ShuffleHasGoal> hasGoals = new ArrayList<>();
-            for (Goal goal : goalsResult) {
-                hasGoals.add(new ShuffleHasGoal(id, goal.goalId));
-            }
-            db.getShuffleHasGoalDao().deleteAllWithShuffleId(id).subscribe(() -> {
-                db.getShuffleHasGoalDao().insertAll(hasGoals).subscribe(() -> {
-                    updateStats(todayTimeSpan);
-                }).dispose();
-            }).dispose();
-        }).dispose();
+    private int getShuffleIdWithNoGoals(Pair<Long, Long> todayTimeSpan, Maybe<Shuffle> alreadyPresentShuffle) {
+        int id;
+        boolean isShuffleAlreadyPresent = !alreadyPresentShuffle.isEmpty().blockingGet();
+        if(isShuffleAlreadyPresent) {
+            id = alreadyPresentShuffle.blockingGet().shuffleId;
+            db.getShuffleHasGoalDao().deleteAllWithShuffleId(id).blockingSubscribe();
+        }
+        else {
+            id = db.getShuffleDao().insert(new Shuffle(todayTimeSpan.first, todayTimeSpan.second)).blockingGet().intValue();
+        }
+        return id;
     }
 }

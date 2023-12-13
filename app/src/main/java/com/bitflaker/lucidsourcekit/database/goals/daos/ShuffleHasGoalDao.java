@@ -14,6 +14,7 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.resulttables.GoalSta
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao
@@ -22,16 +23,19 @@ public interface ShuffleHasGoalDao {
     Single<List<ShuffleHasGoal>> getAll();
 
     @Query("SELECT * FROM ShuffleHasGoal LEFT JOIN Goal ON ShuffleHasGoal.goalId = Goal.goalId LEFT JOIN Shuffle ON ShuffleHasGoal.shuffleId = Shuffle.shuffleId WHERE Shuffle.dayStartTimestamp = :dayStartTimestamp and Shuffle.dayEndTimestamp = :dayEndTimestamp")
-    Single<List<DetailedShuffleHasGoal>> getShuffleFrom(long dayStartTimestamp, long dayEndTimestamp);
+    Maybe<List<DetailedShuffleHasGoal>> getShuffleFrom(long dayStartTimestamp, long dayEndTimestamp);
 
     @Query("SELECT COUNT(*) AS goalCount, AVG(Goal.difficulty) AS avgDifficulty, SUM(CASE WHEN ShuffleHasGoal.achieved = 1 then 1 else 0 end) AS achievedCount FROM ShuffleHasGoal LEFT JOIN Goal ON ShuffleHasGoal.goalId = Goal.goalId LEFT JOIN Shuffle ON ShuffleHasGoal.shuffleId = Shuffle.shuffleId WHERE Shuffle.dayStartTimestamp >= :dayStartTimestamp and Shuffle.dayEndTimestamp <= :dayEndTimestamp")
     Single<ShuffleHasGoalStats> getShufflesFromBetween(long dayStartTimestamp, long dayEndTimestamp);
 
-    @Query("SELECT COUNT(goalId) FROM ShuffleHasGoal WHERE goalId IN (:goalIds)")
-    Single<List<Integer>> getCountOfGoalsDrawn(List<Integer> goalIds);
+    @Query("SELECT COUNT(goalId) FROM ShuffleHasGoal LEFT JOIN Shuffle ON ShuffleHasGoal.shuffleId = Shuffle.shuffleId WHERE goalId IN (:goalIds) AND Shuffle.dayStartTimestamp >= :dayStartTimestamp and Shuffle.dayEndTimestamp <= :dayEndTimestamp")
+    Single<Integer> getCountOfGoalsDrawn(List<Integer> goalIds, long dayStartTimestamp, long dayEndTimestamp);
 
-    @Query("SELECT COUNT(*) FROM ShuffleHasGoal")
-    Single<Integer> getAmountOfTotalDrawnGoals();
+    @Query("SELECT COUNT(goalId) FROM ShuffleHasGoal LEFT JOIN Shuffle ON ShuffleHasGoal.shuffleId = Shuffle.shuffleId WHERE Shuffle.dayEndTimestamp > :dayEndTimestamp")
+    Single<Integer> getCountOfGoalsInShufflesAfterDay(long dayEndTimestamp);
+
+    @Query("SELECT COUNT(*) FROM ShuffleHasGoal LEFT JOIN Shuffle ON ShuffleHasGoal.shuffleId = Shuffle.shuffleId WHERE Shuffle.dayStartTimestamp >= :dayStartTimestamp and Shuffle.dayEndTimestamp <= :dayEndTimestamp")
+    Single<Integer> getAmountOfTotalDrawnGoals(long dayStartTimestamp, long dayEndTimestamp);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     Completable insertAll(List<ShuffleHasGoal> shuffleHasGoals);

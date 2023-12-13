@@ -13,6 +13,7 @@ import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao
@@ -23,13 +24,16 @@ public interface GoalDao {
     @Query("SELECT * FROM Goal ORDER BY difficulty")
     Single<List<Goal>> getAllSingle();
 
+    @Query("SELECT * FROM Goal ORDER BY difficulty")
+    Maybe<List<Goal>> getAllMaybe();
+
     @Query("SELECT COUNT(*) FROM Goal WHERE difficulty <= :difficulty ORDER BY difficulty")
     Single<Integer> getCountUntilDifficulty(float difficulty);
 
     @Query("SELECT COUNT(*) FROM Goal")
     Single<Integer> getGoalCount();
 
-    @Query("SELECT SUM(difficulty) / COUNT(goalId) FROM Goal")
+    @Query("SELECT IFNULL(SUM(difficulty) / COUNT(goalId), 0) FROM Goal")
     Single<Double> getAverageDifficulty();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

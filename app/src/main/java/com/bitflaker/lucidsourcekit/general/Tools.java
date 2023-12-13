@@ -8,7 +8,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
@@ -16,7 +15,6 @@ import android.util.Pair;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -25,18 +23,18 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import com.bitflaker.lucidsourcekit.general.datastore.DataStoreKeys;
 import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
+import com.bitflaker.lucidsourcekit.main.goals.RandomGoalPicker;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -44,8 +42,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
+
+import io.reactivex.rxjava3.core.Maybe;
 
 public class Tools {
     private static final int NOTIFICATION_ID_START = 500000;
@@ -124,10 +122,6 @@ public class Tools {
         activity.getWindow().setStatusBarColor(Color.TRANSPARENT);
     }
 
-    public static void colorStatusBar(Activity activity, int color, Resources.Theme theme) {
-        activity.getWindow().setStatusBarColor(getAttrColor(color, theme));
-    }
-
     public static int dpToPx(Context context, double dp) {
         return (int)(dp * context.getResources().getDisplayMetrics().density);
     }
@@ -140,43 +134,9 @@ public class Tools {
         return (int)(px / context.getResources().getDisplayMetrics().density);
     }
 
-    public static <T> T[] addFirst(T[] elements, T element)
-    {
-        T[] finishedArray = Arrays.copyOf(elements, elements.length + 1);
-        finishedArray[0] = element;
-        System.arraycopy(elements, 0, finishedArray, 1, elements.length);
-
-        return finishedArray;
-    }
-
-    public static <T> T[] removeAt(T[] array, int index)
-    {
-        T[] finishedArray = Arrays.copyOf(array, array.length - 1);
-        System.arraycopy(array, index + 1, finishedArray, index, array.length - 1 - index);
-        return finishedArray;
-    }
-
-    public static String[] getUniqueOnly(List<String[]> items) {
-        List<String> uniques = new ArrayList<>();
-        for (String[] arr : items) {
-            for (String item : arr) {
-                if(!uniques.contains(item)){
-                    uniques.add(item);
-                }
-            }
-        }
-        return uniques.toArray(new String[0]);
-    }
-
     public static RelativeLayout.LayoutParams getRelativeLayoutParamsTopStatusbar(Context context) {
         RelativeLayout.LayoutParams lParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lParams.setMargins(dpToPx(context, 15), getStatusBarHeight(context), dpToPx(context, 10), 0);
-        return lParams;
-    }
-
-    public static LinearLayout.LayoutParams getLinearLayoutParamsTopStatusbar(Context context) {
-        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lParams.setMargins(dpToPx(context, 15), getStatusBarHeight(context) + dpToPx(context, 10), 0, 0);
         return lParams;
     }
 
@@ -186,11 +146,6 @@ public class Tools {
     }
 
     public static RelativeLayout.LayoutParams addRelativeLayoutParamsTopStatusbarSpacing(Context context, RelativeLayout.LayoutParams lParams) {
-        lParams.topMargin = lParams.topMargin + getStatusBarHeight(context);
-        return lParams;
-    }
-
-    public static FrameLayout.LayoutParams addFrameLayoutLayoutParamsTopStatusbarSpacing(Context context, FrameLayout.LayoutParams lParams) {
         lParams.topMargin = lParams.topMargin + getStatusBarHeight(context);
         return lParams;
     }
@@ -277,146 +232,41 @@ public class Tools {
         return new Pair<>(startTime, endTime);
     }
 
-    /**
-     * finds the required amount of goals approximately suiting within a specified difficulty constraint
-     * @param context current context (used for acquiring preferences)
-     * @param providedGoals goals to be selected from
-     * @param difficultyConstraint average difficulty that should be reached by selection (should be a number from 1.0f to 3.0f)
-     * @param difficultyVariance the amount the difficultyConstraint should randomly spread within (difficultyVariance of 0.3f means difficultyConstraint of 2.0f will be spreading between 1.7f and 2.3f)
-     * @param accuracy should be a multiple of ten and is used to specify the accuracy of the difficulties to calculate with
-     * @param variance should be a small number for getting a little bit of randomization into selections (the higher it is, the more the result spreads around the difficulty constraint)
-     * @param count the amount of goals to choose
-     * @return the chosen goals suiting the specified constraints
-     */
-    public static List<Goal> getSuitableGoals(List<Goal> providedGoals) {
+    public static List<Goal> getNewShuffleGoals(MainDatabase db) {
         DataStoreManager dsManager = DataStoreManager.getInstance();
+        float weightCommon = dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_COMMON).blockingFirst();
+        float weightUncommon = dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_UNCOMMON).blockingFirst();
+        float weightRare = dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_RARE).blockingFirst();
+        int goalCount = dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_COUNT).blockingFirst();
+        float[] weights = new float[] { weightCommon, weightUncommon, weightRare };
 
-        float difficultyConstraint = dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_TENDENCY).blockingFirst();
-        float difficultyVariance = dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VARIANCE).blockingFirst();
-        int accuracy = dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_ACCURACY).blockingFirst();
-        float variance = dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_VARIANCE).blockingFirst();
-        int count = dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_COUNT).blockingFirst();
-
-        List<Goal> fitGoals = new ArrayList<>();
-        float randomizedDiffConstraint = Math.min(3.0f, Math.max(1.0f, difficultyConstraint + (difficultyVariance > 0.0f ? (float)(ThreadLocalRandom.current().nextDouble(-difficultyVariance, difficultyVariance)) : 0.0f)));
-        float difficultyLimit = randomizedDiffConstraint * count;
-        List<Goal> goals = new ArrayList<>();
-        for (Goal goal : providedGoals) {
-            goals.add(goal.clone());
-        }
-        Integer[] difficulties = new Integer[goals.size()];
-        Integer[] goalVal = new Integer[goals.size()];
-
-        for (int i = 0; i < goals.size(); i++) {
-            difficulties[i] = (int)(goals.get(i).difficulty * accuracy);
-            float valA = dsManager.getSetting(DataStoreKeys.GOAL_FUNCTION_VALUE_A).blockingFirst();
-            float valB = dsManager.getSetting(DataStoreKeys.GOAL_FUNCTION_VALUE_B).blockingFirst();
-            float valC = dsManager.getSetting(DataStoreKeys.GOAL_FUNCTION_VALUE_C).blockingFirst();
-            double valFunction = valA * Math.pow(i, 2) + valB * i + valC;
-            double val = (Math.max(0, valFunction * ((1.0f/(goals.size()/6.0f)) * Math.pow(2.0f - Math.abs((difficulties[i]/(float)accuracy) - randomizedDiffConstraint), 2)) + ThreadLocalRandom.current().nextDouble(-variance, variance)));
-            goalVal[i] = (int)(val);
+        Maybe<List<Goal>> goals = db.getGoalDao().getAllMaybe();
+        if(goals.isEmpty().blockingGet()) {
+            return new ArrayList<>();
         }
 
-        int[][] m = new int[goals.size() + 1][(int)(difficultyLimit * accuracy) + 1];
-        int res = findBestSuiting(difficulties, goalVal, goals.size(), (int)(difficultyLimit * accuracy), m);
-        int w = (int)(difficultyLimit * accuracy);
+        RandomGoalPicker randomGoalPicker = new RandomGoalPicker();
+        for (Goal goal : goals.blockingGet()) {
+            int occurrenceLevel = (int) goal.difficulty;
+            float higherPercentage = goal.difficulty - occurrenceLevel;
+            float lowerPercentage = 1 - higherPercentage;
 
-        List<Integer> indexesToRemove = new ArrayList<>();
-        for (int i = goals.size(); i > 0 && res > 0; i--) {
-            if (res != m[i-1][w]) {
-                fitGoals.add(goals.get(i-1));
-                indexesToRemove.add(i-1);
-                res -= goalVal[i-1]; // value
-                w -= difficulties[i-1]; // weight
-            }
-        }
-
-        // remove all goals selected by the algorithm to not choose them in the fill ups
-        Collections.reverse(indexesToRemove);
-        for (int i = 0; i < indexesToRemove.size(); i++) {
-            goals.remove(indexesToRemove.get(i) - i);
-            removeAt(difficulties, indexesToRemove.get(i) - i);
-            removeAt(goalVal, indexesToRemove.get(i) - i);
-        }
-        indexesToRemove.clear();
-
-        // fill the amount of goals to the desired count TODO check whether there are even enough goals inside
-        while (fitGoals.size() < count) {
-            m = new int[goals.size() + 1][(int)(difficultyLimit * accuracy) + 1];
-            res = findBestSuiting(difficulties, goalVal, goals.size(), (int)(difficultyLimit * accuracy), m);
-            w = (int)(difficultyLimit * accuracy);
-
-            for (int i = goals.size(); i > 0 && res > 0; i--) {
-                if (res != m[i-1][w]) {
-                    fitGoals.add(goals.get(i-1));
-                    indexesToRemove.add(i-1);
-                    res -= goalVal[i-1]; // value
-                    w -= difficulties[i-1]; // weight
-                }
+            float weight = weights[weights.length - 1];
+            if(occurrenceLevel < weights.length) {
+                float lowerWeight = weights[occurrenceLevel - 1];
+                float higherWeight = weights[occurrenceLevel];
+                weight = lowerPercentage * lowerWeight + higherPercentage * higherWeight;
             }
 
-            Collections.reverse(indexesToRemove);
-            for (int i = 0; i < indexesToRemove.size(); i++) {
-                goals.remove(indexesToRemove.get(i) - i);
-                removeAt(difficulties, indexesToRemove.get(i) - i);
-                removeAt(goalVal, indexesToRemove.get(i) - i);
-            }
-            indexesToRemove.clear();
+            randomGoalPicker.add(weight, goal);
         }
 
-        return fitGoals.stream().limit(count).collect(Collectors.toList());
-    }
-
-    public static int getClosestHigherNumber(List<Double> numbers, double target) {
-        int low = 0;
-        int high = numbers.size() - 1;
-
-        while (low < high) {
-            int mid = (low + high) / 2;
-            double midVal = numbers.get(mid);
-            if (midVal < target) {
-                low = mid + 1;
-            } else {
-                high = mid;
-            }
+        List<Goal> shuffledGoals = new ArrayList<>();
+        for (int i = 0; i < goalCount; i++) {
+            shuffledGoals.add(randomGoalPicker.getRandomGoal());
         }
 
-        if (low >= numbers.size()) {
-            return -1;
-        }
-
-        return low;
-    }
-
-    public static double[] calculateQuadraticFunction(PointF weight1, PointF weight2, PointF weight3) {
-        double[] points = new double[3];
-
-        points[0] = (weight2.x * weight1.y - weight2.x * weight3.y - weight3.x * weight1.y + weight3.x * weight2.y) / (Math.pow(weight2.x, 2) * weight3.x - weight2.x * Math.pow(weight3.x, 2));
-        points[1] = (-Math.pow(weight2.x, 2) * weight1.y + Math.pow(weight2.x, 2) * weight3.y + Math.pow(weight3.x, 2) * weight1.y - Math.pow(weight3.x, 2) * weight2.y) / (Math.pow(weight2.x, 2) * weight3.x - weight2.x * Math.pow(weight3.x, 2));
-        points[2] = weight1.y;
-
-        return points;
-    }
-
-    public static int findBestSuiting(Integer[] w, Integer[] v, int n, int W, int[][] m) {
-        if (n <= 0 || W <= 0) {
-            return 0;
-        }
-
-        for (int j = 0; j <= W; j++) {
-            m[0][j] = 0;
-        }
-
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= W; j++) {
-                if (w[i - 1] > j) {
-                    m[i][j] = m[i - 1][j];
-                } else {
-                    m[i][j] = Math.max(m[i - 1][j], m[i - 1][j - w[i - 1]] + v[i - 1]);
-                }
-            }
-        }
-        return m[n][W];
+        return shuffledGoals;
     }
 
     public static boolean hasNoData(List<Double> data) {
@@ -520,10 +370,6 @@ public class Tools {
         return (alarmId*10) + 50000 + (weekdayId+1);
     }
 
-    public static int getBroadcastReqCodeSnoozeFromID(int alarmId) {
-        return alarmId + 100000;
-    }
-
     public static long getTimeOfDayMillis(Calendar calendar) {
         long timeOfDayMillis = calendar.get(Calendar.HOUR_OF_DAY) * 60 * 60 * 1000;
         timeOfDayMillis += calendar.get(Calendar.MINUTE) * 60 * 1000;
@@ -601,5 +447,11 @@ public class Tools {
         }
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
         return new BitmapDrawable(resources, scaledBitmap);
+    }
+
+    public static boolean isTimeInPast(long timestampDayEnd) {
+        Calendar calendar = Calendar.getInstance();
+        long current = calendar.getTimeInMillis();
+        return timestampDayEnd <= current;
     }
 }
