@@ -325,7 +325,7 @@ public class Goals extends Fragment {
         chk.setButtonIconTintList(ResourcesCompat.getColorStateList(getContext().getResources(), R.color.checkbox_button_icon_check, getContext().getTheme()));
         chk.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
         chk.setHighlightColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
-        chk.setPadding(dp12, dp24,0, dp24);
+        chk.setPadding(dp12, 0, 0, 0);
         chk.setPaintFlags(detailedShuffleHasGoal.achieved ? chk.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG : chk.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         chk.setText(detailedShuffleHasGoal.description);
         chk.setChecked(detailedShuffleHasGoal.achieved);
@@ -373,5 +373,11 @@ public class Goals extends Fragment {
             id = db.getShuffleDao().insert(new Shuffle(todayTimeSpan.first, todayTimeSpan.second)).blockingGet().intValue();
         }
         return id;
+    }
+
+    @Override
+    public void onDestroyView() {
+        compositeDisposable.clear();
+        super.onDestroyView();
     }
 }

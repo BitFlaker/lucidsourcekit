@@ -29,4 +29,6 @@
     <attr name="colorWarning" format="reference"/>
     <attr name="colorDisabled" format="reference"/>
     <attr name="typeStyle" format="reference"/>
+    <attr name="backgroundDreamRatingSheet" format="reference"/>
+    <attr name="backgroundDreamRatingSheetStroke" format="reference"/>
 </resources>

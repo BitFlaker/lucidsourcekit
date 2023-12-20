@@ -119,7 +119,7 @@
                             android:layout_columnWeight="1"
                             android:text="journal entries"
                             android:textColor="?attr/secondaryTextColor"
-                            android:textSize="14sp"
+                            android:textSize="11sp"
                             android:textAlignment="center" />
 
                         <View
@@ -135,7 +135,7 @@
                             android:layout_columnWeight="1"
                             android:text="tags"
                             android:textColor="?attr/secondaryTextColor"
-                            android:textSize="14sp"
+                            android:textSize="11sp"
                             android:textAlignment="center" />
 
                         <View
@@ -151,7 +151,7 @@
                             android:layout_columnWeight="1"
                             android:text="goals"
                             android:textColor="?attr/secondaryTextColor"
-                            android:textSize="14sp"
+                            android:textSize="11sp"
                             android:textAlignment="center" />
                     </GridLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -212,7 +212,7 @@
                         android:layout_height="wrap_content"
                         android:text="current"
                         android:textColor="?attr/secondaryTextColor"
-                        android:textSize="14sp"
+                        android:textSize="11sp"
                         app:layout_constraintStart_toStartOf="@+id/txt_current_streak"
                         app:layout_constraintTop_toBottomOf="@+id/txt_current_streak" />
 
@@ -233,11 +233,9 @@
                         android:layout_height="wrap_content"
                         android:text="best"
                         android:textColor="?attr/secondaryTextColor"
-                        android:textSize="14sp"
+                        android:textSize="11sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/txt_best_streak" />
-
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 

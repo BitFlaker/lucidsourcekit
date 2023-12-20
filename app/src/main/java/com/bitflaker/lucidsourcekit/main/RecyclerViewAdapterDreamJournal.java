@@ -26,6 +26,7 @@ import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamType;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasType;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AssignedTags;
 import com.bitflaker.lucidsourcekit.general.RecordingObjectTools;
@@ -59,7 +60,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     private DreamJournal journalList;
     private DreamJournalEntriesList entries;
     private DreamJournalEntriesList filteredEntries;
-    private int currentSort;
+    private int currentSort = 0;
     private AppliedFilter currentFilter;
     private MainDatabase db;
     private RecyclerView mRecyclerView;
@@ -292,9 +293,21 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             deleteEntry.setOnClickListener(e1 ->
                     new AlertDialog.Builder(context, Tools.getThemeDialog()).setTitle(context.getResources().getString(R.string.entry_delete_header)).setMessage(context.getResources().getString(R.string.entry_delete_message))
                         .setPositiveButton(context.getResources().getString(R.string.yes), (dialog, which) -> {
-                            db.getJournalEntryDao().getEntryById(jim.getEntryId()).subscribe(journalEntry -> {
-                                db.getJournalEntryDao().delete(journalEntry).subscribe(bsd::dismiss);
-                            });
+                            JournalEntry entry = db.getJournalEntryDao().getEntryById(jim.getEntryId()).blockingGet();
+                            db.getJournalEntryDao().delete(entry).blockingSubscribe();
+                            if(filteredEntries != null) {
+                                DreamJournalEntry entryToRemove = filteredEntries.get(position);
+                                filteredEntries.removeAt(position);
+                                entries.remove(entryToRemove);
+                                notifyItemRemoved(position);
+                                notifyItemRangeChanged(position, filteredEntries.size());
+                            }
+                            else {
+                                entries.removeAt(position);
+                                notifyItemRemoved(position);
+                                notifyItemRangeChanged(position, entries.size());
+                            }
+                            bsd.dismiss();
                         })
                         .setNegativeButton(context.getResources().getString(R.string.no), null)
                         .show());
@@ -304,7 +317,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
                 Intent intent = new Intent(context, DreamJournalEntryEditor.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("journal_in_memory_id", id);
-                journalList.viewEntryActivityResultLauncher.launch(intent);
+                journalList.journalEditorActivityResultLauncher.launch(intent);
                 bsd.dismiss();
             });
 
@@ -548,7 +561,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     }
 
     private Pair<Operation, Integer> getChanges(DreamJournalEntriesList entries) {
-        if(this.entries.size() == entries.size()){
+        if(this.entries.size() == entries.size()) {
             // Operation has to either be a changed event or nothing
             return new Pair<>(Operation.CHANGED, -1);
         }
@@ -603,7 +616,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     public void sortEntries(int sortBy) {
         currentSort = sortBy;
         DreamJournalEntriesList current;
-        if(filteredEntries != null){ current = filteredEntries; }
+        if(filteredEntries != null) { current = filteredEntries; }
         else { current = entries; }
 
         switch (SortOrders.values()[sortBy]){
@@ -642,16 +655,84 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         mRecyclerView = recyclerView;
     }
 
-    public void updateDataForEntry(int entryId, List<AssignedTags> assignedTags, List<JournalEntryHasType> journalEntryHasTypes, List<AudioLocation> audioLocations) {
+    public void updateDataForEntry(JournalEntry entry, List<AssignedTags> assignedTags, List<JournalEntryHasType> journalEntryHasTypes, List<AudioLocation> audioLocations) {
         for (int i = 0; i < entries.size(); i++) {
-            if(entries.get(i).getEntry().entryId == entryId) {
+            if(entries.get(i).getEntry().entryId == entry.entryId) {
+                entries.get(i).setEntryData(entry);
                 entries.get(i).setAudioLocations(audioLocations);
                 entries.get(i).setTags(assignedTags);
                 entries.get(i).setTypes(journalEntryHasTypes);
                 notifyItemChanged(i);
-                break;
+                return;
             }
         }
+
+        int indexToInsert = getIndexToInsert(SortOrders.values()[currentSort], entries, entry);
+        DreamJournalEntry newEntry = entries.insert(indexToInsert, entry, assignedTags, audioLocations, journalEntryHasTypes);
+
+        int indexToInsertCurrent = indexToInsert;
+        boolean isFilteredAndComplies = filteredEntries != null && DreamJournalEntriesList.entryCompliesWithFilter(newEntry, currentFilter);
+        DreamJournalEntriesList current = entries;
+
+        if(isFilteredAndComplies) {
+            indexToInsertCurrent = getIndexToInsert(SortOrders.values()[currentSort], filteredEntries, entry);
+            filteredEntries.insert(indexToInsertCurrent, entry, assignedTags, audioLocations, journalEntryHasTypes);
+            current = filteredEntries;
+        }
+
+        if(isFilteredAndComplies || filteredEntries == null) {
+            notifyItemInserted(indexToInsertCurrent);
+            notifyItemRangeChanged(indexToInsertCurrent, current.size());
+            mRecyclerView.scrollToPosition(indexToInsertCurrent);
+        }
+    }
+
+    private static int getIndexToInsert(SortOrders order, DreamJournalEntriesList entries, JournalEntry entry) {
+        switch (order) {
+            case Title_AZ:
+                for (int i = 0; i < entries.size(); i++) {
+                    if(DreamJournalEntriesList.compareByTitle(true, entries.get(i).getEntry(), entry) == 1) {
+                        return i;
+                    }
+                }
+                break;
+            case Title_ZA:
+                for (int i = 0; i < entries.size(); i++) {
+                    if(DreamJournalEntriesList.compareByTitle(false, entries.get(i).getEntry(), entry) == 1) {
+                        return i;
+                    }
+                }
+                break;
+            case Description_AZ:
+                for (int i = 0; i < entries.size(); i++) {
+                    if(DreamJournalEntriesList.compareByDescription(true, entries.get(i).getEntry(), entry) == 1) {
+                        return i;
+                    }
+                }
+                break;
+            case Description_ZA:
+                for (int i = 0; i < entries.size(); i++) {
+                    if(DreamJournalEntriesList.compareByDescription(false, entries.get(i).getEntry(), entry) == 1) {
+                        return i;
+                    }
+                }
+                break;
+            case Timestamp_Newest_first:
+                for (int i = 0; i < entries.size(); i++) {
+                    if(DreamJournalEntriesList.compareByTimestamp(true, entries.get(i).getEntry(), entry) == 1) {
+                        return i;
+                    }
+                }
+                break;
+            case Timestamp_Oldest_first:
+                for (int i = 0; i < entries.size(); i++) {
+                    if(DreamJournalEntriesList.compareByTimestamp(false, entries.get(i).getEntry(), entry) == 1) {
+                        return i;
+                    }
+                }
+                break;
+        }
+        return entries.size();
     }
 
     public enum Operation {

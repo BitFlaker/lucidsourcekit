@@ -1,5 +1,7 @@
 package com.bitflaker.lucidsourcekit.main.dreamjournal;
 
+import android.util.Log;
+
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasTag;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasType;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryTag;
@@ -124,6 +126,18 @@ public class JournalInMemory {
 
     public boolean isNightmare() {
         return isNightmare;
+    }
+
+    public void setSpecialDreamType(SpecialDreamType dreamType, boolean value) {
+        switch (dreamType) {
+            case NIGHTMARE: setNightmare(value); break;
+            case PARALYSIS: setParalysis(value); break;
+            case LUCID: setLucid(value); break;
+            case RECURRING: setRecurring(value); break;
+            case FALSE_AWAKENING: setFalseAwakening(value); break;
+            default:
+                Log.e("JournalInMemory", "Special dream type not found");
+        }
     }
 
     public void setNightmare(boolean nightmare) {
@@ -253,5 +267,13 @@ public class JournalInMemory {
     public enum EntryType {
         PLAIN_TEXT,
         FORMS_TEXT
+    }
+
+    public enum SpecialDreamType {
+        NIGHTMARE,
+        PARALYSIS,
+        LUCID,
+        RECURRING,
+        FALSE_AWAKENING
     }
 }

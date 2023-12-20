@@ -1,19 +1,27 @@
 package com.bitflaker.lucidsourcekit.main.dreamjournal;
 
+import android.content.pm.ActivityInfo;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
 import com.bitflaker.lucidsourcekit.R;
@@ -27,436 +35,360 @@ import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamMoods;
 import com.bitflaker.lucidsourcekit.general.database.values.SleepQuality;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.slider.Slider;
 
+import java.util.HashMap;
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class DreamJournalRatingEditor extends Fragment {
-    private OnCloseButtonClicked mCloseButtonClicked;
     OnBackButtonClicked mBackButtonListener;
     OnDoneButtonClicked mDoneButtonListener;
     OnDreamJournalEntrySaved mDreamJournalEntrySaved;
     ImageButton backToDreamEditor, closeEditor;
     MaterialButton doneRatingBtn;
-    MaterialCardView cardDreamMood, cardSleepQuality, cardDreamClarity, cardDreamCharacteristics;
-    SelectedRating selectedRating = SelectedRating.DREAM_MOOD;
-    ImageView dotSleepQuality, dotDreamClarity, dotDreamCharacteristics;
-    View lineBottomDreamMood, lineTopSleepQuality, lineBottomSleepQuality, lineTopDreamClarity, lineBottomDreamClarity, lineTopDreamCharacteristics;
     Slider sliderDreamMood, sliderSleepQuality, sliderDreamClarity;
-    LinearLayout indicatorsDreamMood, indicatorsSleepQuality, indicatorsDreamClarity, containerDreamCharacteristics, dreamCharacteristicsIcons;
-    TextView textDreamMood, textSleepQuality, textDreamClarity;
-    ImageView previewSelectionDreamMood, previewSelectionDreamClarity, previewSelectionSleepQuality;
-    boolean qualityPressed = false, clarityPressed = false;
+    ImageView previewDreamMood, previewDreamClarity, previewSleepQuality;
     ImageView[] dreamMoods = new ImageView[5];
-    String[] dreamMoodLabels = new String[] { "Terrible", "Poor", "Okay", "Great", "Outstanding"};
     ImageView[] sleepQualities = new ImageView[4];
-    String[] sleepQualityLabels = new String[] { "Terrible", "Poor", "Great", "Outstanding"};
     ImageView[] dreamClarities = new ImageView[4];
-    String[] dreamClarityLabels = new String[] { "Very Cloudy", "Cloudy", "Clear", "Crystal Clear"};
     ToggleButton toggleNightmare, toggleParalysis, toggleLucid, toggleRecurring, toggleFalseAwakening;
-    ImageView characterNightmare, characterParalysis, characterLucid, characterRecurring, characterFalseAwakening;
+    LinearLayout specialDreamIconsContainer;
+    private final String[] dreamMoodLabels = new String[] { "Terrible", "Poor", "Okay", "Great", "Outstanding"};
+    private final String[] sleepQualityLabels = new String[] { "Terrible", "Poor", "Great", "Outstanding"};
+    private final String[] dreamClarityLabels = new String[] { "Very Cloudy", "Cloudy", "Clear", "Crystal Clear"};
+    private ColorStateList tertiaryColor;
+    private ColorStateList colorOnPrimary;
+    private OnCloseButtonClicked mCloseButtonClicked;
     private JournalInMemoryManager journalManger;
     private String journalEntryId;
     private MainDatabase db;
+    private HashMap<ToggleButton, ImageView> toggleButtonIcons;
+    private TextView specialDreamHeading, specialDreamDescription;
+    private MaterialCardView cardRatingsPreview;
+    private NestedScrollView bottomSheet;
+    private ImageView dragHandle;
+    private BottomSheetBehavior<NestedScrollView> bottomSheetBehavior;
+    private CompositeDisposable compositeDisposable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_dream_journal_rating_editor, container, false);
+        return inflater.inflate(R.layout.fragment_dream_journal_rating_editor_new, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ConstraintLayout ratingHeading = getView().findViewById(R.id.cl_rating_heading);
+        setAdjustedStatusBarMargin(ratingHeading);
+
+        compositeDisposable = new CompositeDisposable();
+        toggleButtonIcons = new HashMap<>();
+        tertiaryColor = Tools.getAttrColorStateList(R.attr.tertiaryTextColor, getContext().getTheme());
+        colorOnPrimary = Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme());
 
         backToDreamEditor = getView().findViewById(R.id.btn_dj_back_to_text);
         doneRatingBtn = getView().findViewById(R.id.btn_dj_done_rating);
-        cardDreamMood = getView().findViewById(R.id.mcv_dj_dream_mood);
-        cardSleepQuality = getView().findViewById(R.id.mcv_dj_sleep_quality);
-        cardDreamClarity = getView().findViewById(R.id.mcv_dj_dream_clarity);
-        cardDreamCharacteristics = getView().findViewById(R.id.mcv_dj_dream_characteristics);
-        dotSleepQuality = getView().findViewById(R.id.vw_dot_dj_sleep_quality);
-        dotDreamClarity = getView().findViewById(R.id.vw_dot_dj_dream_clarity);
-        dotDreamCharacteristics = getView().findViewById(R.id.vw_dot_dj_dream_characteristics);
-        lineBottomDreamMood = getView().findViewById(R.id.vw_line_dj_bottom_dream_mood);
-        lineTopSleepQuality = getView().findViewById(R.id.vw_line_dj_top_sleep_quality);
-        lineBottomSleepQuality = getView().findViewById(R.id.vw_line_dj_bottom_sleep_quality);
-        lineTopDreamClarity = getView().findViewById(R.id.vw_line_dj_top_dream_clarity);
-        lineBottomDreamClarity = getView().findViewById(R.id.vw_line_dj_bottom_dream_clarity);
-        lineTopDreamCharacteristics = getView().findViewById(R.id.vw_line_dj_top_dream_characteristics);
+        closeEditor = getView().findViewById(R.id.btn_dj_close_editor);
+
+        cardRatingsPreview = getView().findViewById(R.id.mcv_dream_rating_preview);
+        bottomSheet = getView().findViewById(R.id.nsv_dream_rating_bottom_sheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        dragHandle = getView().findViewById(R.id.img_drag_handle);
+
         sliderDreamMood = getView().findViewById(R.id.sld_dj_dream_mood);
         sliderSleepQuality = getView().findViewById(R.id.sld_dj_sleep_quality);
         sliderDreamClarity = getView().findViewById(R.id.sld_dj_dream_clarity);
-        indicatorsDreamMood = getView().findViewById(R.id.ll_dj_dream_mood);
-        indicatorsSleepQuality = getView().findViewById(R.id.ll_dj_sleep_quality);
-        indicatorsDreamClarity = getView().findViewById(R.id.ll_dj_dream_clarity);
-        containerDreamCharacteristics = getView().findViewById(R.id.ll_dj_dream_characteristics);
-        textSleepQuality = getView().findViewById(R.id.txt_dj_sleep_quality_selection_text);
-        textDreamMood = getView().findViewById(R.id.txt_dj_dream_mood_selection_text);
-        textDreamClarity = getView().findViewById(R.id.txt_dj_dream_clarity_selection_text);
-        previewSelectionSleepQuality = getView().findViewById(R.id.img_dj_selection_sleep_quality);
-        previewSelectionDreamClarity = getView().findViewById(R.id.img_dj_selection_dream_clarity);
-        previewSelectionDreamMood = getView().findViewById(R.id.img_dj_selection_dream_mood);
-        dreamCharacteristicsIcons = getView().findViewById(R.id.ll_dj_dream_characteristics_icons);
+
         toggleNightmare = getView().findViewById(R.id.tgl_dj_nightmare);
         toggleParalysis = getView().findViewById(R.id.tgl_dj_paralysis);
         toggleLucid = getView().findViewById(R.id.tgl_dj_lucid);
         toggleRecurring = getView().findViewById(R.id.tgl_dj_recurring);
         toggleFalseAwakening = getView().findViewById(R.id.tgl_dj_false_awakening);
-        characterNightmare = getView().findViewById(R.id.img_dj_character_nightmare);
-        characterParalysis = getView().findViewById(R.id.img_dj_character_paralysis);
-        characterLucid = getView().findViewById(R.id.img_dj_character_lucid);
-        characterRecurring = getView().findViewById(R.id.img_dj_character_recurring);
-        characterFalseAwakening = getView().findViewById(R.id.img_dj_character_false_awakening);
-        closeEditor = getView().findViewById(R.id.btn_dj_close_editor);
+
+        previewDreamMood = getView().findViewById(R.id.img_preview_dream_mood);
+        previewDreamClarity = getView().findViewById(R.id.img_preview_dream_clarity);
+        previewSleepQuality = getView().findViewById(R.id.img_preview_sleep_quality);
+        specialDreamIconsContainer = getView().findViewById(R.id.ll_special_dream_icons);
+
+        specialDreamHeading = getView().findViewById(R.id.txt_special_dream_heading);
+        specialDreamDescription = getView().findViewById(R.id.txt_special_dream_description);
+
+        dreamMoods = new ImageView[] {
+                getView().findViewById(R.id.img_very_dissatisfied),
+                getView().findViewById(R.id.img_dissatisfied),
+                getView().findViewById(R.id.img_neutral_satisfied),
+                getView().findViewById(R.id.img_satisfied),
+                getView().findViewById(R.id.img_very_satisfied)
+        };
+        sleepQualities = new ImageView[] {
+                getView().findViewById(R.id.img_very_bad_quality),
+                getView().findViewById(R.id.img_bad_quality),
+                getView().findViewById(R.id.img_good_quality),
+                getView().findViewById(R.id.img_very_good_quality)
+        };
+        dreamClarities = new ImageView[] {
+                getView().findViewById(R.id.img_very_unclear),
+                getView().findViewById(R.id.img_unclear),
+                getView().findViewById(R.id.img_clear),
+                getView().findViewById(R.id.img_very_clear)
+        };
+
         db = MainDatabase.getInstance(getContext());
-
-        dreamMoods[0] = getView().findViewById(R.id.img_very_dissatisfied);
-        dreamMoods[1] = getView().findViewById(R.id.img_dissatisfied);
-        dreamMoods[2] = getView().findViewById(R.id.img_neutral_satisfied);
-        dreamMoods[3] = getView().findViewById(R.id.img_satisfied);
-        dreamMoods[4] = getView().findViewById(R.id.img_very_satisfied);
-
-        sleepQualities[0] = getView().findViewById(R.id.img_very_bad_quality);
-        sleepQualities[1] = getView().findViewById(R.id.img_bad_quality);
-        sleepQualities[2] = getView().findViewById(R.id.img_good_quality);
-        sleepQualities[3] = getView().findViewById(R.id.img_very_good_quality);
-
-        dreamClarities[0] = getView().findViewById(R.id.img_very_unclear);
-        dreamClarities[1] = getView().findViewById(R.id.img_unclear);
-        dreamClarities[2] = getView().findViewById(R.id.img_clear);
-        dreamClarities[3] = getView().findViewById(R.id.img_very_clear);
-
-        characterNightmare.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme()));
-        characterParalysis.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme()));
-        characterLucid.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme()));
-        characterRecurring.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme()));
-        characterFalseAwakening.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme()));
-
         JournalInMemory jim = journalManger.getEntry(journalEntryId);
-
         restoreStoredEntry(jim);
 
-        toggleNightmare.setOnClickListener(e -> {
-            characterNightmare.setVisibility(toggleNightmare.isChecked() ? View.VISIBLE : View.GONE);
-            jim.setNightmare(toggleNightmare.isChecked());
+        toggleNightmare.setOnClickListener(e -> toggleSpecialDreamType(jim, (ToggleButton) e, JournalInMemory.SpecialDreamType.NIGHTMARE));
+        toggleParalysis.setOnClickListener(e -> toggleSpecialDreamType(jim, (ToggleButton) e, JournalInMemory.SpecialDreamType.PARALYSIS));
+        toggleLucid.setOnClickListener(e -> toggleSpecialDreamType(jim, (ToggleButton) e, JournalInMemory.SpecialDreamType.LUCID));
+        toggleRecurring.setOnClickListener(e -> toggleSpecialDreamType(jim, (ToggleButton) e, JournalInMemory.SpecialDreamType.RECURRING));
+        toggleFalseAwakening.setOnClickListener(e -> toggleSpecialDreamType(jim, (ToggleButton) e, JournalInMemory.SpecialDreamType.FALSE_AWAKENING));
+
+        sliderDreamMood.setLabelFormatter(value -> dreamMoodLabels[(int)value]);
+        sliderSleepQuality.setLabelFormatter(value -> sleepQualityLabels[(int)value]);
+        sliderDreamClarity.setLabelFormatter(value -> dreamClarityLabels[(int)value]);
+
+        sliderDreamMood.addOnChangeListener((slider, value, fromUser) -> {
+            handleIconSlider((int) value, dreamMoods, previewDreamMood);
+            jim.setDreamMood(DreamMoods.values()[(int) value].getId());
         });
-        toggleParalysis.setOnClickListener(e -> {
-            characterParalysis.setVisibility(toggleParalysis.isChecked() ? View.VISIBLE : View.GONE);
-            jim.setParalysis(toggleParalysis.isChecked());
+        sliderSleepQuality.addOnChangeListener((slider, value, fromUser) -> {
+            handleIconSlider((int) value, sleepQualities, previewSleepQuality);
+            jim.setSleepQuality(SleepQuality.values()[(int) value].getId());
         });
-        toggleLucid.setOnClickListener(e -> {
-            characterLucid.setVisibility(toggleLucid.isChecked() ? View.VISIBLE : View.GONE);
-            jim.setLucid(toggleLucid.isChecked());
-        });
-        toggleRecurring.setOnClickListener(e -> {
-            characterRecurring.setVisibility(toggleRecurring.isChecked() ? View.VISIBLE : View.GONE);
-            jim.setRecurring(toggleRecurring.isChecked());
-        });
-        toggleFalseAwakening.setOnClickListener(e -> {
-            characterFalseAwakening.setVisibility(toggleFalseAwakening.isChecked() ? View.VISIBLE : View.GONE);
-            jim.setFalseAwakening(toggleFalseAwakening.isChecked());
+        sliderDreamClarity.addOnChangeListener((slider, value, fromUser) -> {
+            handleIconSlider((int) value, dreamClarities, previewDreamClarity);
+            jim.setDreamClarity(DreamClarity.values()[(int) value].getId());
         });
 
-        closeEditor.setOnClickListener(e -> new AlertDialog.Builder(getContext(), Tools.getThemeDialog()).setTitle("Discard changes").setMessage("Do you really want to discard all changes")
+        closeEditor.setOnClickListener(e -> new AlertDialog.Builder(getContext(), Tools.getThemeDialog())
+                .setTitle("Discard changes")
+                .setMessage("Do you really want to discard all changes")
                 .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                     journalManger.discardEntry(journalEntryId);
-                    if(mCloseButtonClicked != null){
+                    if(mCloseButtonClicked != null) {
                         mCloseButtonClicked.onEvent();
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.no), null)
                 .show());
 
-        sliderDreamMood.addOnChangeListener((slider, value, fromUser) -> {
-            handleSliderDreamMoodChange(jim);
-        });
-        sliderDreamMood.setOnTouchListener((view1, motionEvent) -> {
-            int action = motionEvent.getAction();
-            if (action==MotionEvent.ACTION_UP) { focusCardSleepQuality(); }
-            return false;
-        });
-        sliderSleepQuality.addOnChangeListener((slider, value, fromUser) -> {
-            handleSliderSleepQualityChange(jim);
-        });
-        sliderSleepQuality.setOnTouchListener((view1, motionEvent) -> {
-            int action = motionEvent.getAction();
-            if (action==MotionEvent.ACTION_UP) { focusCardDreamClarity(); }
-            return false;
-        });
-        sliderDreamClarity.addOnChangeListener((slider, value, fromUser) -> {
-            handleSliderDreamClarityChange(jim);
-        });
-        sliderDreamClarity.setOnTouchListener((view1, motionEvent) -> {
-            int action = motionEvent.getAction();
-            if (action==MotionEvent.ACTION_UP) { focusCardDreamCharacteristics(); }
-            return false;
-        });
-
         backToDreamEditor.setOnClickListener(e -> {
             if(mBackButtonListener != null) {
                 mBackButtonListener.onEvent();
             }
         });
+
         doneRatingBtn.setOnClickListener(e -> {
-            if(!jim.getDescription().equals("") && !jim.getTitle().equals("")) {
-                storeEntry();
-            }
-            else {
-                new AlertDialog.Builder(getContext(), Tools.getThemeDialog()).setTitle("No title/description").setMessage("The fields for title and description must not be empty!")
+            if(jim.getTitle().equals("") || (jim.getDescription().equals("") && jim.getAudioRecordings().size() == 0)) {
+                new AlertDialog.Builder(getContext(), Tools.getThemeDialog())
+                        .setTitle("No content")
+                        .setMessage("You have to provide a title and a description or audio recording for your dream journal entry!")
                         .setPositiveButton(getResources().getString(R.string.ok), null)
                         .show();
+                return;
+            }
+
+            compositeDisposable.add(storeEntry().subscribeOn(Schedulers.io()).subscribe((currentEntryId) ->{
+                if(mDreamJournalEntrySaved != null) {
+                    mDreamJournalEntrySaved.onEvent(currentEntryId);
+                }
+            }));
+        });
+
+        cardRatingsPreview.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                cardRatingsPreview.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int screenTopToCardBottom = cardRatingsPreview.getBottom();
+                int marginBelowCard = Tools.dpToPx(getContext(), 20);
+                int height = getAppHeight();
+                bottomSheetBehavior.setPeekHeight(height - (screenTopToCardBottom + marginBelowCard));
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
         });
 
-        cardDreamMood.setOnClickListener(e -> {
-            if(selectedRating != SelectedRating.DREAM_MOOD) {
-                deselectLast();
-                selectedRating = SelectedRating.DREAM_MOOD;
-                setSelectionRatingSliderCard(cardDreamMood, R.attr.colorPrimary, sliderDreamMood, View.VISIBLE, indicatorsDreamMood, previewSelectionDreamMood, View.VISIBLE);
+        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    ViewCompat.setBackground(bottomSheet, ResourcesCompat.getDrawable(getResources(), R.drawable.bottomsheet_background_line_expanded, getContext().getTheme()));
+                    dragHandle.setVisibility(View.INVISIBLE);
+                }
+                else {
+                    ViewCompat.setBackground(bottomSheet, ResourcesCompat.getDrawable(getResources(), R.drawable.bottomsheet_background_line, getContext().getTheme()));
+                    dragHandle.setVisibility(View.VISIBLE);
+                }
             }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) { }
         });
-        cardSleepQuality.setOnClickListener(e -> focusCardSleepQuality());
+    }
+
+    private void setAdjustedStatusBarMargin(ConstraintLayout heading) {
+        // As the content editor's margin top is automatically adjusted because of the 'fitsSystemWindows' flag
+        // we have to adjust the heading's margin top to be at the same height as the content editor's
+        // heading height. Those values vary from device to device
+
+        int insetTop = getActivity().getWindow().getDecorView().getRootWindowInsets().getStableInsetTop();
+        int statusBarHeight = Tools.getStatusBarHeight(getContext());
+        int marginTop = insetTop - statusBarHeight;
+
+        LinearLayout.LayoutParams lParams = (LinearLayout.LayoutParams) heading.getLayoutParams();
+        lParams.topMargin = marginTop;
+        heading.setLayoutParams(Tools.addLinearLayoutParamsTopStatusbarSpacing(getContext(), lParams));
+    }
+
+    private void toggleSpecialDreamType(JournalInMemory jim, ToggleButton button, JournalInMemory.SpecialDreamType specialDreamType) {
+        setToggledSpecialDreamType(button, getSpecialDreamTypeIcon(specialDreamType));
+        if(jim != null) {
+            jim.setSpecialDreamType(specialDreamType, button.isChecked());
+        }
+    }
+
+    private static int getSpecialDreamTypeIcon(JournalInMemory.SpecialDreamType specialDreamType) {
+        @DrawableRes int icon = -1;
+        switch (specialDreamType) {
+            case NIGHTMARE: icon = R.drawable.ic_baseline_priority_high_24; break;
+            case PARALYSIS: icon = R.drawable.ic_baseline_accessibility_new_24; break;
+            case LUCID: icon = R.drawable.ic_baseline_deblur_24; break;
+            case RECURRING: icon = R.drawable.ic_round_loop_24; break;
+            case FALSE_AWAKENING: icon = R.drawable.ic_baseline_airline_seat_individual_suite_24; break;
+        }
+        return icon;
+    }
+
+    private void setToggledSpecialDreamType(ToggleButton button, @DrawableRes int iconId) {
+        if(button.isChecked()) {
+            setSpecialDreamNoticeIfFirst();
+            ImageView icon = generateIcon(iconId);
+            toggleButtonIcons.put(button, icon);
+            specialDreamIconsContainer.addView(icon);
+        }
+        else {
+            setRegularDreamNoticeIfLast(button);
+            ImageView icon = toggleButtonIcons.get(button);
+            toggleButtonIcons.remove(button);
+            specialDreamIconsContainer.removeView(icon);
+        }
+    }
+
+    private void setRegularDreamNoticeIfLast(ToggleButton button) {
+        if (toggleButtonIcons.size() == 1 && toggleButtonIcons.containsKey(button)) {
+            specialDreamIconsContainer.addView(generateIcon(R.drawable.rounded_eco_24));
+            specialDreamHeading.setText("Regular dream");
+            specialDreamDescription.setText("This is a normal dream without any special types");
+        }
+    }
+
+    private void setSpecialDreamNoticeIfFirst() {
+        if (toggleButtonIcons.size() == 0) {
+            specialDreamIconsContainer.removeAllViews();
+            specialDreamHeading.setText("Special dream");
+            specialDreamDescription.setText("This is a special dream with at least one special type");
+        }
+    }
+
+    private ImageView generateIcon(@DrawableRes int icon) {
+        ImageView img = new ImageView(getContext());
+        img.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        img.setImageResource(icon);
+        img.setImageTintList(Tools.getAttrColorStateList(R.attr.secondaryTextColor, getContext().getTheme()));
+        return img;
+    }
+
+    private void handleIconSlider(int value, ImageView[] icons, ImageView previewIcon) {
+        if(value < icons.length && previewIcon != null) {
+            for (int i = 0; i < icons.length; i++) {
+                if(icons[i] != null) {
+                    icons[i].setImageTintList(i == value ? colorOnPrimary : tertiaryColor);
+                    ViewGroup.LayoutParams lParams = icons[i].getLayoutParams();
+                    lParams.height = i == value ? Tools.dpToPx(getContext(), 24) : Tools.dpToPx(getContext(), 16);
+                    icons[i].setLayoutParams(lParams);
+                    icons[i].invalidate();
+                }
+            }
+            previewIcon.setImageDrawable(icons[value].getDrawable());
+        }
+    }
+
+    private int getAppHeight() {
+        // TODO: check on phones without (navbar / gesture inset) if inset is 0, apparently might have higher value even without visible inset
+        int insetBottom = getActivity().getWindow().getDecorView().getRootWindowInsets().getStableInsetBottom();
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+        int deviceHeight = metrics.heightPixels;
+        return deviceHeight - insetBottom;
     }
 
     private void restoreStoredEntry(JournalInMemory jim) {
         sliderDreamMood.setValue(DreamMoods.getEnum(jim.getDreamMood()).ordinal());
+        handleIconSlider((int) sliderDreamMood.getValue(), dreamMoods, previewDreamMood);
         sliderDreamClarity.setValue(DreamClarity.getEnum(jim.getDreamClarity()).ordinal());
+        handleIconSlider((int) sliderDreamClarity.getValue(), dreamClarities, previewDreamClarity);
         sliderSleepQuality.setValue(SleepQuality.getEnum(jim.getSleepQuality()).ordinal());
-        handleSliderDreamClarityChange(null);
-        handleSliderDreamMoodChange(null);
-        handleSliderSleepQualityChange(null);
+        handleIconSlider((int) sliderSleepQuality.getValue(), sleepQualities, previewSleepQuality);
 
-        if(jim.isLucid()) {
-            characterLucid.setVisibility(View.VISIBLE);
-            toggleLucid.setChecked(true);
-        }
-        if(jim.isFalseAwakening()) {
-            characterFalseAwakening.setVisibility(View.VISIBLE);
-            toggleFalseAwakening.setChecked(true);
-        }
-        if(jim.isNightmare()) {
-            characterNightmare.setVisibility(View.VISIBLE);
-            toggleNightmare.setChecked(true);
-        }
-        if(jim.isParalysis()) {
-            characterParalysis.setVisibility(View.VISIBLE);
-            toggleParalysis.setChecked(true);
-        }
-        if(jim.isRecurring()) {
-            characterRecurring.setVisibility(View.VISIBLE);
-            toggleRecurring.setChecked(true);
-        }
-
-        if(jim.getEditMode() == JournalInMemory.EditMode.EDIT) {
-            deselectAllCards();
-            textSleepQuality.setVisibility(View.VISIBLE);
-            cardDreamClarity.setClickable(true);
-            cardDreamClarity.setOnClickListener(e1 -> focusCardDreamClarity());
-            textDreamClarity.setVisibility(View.VISIBLE);
-            cardDreamCharacteristics.setClickable(true);
-            cardDreamCharacteristics.setOnClickListener(e2 -> focusCardDreamCharacteristics());
-            focusCardDreamCharacteristics();
-        }
+        toggleNightmare.setChecked(jim.isNightmare());
+        toggleSpecialDreamType(null, toggleNightmare, JournalInMemory.SpecialDreamType.NIGHTMARE);
+        toggleParalysis.setChecked(jim.isParalysis());
+        toggleSpecialDreamType(null, toggleParalysis, JournalInMemory.SpecialDreamType.PARALYSIS);
+        toggleLucid.setChecked(jim.isLucid());
+        toggleSpecialDreamType(null, toggleLucid, JournalInMemory.SpecialDreamType.LUCID);
+        toggleRecurring.setChecked(jim.isRecurring());
+        toggleSpecialDreamType(null, toggleRecurring, JournalInMemory.SpecialDreamType.RECURRING);
+        toggleFalseAwakening.setChecked(jim.isFalseAwakening());
+        toggleSpecialDreamType(null, toggleFalseAwakening, JournalInMemory.SpecialDreamType.FALSE_AWAKENING);
     }
 
-    private void handleSliderDreamClarityChange(JournalInMemory jim) {
-        deselectAllDreamClarityIcons();
-        int value = (int)sliderDreamClarity.getValue();
-        textDreamClarity.setText(dreamClarityLabels[value]);
-        previewSelectionDreamClarity.setImageDrawable(dreamClarities[value].getDrawable());
-        dreamClarities[value].setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme()));
-        dreamClarities[value].invalidate();
-        if(jim != null) {
-            jim.setDreamClarity(DreamClarity.values()[((int) sliderDreamClarity.getValue())].getId());
-        }
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
-    private void handleSliderSleepQualityChange(JournalInMemory jim) {
-        deselectAllSleepQualityIcons();
-        int value = (int)sliderSleepQuality.getValue();
-        textSleepQuality.setText(sleepQualityLabels[value]);
-        previewSelectionSleepQuality.setImageDrawable(sleepQualities[value].getDrawable());
-        sleepQualities[value].setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme()));
-        sleepQualities[value].invalidate();
-        if(jim != null) {
-            jim.setSleepQuality(SleepQuality.values()[((int) sliderSleepQuality.getValue())].getId());
-        }
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
     }
 
-    private void handleSliderDreamMoodChange(JournalInMemory jim) {
-        deselectAllDreamMoodIcons();
-        int value = (int)sliderDreamMood.getValue();
-        textDreamMood.setText(dreamMoodLabels[value]);
-        previewSelectionDreamMood.setImageDrawable(dreamMoods[value].getDrawable());
-        dreamMoods[value].setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme()));
-        dreamMoods[value].invalidate();
-        if(jim != null) {
-            jim.setDreamMood(DreamMoods.values()[((int) sliderDreamMood.getValue())].getId());
-        }
+    @Override
+    public void onDestroyView() {
+        compositeDisposable.clear();
+        super.onDestroyView();
     }
 
-    private void focusCardSleepQuality() {
-        if(selectedRating != SelectedRating.SLEEP_QUALITY){
-            deselectLast();
-            selectedRating = SelectedRating.SLEEP_QUALITY;
-            cardSleepQuality.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
-            cardDreamClarity.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getContext().getTheme()));
-            dotSleepQuality.setImageTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
-            lineBottomDreamMood.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
-            lineTopSleepQuality.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
-            if (!qualityPressed) {
-                qualityPressed = true;
-                lineBottomSleepQuality.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.tertiaryTextColor, getContext().getTheme()));
-                lineTopDreamClarity.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.tertiaryTextColor, getContext().getTheme()));
-                dotDreamClarity.setImageTintList(Tools.getAttrColorStateList(R.attr.tertiaryTextColor, getContext().getTheme()));
+    private Single<Integer> storeEntry() {
+        return Single.fromCallable(() -> {
+            JournalInMemory jim = journalManger.getEntry(journalEntryId);
+            JournalEntry entry = new JournalEntry(jim.getTime().getTimeInMillis(), jim.getTitle(), jim.getDescription(), jim.getSleepQuality(), jim.getDreamClarity(), jim.getDreamMood());
+
+            if(jim.getEntryId() != -1) {
+                entry.setEntryId(jim.getEntryId());
+                db.getJournalEntryHasTagDao().deleteAll(jim.getEntryId()).blockingSubscribe();
+                db.getJournalEntryIsTypeDao().deleteAll(jim.getEntryId()).blockingSubscribe();
             }
-            sliderSleepQuality.setVisibility(View.VISIBLE);
-            indicatorsSleepQuality.setVisibility(View.VISIBLE);
-            previewSelectionSleepQuality.setVisibility(View.VISIBLE);
-            textSleepQuality.setVisibility(View.VISIBLE);
 
-            if(!cardDreamClarity.isClickable()) {
-                cardDreamClarity.setClickable(true);
-                cardDreamClarity.setOnClickListener(e1 -> focusCardDreamClarity());
-            }
-        }
-    }
-
-    private void focusCardDreamClarity() {
-        if(selectedRating != SelectedRating.DREAM_CLARITY){
-            deselectLast();
-            selectedRating = SelectedRating.DREAM_CLARITY;
-            cardDreamClarity.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
-            cardDreamCharacteristics.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getContext().getTheme()));
-            dotDreamClarity.setImageTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
-            lineBottomSleepQuality.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
-            lineTopDreamClarity.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
-            if(!clarityPressed) {
-                clarityPressed = true;
-                lineTopDreamCharacteristics.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.tertiaryTextColor, getContext().getTheme()));
-                lineBottomDreamClarity.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.tertiaryTextColor, getContext().getTheme()));
-                dotDreamCharacteristics.setImageTintList(Tools.getAttrColorStateList(R.attr.tertiaryTextColor, getContext().getTheme()));
-            }
-            sliderDreamClarity.setVisibility(View.VISIBLE);
-            indicatorsDreamClarity.setVisibility(View.VISIBLE);
-            previewSelectionDreamClarity.setVisibility(View.VISIBLE);
-            textDreamClarity.setVisibility(View.VISIBLE);
-
-            if(!cardDreamCharacteristics.isClickable()) {
-                cardDreamCharacteristics.setClickable(true);
-                cardDreamCharacteristics.setOnClickListener(e2 -> focusCardDreamCharacteristics());
-            }
-        }
-    }
-
-    private void focusCardDreamCharacteristics() {
-        if (selectedRating != SelectedRating.DREAM_CHARACTERISTICS) {
-            deselectLast();
-            selectedRating = SelectedRating.DREAM_CHARACTERISTICS;
-            cardDreamCharacteristics.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
-            dotDreamCharacteristics.setImageTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
-            lineBottomDreamClarity.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
-            lineTopDreamCharacteristics.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
-            containerDreamCharacteristics.setVisibility(View.VISIBLE);
-            dreamCharacteristicsIcons.setVisibility(View.VISIBLE);
-            doneRatingBtn.setEnabled(true);
-        }
-    }
-
-    private void deselectAllDreamMoodIcons() {
-        for (ImageView img : dreamMoods) {
-            img.setImageTintList(Tools.getAttrColorStateList(R.attr.tertiaryTextColor, getContext().getTheme()));
-            img.invalidate();
-        }
-    }
-
-    private void deselectAllSleepQualityIcons() {
-        for (ImageView img : sleepQualities) {
-            img.setImageTintList(Tools.getAttrColorStateList(R.attr.tertiaryTextColor, getContext().getTheme()));
-            img.invalidate();
-        }
-    }
-
-    private void deselectAllDreamClarityIcons() {
-        for (ImageView img : dreamClarities) {
-            img.setImageTintList(Tools.getAttrColorStateList(R.attr.tertiaryTextColor, getContext().getTheme()));
-            img.invalidate();
-        }
-    }
-
-    private void deselectLast() {
-        switch (selectedRating){
-            case DREAM_MOOD:
-                deselectCard(cardDreamMood, sliderDreamMood, indicatorsDreamMood, previewSelectionDreamMood);
-                break;
-            case SLEEP_QUALITY:
-                deselectCard(cardSleepQuality, sliderSleepQuality, indicatorsSleepQuality, previewSelectionSleepQuality);
-                break;
-            case DREAM_CLARITY:
-                deselectCard(cardDreamClarity, sliderDreamClarity, indicatorsDreamClarity, previewSelectionDreamClarity);
-                break;
-            case DREAM_CHARACTERISTICS:
-                cardDreamCharacteristics.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getContext().getTheme()));
-                containerDreamCharacteristics.setVisibility(View.GONE);
-                dreamCharacteristicsIcons.setVisibility(View.VISIBLE);
-                break;
-        }
-    }
-
-    private void deselectAllCards() {
-        deselectCard(cardDreamMood, sliderDreamMood, indicatorsDreamMood, previewSelectionDreamMood);
-        deselectCard(cardSleepQuality, sliderSleepQuality, indicatorsSleepQuality, previewSelectionSleepQuality);
-        deselectCard(cardDreamClarity, sliderDreamClarity, indicatorsDreamClarity, previewSelectionDreamClarity);
-        cardDreamCharacteristics.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getContext().getTheme()));
-        containerDreamCharacteristics.setVisibility(View.GONE);
-        dreamCharacteristicsIcons.setVisibility(View.VISIBLE);
-    }
-
-    private void deselectCard(MaterialCardView card, Slider slider, LinearLayout indicatorsContainer, ImageView previewIcon) {
-        setSelectionRatingSliderCard(card, R.attr.slightElevated, slider, View.GONE, indicatorsContainer, previewIcon, View.VISIBLE);
-    }
-
-    private void setSelectionRatingSliderCard(MaterialCardView card, int cardBackgroundColor, Slider slider, int sliderVisibility, LinearLayout indicatorsContainer, ImageView previewIcon, int previewIconVisibility) {
-        card.setBackgroundTintList(Tools.getAttrColorStateList(cardBackgroundColor, getContext().getTheme()));
-        slider.setVisibility(sliderVisibility);
-        indicatorsContainer.setVisibility(sliderVisibility);
-        previewIcon.setVisibility(previewIconVisibility);
-    }
-
-    private void storeEntry() {
-        // TODO start loading animation
-        JournalInMemory jim = journalManger.getEntry(journalEntryId);
-        JournalEntry entry = new JournalEntry(jim.getTime().getTimeInMillis(), jim.getTitle(), jim.getDescription(), jim.getSleepQuality(), jim.getDreamClarity(), jim.getDreamMood());
-
-        if(jim.getEntryId() != -1) {
-            entry.setEntryId(jim.getEntryId());
-            db.getJournalEntryHasTagDao().deleteAll(jim.getEntryId());
-            db.getJournalEntryIsTypeDao().deleteAll(jim.getEntryId());
-        }
-
-        db.getJournalEntryDao().insert(entry).subscribe((insertedIds, throwable) -> {
-            int currentEntryId = insertedIds.intValue();
+            int currentEntryId = db.getJournalEntryDao().insert(entry).blockingGet().intValue();
             List<JournalEntryHasType> journalEntryHasTypes = jim.getDreamTypes(currentEntryId);
-            db.getJournalEntryIsTypeDao().insertAll(journalEntryHasTypes).subscribe(() -> {
-                List<JournalEntryTag> journalEntryTagsToInsert = jim.getJournalEntryTag();
-                db.getJournalEntryTagDao().insertAll(journalEntryTagsToInsert).subscribe((insertedTagIds, throwable1) -> {
-                    db.getJournalEntryTagDao().getIdsByDescription(jim.getTags()).subscribe((journalEntryTags, throwable2) -> {
-                        List<JournalEntryHasTag> journalEntryHasTags = jim.getJournalEntryHasTag(currentEntryId, journalEntryTags);
-                        db.getJournalEntryHasTagDao().insertAll(journalEntryHasTags).subscribe((integers, throwable3) -> {
-                            List<AudioLocation> audioLocations = AudioLocation.parse(currentEntryId, jim.getAudioRecordings());
-                            db.getAudioLocationDao().insertAll(audioLocations).subscribe((integers1, throwable4) -> {
-                                jim.deleteMarkedAudioRecordings();
-                                // TODO hide loading animation
-                                if(mDreamJournalEntrySaved != null) {
-                                    mDreamJournalEntrySaved.onEvent(currentEntryId);
-                                }
-                            });
-                        });
-                    });
-                });
-            });
+            db.getJournalEntryIsTypeDao().insertAll(journalEntryHasTypes).blockingSubscribe();
+            List<JournalEntryTag> journalEntryTagsToInsert = jim.getJournalEntryTag();
+            db.getJournalEntryTagDao().insertAll(journalEntryTagsToInsert).blockingSubscribe();
+            List<JournalEntryTag> journalEntryTags = db.getJournalEntryTagDao().getIdsByDescription(jim.getTags()).blockingGet();
+            List<JournalEntryHasTag> journalEntryHasTags = jim.getJournalEntryHasTag(currentEntryId, journalEntryTags);
+            db.getJournalEntryHasTagDao().insertAll(journalEntryHasTags).blockingSubscribe();
+            List<AudioLocation> audioLocations = AudioLocation.parse(currentEntryId, jim.getAudioRecordings());
+            db.getAudioLocationDao().insertAll(audioLocations).blockingSubscribe();
+            jim.deleteMarkedAudioRecordings();
+            return currentEntryId;
         });
     }
 

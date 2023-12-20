@@ -67,6 +67,8 @@
 
         <item name="slightElevated">@color/grayed_blue</item>
         <item name="slightElevated2x">@color/white_6p</item>
+        <item name="backgroundDreamRatingSheet">?attr/backgroundColor</item>
+        <item name="backgroundDreamRatingSheetStroke">?attr/colorOutlineVariant</item>
         <item name="colorDisabled">@color/background_brighter</item>
         <item name="colorPrimaryTranslucent">@color/prim_30p</item>
         <item name="colorError">@color/lighter_red</item>
@@ -124,6 +126,7 @@
         <item name="cardCornerRadius">@dimen/cardRadius</item>
         <item name="cardElevation">@dimen/cardElevationOutline</item>
         <item name="cardBackgroundColor">?attr/backgroundColor</item>
+        <item name="strokeColor">?attr/colorOutlineVariant</item>
         <item name="contentPadding">@dimen/cardDefaultPadding</item>
     </style>
 
@@ -145,6 +148,14 @@
     <style name="BottomSheetDialogStyle" parent="Theme.Material3.Dark.BottomSheetDialog">
         <item name="slightElevated">@color/grayed_blue</item>
         <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:theme">@style/Theme.LucidSourceKit.Dark</item>
+    </style>
+
+    <style name="LSK.Persistent.BottomSheet" parent="Theme.Material3.Dark.BottomSheetDialog">
+        <item name="slightElevated">@color/grayed_blue</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSoftInputMode">adjustResize</item>

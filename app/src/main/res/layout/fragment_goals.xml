@@ -57,6 +57,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
+                app:contentPadding="0dp"
                 app:strokeWidth="0dp"
                 style="@style/LSK.MaterialCardView.Outlined">
 
@@ -68,15 +69,15 @@
                     <com.bitflaker.lucidsourcekit.charts.Speedometer
                         android:id="@+id/som_difficulty"
                         android:layout_width="match_parent"
-                        android:layout_height="125dp" />
+                        android:layout_height="125dp"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_marginTop="24dp"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="48dp"
-                        android:divider="@drawable/divider_medium"
-                        android:orientation="horizontal"
-                        android:showDividers="middle">
+                        android:orientation="horizontal">
 
                         <RelativeLayout
                             android:layout_width="0dp"
@@ -132,6 +133,10 @@
                                 android:textColor="?attr/secondaryTextColor"
                                 android:textSize="12sp" />
                         </RelativeLayout>
+
+                        <Space
+                            android:layout_width="48dp"
+                            android:layout_height="wrap_content" />
 
                         <RelativeLayout
                             android:layout_width="0dp"
@@ -207,7 +212,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="40dp">
+                        android:layout_marginBottom="48dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -246,8 +251,6 @@
                                 android:button="@drawable/checkbox_button_round"
                                 android:layout_weight="1"
                                 android:drawableLeft="@android:color/transparent"
-                                android:drawableTop="@drawable/small_circle"
-                                android:drawableBottom="@drawable/small_circle"
                                 android:drawablePadding="15dp"
                                 android:drawableTint="@color/transparent"
                                 android:text="I see a yellow car"
@@ -261,8 +264,6 @@
                                 android:button="@drawable/checkbox_button_round"
                                 android:text="I turn off a light"
                                 android:drawableLeft="@android:color/transparent"
-                                android:drawableTop="@drawable/small_circle"
-                                android:drawableBottom="@drawable/small_circle"
                                 android:drawablePadding="15dp"
                                 android:drawableTint="@color/transparent"
                                 android:textColor="@color/checkbox_text_check_change"
@@ -275,8 +276,6 @@
                                 android:text="I feel tired"
                                 android:button="@drawable/checkbox_button_round"
                                 android:drawableLeft="@android:color/transparent"
-                                android:drawableTop="@drawable/small_circle"
-                                android:drawableBottom="@drawable/small_circle"
                                 android:drawablePadding="15dp"
                                 android:drawableTint="@color/transparent"
                                 android:textColor="@color/checkbox_text_check_change"

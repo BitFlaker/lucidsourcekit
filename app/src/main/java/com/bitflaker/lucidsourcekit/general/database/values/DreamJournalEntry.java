@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DreamJournalEntry {
-    private final JournalEntry entry;
+    private JournalEntry entry;
     private List<AssignedTags> tags;
     private List<JournalEntryHasType> types;
     private List<AudioLocation> audioLocations;
@@ -73,5 +73,9 @@ public class DreamJournalEntry {
 
     public void setTypes(List<JournalEntryHasType> types) {
         this.types = types;
+    }
+
+    public void setEntryData(JournalEntry entry) {
+        this.entry = entry;
     }
 }

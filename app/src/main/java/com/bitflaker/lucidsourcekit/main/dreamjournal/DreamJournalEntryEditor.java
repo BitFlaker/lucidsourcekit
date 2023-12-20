@@ -20,9 +20,7 @@ public class DreamJournalEntryEditor extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
-
     private ViewPagerAdapter vpAdapter;
-
     private DreamJournalContentEditor vwDreamContentEditor;
     private DreamJournalRatingEditor vwDreamRatingsEditor;
     private String journalInMemoryEntryID;
@@ -35,9 +33,12 @@ public class DreamJournalEntryEditor extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dream_journal_entry_editor);
 
+        Tools.makeStatusBarTransparent(this);
+
         vpAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
         tabLayout = findViewById(R.id.tl_dj_editor_layout);
         viewPager2 = findViewById(R.id.vp_dj_editor);
+        viewPager2.setUserInputEnabled(false);
         viewPager2.setOnTouchListener((v, event) -> true);
         if(getIntent().hasExtra("journal_in_memory_id")) {
             journalInMemoryEntryID = getIntent().getStringExtra("journal_in_memory_id");
@@ -64,11 +65,13 @@ public class DreamJournalEntryEditor extends AppCompatActivity {
         });
         vwDreamRatingsEditor.setOnDreamJournalEntrySavedListener((entryId) -> {
             isSaved = true;
-            Intent data = new Intent();
-            data.putExtra("entryId", entryId);
-            data.putExtra("journal_in_memory_id", journalInMemoryEntryID);
-            setResult(RESULT_OK, data);
-            finish();
+            runOnUiThread(() -> {
+                Intent data = new Intent();
+                data.putExtra("entryId", entryId);
+                data.putExtra("journal_in_memory_id", journalInMemoryEntryID);
+                setResult(RESULT_OK, data);
+                finish();
+            });
         });
         vwDreamRatingsEditor.setOnCloseButtonClicked(this::finish);
 

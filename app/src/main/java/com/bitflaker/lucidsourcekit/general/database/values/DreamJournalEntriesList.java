@@ -126,12 +126,21 @@ public class DreamJournalEntriesList {
         return audioLocations;
     }
 
-    public void add(JournalEntry entry, List<AssignedTags> assignedTags, List<AudioLocation> assignedAudioLocations, List<JournalEntryHasType> assignedTypes){
-        entries.add(new DreamJournalEntry(entry, assignedTags, assignedTypes, assignedAudioLocations));
+    public DreamJournalEntry add(JournalEntry entry, List<AssignedTags> assignedTags, List<AudioLocation> assignedAudioLocations, List<JournalEntryHasType> assignedTypes){
+        DreamJournalEntry newEntry = new DreamJournalEntry(entry, assignedTags, assignedTypes, assignedAudioLocations);
+        entries.add(newEntry);
+        return newEntry;
     }
 
-    public void add(DreamJournalEntry entry){
+    public DreamJournalEntry insert(int index, JournalEntry entry, List<AssignedTags> assignedTags, List<AudioLocation> assignedAudioLocations, List<JournalEntryHasType> assignedTypes){
+        DreamJournalEntry newEntry = new DreamJournalEntry(entry, assignedTags, assignedTypes, assignedAudioLocations);
+        entries.add(index, newEntry);
+        return newEntry;
+    }
+
+    public DreamJournalEntriesList add(DreamJournalEntry entry){
         entries.add(entry);
+        return this;
     }
 
     public void changeAt(int position, JournalEntry entry, List<AssignedTags> assignedTags, List<JournalEntryHasType> assignedTypes, List<AudioLocation> assignedAudioLocations) {
@@ -147,37 +156,43 @@ public class DreamJournalEntriesList {
     }
 
     public void sortByTitle(boolean a_to_z) {
-        Collections.sort(entries, (dje1, dje2) -> {
-            int order = dje1.getEntry().title.toLowerCase().compareTo(dje2.getEntry().title.toLowerCase());
-            return a_to_z ? order : order * -1;
-        });
+        Collections.sort(entries, (dje1, dje2) -> compareByTitle(a_to_z, dje1.getEntry(), dje2.getEntry()));
+    }
+
+    public static int compareByTitle(boolean a_to_z, JournalEntry dje1, JournalEntry dje2) {
+        int order = dje1.title.toLowerCase().compareTo(dje2.title.toLowerCase());
+        return a_to_z ? order : order * -1;
     }
 
     public void sortByDescription(boolean a_to_z) {
-        Collections.sort(entries, (dje1, dje2) -> {
-            int order = 0;
-            String desc1 = dje1.getEntry().description;
-            String desc2 = dje2.getEntry().description;
-            if(desc1 != null && desc2 != null){  order = desc1.toLowerCase().compareTo(desc2.toLowerCase()); }
-            else if(desc1 == null && desc2 != null){ order = a_to_z ? 1 : -1; }
-            else if(desc1 != null){ order = a_to_z ? -1 : 1; }
-            return a_to_z ? order : order * -1;
-        });
+        Collections.sort(entries, (dje1, dje2) -> compareByDescription(a_to_z, dje1.getEntry(), dje2.getEntry()));
+    }
+
+    public static int compareByDescription(boolean a_to_z, JournalEntry dje1, JournalEntry dje2) {
+        int order = 0;
+        String desc1 = dje1.description;
+        String desc2 = dje2.description;
+        if(desc1 != null && desc2 != null){  order = desc1.toLowerCase().compareTo(desc2.toLowerCase()); }
+        else if(desc1 == null && desc2 != null){ order = a_to_z ? 1 : -1; }
+        else if(desc1 != null){ order = a_to_z ? -1 : 1; }
+        return a_to_z ? order : order * -1;
     }
 
     public void sortByTimestamp(boolean newestFirst) {
-        Collections.sort(entries, (dje1, dje2) -> {
-            Calendar timestampCalendar1 = new GregorianCalendar(TimeZone.getDefault());
-            Calendar timestampCalendar2 = new GregorianCalendar(TimeZone.getDefault());
-            try {
-                timestampCalendar1.setTimeInMillis(dje1.getEntry().timeStamp);
-                timestampCalendar2.setTimeInMillis(dje2.getEntry().timeStamp);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            int order = timestampCalendar1.compareTo(timestampCalendar2);
-            return newestFirst ? order * -1: order;
-        });
+        Collections.sort(entries, (dje1, dje2) -> compareByTimestamp(newestFirst, dje1.getEntry(), dje2.getEntry()));
+    }
+
+    public static int compareByTimestamp(boolean newestFirst, JournalEntry dje1, JournalEntry dje2) {
+        Calendar timestampCalendar1 = new GregorianCalendar(TimeZone.getDefault());
+        Calendar timestampCalendar2 = new GregorianCalendar(TimeZone.getDefault());
+        try {
+            timestampCalendar1.setTimeInMillis(dje1.timeStamp);
+            timestampCalendar2.setTimeInMillis(dje2.timeStamp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        int order = timestampCalendar1.compareTo(timestampCalendar2);
+        return newestFirst ? order * -1 : order;
     }
 
     public DreamJournalEntry get(int i) {
@@ -192,7 +207,7 @@ public class DreamJournalEntriesList {
         entries.remove(entry);
     }
 
-    public void removeAt(int i){
+    public void removeAt(int i) {
         entries.remove(i);
     }
 

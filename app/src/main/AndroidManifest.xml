@@ -60,6 +60,7 @@
         <activity
             android:name=".main.dreamjournal.DreamJournalEntryEditor"
             android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".main.EditGoals"

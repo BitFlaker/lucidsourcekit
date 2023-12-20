@@ -7,19 +7,18 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AverageEntryValues;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AverageEntryValues;
 
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao
 public interface JournalEntryDao {
     @Query("SELECT * FROM JournalEntry ORDER BY timeStamp DESC")
-    Flowable<List<JournalEntry>> getAll();
+    Single<List<JournalEntry>> getAll();
 
     @Query("SELECT * FROM JournalEntry WHERE entryId = :id")
     Single<JournalEntry> getEntryById(int id);
