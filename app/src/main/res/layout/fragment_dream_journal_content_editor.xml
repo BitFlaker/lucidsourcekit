@@ -64,19 +64,18 @@
                 android:id="@+id/txt_dj_title_dream"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/rectangle"
-                android:backgroundTint="?attr/backgroundColor"
-                android:fontFamily="sans-serif-medium"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp"
+                android:scrollHorizontally="false"
                 android:gravity="center_vertical"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="24sp"
+                android:fontFamily="sans-serif-medium"
                 android:hint="@string/dream_title_hint"
                 android:importantForAutofill="no"
-                android:inputType="text"
-                android:minHeight="54dp"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="24sp" />
+                android:inputType="textCapSentences|textMultiLine"
+                android:background="@drawable/rectangle"
+                android:backgroundTint="?attr/backgroundColor" />
 
 <!--            android:paddingBottom="70dp"-->
             <EditText

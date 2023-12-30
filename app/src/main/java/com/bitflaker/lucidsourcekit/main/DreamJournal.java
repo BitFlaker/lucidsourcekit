@@ -93,15 +93,15 @@ public class DreamJournal extends Fragment {
         compositeDisposable.add(db.getJournalEntryDao().getAll().subscribe(journalEntries -> {
             compositeDisposable.add(loadAllJournalData(journalEntries)
                     .subscribeOn(Schedulers.io())
-                    .subscribe(entries -> {
-                        recyclerViewAdapterDreamJournal = new RecyclerViewAdapterDreamJournal(this, getContext(), entries);
+                    .subscribe(entries -> getActivity().runOnUiThread(() -> {
+                        recyclerViewAdapterDreamJournal = new RecyclerViewAdapterDreamJournal(this, getActivity(), getContext(), entries);
                         setBasics();
                         setupFAB();
                         setupSortButton();
                         setupFilterButton();
                         setupResetFilterButton();
                         checkForEntries();
-                    }));
+                    })));
                 }));
         if(autoOpenJournalTypeCreator != null) {
             // TODO when an entry was created after the editor was opened by the alarm quick action, the list of entries in the MainViewer does not get updated
@@ -205,7 +205,7 @@ public class DreamJournal extends Fragment {
             rotateBackward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_backward);
             noEntryFound = getView().findViewById(R.id.txt_no_entries);
             recyclerView = getView().findViewById(R.id.recycler_view);
-            recyclerViewAdapterDreamJournal = new RecyclerViewAdapterDreamJournal(this, getContext(), entries);
+            recyclerViewAdapterDreamJournal = new RecyclerViewAdapterDreamJournal(this, getActivity(), getContext(), entries);
         }
         else {
             recyclerViewAdapterDreamJournal.setEntries(entries);

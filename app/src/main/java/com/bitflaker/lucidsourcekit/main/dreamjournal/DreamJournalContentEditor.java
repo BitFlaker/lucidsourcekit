@@ -12,6 +12,7 @@ import android.content.res.ColorStateList;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +27,6 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -71,54 +70,50 @@ public class DreamJournalContentEditor extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_dream_journal_content_editor, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-//        Tools.makeStatusBarTransparent(DreamJournalEditor.this);
+        View view = inflater.inflate(R.layout.fragment_dream_journal_content_editor, container, false);
 
         db = MainDatabase.getInstance(getContext());
-        topHeading = getView().findViewById(R.id.csl_dj_top_bar);
-        title = getView().findViewById(R.id.txt_dj_title_dream);
-        description = getView().findViewById(R.id.txt_dj_description_dream);
-        editorScroller = getView().findViewById(R.id.scrl_editor_scroll);
-        continueButton = getView().findViewById(R.id.btn_dj_continue_to_ratings);
-        dateTime = getView().findViewById(R.id.btn_dj_date);
-        addRecording = getView().findViewById(R.id.btn_dj_add_recording);
-        addTags = getView().findViewById(R.id.btn_dj_add_tag);
-        formsContainer = getView().findViewById(R.id.flx_dj_form_dream);
-        closeEditor = getView().findViewById(R.id.btn_dj_close_editor);
+        topHeading = view.findViewById(R.id.csl_dj_top_bar);
+        title = view.findViewById(R.id.txt_dj_title_dream);
+        description = view.findViewById(R.id.txt_dj_description_dream);
+        editorScroller = view.findViewById(R.id.scrl_editor_scroll);
+        continueButton = view.findViewById(R.id.btn_dj_continue_to_ratings);
+        dateTime = view.findViewById(R.id.btn_dj_date);
+        addRecording = view.findViewById(R.id.btn_dj_add_recording);
+        addTags = view.findViewById(R.id.btn_dj_add_tag);
+        formsContainer = view.findViewById(R.id.flx_dj_form_dream);
+        closeEditor = view.findViewById(R.id.btn_dj_close_editor);
 
-        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
-        DateFormat dtf = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
-        DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
+        DateFormat mediumDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        DateFormat shortDateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+        DateFormat shortTimeFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
+
         JournalInMemory entry = journalManger.getEntry(journalEntryId);
-        dateTime.setText(dtf.format(entry.getTime().getTime()));
+        dateTime.setText(shortDateTimeFormat.format(entry.getTime().getTime()));
 
-        if(entry.getEntryType() == JournalInMemory.EntryType.FORMS_TEXT){
+        if(entry.getEntryType() == JournalInMemory.EntryType.FORMS_TEXT) {
             formsContainer.setVisibility(View.VISIBLE);
             setupForms();
             description.setVisibility(View.GONE);
         }
 
-//        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
-//        RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams) editorScroller.getLayoutParams();
-//        lParams.setMargins(0, Tools.getStatusBarHeight(this), 0, 0);
-//        editorScroller.setLayoutParams(lParams);
-
         setupCloseButton();
         setupTagsEditor(entry);
-        setupDateTimePicker(df, dtf, tf, entry);
+        setupDateTimePicker(mediumDateFormat, shortDateTimeFormat, shortTimeFormat, entry);
         setupRecordingsEditor(entry);
         setupContinueButton();
 
         title.setText(entry.getTitle());
         description.setText(entry.getDescription());
-        title.requestFocus();
-        // TODO: description has to lose focus and then clicked in again in order to fully get rid of the edittext scrolling => CHANGE!
+        if(entry.getTitle().equals("")) {
+            new Handler().postDelayed(() -> {
+                title.requestFocus();
+                InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                mgr.showSoftInput(title, InputMethodManager.SHOW_IMPLICIT);
+            }, 100);
+        }
+
+        return view;
     }
 
     private void setupForms() {
