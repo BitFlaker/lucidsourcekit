@@ -434,6 +434,21 @@ public class Tools {
         }
     }
 
+    public static void copyDir(File src, File dest) throws IOException {
+        dest.mkdirs();
+        File[] content = src.listFiles();
+        if(content != null) {
+            for (File file : content) {
+                if(file.isFile()) {
+                    copyFile(file, new File(dest, file.getName()));
+                }
+                else {
+                    copyDir(file, new File(dest, file.getName()));
+                }
+            }
+        }
+    }
+
     public static Drawable resizeDrawable(Resources resources, Drawable drawable, int width, int height) {
         Bitmap bitmap;
         if(drawable.getClass().equals(VectorDrawable.class)) {

@@ -2,6 +2,8 @@ package com.bitflaker.lucidsourcekit.general;
 
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -21,14 +23,40 @@ public class Zipper {
         byte[] data = new byte[BUFFER_SIZE];
         try (ZipOutputStream outputStream = new ZipOutputStream(new BufferedOutputStream(zipFile))) {
             for (String file : files) {
-                FileInputStream fileInputStream = new FileInputStream(file);
-                try (BufferedInputStream inputStream = new BufferedInputStream(fileInputStream, BUFFER_SIZE)) {
-                    outputStream.putNextEntry(new ZipEntry(new File(file).getName()));
-                    int bytesRead;
-                    while ((bytesRead = inputStream.read(data, 0, BUFFER_SIZE)) != -1) {
-                        outputStream.write(data, 0, bytesRead);
-                    }
-                }
+                addToZip(data, outputStream, null, new File(file));
+            }
+        }
+    }
+
+    private static void addToZip(byte[] data, ZipOutputStream outputStream, @Nullable File parentFile, File file) throws IOException {
+        if(file.isFile()) {
+            String zipPath = parentFile != null ? parentFile.getAbsolutePath() + File.separator : "";
+            outputStream.putNextEntry(new ZipEntry(zipPath + file.getName()));
+            addFileToZip(data, outputStream, file);
+        }
+        else {
+            addDirectoryToZip(data, outputStream, parentFile, file);
+        }
+    }
+
+    private static void addDirectoryToZip(byte[] data, ZipOutputStream outputStream, @Nullable File parentFile, File file) throws IOException {
+        String zipPath = (parentFile != null ? parentFile.getAbsolutePath() + File.separator : "") + file.getName() + File.separator;
+        File currentParent = new File(zipPath);
+
+        File[] dirFileContents = file.listFiles();
+        if(dirFileContents != null) {
+            for (File dirFile : dirFileContents) {
+                addToZip(data, outputStream, currentParent, dirFile);
+            }
+        }
+    }
+
+    private static void addFileToZip(byte[] dataBuffer, ZipOutputStream outputStream, File file) throws IOException {
+        FileInputStream fileInputStream = new FileInputStream(file.getAbsolutePath());
+        try (BufferedInputStream inputStream = new BufferedInputStream(fileInputStream, BUFFER_SIZE)) {
+            int bytesRead;
+            while ((bytesRead = inputStream.read(dataBuffer, 0, BUFFER_SIZE)) != -1) {
+                outputStream.write(dataBuffer, 0, bytesRead);
             }
         }
     }

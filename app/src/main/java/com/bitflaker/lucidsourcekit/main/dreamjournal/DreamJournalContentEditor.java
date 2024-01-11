@@ -17,6 +17,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -303,11 +304,13 @@ public class DreamJournalContentEditor extends Fragment {
             storeRecording(recsEntryList, recsList, recNow, noRecordingsFound);
             noRecordingsFound.setVisibility(View.GONE);
             isRecordingRunning = false;
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         });
     }
 
     private void setupStartRecordingButton(ImageButton recordAudio, LinearLayout recsList, RelativeLayout recNow, TextView recordingText, ImageButton recContinuePause) {
         recordAudio.setOnClickListener(e1 -> {
+            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             stopCurrentPlaybackIfPlaying();
             recsList.setVisibility(View.GONE);
             recNow.setVisibility(View.VISIBLE);

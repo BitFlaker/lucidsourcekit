@@ -164,12 +164,14 @@ public abstract class MainDatabase extends RoomDatabase {
         File dbShmFile = new File(dbFile.getPath() + "-shm");
         File preferenceExport = exportSharedPreferences(context);
         File dataStoreExport = new File(context.getFilesDir(), "datastore" + File.separator + DataStoreManager.DATA_STORE_FILE_NAME + ".preferences_pb");
+        File recordingsExport = new File(context.getFilesDir(), "Recordings");
 
         backupFiles.add(dbFile.getAbsolutePath());
         if(dbWalFile.exists()) { backupFiles.add(dbWalFile.getAbsolutePath()); }
         if(dbShmFile.exists()) { backupFiles.add(dbShmFile.getAbsolutePath()); }
         if(preferenceExport.exists()) { backupFiles.add(preferenceExport.getAbsolutePath()); }
         if(dataStoreExport.exists()) { backupFiles.add(dataStoreExport.getAbsolutePath()); }
+        if(recordingsExport.exists()) { backupFiles.add(recordingsExport.getAbsolutePath()); }
 
         try {
             Zipper.createZipFile(backupFiles.toArray(new String[0]), context.getContentResolver().openOutputStream(fileUri));
@@ -190,6 +192,7 @@ public abstract class MainDatabase extends RoomDatabase {
         File origDbWalFile = new File(origDbFile.getPath() + "-wal");
         File origDbShmFile = new File(origDbFile.getPath() + "-shm");
         File origDataStoreExport = new File(context.getFilesDir(), "datastore" + File.separator + DataStoreManager.DATA_STORE_FILE_NAME + ".preferences_pb");
+        File origRecordingsExport = new File(context.getFilesDir(), "Recordings");
 
         try {
             File baseTempBackupLocation = new File(context.getFilesDir(), "temp_backup_restore");
@@ -198,12 +201,14 @@ public abstract class MainDatabase extends RoomDatabase {
                 File bckDbWalFile = new File(bckDbFile.getPath() + "-wal");
                 File bckDbShmFile = new File(bckDbFile.getPath() + "-shm");
                 File bckDataStoreExport = new File(baseTempBackupLocation.getPath() + File.separator + DataStoreManager.DATA_STORE_FILE_NAME + ".preferences_pb");
+                File bckRecordingsExport = new File(baseTempBackupLocation.getPath() + File.separator + "Recordings");
 
                 try {
                     if(bckDbFile.exists()) { Tools.copyFile(bckDbFile, origDbFile); }
                     if(bckDbWalFile.exists()) { Tools.copyFile(bckDbWalFile, origDbWalFile); }
                     if(bckDbShmFile.exists()) { Tools.copyFile(bckDbShmFile, origDbShmFile); }
                     if(bckDataStoreExport.exists()) { Tools.copyFile(bckDataStoreExport, origDataStoreExport); }
+                    if(bckRecordingsExport.exists()) { Tools.copyDir(bckRecordingsExport, origRecordingsExport); }
                 }
                 catch (Exception e) {
                     Log.e("MainDatabase_Backup_Restore", "Unable to restore at least one file from backup", e);
