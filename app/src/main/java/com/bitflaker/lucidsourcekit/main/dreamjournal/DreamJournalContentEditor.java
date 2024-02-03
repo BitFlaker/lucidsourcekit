@@ -304,7 +304,7 @@ public class DreamJournalContentEditor extends Fragment {
             storeRecording(recsEntryList, recsList, recNow, noRecordingsFound);
             noRecordingsFound.setVisibility(View.GONE);
             isRecordingRunning = false;
-            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         });
     }
 

@@ -77,7 +77,7 @@
                 android:background="@drawable/rectangle"
                 android:backgroundTint="?attr/backgroundColor" />
 
-<!--            android:paddingBottom="70dp"-->
+            <!-- NOTE: due to performance reasons, the framework automatically limits text length to 5000 characters, if not configured otherwise -->
             <EditText
                 android:id="@+id/txt_dj_description_dream"
                 android:layout_width="match_parent"
@@ -89,7 +89,7 @@
                 android:gravity="fill_horizontal"
                 android:hint="@string/dream_story_hint"
                 android:importantForAutofill="no"
-                android:inputType="textMultiLine"
+                android:inputType="textMultiLine|textCapSentences|textLongMessage"
                 android:isScrollContainer="false"
                 android:paddingStart="15dp"
                 android:paddingEnd="15dp"
