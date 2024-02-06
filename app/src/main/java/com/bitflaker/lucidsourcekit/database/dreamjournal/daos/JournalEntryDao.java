@@ -32,6 +32,9 @@ public interface JournalEntryDao {
     @Query("SELECT COUNT(*) FROM JournalEntry WHERE timeStamp BETWEEN :startTimestamp AND :endTimestamp")
     Single<Integer> getEntriesCount(long startTimestamp, long endTimestamp);
 
+    @Query("SELECT timeStamp FROM JournalEntry WHERE timeStamp >= :timeFrom")
+    Single<List<Long>> getEntriesFrom(long timeFrom);
+
     @Query("SELECT COUNT(*) FROM JournalEntry")
     Single<Integer> getTotalEntriesCount();
 

@@ -17,7 +17,8 @@ import androidx.fragment.app.Fragment;
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.charts.CircleGraph;
 import com.bitflaker.lucidsourcekit.charts.DataValue;
-import com.bitflaker.lucidsourcekit.charts.IconProgressRod;
+import com.bitflaker.lucidsourcekit.charts.HeatmapChart;
+import com.bitflaker.lucidsourcekit.charts.IconOutOf;
 import com.bitflaker.lucidsourcekit.charts.RangeProgress;
 import com.bitflaker.lucidsourcekit.charts.RodGraph;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
@@ -50,8 +51,7 @@ public class Statistics extends Fragment {
     private LinearLayout goalsReachedContainer;
     private ChipGroup chartTimeSpan;
     private CircleGraph lucidPercentage;
-    private IconProgressRod iprStreak;
-    private TextView currentStreak, bestStreak, totalJournalEntries, totalTagCount, totalGoalCount;
+    private TextView totalJournalEntries, totalTagCount, totalGoalCount;
     private RangeProgress rpDreamMood, rpDreamClarity, rpSleepQuality, rpDreamsPerNight, rpGoalsReached, rpAvgDiff;
     private MainDatabase db;
     private List<Double> avgClarities = new ArrayList<>();
@@ -63,6 +63,8 @@ public class Statistics extends Fragment {
     private Drawable[] qualityIcons;
     private int selectedDaysCount = 7;
     private CompositeDisposable compositeDisposable;
+    private HeatmapChart heatmapChart;
+    private IconOutOf streakCheckIns;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -82,9 +84,7 @@ public class Statistics extends Fragment {
         rgAvgSleepQualities = getView().findViewById(R.id.rg_avg_sleep_qualities);
         chartTimeSpan = getView().findViewById(R.id.chp_grp_time_span);
         lucidPercentage = getView().findViewById(R.id.ccg_lucid_percentage);
-        iprStreak = getView().findViewById(R.id.ipr_streak_progress);
-        currentStreak = getView().findViewById(R.id.txt_current_streak);
-        bestStreak = getView().findViewById(R.id.txt_best_streak);
+        streakCheckIns = getView().findViewById(R.id.ioo_streak_check_in);
         rpDreamMood = getView().findViewById(R.id.rp_dream_mood);
         rpDreamClarity = getView().findViewById(R.id.rp_dream_clarity);
         rpSleepQuality = getView().findViewById(R.id.rp_sleep_quality);
@@ -105,8 +105,28 @@ public class Statistics extends Fragment {
         crdNoDataJournal = getView().findViewById(R.id.crd_no_data_journal);
 
         crdNoDataGoals = getView().findViewById(R.id.crd_no_data_goals);
+        heatmapChart = getView().findViewById(R.id.htm_dream_count_heatmap);
 
         db = MainDatabase.getInstance(getContext());
+
+        heatmapChart.setOnWeekCountCalculatedListener(weekCount -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setFirstDayOfWeek(Calendar.MONDAY);
+            int dayOfWeekIndex = calendar.get(Calendar.DAY_OF_WEEK) - 2;
+            dayOfWeekIndex = dayOfWeekIndex == -1 ? 6 : dayOfWeekIndex;
+
+            calendar.add(Calendar.HOUR, dayOfWeekIndex * -24);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+
+            calendar.add(Calendar.HOUR, -24 * 7 * weekCount);
+
+            long timeFrom = calendar.getTimeInMillis();
+            List<Long> timestamps = db.getJournalEntryDao().getEntriesFrom(timeFrom).blockingGet();
+            heatmapChart.setTimestamps(timestamps);
+        });
 
         moodIcons = Tools.getIconsDreamMood(getContext());
         clarityIcons = Tools.getIconsDreamClarity(getContext());
@@ -114,9 +134,8 @@ public class Statistics extends Fragment {
 
         long currentStreakValue = DataStoreManager.getInstance().getSetting(DataStoreKeys.APP_OPEN_STREAK).blockingFirst();
         long bestStreakValue = DataStoreManager.getInstance().getSetting(DataStoreKeys.APP_OPEN_STREAK_LONGEST).blockingFirst();
-        currentStreak.setText(Long.toString(currentStreakValue));
-        bestStreak.setText(Long.toString(bestStreakValue));
-        iprStreak.setData(bestStreakValue, currentStreakValue);
+        streakCheckIns.setValue((int)currentStreakValue);
+        streakCheckIns.setMaxValue((int)bestStreakValue);
 
         // TODO: add loading indicators while gathering data
         // TODO: refresh stats after entry modified/added/deleted

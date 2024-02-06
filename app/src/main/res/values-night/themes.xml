@@ -82,7 +82,7 @@
 
     <style name="PopupMenu.Dark" parent="@style/Widget.AppCompat.PopupMenu">
         <item name="android:textColor">?attr/primaryTextColor</item>
-        <item name="popupMenuBackground">@drawable/medium_rounded_rectangle_padded</item>
+        <item name="popupMenuBackground">@drawable/rounded_rectangle_medium_padded</item>
         <item name="android:backgroundTint">?attr/slightElevated</item>
     </style>
 

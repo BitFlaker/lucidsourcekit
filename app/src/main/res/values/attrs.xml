@@ -31,4 +31,16 @@
     <attr name="typeStyle" format="reference"/>
     <attr name="backgroundDreamRatingSheet" format="reference"/>
     <attr name="backgroundDreamRatingSheetStroke" format="reference"/>
+
+    <declare-styleable name="IconOutOf">
+        <attr name="lineWidth" format="dimension"/>
+        <attr name="diameter" format="dimension"/>
+        <attr name="textSpacing" format="dimension"/>
+        <attr name="textOfSpacing" format="dimension"/>
+        <attr name="textSizeValue" format="dimension"/>
+        <attr name="textSizeValueOf" format="dimension"/>
+        <attr name="description" format="string"/>
+        <attr name="icon" format="reference"/>
+        <attr name="lineColor" format="reference"/>
+    </declare-styleable>
 </resources>
