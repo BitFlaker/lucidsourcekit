@@ -82,8 +82,14 @@
 
     <style name="PopupMenu.Dark" parent="@style/Widget.AppCompat.PopupMenu">
         <item name="android:textColor">?attr/primaryTextColor</item>
-        <item name="popupMenuBackground">@drawable/rounded_rectangle_medium_padded</item>
-        <item name="android:backgroundTint">?attr/slightElevated</item>
+        <item name="popupMenuBackground">@drawable/popup_menu_background_dark</item>
+    </style>
+
+    <style name="PopupMenu.Icon.Dark" parent="@style/Widget.Material3.PopupMenu">
+        <item name="android:textColor">?attr/primaryTextColor</item>
+        <item name="popupMenuBackground">@drawable/popup_menu_icon_background_dark</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:listPreferredItemPaddingStart">16dp</item>
     </style>
 
 <!--    <style name="PopupMenu.Dark" parent="Widget.AppCompat.PopupMenu">-->
@@ -108,6 +114,16 @@
         <item name="chipBackgroundColor">@color/chip_background_default_gone</item>
         <item name="rippleColor">@color/ripple_color_white</item>
         <item name="chipStrokeWidth">0dp</item>
+    </style>
+
+    <style name="Custom.Chip.Choice.Outline" parent="Widget.Material3.Chip.Filter">
+        <item name="chipCornerRadius">@dimen/cardRadius</item>
+        <item name="checkedIconVisible">false</item>
+        <item name="rippleColor">?attr/slightElevated2x</item>
+        <item name="android:textColor">@color/chip_text_default_gone</item>
+        <item name="chipBackgroundColor">@color/chip_background_default_gone_inverted</item>
+        <item name="chipStrokeColor">@color/chip_stroke_default_gone_inverted</item>
+        <item name="chipStrokeWidth">1dp</item>
     </style>
 
     <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">

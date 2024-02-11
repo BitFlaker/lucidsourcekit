@@ -1,7 +1,6 @@
 package com.bitflaker.lucidsourcekit.charts;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -17,23 +16,15 @@ import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.general.Tools;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 public class HeatmapChart extends View {
     private final Paint dataLabelPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-    private final Paint dataLabelPaintOf = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-    private final Paint dataLabelPaintDescription = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
     private final Paint dataLinePaint = new Paint();
     private final Paint dataLineTrackPaint = new Paint();
-    private String description = "";
-    private Rect textBounds, textBoundsOf, textBoundsDescription;
-    private Bitmap icon;
-    private int diameter = 0;
-    private int textMargin = 0;
-    private int textOfMargin = 0;
-    private float padding = 0;
-    private int value = 0;
+    private Rect textBounds;
     private int maxValue = 0;
     @ColorInt
     private int mainColor;
@@ -52,6 +43,15 @@ public class HeatmapChart extends View {
     private int dayOfWeekIndex;
     private HashMap<Long, Integer> timestampCounts = new HashMap<>();
     private OnWeekCountCalculated mListener;
+    private int legendTileSize;
+    private String lowLegendText = "Less";
+    private String highLegendText = "More";
+    private int legendHeight;
+    private int lowTextWidth;
+    private int highTextWidth;
+    private int legendGap;
+    private int legendMarginEnd;
+    private int legendMarginTop;
 
     public HeatmapChart(Context context) {
         super(context);
@@ -94,8 +94,7 @@ public class HeatmapChart extends View {
     }
 
     private void setup() {
-        fullTileColor = Tools.getAttrColor(R.attr.colorPrimary, getContext().getTheme());
-        initTileColors(4);
+        fullTileColor = Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme());
         mainColor = getResources().getColor(R.color.lighter_orange, getContext().getTheme());
         @ColorInt int defaultColor = getResources().getColor(R.color.white, getContext().getTheme());
         @ColorInt int trackColor = Tools.getAttrColor(R.attr.backgroundColor, getContext().getTheme());
@@ -118,34 +117,10 @@ public class HeatmapChart extends View {
         dataLabelPaint.setAntiAlias(true);
         setFontSizeValue(11);
 
-        dataLabelPaintOf.setColor(secondaryTextColor);
-        dataLabelPaintOf.setTextAlign(Paint.Align.LEFT);
-        dataLabelPaintOf.setFakeBoldText(false);
-        dataLabelPaintOf.setAntiAlias(true);
-        setFontSizeValueOf(12);
-
-        dataLabelPaintDescription.setColor(secondaryTextColor);
-        dataLabelPaintDescription.setTextAlign(Paint.Align.LEFT);
-        dataLabelPaintDescription.setFakeBoldText(false);
-        dataLabelPaintDescription.setAntiAlias(true);
-        setFontSizeDescription(12);
-
         textBounds = new Rect();
-        textBoundsOf = new Rect();
-        textBoundsDescription = new Rect();
-
-        setDiameter(40);
-        setTextMargin(6);
-        setTextOfMargin(2);
-
-        setTextValue(18);
-        setTextValueOf(26);
-        setDescription("Daily streak");
 
         if(secondaryTextColor == 0) {
             dataLabelPaint.setColor(defaultColor);
-            dataLabelPaintOf.setColor(defaultColor);
-            dataLabelPaintDescription.setColor(defaultColor);
         }
 
         tileSize = Tools.dpToPx(getContext(), 20);
@@ -167,6 +142,19 @@ public class HeatmapChart extends View {
 
         maxCWTextHeight = 0;
         calculateCalendarWeeks(calendar);
+
+        legendTileSize = tileSize / 2;
+        legendHeight = legendTileSize;
+        legendGap = Tools.dpToPx(getContext(), 2);
+        legendMarginEnd = Tools.dpToPx(getContext(), 8);
+        legendMarginTop = 4 * gap;
+
+        dataLabelPaint.getTextBounds(lowLegendText, 0, lowLegendText.length(), textBounds);
+        lowTextWidth = textBounds.width();
+        legendHeight = Math.max(legendHeight, textBounds.height());
+        dataLabelPaint.getTextBounds(highLegendText, 0, highLegendText.length(), textBounds);
+        highTextWidth = textBounds.width();
+        legendHeight = Math.max(legendHeight, textBounds.height());
     }
 
     private void initTileColors(int colorAmount) {
@@ -188,24 +176,8 @@ public class HeatmapChart extends View {
     }
 
     private void drawLegend(@NonNull Canvas canvas) {
-        int legendTileSize = tileSize / 2;
-        String lowLegendText = "Less";
-        String highLegendText = "More";
-        int maxHeight = legendTileSize;
-        int lowTextWidth;
-        int highTextWidth;
-        int legendGap = Tools.dpToPx(getContext(), 2);
-        int legendMarginEnd = Tools.dpToPx(getContext(), 8);
-
-        dataLabelPaint.getTextBounds(lowLegendText, 0, lowLegendText.length(), textBounds);
-        lowTextWidth = textBounds.width();
-        maxHeight = Math.max(maxHeight, textBounds.height());
-        dataLabelPaint.getTextBounds(highLegendText, 0, highLegendText.length(), textBounds);
-        highTextWidth = textBounds.width();
-        maxHeight = Math.max(maxHeight, textBounds.height());
-
         int legendWidth = lowTextWidth + legendGap * 2 + (tileColors.length + 1) * (legendTileSize + legendGap) + legendGap + highTextWidth + legendMarginEnd;
-        int baseLineY = gap + maxCWTextHeight + gap + 7 * (tileSize + gap) + 2 * gap + maxHeight;
+        int baseLineY = gap + maxCWTextHeight + gap + 7 * (tileSize + gap) + legendMarginTop + legendHeight;
         canvas.drawText(lowLegendText, getWidth() - legendWidth, baseLineY, dataLabelPaint);
 
         int tileStartingPosX = getWidth() - legendWidth + lowTextWidth + legendGap * 2;
@@ -226,14 +198,11 @@ public class HeatmapChart extends View {
         for (int i = weekCount - 1; i >= 0; i--) {
             String text = calendarWeeks[i];
             dataLabelPaint.getTextBounds(text, 0, text.length(), textBounds);
-            canvas.drawText(text, maxWeekdayLabelWidth + 2 * gap + (i * (gap + tileSize)) + tileSize / 2.0f - textBounds.exactCenterX(), gap + maxCWTextHeight, dataLabelPaint);
+            canvas.drawText(text, maxWeekdayLabelWidth + 2 * gap + (i * (gap + tileSize)) + tileSize / 2.0f - textBounds.exactCenterX(), gap + 7 * (tileSize + gap) + maxCWTextHeight, dataLabelPaint);
         }
     }
 
     private void drawTiles(@NonNull Canvas canvas) {
-//        int maxValue = 4;
-//        Random rnd = new Random();
-
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR, 24);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -243,17 +212,20 @@ public class HeatmapChart extends View {
 
         for (int x = weekCount - 1; x >= 0; x--) {
             for (int y = 6; y >= 0; y--) {
-                if(x == weekCount - 1 && y > dayOfWeekIndex) {  // the tile for the current day was drawn right now
-                    continue;
+                if(x != weekCount - 1 || y <= dayOfWeekIndex) {  // the tile for the current day was drawn right now
+                    calendar.add(Calendar.HOUR, -24);
+                    long millis = calendar.getTimeInMillis();
+                    int value = timestampCounts.getOrDefault(millis, 0);
+                    canvas.drawRoundRect(maxWeekdayLabelWidth + 2 * gap + (x * (gap + tileSize)), gap + (y * (gap + tileSize)), maxWeekdayLabelWidth + 2 * gap + (x * gap) + (x + 1) * tileSize, gap + (y * gap) + (y + 1) * tileSize, tileRadius, tileRadius, dataLineTrackPaint);
+                    if(value > 0) {
+                        int index = Math.round((100 * value / (float) maxValue) / (100.0f / (tileColors.length - 1)));
+                        dataLinePaint.setColor(tileColors[index]);
+                        canvas.drawRoundRect(maxWeekdayLabelWidth + 2 * gap + (x * (gap + tileSize)), gap + (y * (gap + tileSize)), maxWeekdayLabelWidth + 2 * gap + (x * gap) + (x + 1) * tileSize, gap + (y * gap) + (y + 1) * tileSize, tileRadius, tileRadius, dataLinePaint);
+                    }
                 }
-                calendar.add(Calendar.HOUR, -24);
-                long millis = calendar.getTimeInMillis();
-                int value = timestampCounts.getOrDefault(millis, 0);
-                canvas.drawRoundRect(maxWeekdayLabelWidth + 2 * gap + (x * (gap + tileSize)), gap + maxCWTextHeight + gap + (y * (gap + tileSize)), maxWeekdayLabelWidth + 2 * gap + (x * gap) + (x + 1) * tileSize, gap + maxCWTextHeight + gap + (y * gap) + (y + 1) * tileSize, tileRadius, tileRadius, dataLineTrackPaint);
-                if(value > 0) {
-                    int index = (int) Math.round((100 * value / (float) maxValue) / (100.0f / (tileColors.length - 1)));
-                    dataLinePaint.setColor(tileColors[index]);
-                    canvas.drawRoundRect(maxWeekdayLabelWidth + 2 * gap + (x * (gap + tileSize)), gap + maxCWTextHeight + gap + (y * (gap + tileSize)), maxWeekdayLabelWidth + 2 * gap + (x * gap) + (x + 1) * tileSize, gap + maxCWTextHeight + gap + (y * gap) + (y + 1) * tileSize, tileRadius, tileRadius, dataLinePaint);
+                else {
+                    int circleRadius = Tools.dpToPx(getContext(), 3);
+                    canvas.drawCircle(maxWeekdayLabelWidth + 2 * gap + (x * (gap + tileSize)) + tileSize / 2.0f, gap + (y * (gap + tileSize)) + tileSize / 2.0f, circleRadius, dataLineTrackPaint);
                 }
             }
         }
@@ -261,7 +233,7 @@ public class HeatmapChart extends View {
 
     private void drawDaysOfWeek(@NonNull Canvas canvas) {
         for (int i = 0; i < weekdayLabels.length; i++) {
-            canvas.drawText(weekdayLabels[i], gap, gap + maxCWTextHeight + gap + tileSize / 2.0f - (textBounds.exactCenterY()) + (i * (gap + tileSize)), dataLabelPaint);
+            canvas.drawText(weekdayLabels[i], gap, gap + tileSize / 2.0f - (textBounds.exactCenterY()) + (i * (gap + tileSize)), dataLabelPaint);
         }
     }
 
@@ -310,6 +282,10 @@ public class HeatmapChart extends View {
         }
     }
 
+    private Rect getMinimumSize() {
+        return new Rect(0, 0, gap + maxWeekdayLabelWidth + gap + weekCount * (tileSize + gap), gap + tileSize * 7 + gap * 7 + maxCWTextHeight + gap + legendMarginTop + legendHeight + gap);
+    }
+
     private void calculateCalendarWeeks(Calendar calendar) {
         calendarWeeks = new String[weekCount];
         for (int i = weekCount - 1; i >= 0; i--) {
@@ -324,47 +300,12 @@ public class HeatmapChart extends View {
         }
     }
 
-    private Rect getMinimumSize() {
-        return new Rect(0, 0, gap + maxWeekdayLabelWidth + gap + weekCount * (tileSize + gap), gap + tileSize * 7 + gap * 7 + maxCWTextHeight + gap);
-    }
-
-    public void setDiameter(int dp) {
-        this.diameter = Tools.dpToPx(getContext(), dp);
-    }
-
-    public void setTextMargin(int dp) {
-        this.textMargin = Tools.dpToPx(getContext(), dp);
-    }
-
-    public void setTextOfMargin(int dp) {
-        this.textOfMargin = Tools.dpToPx(getContext(), dp);
-    }
-
-    public void setTextValue(int value) {
-        this.value = value;
-        dataLabelPaint.getTextBounds(Integer.toString(this.value), 0, Integer.toString(this.value).length(), textBounds);
-    }
-
-    public void setTextValueOf(int maxValue) {
+    public void setValueMax(int maxValue) {
         this.maxValue = maxValue;
-        dataLabelPaintOf.getTextBounds("/" + this.maxValue, 0, ("/" + this.maxValue).length(), textBoundsOf);
-    }
-
-    public void setDescription(String description) {
-        this.description = description == null ? "" : description;
-        dataLabelPaintDescription.getTextBounds(this.description, 0, this.description.length(), textBoundsDescription);
     }
 
     public void setFontSizeValue(int sp) {
         dataLabelPaint.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, getResources().getDisplayMetrics()));
-    }
-
-    public void setFontSizeValueOf(int sp) {
-        dataLabelPaintOf.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, getResources().getDisplayMetrics()));
-    }
-
-    public void setFontSizeDescription(int sp) {
-        dataLabelPaintDescription.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, getResources().getDisplayMetrics()));
     }
 
     public void setTimestamps(List<Long> timestamps) {
@@ -379,6 +320,8 @@ public class HeatmapChart extends View {
             int amount = timestampCounts.getOrDefault(millis, 0) + 1;
             timestampCounts.put(millis, amount);
         }
+        setValueMax(Collections.max(timestampCounts.values()));
+        initTileColors(Math.min(4, this.maxValue));
     }
 
     public interface OnWeekCountCalculated {

@@ -12,13 +12,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.charts.CircleGraph;
 import com.bitflaker.lucidsourcekit.charts.DataValue;
 import com.bitflaker.lucidsourcekit.charts.HeatmapChart;
+import com.bitflaker.lucidsourcekit.charts.IconCircleHeatmap;
 import com.bitflaker.lucidsourcekit.charts.IconOutOf;
+import com.bitflaker.lucidsourcekit.charts.ProportionLineChart;
 import com.bitflaker.lucidsourcekit.charts.RangeProgress;
 import com.bitflaker.lucidsourcekit.charts.RodGraph;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
@@ -28,6 +33,7 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.resulttables.Shuffle
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.datastore.DataStoreKeys;
 import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.ChipGroup;
 
@@ -65,6 +71,9 @@ public class Statistics extends Fragment {
     private CompositeDisposable compositeDisposable;
     private HeatmapChart heatmapChart;
     private IconOutOf streakCheckIns;
+    private ProportionLineChart timeSpentProportions;
+    private IconCircleHeatmap sessionHeatmap;
+    private MaterialButton dreamFrequencyTypeFilter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -95,6 +104,7 @@ public class Statistics extends Fragment {
         totalJournalEntries = getView().findViewById(R.id.txt_total_journal_entries);
         totalTagCount = getView().findViewById(R.id.txt_total_tag_count);
         totalGoalCount = getView().findViewById(R.id.txt_total_goal_count);
+        dreamFrequencyTypeFilter = getView().findViewById(R.id.btn_dream_frequency_filter);
 
         crdLucidDreamRatio = getView().findViewById(R.id.crd_lucid_dream_ratio);
         crdOverallJournalRatings = getView().findViewById(R.id.crd_overall_journal_ratings);
@@ -106,8 +116,78 @@ public class Statistics extends Fragment {
 
         crdNoDataGoals = getView().findViewById(R.id.crd_no_data_goals);
         heatmapChart = getView().findViewById(R.id.htm_dream_count_heatmap);
+        timeSpentProportions = getView().findViewById(R.id.pc_time_spent_proportions);
+        sessionHeatmap = getView().findViewById(R.id.ich_session_heatmap);
 
         db = MainDatabase.getInstance(getContext());
+
+        List<Long> ts = new ArrayList<>();
+        ts.add(10*60*1000L);
+
+        ts.add(4*30*60*1000L);
+        ts.add(4*30*60*1000L);
+        ts.add(4*30*60*1000L);
+
+        ts.add(5*30*60*1000L);
+        ts.add(5*30*60*1000L);
+        ts.add(5*30*60*1000L);
+        ts.add(5*30*60*1000L);
+        ts.add(5*30*60*1000L);
+        ts.add(5*30*60*1000L);
+
+        ts.add(6*30*60*1000L);
+        ts.add(6*30*60*1000L);
+        ts.add(6*30*60*1000L);
+        ts.add(6*30*60*1000L);
+        ts.add(6*30*60*1000L);
+        ts.add(6*30*60*1000L);
+        ts.add(6*30*60*1000L);
+        ts.add(6*30*60*1000L);
+        ts.add(6*30*60*1000L);
+
+        ts.add(23*60*60*1000L + 20 * 60 * 1000);
+        ts.add(22*60*60*1000L + 44 * 60 * 1000);
+
+        ts.add(8 * 60 * 60 * 1000L + 12 * 60 * 1000);
+        ts.add(8 * 60 * 60 * 1000L + 12 * 60 * 1000);
+        ts.add(8 * 60 * 60 * 1000L + 12 * 60 * 1000);
+        ts.add(8 * 60 * 60 * 1000L + 12 * 60 * 1000);
+        ts.add(8 * 60 * 60 * 1000L + 12 * 60 * 1000);
+
+        ts.add(19 * 60 * 60 * 1000L + 34 * 60 * 1000);
+        ts.add(19 * 60 * 60 * 1000L + 34 * 60 * 1000);
+        ts.add(19 * 60 * 60 * 1000L + 34 * 60 * 1000);
+        ts.add(19 * 60 * 60 * 1000L + 34 * 60 * 1000);
+        ts.add(19 * 60 * 60 * 1000L + 34 * 60 * 1000);
+        ts.add(19 * 60 * 60 * 1000L + 34 * 60 * 1000);
+        sessionHeatmap.setTimestamps(ts);
+
+        dreamFrequencyTypeFilter.setOnClickListener(e -> {
+            Drawable arrowUp = ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_keyboard_arrow_up_24, getContext().getTheme());
+            Drawable arrowDown = ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_keyboard_arrow_down_24, getContext().getTheme());
+
+            dreamFrequencyTypeFilter.setCompoundDrawablesWithIntrinsicBounds(null, null, arrowUp, null);
+            PopupMenu popup = new PopupMenu(new ContextThemeWrapper(getContext(), R.style.PopupMenu_Icon_Dark), dreamFrequencyTypeFilter);
+            popup.setForceShowIcon(true);
+            popup.getMenuInflater().inflate(R.menu.dream_frequency_types, popup.getMenu());
+            popup.setOnMenuItemClickListener(item -> {
+                dreamFrequencyTypeFilter.setText(item.getTitle());
+                return true;
+            });
+            popup.setOnDismissListener(menu -> {
+                dreamFrequencyTypeFilter.setCompoundDrawablesWithIntrinsicBounds(null, null, arrowDown, null);
+            });
+            popup.show();
+        });
+
+        timeSpentProportions.setValues(new ProportionLineChart.DataPoint[] {
+                new ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.colorPrimary, getContext().getTheme()), 60, "Dream journal"),
+//                new ProportionLineChart.DataPoint(Color.parseColor("#52b2cf"), 60, "Dream journal"),
+                new ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), 15, "Binaural beats"),
+//                new ProportionLineChart.DataPoint(Color.parseColor("#d4afb9"), 15, "Binaural beats"),
+                new ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.tertiaryTextColor, getContext().getTheme()), 25, "Other")
+//                new ProportionLineChart.DataPoint(Color.parseColor("#d1cfe2"), 25, "Other")
+        });
 
         heatmapChart.setOnWeekCountCalculatedListener(weekCount -> {
             Calendar calendar = Calendar.getInstance();
@@ -154,8 +234,8 @@ public class Statistics extends Fragment {
             if(selectedId == R.id.chp_last_7_days) {
                 selectedDaysCount = 7;
             }
-            else if(selectedId == R.id.chp_last_31_days) {
-                selectedDaysCount = 31;
+            else if(selectedId == R.id.chp_last_30_days) {
+                selectedDaysCount = 30;
             }
             else if(selectedId == R.id.chp_all_time) {
                 selectedDaysCount = 60;    // TODO: make it actually all time (but fix performance issues)

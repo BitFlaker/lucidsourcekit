@@ -29,7 +29,7 @@
 
     <style name="PopupMenu.Dark" parent="Widget.Material3.PopupMenu">
         <item name="android:textColor">?attr/primaryTextColor</item>
-        <item name="popupMenuBackground">@drawable/rounded_rectangle_medium_padded</item>
+        <item name="popupMenuBackground">@drawable/popup_menu_background_dark</item>
         <item name="android:backgroundTint">?attr/backgroundColor</item>
     </style>
 

@@ -122,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
-                android:src="@drawable/ic_baseline_deblur_24"
+                android:src="@drawable/rounded_award_star_24"
                 android:background="@drawable/ripple_round"
                 android:backgroundTint="?attr/backgroundColor"
                 app:tint="?attr/secondaryTextColor" />
@@ -144,7 +144,7 @@
                 android:layout_height="wrap_content"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
-                android:src="@drawable/ic_baseline_airline_seat_individual_suite_24"
+                android:src="@drawable/rounded_cinematic_blur_24"
                 android:background="@drawable/ripple_round"
                 android:backgroundTint="?attr/backgroundColor"
                 app:tint="?attr/secondaryTextColor" />
@@ -155,7 +155,7 @@
                 android:layout_height="wrap_content"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
-                android:src="@drawable/ic_baseline_priority_high_24"
+                android:src="@drawable/rounded_sentiment_stressed_24"
                 android:background="@drawable/ripple_round"
                 android:backgroundTint="?attr/backgroundColor"
                 app:tint="?attr/secondaryTextColor" />

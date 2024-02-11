@@ -256,11 +256,11 @@ public class DreamJournalRatingEditor extends Fragment {
     private static int getSpecialDreamTypeIcon(JournalInMemory.SpecialDreamType specialDreamType) {
         @DrawableRes int icon = -1;
         switch (specialDreamType) {
-            case NIGHTMARE: icon = R.drawable.ic_baseline_priority_high_24; break;
+            case NIGHTMARE: icon = R.drawable.rounded_sentiment_stressed_24; break;
             case PARALYSIS: icon = R.drawable.ic_baseline_accessibility_new_24; break;
-            case LUCID: icon = R.drawable.ic_baseline_deblur_24; break;
+            case LUCID: icon = R.drawable.rounded_award_star_24; break;
             case RECURRING: icon = R.drawable.ic_round_loop_24; break;
-            case FALSE_AWAKENING: icon = R.drawable.ic_baseline_airline_seat_individual_suite_24; break;
+            case FALSE_AWAKENING: icon = R.drawable.rounded_cinematic_blur_24; break;
         }
         return icon;
     }

@@ -2,6 +2,6 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:color="?attr/primaryTextColor" android:state_enabled="true" android:state_selected="true"/>
     <item android:color="?attr/primaryTextColor" android:state_enabled="true" android:state_checked="true"/>
-    <item android:alpha="1" android:color="?attr/tertiaryTextColor" android:state_enabled="true"/>
-    <item android:alpha="1" android:color="?attr/tertiaryTextColor"/>
+    <item android:alpha="1" android:color="?attr/secondaryTextColor" android:state_enabled="true"/>
+    <item android:alpha="1" android:color="?attr/secondaryTextColor"/>
 </selector>

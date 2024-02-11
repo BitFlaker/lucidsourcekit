@@ -69,7 +69,7 @@
                         android:id="@+id/chk_dt_nightmare"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_priority_high_24"
+                        android:drawableEnd="@drawable/rounded_sentiment_stressed_24"
                         android:text="@string/dream_nightmare" />
 
                     <CheckBox
@@ -83,21 +83,21 @@
                         android:id="@+id/chk_dt_false_awakening"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_airline_seat_individual_suite_24"
+                        android:drawableEnd="@drawable/rounded_cinematic_blur_24"
                         android:text="@string/dream_false_awakening" />
 
                     <CheckBox
                         android:id="@+id/chk_dt_lucid"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_deblur_24"
+                        android:drawableEnd="@drawable/rounded_award_star_24"
                         android:text="@string/dream_lucid" />
 
                     <CheckBox
                         android:id="@+id/chk_dt_recurring"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_priority_high_24"
+                        android:drawableEnd="@drawable/rounded_sentiment_stressed_24"
                         android:text="@string/recurring" />
                 </LinearLayout>
             </LinearLayout>

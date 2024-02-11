@@ -206,24 +206,24 @@
                     android:layout_marginTop="30dp"
                     android:layout_marginHorizontal="24dp"
                     android:layout_marginBottom="24dp"
-                    app:contentPadding="0dp"
+                    app:contentPadding="8dp"
                     style="@style/LSK.MaterialCardView.Filled">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="48dp">
+                        android:layout_marginBottom="28dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginTop="18dp"
-                            android:layout_marginStart="18dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginStart="16dp"
                             android:textAllCaps="true"
-                            android:text="Toady's goals"
+                            android:text="Goals today"
                             android:textColor="?attr/tertiaryTextColor"
-                            android:textSize="12sp" />
+                            android:textSize="11sp" />
 
                         <ImageButton
                             android:id="@+id/btn_reshuffle_goals"
@@ -231,17 +231,16 @@
                             android:layout_height="48dp"
                             android:layout_alignParentEnd="true"
                             android:layout_gravity="end"
-                            android:layout_marginTop="6dp"
-                            android:layout_marginEnd="6dp"
                             android:background="@drawable/ripple_round"
-                            android:src="@drawable/ic_baseline_more_vert_24"
-                            app:backgroundTint="?attr/slightElevated" />
+                            android:src="@drawable/rounded_more_horiz_24"
+                            app:backgroundTint="?attr/slightElevated"
+                            app:tint="?attr/secondaryTextColor" />
 
                         <LinearLayout
                             android:id="@+id/ll_current_goals_container"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="24dp"
+                            android:layout_marginHorizontal="16dp"
                             android:layout_marginTop="48dp"
                             android:orientation="vertical">
 

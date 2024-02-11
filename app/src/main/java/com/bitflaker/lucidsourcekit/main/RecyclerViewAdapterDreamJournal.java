@@ -179,9 +179,9 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
 
         for (int i = 0; i < specialTypesCount; i++) {
             switch (Objects.requireNonNull(DreamTypes.getEnum(current.getTypes().get(position).get(i).typeId))) {
-                case Lucid: holder.titleIcons.addView(generateIconHighlight(R.drawable.ic_baseline_deblur_24)); break;
-                case Nightmare: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_priority_high_24)); break;
-                case FalseAwakening: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_airline_seat_individual_suite_24)); break;
+                case Lucid: holder.titleIcons.addView(generateIconHighlight(R.drawable.rounded_award_star_24)); break;
+                case Nightmare: holder.titleIcons.addView(generateIcon(R.drawable.rounded_sentiment_stressed_24)); break;
+                case FalseAwakening: holder.titleIcons.addView(generateIcon(R.drawable.rounded_cinematic_blur_24)); break;
                 case SleepParalysis: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_accessibility_new_24)); break;
                 case Recurring: holder.titleIcons.addView(generateIcon(R.drawable.ic_round_loop_24)); break;
             }

@@ -67,7 +67,7 @@ public class IconOutOf extends View {
             setDescription(a.getString(R.styleable.IconOutOf_description));
             Drawable iconD = a.getDrawable(R.styleable.IconOutOf_icon);
             if(iconD != null) {
-                icon = Tools.drawableToBitmap(iconD, mainColor, Tools.dpToPx(getContext(), 24));
+                icon = Tools.drawableToBitmap(iconD, mainColor, Tools.dpToPx(getContext(), 18));
             }
 
             dataLabelPaint.getTextBounds(Integer.toString(this.value), 0, Integer.toString(this.value).length(), textBounds);
@@ -80,11 +80,11 @@ public class IconOutOf extends View {
     private void setup() {
         mainColor = getResources().getColor(R.color.pastel_orange, getContext().getTheme());
         @ColorInt int defaultColor = getResources().getColor(R.color.white, getContext().getTheme());
-        @ColorInt int trackColor = Tools.getAttrColor(R.attr.slightElevated, getContext().getTheme());
+        @ColorInt int trackColor = Tools.getAttrColor(R.attr.backgroundColor, getContext().getTheme());
         @ColorInt int secondaryTextColor = Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme());
         @ColorInt int tertiaryTextColor = Tools.getAttrColor(R.attr.tertiaryTextColor, getContext().getTheme());
 
-        icon = Tools.drawableToBitmap(ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.ic_baseline_local_fire_department_24, getContext().getTheme()), mainColor, Tools.dpToPx(getContext(), 24));
+        icon = Tools.drawableToBitmap(ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.ic_baseline_local_fire_department_24, getContext().getTheme()), mainColor, Tools.dpToPx(getContext(), 18));
 
         dataLinePaint.setStrokeCap(Paint.Cap.ROUND);
         dataLinePaint.setAntiAlias(true);
@@ -137,12 +137,13 @@ public class IconOutOf extends View {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
+        int translateX = Tools.dpToPx(getContext(), -1);
         int translateY = Tools.dpToPx(getContext(), -1);
         int descriptionSpacing = Tools.dpToPx(getContext(), 3);
 
         canvas.drawArc(padding, padding, diameter, diameter, 270, 360, false, dataLineTrackPaint);
         canvas.drawArc(padding, padding, diameter, diameter, 270, 360 * (value / (float) maxValue), false, dataLinePaint);
-        canvas.drawBitmap(icon, padding + (diameter / 2.0f) - (icon.getWidth() / 2.0f), padding + (diameter / 2.0f) - (icon.getHeight() / 2.0f) + translateY, dataLinePaint);
+        canvas.drawBitmap(icon, padding + (diameter / 2.0f) - (icon.getWidth() / 2.0f) + translateX, padding + (diameter / 2.0f) - (icon.getHeight() / 2.0f) + translateY, dataLinePaint);
 
         float valueTextPositionY = padding + (diameter / 2.0f) - textBounds.exactCenterY() - (textBoundsDescription.height() / 2.0f) - descriptionSpacing / 2.0f;
         canvas.drawText(Integer.toString(this.value), padding * 2 + diameter + textMargin, valueTextPositionY, dataLabelPaint);

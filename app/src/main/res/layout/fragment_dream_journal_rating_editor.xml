@@ -427,7 +427,7 @@
                                 android:id="@+id/img_dj_character_nightmare"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/ic_baseline_priority_high_24"
+                                android:src="@drawable/rounded_sentiment_stressed_24"
                                 android:visibility="gone"
                                 app:tint="?attr/secondaryTextColor" />
 
@@ -443,7 +443,7 @@
                                 android:id="@+id/img_dj_character_lucid"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/ic_baseline_deblur_24"
+                                android:src="@drawable/rounded_award_star_24"
                                 android:visibility="gone"
                                 app:tint="?attr/secondaryTextColor" />
 
@@ -459,7 +459,7 @@
                                 android:id="@+id/img_dj_character_false_awakening"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/ic_baseline_airline_seat_individual_suite_24"
+                                android:src="@drawable/rounded_cinematic_blur_24"
                                 android:visibility="gone"
                                 app:tint="?attr/secondaryTextColor" />
                         </LinearLayout>
@@ -769,7 +769,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:background="@drawable/toggle_button"
-                                android:drawableTop="@drawable/ic_baseline_priority_high_24"
+                                android:drawableTop="@drawable/rounded_sentiment_stressed_24"
                                 android:drawableTint="@drawable/toggle_button_color"
                                 android:padding="15dp"
                                 android:textColor="@drawable/toggle_button_color"
@@ -804,7 +804,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:background="@drawable/toggle_button"
-                                android:drawableTop="@drawable/ic_baseline_deblur_24"
+                                android:drawableTop="@drawable/rounded_award_star_24"
                                 android:drawableTint="@drawable/toggle_button_color"
                                 android:padding="15dp"
                                 android:textColor="@drawable/toggle_button_color"
@@ -839,7 +839,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:background="@drawable/toggle_button"
-                                android:drawableTop="@drawable/ic_baseline_airline_seat_individual_suite_24"
+                                android:drawableTop="@drawable/rounded_cinematic_blur_24"
                                 android:drawableTint="@drawable/toggle_button_color"
                                 android:padding="15dp"
                                 android:textColor="@drawable/toggle_button_color"

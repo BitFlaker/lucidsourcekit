@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/itm_dream_all"
+        android:icon="@drawable/rounded_filter_alt_off_24"
+        android:title="All dreams"
+        app:iconTint="?attr/primaryTextColor"/>
+    <item
+        android:id="@+id/itm_dream_lucid"
+        android:icon="@drawable/rounded_award_star_24"
+        android:title="Lucid"
+        app:iconTint="?attr/primaryTextColor"/>
+    <item
+        android:id="@+id/itm_dream_nightmare"
+        android:icon="@drawable/rounded_sentiment_stressed_24"
+        android:title="Nightmare"
+        app:iconTint="?attr/primaryTextColor"/>
+    <item
+        android:id="@+id/itm_dream_paralysis"
+        android:icon="@drawable/ic_baseline_accessibility_new_24"
+        android:title="Paralysis"
+        app:iconTint="?attr/primaryTextColor"/>
+    <item
+        android:id="@+id/itm_dream_false_awakening"
+        android:icon="@drawable/rounded_cinematic_blur_24"
+        android:title="False awakening"
+        app:iconTint="?attr/primaryTextColor"/>
+    <item
+        android:id="@+id/itm_dream_recurring"
+        android:icon="@drawable/ic_round_loop_24"
+        android:title="Recurring"
+        app:iconTint="?attr/primaryTextColor"/>
+</menu>
