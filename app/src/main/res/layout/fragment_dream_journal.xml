@@ -78,11 +78,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:background="@drawable/rounded_spinner"
-        android:backgroundTint="?attr/colorPrimary"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:src="@drawable/ic_round_add_24"
+        app:backgroundTint="?attr/colorPrimary"
+        app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
         app:borderWidth="0dp"
         app:tint="?attr/colorOnPrimary" />
 
@@ -92,13 +92,12 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/btn_add_journal_entry"
         android:layout_alignParentEnd="true"
-        android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="1dp"
-        android:background="@drawable/rounded_spinner"
+        android:layout_marginBottom="8dp"
         android:backgroundTint="?attr/colorPrimary"
         android:src="@drawable/ic_baseline_text_fields_24"
         android:visibility="invisible"
+        app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
         app:borderWidth="0dp"
         app:tint="?attr/colorOnPrimary" />
 
@@ -108,13 +107,11 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/fab_text"
         android:layout_alignParentEnd="true"
-        android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="1dp"
-        android:background="@drawable/rounded_spinner"
         android:backgroundTint="?attr/colorPrimary"
         android:src="@drawable/ic_baseline_ballot_24"
         android:visibility="invisible"
+        app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
         app:borderWidth="0dp"
         app:tint="?attr/colorOnPrimary" />
 

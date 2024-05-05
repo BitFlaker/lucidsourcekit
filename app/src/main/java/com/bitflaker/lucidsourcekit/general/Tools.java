@@ -1,5 +1,7 @@
 package com.bitflaker.lucidsourcekit.general;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -468,5 +470,12 @@ public class Tools {
         Calendar calendar = Calendar.getInstance();
         long current = calendar.getTimeInMillis();
         return timestampDayEnd <= current;
+    }
+
+    public static void animateBackgroundTint(View view, @ColorInt int colorFrom, @ColorInt int colorTo, int duration) {
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.setDuration(duration);
+        colorAnimation.addUpdateListener(animator -> view.setBackgroundTintList(ColorStateList.valueOf((int) animator.getAnimatedValue())));
+        colorAnimation.start();
     }
 }

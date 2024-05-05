@@ -80,6 +80,11 @@
         <item name="typeStyle">@style/Widget.MaterialComponents.Button.TextButton</item>
     </style>
 
+    <style name="FloatingShapeAppearanceOverlay" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
     <style name="PopupMenu.Dark" parent="@style/Widget.AppCompat.PopupMenu">
         <item name="android:textColor">?attr/primaryTextColor</item>
         <item name="popupMenuBackground">@drawable/popup_menu_background_dark</item>

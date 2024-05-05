@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -232,11 +233,15 @@ public class DreamJournal extends Fragment {
     }
 
     private void animateFab(){
-        if (fabAdd == null){ return; }
-        if (isOpen){
+        @ColorInt int colorPrimary = Tools.getAttrColor(R.attr.colorPrimary, getContext().getTheme());
+        @ColorInt int colorSlightElevated = Tools.getAttrColor(R.attr.slightElevated2x, getContext().getTheme());
+
+        if (fabAdd == null) { return; }
+        if (isOpen) {
             fabAdd.startAnimation(rotateForward);
             fabText.startAnimation(fabClose);
             fabForms.startAnimation(fabClose);
+            Tools.animateBackgroundTint(fabAdd, colorSlightElevated, colorPrimary, 300);
             fabText.setClickable(false);
             fabForms.setClickable(false);
             isOpen=false;
@@ -245,6 +250,7 @@ public class DreamJournal extends Fragment {
             fabAdd.startAnimation(rotateBackward);
             fabText.startAnimation(fabOpen);
             fabForms.startAnimation(fabOpen);
+            Tools.animateBackgroundTint(fabAdd, colorPrimary, colorSlightElevated, 300);
             fabText.setClickable(true);
             fabForms.setClickable(true);
             isOpen=true;

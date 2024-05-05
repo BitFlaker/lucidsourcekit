@@ -320,7 +320,7 @@ public class HeatmapChart extends View {
             int amount = timestampCounts.getOrDefault(millis, 0) + 1;
             timestampCounts.put(millis, amount);
         }
-        setValueMax(Collections.max(timestampCounts.values()));
+        setValueMax(timestampCounts.size() > 0 ? Collections.max(timestampCounts.values()) : 4);
         initTileColors(Math.min(4, this.maxValue));
     }
 
