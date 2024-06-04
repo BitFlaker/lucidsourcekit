@@ -47,7 +47,7 @@ public class MainViewer extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(Tools.getTheme());
+//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_viewer);
         Tools.makeStatusBarTransparent(this);
@@ -67,7 +67,7 @@ public class MainViewer extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(tabSelected());
         viewPager2.registerOnPageChangeCallback(changeTab());
         moreOptions.setOnClickListener(e -> {
-            androidx.appcompat.widget.PopupMenu popup = new androidx.appcompat.widget.PopupMenu(new ContextThemeWrapper(this, Tools.getPopupTheme()), moreOptions);
+            androidx.appcompat.widget.PopupMenu popup = new androidx.appcompat.widget.PopupMenu(new ContextThemeWrapper(this, R.style.Theme_LucidSourceKit_PopupMenu), moreOptions);
             popup.getMenuInflater().inflate(R.menu.more_options_popup_menu, popup.getMenu());
             popup.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.itm_third_party) {

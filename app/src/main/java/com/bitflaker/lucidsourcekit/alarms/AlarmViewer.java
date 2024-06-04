@@ -70,7 +70,7 @@ public class AlarmViewer extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(Tools.getTheme());
+//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_viewer_alternative);
 

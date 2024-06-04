@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="?attr/backgroundColor">
+    android:backgroundTint="?attr/colorSurface">
 
     <TextView
         android:id="@+id/txt_notification_settings_heading"
@@ -27,7 +27,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginTop="32dp"
         android:background="@drawable/rounded_spinner"
-        android:backgroundTint="?attr/slightElevated"
+        android:backgroundTint="?attr/colorSurfaceContainer"
         android:hint="Enter a custom message..."
         android:imeOptions="actionDone"
         android:inputType="text|textShortMessage|textCapSentences"
@@ -54,7 +54,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_custom_notification_message"
-        app:strokeColor="?attr/slightElevated"
+        app:strokeColor="?attr/colorSurfaceContainer"
         app:strokeWidth="0dp">
 
         <LinearLayout
@@ -114,7 +114,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mcv_obfuscation_level"
-        app:strokeColor="?attr/slightElevated"
+        app:strokeColor="?attr/colorSurfaceContainer"
         app:strokeWidth="1dp">
 
         <LinearLayout
@@ -263,13 +263,12 @@
         android:layout_marginStart="20dp"
         android:layout_marginBottom="21dp"
         android:layout_marginTop="28dp"
-        android:background="@drawable/ripple_round"
         android:minWidth="128dp"
         android:text="Cancel"
-        app:backgroundTint="?attr/slightElevated"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mcv_custom_weight" />
+        app:layout_constraintTop_toBottomOf="@+id/mcv_custom_weight"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_save"
@@ -279,13 +278,13 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="21dp"
         android:layout_marginTop="28dp"
-        android:background="@drawable/ripple_round"
-        android:backgroundTint="?attr/slightElevated"
         android:text="Save"
         app:icon="@drawable/ic_baseline_check_24"
         app:iconGravity="textStart"
+        app:iconPadding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_cancel"
-        app:layout_constraintTop_toBottomOf="@+id/mcv_custom_weight" />
+        app:layout_constraintTop_toBottomOf="@+id/mcv_custom_weight"
+        style="@style/Widget.Material3.Button.IconButton.Filled" />
 </androidx.constraintlayout.widget.ConstraintLayout>

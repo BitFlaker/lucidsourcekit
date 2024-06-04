@@ -30,7 +30,7 @@
             android:layout_marginLeft="8dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/background_scrapes"
-            app:tint="?attr/slightElevated" />
+            app:tint="?attr/colorSurfaceContainer" />
 
         <ImageView
             android:id="@+id/icon"
@@ -39,7 +39,7 @@
             android:layout_centerInParent="true"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_baseline_key_24"
-            app:tint="#868791" />
+            app:tint="?attr/colorOutline" />
     </RelativeLayout>
 
     <TextView
@@ -80,16 +80,16 @@
         android:layout_marginBottom="175dp"
         android:autofillHints="password"
         android:background="@drawable/rounded_spinner"
-        android:backgroundTint="?attr/slightElevated"
+        android:backgroundTint="?attr/colorSurfaceContainer"
         android:drawableStart="@drawable/ic_baseline_lock_24"
-        android:drawableTint="#868791"
+        android:drawableTint="?attr/colorOutline"
         android:drawablePadding="10dp"
         android:hint="@string/login_password_hint"
         android:inputType="textPassword"
         android:minHeight="48dp"
         android:padding="15dp"
         android:textColor="?attr/primaryTextColor"
-        android:textColorHint="#6F9E9BB1"
+        android:textColorHint="?attr/tertiaryTextColor"
         android:visibility="visible" />
 
     <!-- PIN login -->

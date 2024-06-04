@@ -42,7 +42,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/background_scrapes"
-                    app:tint="?attr/slightElevated" />
+                    app:tint="?attr/colorSurfaceContainer" />
 
                 <ImageView
                     android:id="@+id/icon"
@@ -52,7 +52,7 @@
                     android:layout_centerVertical="true"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/ic_baseline_report_problem_24"
-                    app:tint="#868791" />
+                    app:tint="?attr/colorOutline" />
             </RelativeLayout>
         </RelativeLayout>
 
@@ -91,11 +91,11 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="96dp"
         android:background="@drawable/rounded_spinner"
-        android:backgroundTint="?attr/slightElevated"
+        android:backgroundTint="?attr/colorSurfaceContainer"
         android:button="@android:color/transparent"
         android:drawableStart="@drawable/ic_baseline_check_box_outline_blank_24"
         android:drawablePadding="10dp"
-        android:drawableTint="?attr/colorOnSurface"
+        android:drawableTint="?attr/primaryTextColor"
         android:paddingStart="16dp"
         android:paddingEnd="24dp"
         android:text="@string/setup_consent_checkbox"

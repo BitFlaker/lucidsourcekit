@@ -27,7 +27,7 @@
         android:layout_height="48dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/ripple_round"
-        android:backgroundTint="?attr/backgroundColor"
+        android:backgroundTint="?attr/colorSurfaceContainerLow"
         android:src="@drawable/ic_outline_info_24"
         app:layout_constraintBottom_toBottomOf="@+id/txt_goal_editor_title"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,7 +41,7 @@
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="48dp"
         android:background="@drawable/rounded_rectangle_medium"
-        android:backgroundTint="?attr/slightElevated"
+        android:backgroundTint="?attr/colorSurfaceContainerHigh"
         android:inputType="text"
         android:hint="Enter name of goal here"
         android:padding="10dp"
@@ -88,7 +88,7 @@
         android:valueFrom="1"
         android:valueTo="3"
         android:stepSize="0.1"
-        app:tickColor="?attr/slightElevated"
+        app:tickColor="?attr/colorSurfaceContainer"
         app:tickRadiusActive="0dp"
         app:haloColor="@android:color/transparent"
         app:labelStyle="@style/Tooltip.Dark"
@@ -103,7 +103,7 @@
         android:layout_marginStart="12dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/ripple_round"
-        android:backgroundTint="?attr/backgroundColor"
+        android:backgroundTint="?attr/colorSurfaceContainerLow"
         android:src="@drawable/ic_baseline_lock_open_24"
         app:layout_constraintStart_toEndOf="@+id/sld_goal_difficulty"
         app:layout_constraintEnd_toEndOf="parent"
@@ -140,8 +140,6 @@
             android:layout_weight="1"
             android:text="Save"
             android:textAllCaps="true"
-            android:background="@drawable/ripple_round"
-            android:textColor="?attr/colorOnPrimary"
-            app:backgroundTint="?attr/colorPrimary" />
+            android:background="@drawable/ripple_round" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

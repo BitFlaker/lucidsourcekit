@@ -76,7 +76,7 @@
                                 android:layout_marginBottom="-6dp"
                                 android:layout_toStartOf="@+id/ll_selection_diff_comparison"
                                 android:src="@drawable/ic_round_arrow_downward_24"
-                                app:tint="?attr/colorSecondaryVariant" />
+                                app:tint="?attr/colorTertiary" />
 
                             <LinearLayout
                                 android:id="@+id/ll_selection_diff_comparison"
@@ -136,7 +136,7 @@
                                 android:layout_marginBottom="-6dp"
                                 android:layout_toStartOf="@+id/ll_occurrence_freq_comparison"
                                 android:src="@drawable/ic_round_arrow_downward_24"
-                                app:tint="?attr/colorSecondaryVariant" />
+                                app:tint="?attr/colorTertiary" />
 
                             <LinearLayout
                                 android:id="@+id/ll_occurrence_freq_comparison"
@@ -215,7 +215,7 @@
                             android:layout_gravity="end"
                             android:background="@drawable/ripple_round"
                             android:src="@drawable/rounded_more_horiz_24"
-                            app:backgroundTint="?attr/slightElevated"
+                            app:backgroundTint="?attr/colorSurfaceContainer"
                             app:tint="?attr/secondaryTextColor" />
 
                         <LinearLayout
@@ -231,7 +231,7 @@
                                 android:layout_height="wrap_content"
                                 android:button="@drawable/checkbox_button_round"
                                 android:layout_weight="1"
-                                android:drawableLeft="@android:color/transparent"
+                                android:drawableLeft="@color/transparent"
                                 android:drawablePadding="15dp"
                                 android:drawableTint="@color/transparent"
                                 android:text="I see a yellow car"
@@ -266,19 +266,20 @@
                     </RelativeLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <ImageButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_adjust_algorithm"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
-                    android:background="@drawable/ripple_round"
-                    android:backgroundTint="?attr/colorPrimary"
-                    android:minWidth="48dp"
-                    android:minHeight="48dp"
-                    android:src="@drawable/ic_baseline_auto_graph_24"
-                    android:translationZ="2dp"
-                    app:tint="?attr/colorOnPrimary" />
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:translationZ="6dp"
+                    app:backgroundTint="?attr/colorPrimaryContainer"
+                    app:iconTint="?attr/colorPrimary"
+                    app:icon="@drawable/ic_baseline_auto_graph_24"
+                    app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
+                    style="@style/Widget.Material3.Button.IconButton.Filled" />
             </RelativeLayout>
 
             <!-- TODO: probably hide if it's the first day of using this tool -->

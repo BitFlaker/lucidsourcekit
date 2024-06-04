@@ -62,8 +62,8 @@ public class Speedometer extends View {
         dataLinePaintCap.setStyle(Paint.Style.FILL);
         primaryTextColor = Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme());
         secondaryTextColor = Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme());
-        trackColor = Tools.getAttrColor(R.attr.slightElevated, getContext().getTheme());
-        dataLinePaintCap.setColor(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()));
+        trackColor = Tools.getAttrColor(R.attr.colorSurfaceContainer, getContext().getTheme());
+        dataLinePaintCap.setColor(Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme()));
         fontSizeLarge = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 28, getResources().getDisplayMetrics());
         fontSizeMedium = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 16, getResources().getDisplayMetrics());
         fontSizeSmall = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics());
@@ -126,7 +126,7 @@ public class Speedometer extends View {
         float topOffset = (paddedHeight - smallestRadius);
 
         if(gradientShader == null) {
-            gradientShader = new SweepGradient(getWidth() / 2.0f, paddedHeight, new int[] { trackColor, Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), trackColor }, new float[] { 0.5f, 0.5f, circlePercentage, circlePercentage });
+            gradientShader = new SweepGradient(getWidth() / 2.0f, paddedHeight, new int[] { trackColor, Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme()), Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme()), trackColor }, new float[] { 0.5f, 0.5f, circlePercentage, circlePercentage });
             dataLinePaint.setShader(gradientShader);
         }
 

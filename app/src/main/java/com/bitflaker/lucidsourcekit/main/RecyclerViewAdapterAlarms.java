@@ -176,7 +176,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
             });
         }
         if(elevatedBackground){
-            holder.card.setCardBackgroundColor(Tools.getAttrColorStateList(R.attr.slightElevated, context.getTheme()));
+            holder.card.setCardBackgroundColor(Tools.getAttrColorStateList(R.attr.colorSurfaceContainer, context.getTheme()));
         }
     }
 

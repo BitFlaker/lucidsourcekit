@@ -93,7 +93,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
                 icon.setLayoutParams(layoutParams);
                 icon.setPadding(dp, dp, dp, dp);
                 icon.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.rounded_spinner, context.getTheme()));
-                icon.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, context.getTheme()));
+                icon.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurfaceContainer, context.getTheme()));
                 icon.setImageTintList(Tools.getAttrColorStateList(R.attr.tertiaryTextColor, context.getTheme()));
                 icon.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), entry.getIcon(), context.getTheme()));
                 iconContainer.addView(icon);

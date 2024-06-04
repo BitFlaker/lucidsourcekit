@@ -1,7 +1,6 @@
 package com.bitflaker.lucidsourcekit.main;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -50,6 +49,7 @@ import com.bitflaker.lucidsourcekit.main.dreamjournal.RecordingData;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -92,7 +92,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     @Override
     public MainViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.journal_entry, parent, false);
+        View view = inflater.inflate(R.layout.item_journal_entry, parent, false);
         return new MainViewHolder(view);
     }
 
@@ -173,7 +173,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             lParamsDivider.topMargin = dp2 * 3;
             lParamsDivider.bottomMargin = dp2 * 3;
             specialDivider.setLayoutParams(lParamsDivider);
-            specialDivider.setBackgroundColor(Tools.getAttrColor(R.attr.backgroundColor, context.getTheme()));
+            specialDivider.setBackgroundColor(Tools.getAttrColor(R.attr.colorSurface, context.getTheme()));
             holder.titleIcons.addView(specialDivider);
         }
 
@@ -189,7 +189,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
 
         holder.entryCard.setOnClickListener(e -> {
             final BottomSheetDialog bsd = new BottomSheetDialog(context, R.style.BottomSheetDialogStyle);
-            bsd.setContentView(R.layout.journal_entry_viewer_sheet);
+            bsd.setContentView(R.layout.sheet_journal_entry);
 
             boolean[] isOfType = setIsOfTypeValues(position, current);
             List<String> tags = setTagsValues(position, current);
@@ -249,7 +249,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             }
             if(jim.getTags().size() == 0) { tagsLayout.setVisibility(View.GONE); }
             for (String tag : jim.getTags()) {
-                tagsLayout.addView(generateTagView(tag, R.attr.slightElevated, true));
+                tagsLayout.addView(generateTagView(tag, R.attr.colorSurfaceContainerHigh, true));
             }
 
             Drawable[] dreamMoodIcons = Tools.getIconsDreamMood(context);
@@ -260,16 +260,16 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             int dcIndex = getIndexOfDreamClarity(jim.getDreamClarity());
             int sqIndex = getIndexOfSleepQuality(jim.getSleepQuality());
 
-            dreamMood.setBackgroundAttrColor(R.attr.slightElevated);
-            dreamClarity.setBackgroundAttrColor(R.attr.slightElevated);
-            sleepQuality.setBackgroundAttrColor(R.attr.slightElevated);
+            dreamMood.setBackgroundAttrColor(R.attr.colorSurfaceContainerHigh);
+            dreamClarity.setBackgroundAttrColor(R.attr.colorSurfaceContainerHigh);
+            sleepQuality.setBackgroundAttrColor(R.attr.colorSurfaceContainerHigh);
 
             dreamMood.setData(4, dmIndex, "DREAM MOOD", dreamMoodIcons[dmIndex], null);
             dreamClarity.setData(3, dcIndex, "DREAM CLARITY", dreamClarityIcons[dcIndex], null);
             sleepQuality.setData(3, sqIndex, "SLEEP QUALITY", sleepQualityIcons[sqIndex], null);
 
             deleteEntry.setOnClickListener(e1 ->
-                    new AlertDialog.Builder(context, Tools.getThemeDialog()).setTitle(context.getResources().getString(R.string.entry_delete_header)).setMessage(context.getResources().getString(R.string.entry_delete_message))
+                    new MaterialAlertDialogBuilder(context, R.style.Theme_LucidSourceKit_ThemedDialog).setTitle(context.getResources().getString(R.string.entry_delete_header)).setMessage(context.getResources().getString(R.string.entry_delete_message))
                         .setPositiveButton(context.getResources().getString(R.string.yes), (dialog, which) -> {
                             JournalEntry entry = db.getJournalEntryDao().getEntryById(jim.getEntryId()).blockingGet();
                             db.getJournalEntryDao().delete(entry).blockingSubscribe();
@@ -334,7 +334,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         int dividerSpacing = Tools.dpToPx(context, 4);
         int totalTagsWidth = 0;
         for (int i = 0; i < tagItems.size(); i++) {
-            TextView tag = generateTagView(tagItems.get(i), R.attr.slightElevated2x, false);
+            TextView tag = generateTagView(tagItems.get(i), R.attr.colorSurfaceContainerHigh, false);
             int currentTagWidth = getViewWidth(tag);
             int currentMargin = i == 0 ? 0 : dividerSpacing;
             if (totalTagsWidth + currentTagWidth + currentMargin <= layoutWidth) {

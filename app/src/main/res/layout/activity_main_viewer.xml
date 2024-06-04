@@ -27,6 +27,7 @@
             android:layout_height="55dp"
             android:layout_weight="1"
             android:backgroundTint="@android:color/transparent"
+            app:tabIconTint="@drawable/tab_color"
             app:tabIndicatorAnimationMode="elastic"
             app:tabIndicatorGravity="top"
             app:tabIndicatorHeight="0dp"

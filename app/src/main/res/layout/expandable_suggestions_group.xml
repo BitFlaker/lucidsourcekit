@@ -9,7 +9,7 @@
         android:id="@+id/crd_binaural_selection_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:backgroundTint="?attr/slightElevated2x"
+        android:backgroundTint="?attr/colorSurfaceContainerHigh"
         android:minHeight="50dp"
         app:cardCornerRadius="0dp"
         app:cardElevation="0dp"

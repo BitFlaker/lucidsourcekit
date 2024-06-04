@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -31,7 +30,6 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -45,8 +43,9 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.slider.Slider;
-import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -58,12 +57,12 @@ import java.util.concurrent.TimeUnit;
 
 public class AlarmCreator extends AppCompatActivity {
     private MaterialButton setAlarm;
-    private MaterialCardView tone, volume, volumeIncrease, vibrate, flashlight, alarmTimeCard, bedtimeTimeCard;
+    private MaterialCardView tone, volume, volumeIncrease, alarmTimeCard, bedtimeTimeCard;
     private ChipGroup alarmToneGroup;
     private Chip ringtoneChip, customFileChip, binauralBeatsChip;
     private TextView selectedToneText, incVolumeFor, currAlarmVolume, repeatPatternText;
     private Slider alarmVolume;
-    private SwitchMaterial vibrateAlarm, useFlashlight;
+    private MaterialSwitch vibrateAlarm, useFlashlight;
     private LinearLayout weekdaysContainer;
     private EditText alarmTitle;
     private SleepClock sleepClock;
@@ -137,7 +136,7 @@ public class AlarmCreator extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(Tools.getTheme());
+//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_creator);
         Tools.makeStatusBarTransparent(this);
@@ -150,8 +149,6 @@ public class AlarmCreator extends AppCompatActivity {
         tone = findViewById(R.id.crd_alarm_tone);
         volume = findViewById(R.id.crd_alarm_volume);
         volumeIncrease = findViewById(R.id.crd_alarm_volume_increase);
-        vibrate = findViewById(R.id.crd_alarm_vibrate);
-        flashlight = findViewById(R.id.crd_alarm_use_flashlight);
         alarmToneGroup = findViewById(R.id.chp_grp_alarm_tone);
         customFileChip = findViewById(R.id.chp_custom_file);
         binauralBeatsChip = findViewById(R.id.chp_binaural_beats);
@@ -179,17 +176,6 @@ public class AlarmCreator extends AppCompatActivity {
                 findViewById(R.id.chp_friday),
                 findViewById(R.id.chp_saturday)
         };
-
-        useFlashlight.setOnTouchListener((v, event) -> {
-            View par = ((View) v.getParent().getParent());
-            par.onTouchEvent(event);
-            return true;
-        });
-        vibrateAlarm.setOnTouchListener((v, event) -> {
-            View par = ((View) v.getParent().getParent());
-            par.onTouchEvent(event);
-            return true;
-        });
 
         if (!Settings.canDrawOverlays(this)) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
@@ -310,7 +296,7 @@ public class AlarmCreator extends AppCompatActivity {
             container.addView(doublePoint);
             container.addView(secondsNumberPicker);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
             builder.setView(container);
             builder.setTitle("Increase volume for");
             builder.setPositiveButton(getResources().getString(R.string.ok), (dialog, which) -> setVolumeIncreaseTime(minuteNumberPicker.getValue(), secondsNumberPicker.getValue()));
@@ -318,14 +304,8 @@ public class AlarmCreator extends AppCompatActivity {
             builder.create();
             builder.show();
         });
-        vibrate.setOnClickListener(e -> {
-            vibrateAlarm.setChecked(!vibrateAlarm.isChecked());
-            storedAlarm.isVibrationActive = vibrateAlarm.isChecked();
-        });
-        flashlight.setOnClickListener(e -> {
-            useFlashlight.setChecked(!useFlashlight.isChecked());
-            storedAlarm.isFlashlightActive = useFlashlight.isChecked();
-        });
+        vibrateAlarm.setOnCheckedChangeListener((view, checked) -> storedAlarm.isVibrationActive = checked);
+        useFlashlight.setOnCheckedChangeListener((view, checked) -> storedAlarm.isFlashlightActive = checked);
 
         setAlarm.setOnClickListener(e -> {
             // TODO: make checks (like no tone selected with custom file)

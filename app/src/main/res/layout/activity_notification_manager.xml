@@ -71,7 +71,7 @@
                         android:layout_height="1dp"
                         android:layout_marginHorizontal="8dp"
                         android:layout_marginVertical="12dp"
-                        android:background="?attr/slightElevated"
+                        android:background="?attr/colorSurfaceContainer"
                         app:layout_constraintBottom_toTopOf="@+id/mcv_timeframe"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -83,7 +83,7 @@
                         android:layout_height="0dp"
                         android:layout_marginHorizontal="6dp"
                         android:layout_marginVertical="4dp"
-                        android:background="?attr/slightElevated"
+                        android:background="?attr/colorSurfaceContainer"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/mcv_enabled_categories"
                         app:layout_constraintStart_toEndOf="@+id/mcv_daily_notification_count"
@@ -93,14 +93,14 @@
                         android:id="@+id/mcv_daily_notification_count"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:cardBackgroundColor="?attr/backgroundColor"
+                        app:cardBackgroundColor="?attr/colorSurface"
                         app:cardCornerRadius="@dimen/cardRadius"
                         app:cardElevation="0dp"
                         app:layout_constraintEnd_toStartOf="@+id/v_divider_vertical"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toTopOf="@+id/v_divider_horizontal_1"
-                        app:strokeColor="?attr/slightElevated"
+                        app:strokeColor="?attr/colorSurfaceContainer"
                         app:strokeWidth="0dp">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -153,13 +153,13 @@
                         android:id="@+id/mcv_enabled_categories"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:cardBackgroundColor="?attr/backgroundColor"
+                        app:cardBackgroundColor="?attr/colorSurface"
                         app:cardCornerRadius="@dimen/cardRadius"
                         app:cardElevation="0dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/v_divider_vertical"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:strokeColor="?attr/slightElevated"
+                        app:strokeColor="?attr/colorSurfaceContainer"
                         app:strokeWidth="0dp">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -212,14 +212,14 @@
                         android:id="@+id/mcv_timeframe"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:cardBackgroundColor="?attr/backgroundColor"
+                        app:cardBackgroundColor="?attr/colorSurface"
                         app:cardCornerRadius="@dimen/cardRadius"
                         app:cardElevation="0dp"
                         app:layout_constraintEnd_toEndOf="@+id/mcv_daily_notification_count"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/v_divider_horizontal_1"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:strokeColor="?attr/slightElevated"
+                        app:strokeColor="?attr/colorSurfaceContainer"
                         app:strokeWidth="0dp">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -273,13 +273,13 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        app:cardBackgroundColor="?attr/backgroundColor"
+                        app:cardBackgroundColor="?attr/colorSurface"
                         app:cardCornerRadius="@dimen/cardRadius"
                         app:cardElevation="0dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/mcv_enabled_categories"
                         app:layout_constraintTop_toBottomOf="@+id/v_divider_horizontal_1"
-                        app:strokeColor="?attr/slightElevated"
+                        app:strokeColor="?attr/colorSurfaceContainer"
                         app:strokeWidth="0dp">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -380,7 +380,7 @@
                 android:layout_marginTop="48dp"
                 android:layout_marginEnd="12dp"
                 android:background="@drawable/ripple_round"
-                android:backgroundTint="?attr/backgroundColor"
+                android:backgroundTint="?attr/colorSurface"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
                 android:src="@drawable/ic_baseline_more_vert_24"

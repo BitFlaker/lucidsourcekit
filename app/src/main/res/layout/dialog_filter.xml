@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawablePadding="5dp"
-        android:text="Filter entries by"
+        android:text="Filter entries"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginLeft="20dp"
@@ -21,9 +22,7 @@
     <ScrollView
         android:id="@+id/scrl_filter_scroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/btn_filter_ok"
-        android:layout_below="@+id/txt_filter_title"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="5dp">
@@ -49,7 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/small_circle"
-                    android:drawableTint="@color/darker_white"
+                    android:drawableTint="@color/white"
                     android:text="Dream Type"
                     android:textAlignment="textStart"
                     android:textColor="?attr/primaryTextColor"
@@ -114,7 +113,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/small_circle"
-                    android:drawableTint="@color/darker_white"
+                    android:drawableTint="@color/white"
                     android:text="Tags"
                     android:textAlignment="textStart"
                     android:textColor="?attr/primaryTextColor"
@@ -152,7 +151,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/small_circle"
-                    android:drawableTint="@color/darker_white"
+                    android:drawableTint="@color/white"
                     android:text="Journal Type"
                     android:textAlignment="textStart"
                     android:textColor="?attr/primaryTextColor"
@@ -202,7 +201,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/small_circle"
-                    android:drawableTint="@color/darker_white"
+                    android:drawableTint="@color/white"
                     android:text="Dream Mood"
                     android:textAlignment="textStart"
                     android:textColor="?attr/primaryTextColor"
@@ -273,7 +272,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/small_circle"
-                    android:drawableTint="@color/darker_white"
+                    android:drawableTint="@color/white"
                     android:text="Dream Clarity"
                     android:textAlignment="textStart"
                     android:textColor="?attr/primaryTextColor"
@@ -337,7 +336,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/small_circle"
-                    android:drawableTint="@color/darker_white"
+                    android:drawableTint="@color/white"
                     android:text="Sleep Quality"
                     android:textAlignment="textStart"
                     android:textColor="?attr/primaryTextColor"
@@ -390,29 +389,4 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="end"
-        android:layout_marginEnd="10dp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_filter_cancel"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:text="cancel"
-            android:textColor="?attr/colorPrimary" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_filter_ok"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="OK"
-            android:textColor="?attr/colorPrimary" />
-    </LinearLayout>
 </LinearLayout>

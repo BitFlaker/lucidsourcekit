@@ -17,6 +17,7 @@ import android.util.Pair;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -49,9 +50,9 @@ import io.reactivex.rxjava3.core.Maybe;
 
 public class Tools {
     private static final int NOTIFICATION_ID_START = 500000;
-    private static int THEME_DIALOG;
-    private static int THEME_POPUP;
-    private static int THEME;
+//    private static int THEME_DIALOG;
+//    private static int THEME_POPUP;
+//    private static int THEME;
     private static final HashMap<String, Integer> notificationIdMap = new HashMap<String, Integer>() {{
         put("DJR", NOTIFICATION_ID_START + 11);
         put("RCR", NOTIFICATION_ID_START + 12);
@@ -59,37 +60,39 @@ public class Tools {
         put("CR", NOTIFICATION_ID_START + 14);
     }};
 
-    public static void setThemeColors(int theme){
-        if(theme == R.style.Theme_LucidSourceKit_Light) {
-            THEME_DIALOG = R.style.ThemedDialog_Light;
-            THEME_POPUP = R.style.PopupMenu_Light;
-        }
-        else if(theme == R.style.Theme_LucidSourceKit_LCDark) { // Todo should be removed
-            THEME_DIALOG = R.style.ThemedDialog_LCDark;
-            THEME_POPUP = R.style.PopupMenu_LCDark;
-        }
-        else if(theme == R.style.Theme_LucidSourceKit_Amoled_Dark) {
-            THEME_DIALOG = R.style.ThemedDialog_Amoled_Dark;
-            THEME_POPUP = R.style.PopupMenu_LCDark;
-        }
-        else if(theme == R.style.Theme_LucidSourceKit_Dark) {
-            THEME_DIALOG = R.style.ThemedDialog_Dark;
-            THEME_POPUP = R.style.PopupMenu_Dark;
-        }
-        THEME = theme;
-    }
+//    public static void setThemeColors(int theme){
+//        THEME_DIALOG = R.style.ThemedDialog_Dark;
+//        THEME_POPUP = R.style.PopupMenu_Dark;
+//        if(theme == R.style.Theme_LucidSourceKit_Light) {
+//            THEME_DIALOG = R.style.ThemedDialog_Light;
+//            THEME_POPUP = R.style.PopupMenu_Light;
+//        }
+//        else if(theme == R.style.Theme_LucidSourceKit_LCDark) { // Todo should be removed
+//            THEME_DIALOG = R.style.ThemedDialog_LCDark;
+//            THEME_POPUP = R.style.PopupMenu_LCDark;
+//        }
+//        else if(theme == R.style.Theme_LucidSourceKit_Amoled_Dark) {
+//            THEME_DIALOG = R.style.ThemedDialog_Amoled_Dark;
+//            THEME_POPUP = R.style.PopupMenu_LCDark;
+//        }
+//        else if(theme == R.style.Theme_LucidSourceKit_Dark) {
+//            THEME_DIALOG = R.style.ThemedDialog_Dark;
+//            THEME_POPUP = R.style.PopupMenu_Dark;
+//        }
+//        THEME = theme;
+//    }
 
-    public static int getThemeDialog(){
-        return THEME_DIALOG;
-    }
+//    public static int getThemeDialog(){
+//        return THEME_DIALOG;
+//    }
 
-    public static int getPopupTheme() {
-        return THEME_POPUP;
-    }
+//    public static int getPopupTheme() {
+//        return THEME_POPUP;
+//    }
 
-    public static int getTheme() {
-        return THEME;
-    }
+//    public static int getTheme() {
+//        return THEME;
+//    }
 
     public static void loadLanguage(Activity activity){
         String lang = DataStoreManager.getInstance().getSetting(DataStoreKeys.LANGUAGE).blockingFirst();
@@ -476,6 +479,13 @@ public class Tools {
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
         colorAnimation.setDuration(duration);
         colorAnimation.addUpdateListener(animator -> view.setBackgroundTintList(ColorStateList.valueOf((int) animator.getAnimatedValue())));
+        colorAnimation.start();
+    }
+
+    public static void animateImageTint(ImageView view, @ColorInt int colorFrom, @ColorInt int colorTo, int duration) {
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.setDuration(duration);
+        colorAnimation.addUpdateListener(animator -> view.setImageTintList(ColorStateList.valueOf((int) animator.getAnimatedValue())));
         colorAnimation.start();
     }
 }

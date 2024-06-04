@@ -33,6 +33,7 @@ import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntriesList;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntry;
 import com.bitflaker.lucidsourcekit.main.dreamjournal.DreamJournalEntryEditor;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -142,14 +143,25 @@ public class DreamJournal extends Fragment {
     private void setupFilterButton() {
         filterEntries.setOnClickListener(e -> {
             // TODO start loading animation
-            db.getJournalEntryTagDao().getAll().subscribe((journalEntryTags, throwable) -> {
+            compositeDisposable.add(db.getJournalEntryTagDao().getAll().subscribe((journalEntryTags, throwable) -> {
                 String[] availableTags = new String[journalEntryTags.size()];
                 for (int i = 0; i < journalEntryTags.size(); i++) {
                     availableTags[i] = journalEntryTags.get(i).description;
                 }
 
-                FilterDialog fd = new FilterDialog(getActivity(), availableTags, recyclerViewAdapterDreamJournal.getCurrentFilter());
-                fd.setOnClickPositiveButton(g -> {
+//                Dialog customDialog = new Dialog(getContext());
+//                customDialog.setContentView(R.layout.dialog_filter);
+//                customDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+//
+//                MaterialButton btnSubmit = customDialog.findViewById(R.id.btn_filter_ok);
+//                btnSubmit.setOnClickListener(view -> {
+//                    Toast.makeText(getContext(),"You Click On Submit Button",Toast.LENGTH_SHORT).show();
+//                    customDialog.dismiss();
+//                });
+//                customDialog.show();
+
+                FilterDialog fd = new FilterDialog(getContext(), availableTags, recyclerViewAdapterDreamJournal.getCurrentFilter());
+                fd.setOnClickPositiveButton((dialog, g) -> {
                     AppliedFilter af = fd.getFilters();
                     if(!AppliedFilter.isEmptyFilter(af)){
                         recyclerViewAdapterDreamJournal.filter(af);
@@ -162,14 +174,14 @@ public class DreamJournal extends Fragment {
                     checkForEntries();
                     fd.dismiss();
                 });
-                fd.show();
-            });
+                fd.show(getParentFragmentManager(), "filter-dialog");
+            }));
         });
     }
 
     private void setupSortButton() {
         sortEntries.setOnClickListener(e -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), Tools.getThemeDialog());
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog);
             builder.setTitle("Sort entries by");
             String[] sortOrder = {"timestamp - newest first", "timestamp - oldest first", "title - A to Z", "title - Z to A", "description - A to Z", "description - Z to A"};
             builder.setSingleChoiceItems(sortOrder, sortBy, (dialog, which) -> {
@@ -233,15 +245,18 @@ public class DreamJournal extends Fragment {
     }
 
     private void animateFab(){
-        @ColorInt int colorPrimary = Tools.getAttrColor(R.attr.colorPrimary, getContext().getTheme());
-        @ColorInt int colorSlightElevated = Tools.getAttrColor(R.attr.slightElevated2x, getContext().getTheme());
+        @ColorInt int colorPrimaryContainer = Tools.getAttrColor(R.attr.colorPrimaryContainer, getContext().getTheme());
+        @ColorInt int colorOnPrimaryContainer = Tools.getAttrColor(R.attr.colorOnPrimaryContainer, getContext().getTheme());
+        @ColorInt int colorSecondaryContainer = Tools.getAttrColor(R.attr.colorSecondaryContainer, getContext().getTheme());
+        @ColorInt int colorOnSecondaryContainer = Tools.getAttrColor(R.attr.colorOnSecondaryContainer, getContext().getTheme());
 
         if (fabAdd == null) { return; }
         if (isOpen) {
             fabAdd.startAnimation(rotateForward);
             fabText.startAnimation(fabClose);
             fabForms.startAnimation(fabClose);
-            Tools.animateBackgroundTint(fabAdd, colorSlightElevated, colorPrimary, 300);
+            Tools.animateBackgroundTint(fabAdd, colorSecondaryContainer, colorPrimaryContainer, 300);
+            Tools.animateImageTint(fabAdd, colorOnSecondaryContainer, colorOnPrimaryContainer, 300);
             fabText.setClickable(false);
             fabForms.setClickable(false);
             isOpen=false;
@@ -250,7 +265,8 @@ public class DreamJournal extends Fragment {
             fabAdd.startAnimation(rotateBackward);
             fabText.startAnimation(fabOpen);
             fabForms.startAnimation(fabOpen);
-            Tools.animateBackgroundTint(fabAdd, colorPrimary, colorSlightElevated, 300);
+            Tools.animateBackgroundTint(fabAdd, colorPrimaryContainer, colorSecondaryContainer, 300);
+            Tools.animateImageTint(fabAdd, colorOnPrimaryContainer, colorOnSecondaryContainer, 300);
             fabText.setClickable(true);
             fabForms.setClickable(true);
             isOpen=true;

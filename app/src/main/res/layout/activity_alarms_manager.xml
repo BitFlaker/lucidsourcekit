@@ -23,33 +23,6 @@
             android:textColor="?attr/primaryTextColor"
             android:textSize="20sp"
             android:textStyle="bold" />
-
-<!--        <androidx.legacy.widget.Space-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:layout_weight="1" />-->
-
-        <!--        <ImageButton-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:background="@drawable/ripple_round"-->
-        <!--            android:backgroundTint="?attr/backgroundColor"-->
-        <!--            android:minWidth="48dp"-->
-        <!--            android:minHeight="48dp"-->
-        <!--            android:src="@drawable/ic_round_bolt_24"-->
-        <!--            app:tint="?attr/secondaryTextColor" />-->
-
-<!--        <ImageButton-->
-<!--            android:id="@+id/btn_settings_clock"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginEnd="5dp"-->
-<!--            android:background="@drawable/ripple_round"-->
-<!--            android:backgroundTint="?attr/backgroundColor"-->
-<!--            android:minWidth="48dp"-->
-<!--            android:minHeight="48dp"-->
-<!--            android:src="@drawable/ic_round_settings_24"-->
-<!--            app:tint="?attr/secondaryTextColor" />-->
     </LinearLayout>
 
     <LinearLayout
@@ -63,10 +36,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            app:cardBackgroundColor="?attr/backgroundColor"
+            app:cardBackgroundColor="?attr/colorSurface"
             app:cardCornerRadius="@dimen/cardRadius"
-            app:cardElevation="6dp"
-            app:strokeColor="?attr/slightElevated"
+            app:strokeColor="?attr/colorSurfaceContainer"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -195,13 +167,11 @@
         android:id="@+id/fab_add_alarm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_round_add_24"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:backgroundTint="?attr/colorPrimary"
-        app:tint="@color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_round_add_24"
         app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
-        app:borderWidth="0dp"/>
+        app:borderWidth="0dp" />
 </RelativeLayout>

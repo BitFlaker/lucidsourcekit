@@ -145,7 +145,7 @@
                 android:layout_height="wrap_content"
                 android:text="Snooze"
                 android:background="@drawable/ripple_round"
-                app:backgroundTint="?attr/slightElevated"/>
+                app:backgroundTint="?attr/colorSurfaceContainer"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_stop_alarm"
@@ -174,7 +174,6 @@
                 android:layout_marginRight="12dp"
                 android:padding="1dp"
                 android:background="@drawable/rounded_border_thin"
-                android:backgroundTint="?attr/slightElevated"
                 android:orientation="horizontal"
                 android:gravity="center_horizontal">
 
@@ -188,7 +187,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/ripple_round"
-                    android:backgroundTint="?attr/backgroundColor"
+                    android:backgroundTint="?attr/colorSurface"
                     android:minWidth="56dp"
                     android:minHeight="56dp"
                     android:src="@drawable/ic_round_book_24"
@@ -207,7 +206,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/ripple_round"
-                    android:backgroundTint="?attr/backgroundColor"
+                    android:backgroundTint="?attr/colorSurface"
                     android:minWidth="56dp"
                     android:minHeight="56dp"
                     android:src="@drawable/frequency_symbol"
@@ -227,7 +226,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/ripple_round"
-                    android:backgroundTint="?attr/backgroundColor"
+                    android:backgroundTint="?attr/colorSurface"
                     android:minWidth="56dp"
                     android:minHeight="56dp"
                     android:src="@drawable/ic_round_open_in_new_24"
@@ -242,21 +241,21 @@
                     android:layout_weight="1"/>
             </LinearLayout>
 
+<!--            android:background="@drawable/ripple_round_border_dashed"-->
             <ImageButton
                 android:id="@+id/btn_close_viewer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="48dp"
-                android:background="@drawable/ripple_round_border_dashed"
-                android:backgroundTint="#232428"
-                android:backgroundTintMode="add"
                 android:minWidth="56dp"
                 android:minHeight="56dp"
                 android:src="@drawable/ic_round_close_24"
+                android:background="@drawable/ripple_round"
+                android:backgroundTint="?attr/colorSurfaceContainerHigh"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:tint="?attr/colorOnBackground" />
+                app:tint="?attr/colorOnSurface" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

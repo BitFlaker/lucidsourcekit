@@ -167,7 +167,7 @@ public class Statistics extends Fragment {
             Drawable arrowDown = ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_keyboard_arrow_down_24, getContext().getTheme());
 
             dreamFrequencyTypeFilter.setCompoundDrawablesWithIntrinsicBounds(null, null, arrowUp, null);
-            PopupMenu popup = new PopupMenu(new ContextThemeWrapper(getContext(), R.style.PopupMenu_Icon_Dark), dreamFrequencyTypeFilter);
+            PopupMenu popup = new PopupMenu(new ContextThemeWrapper(getContext(), R.style.Theme_LucidSourceKit_PopupMenu_Icon), dreamFrequencyTypeFilter);
             popup.setForceShowIcon(true);
             popup.getMenuInflater().inflate(R.menu.dream_frequency_types, popup.getMenu());
             popup.setOnMenuItemClickListener(item -> {
@@ -183,9 +183,9 @@ public class Statistics extends Fragment {
         timeSpentProportions.setValues(new ProportionLineChart.DataPoint[] {
                 new ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.colorPrimary, getContext().getTheme()), 60, "Dream journal"),
 //                new ProportionLineChart.DataPoint(Color.parseColor("#52b2cf"), 60, "Dream journal"),
-                new ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), 15, "Binaural beats"),
+                new ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme()), 15, "Binaural beats"),
 //                new ProportionLineChart.DataPoint(Color.parseColor("#d4afb9"), 15, "Binaural beats"),
-                new ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.tertiaryTextColor, getContext().getTheme()), 25, "Other")
+                new ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), 25, "Other")
 //                new ProportionLineChart.DataPoint(Color.parseColor("#d1cfe2"), 25, "Other")
         });
 

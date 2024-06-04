@@ -30,7 +30,7 @@
             android:layout_marginLeft="8dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/background_scrapes"
-            app:tint="?attr/slightElevated" />
+            app:tint="?attr/colorSurfaceContainer" />
 
         <ImageView
             android:id="@+id/icon"
@@ -40,7 +40,7 @@
             android:layout_centerVertical="true"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_baseline_admin_panel_settings_24"
-            app:tint="#868791" />
+            app:tint="?attr/colorOutline" />
     </RelativeLayout>
 
     <TextView
@@ -80,7 +80,7 @@
         android:layout_marginRight="70dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/rounded_spinner"
-        android:backgroundTint="?attr/slightElevated"
+        android:backgroundTint="?attr/colorSurfaceContainer"
         android:entries="@array/lock_types"
         android:paddingLeft="10dp"
         android:paddingRight="10dp" />
@@ -93,12 +93,11 @@
         android:layout_marginLeft="70dp"
         android:layout_marginRight="70dp"
         android:layout_marginBottom="145dp"
-        android:background="@drawable/rounded_spinner"
-        android:backgroundTint="?attr/slightElevated"
         android:button="@android:color/transparent"
         android:drawableStart="@drawable/ic_baseline_check_box_outline_blank_24"
-        android:drawableTint="?attr/colorOnSurface"
+        android:drawableTint="?attr/primaryTextColor"
         android:drawablePadding="10dp"
-        android:paddingStart="15dp"
-        android:text="@string/setup_privacy_biometrics" />
+        android:paddingStart="14dp"
+        android:text="@string/setup_privacy_biometrics"
+        android:textColor="?attr/primaryTextColor"/>
 </RelativeLayout>

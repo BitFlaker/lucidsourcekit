@@ -54,7 +54,7 @@ public class ProportionLineChart extends View {
     }
 
     public void setup() {
-        @ColorInt int trackColor = Tools.getAttrColor(R.attr.backgroundColor, getContext().getTheme());
+        @ColorInt int trackColor = Tools.getAttrColor(R.attr.colorSurface, getContext().getTheme());
         valueGap = Tools.dpToPx(getContext(), 4);
         trackWidth = Tools.dpToPx(getContext(), 12);
         legendMarginTop = Tools.dpToPx(getContext(), 8);

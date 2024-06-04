@@ -236,13 +236,13 @@ public class RecyclerViewAdapterEditGoals extends RecyclerView.Adapter<RecyclerV
 
         public void select() {
             isSelected = true;
-            container.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, context.getTheme()));
+            container.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurfaceContainer, context.getTheme()));
             goalText.setCompoundDrawablesWithIntrinsicBounds(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_baseline_check_24, context.getTheme()), null, null, null);
         }
 
         public void unselect() {
             isSelected = false;
-            container.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.backgroundColor, context.getTheme()));
+            container.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurface, context.getTheme()));
             goalText.setCompoundDrawablesWithIntrinsicBounds(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_baseline_circle_24, context.getTheme()), null, null, null);
         }
     }

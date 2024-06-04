@@ -3,14 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="?attr/backgroundColor">
+    android:backgroundTint="?attr/colorSurface">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/crd_notification_settings_icon_background"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="16dp"
-        app:cardBackgroundColor="?attr/slightElevated"
+        app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+        app:strokeColor="?attr/colorSurfaceContainerHighest"
         app:cardCornerRadius="@dimen/cardRadius"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -67,7 +68,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_notification_settings_description"
-        app:strokeColor="?attr/slightElevated"
+        app:strokeColor="?attr/colorSurfaceContainerHigh"
         app:strokeWidth="0dp">
 
         <LinearLayout
@@ -136,7 +137,7 @@
             app:cardBackgroundColor="@color/transparent"
             app:cardCornerRadius="@dimen/cardRadius"
             app:cardElevation="0dp"
-            app:strokeColor="?attr/slightElevated"
+            app:strokeColor="?attr/colorSurfaceContainerHigh"
             app:strokeWidth="1dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -192,7 +193,7 @@
             app:cardBackgroundColor="@color/transparent"
             app:cardCornerRadius="@dimen/cardRadius"
             app:cardElevation="0dp"
-            app:strokeColor="?attr/slightElevated"
+            app:strokeColor="?attr/colorSurfaceContainerHigh"
             app:strokeWidth="1dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -254,7 +255,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:strokeColor="?attr/slightElevated"
+        app:strokeColor="?attr/colorSurfaceContainerHigh"
         app:strokeWidth="1dp">
 
         <LinearLayout
@@ -357,24 +358,6 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"/>
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chp_notification_10"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:text="10"
-                    android:includeFontPadding="false"
-                    android:textAlignment="center"
-                    android:textColor="@color/chip_text_check_change"
-                    app:chipBackgroundColor="@drawable/chip_background"
-                    app:chipCornerRadius="48dp"
-                    app:chipMinHeight="36dp"
-                    app:textStartPadding="0dp"
-                    app:textEndPadding="0dp"
-                    app:chipEndPadding="0dp"
-                    app:chipStartPadding="0dp"
-                    app:chipMinTouchTargetSize="0dp"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"/>
-
-                <com.google.android.material.chip.Chip
                     android:id="@+id/chp_notification_custom"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
@@ -409,7 +392,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mcv_daily_notifications"
-        app:strokeColor="?attr/slightElevated"
+        app:strokeColor="?attr/colorSurfaceContainerHigh"
         app:strokeWidth="1dp">
 
         <LinearLayout
@@ -475,13 +458,12 @@
         android:layout_marginStart="20dp"
         android:layout_marginBottom="21dp"
         android:layout_marginTop="28dp"
-        android:background="@drawable/ripple_round"
         android:minWidth="128dp"
         android:text="Cancel"
-        app:backgroundTint="?attr/slightElevated"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mcv_complying_notifications" />
+        app:layout_constraintTop_toBottomOf="@+id/mcv_complying_notifications"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_save"
@@ -491,13 +473,13 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="21dp"
         android:layout_marginTop="28dp"
-        android:background="@drawable/ripple_round"
-        android:backgroundTint="?attr/slightElevated"
         android:text="Save"
         app:icon="@drawable/ic_baseline_check_24"
         app:iconGravity="textStart"
+        app:iconPadding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_cancel"
-        app:layout_constraintTop_toBottomOf="@+id/mcv_complying_notifications" />
+        app:layout_constraintTop_toBottomOf="@+id/mcv_complying_notifications"
+        style="@style/Widget.Material3.Button.IconButton.Filled"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,7 +16,6 @@ import android.widget.ToggleButton;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.ViewCompat;
@@ -38,6 +36,7 @@ import com.bitflaker.lucidsourcekit.general.database.values.SleepQuality;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.slider.Slider;
 
 import java.util.HashMap;
@@ -51,7 +50,7 @@ public class DreamJournalRatingEditor extends Fragment {
     OnBackButtonClicked mBackButtonListener;
     OnDoneButtonClicked mDoneButtonListener;
     OnDreamJournalEntrySaved mDreamJournalEntrySaved;
-    ImageButton backToDreamEditor, closeEditor;
+    MaterialButton backToDreamEditor, closeEditor;
     MaterialButton doneRatingBtn;
     Slider sliderDreamMood, sliderSleepQuality, sliderDreamClarity;
     ImageView previewDreamMood, previewDreamClarity, previewSleepQuality;
@@ -63,8 +62,8 @@ public class DreamJournalRatingEditor extends Fragment {
     private final String[] dreamMoodLabels = new String[] { "Terrible", "Poor", "Okay", "Great", "Outstanding"};
     private final String[] sleepQualityLabels = new String[] { "Terrible", "Poor", "Great", "Outstanding"};
     private final String[] dreamClarityLabels = new String[] { "Very Cloudy", "Cloudy", "Clear", "Crystal Clear"};
-    private ColorStateList tertiaryColor;
-    private ColorStateList colorOnPrimary;
+    private ColorStateList unselectedIconColor;
+    private ColorStateList selectedIconColor;
     private OnCloseButtonClicked mCloseButtonClicked;
     private JournalInMemoryManager journalManger;
     private String journalEntryId;
@@ -90,8 +89,8 @@ public class DreamJournalRatingEditor extends Fragment {
 
         compositeDisposable = new CompositeDisposable();
         toggleButtonIcons = new HashMap<>();
-        tertiaryColor = Tools.getAttrColorStateList(R.attr.tertiaryTextColor, getContext().getTheme());
-        colorOnPrimary = Tools.getAttrColorStateList(R.attr.colorOnPrimary, getContext().getTheme());
+        unselectedIconColor = Tools.getAttrColorStateList(R.attr.colorSurfaceContainerHigh, getContext().getTheme());
+        selectedIconColor = Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme());
 
         backToDreamEditor = getView().findViewById(R.id.btn_dj_back_to_text);
         doneRatingBtn = getView().findViewById(R.id.btn_dj_done_rating);
@@ -167,7 +166,7 @@ public class DreamJournalRatingEditor extends Fragment {
             jim.setDreamClarity(DreamClarity.values()[(int) value].getId());
         });
 
-        closeEditor.setOnClickListener(e -> new AlertDialog.Builder(getContext(), Tools.getThemeDialog())
+        closeEditor.setOnClickListener(e -> new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog)
                 .setTitle("Discard changes")
                 .setMessage("Do you really want to discard all changes")
                 .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
@@ -187,7 +186,7 @@ public class DreamJournalRatingEditor extends Fragment {
 
         doneRatingBtn.setOnClickListener(e -> {
             if(jim.getTitle().equals("") || (jim.getDescription().equals("") && jim.getAudioRecordings().size() == 0)) {
-                new AlertDialog.Builder(getContext(), Tools.getThemeDialog())
+                new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog)
                         .setTitle("No content")
                         .setMessage("You have to provide a title and a description or audio recording for your dream journal entry!")
                         .setPositiveButton(getResources().getString(R.string.ok), null)
@@ -308,7 +307,7 @@ public class DreamJournalRatingEditor extends Fragment {
         if(value < icons.length && previewIcon != null) {
             for (int i = 0; i < icons.length; i++) {
                 if(icons[i] != null) {
-                    icons[i].setImageTintList(i == value ? colorOnPrimary : tertiaryColor);
+                    icons[i].setImageTintList(i == value ? selectedIconColor : unselectedIconColor);
                     ViewGroup.LayoutParams lParams = icons[i].getLayoutParams();
                     lParams.height = i == value ? Tools.dpToPx(getContext(), 24) : Tools.dpToPx(getContext(), 16);
                     icons[i].setLayoutParams(lParams);

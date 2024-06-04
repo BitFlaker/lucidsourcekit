@@ -3,6 +3,6 @@
     <style name="Switch.Dark" parent="">
         <item name="colorControlActivated">?attr/colorPrimaryVariant</item>
         <item name="android:colorForeground">?attr/tertiaryTextColor</item>
-        <item name="colorSwitchThumbNormal">?attr/slightElevated2x</item>
+        <item name="colorSwitchThumbNormal">?attr/colorSurfaceContainerHigh</item>
     </style>
 </resources>

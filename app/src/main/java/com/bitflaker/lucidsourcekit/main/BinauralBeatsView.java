@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +28,7 @@ import com.bitflaker.lucidsourcekit.main.binauralbeats.BinauralBeatsPlayer;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,8 @@ import java.util.Locale;
 
 public class BinauralBeatsView extends Fragment {
     private LineGraph progressLineGraph;
-    private ImageButton displayAllBeats, backgroundNoises, repeatButton, autoStopButton, playTrack;
+    private ImageButton displayAllBeats, backgroundNoises, repeatButton, autoStopButton;
+    private MaterialButton playTrack;
     private List<BackgroundNoise> noises;
     private boolean repeatBeat, playingFinished, isAutoStopTimerRunning;
     private TextView currentTrackName, currentTrackDescription, binauralTimeline, binauralTimeTotal, binauralFrequency, freqGreekLetterName, freqGreekLetter, freqCarrierFreq, carrierFreqHeading;
@@ -48,7 +49,7 @@ public class BinauralBeatsView extends Fragment {
     private int autoStopInterval = -1;
 
     private Runnable stopCurrentlyPlayingTrack = () -> {
-        playTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
+        playTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
         binBeatPlayer.pause();
         autoStopButton.setImageDrawable(getContext().getDrawable(R.drawable.ic_outline_timer_24));
         autoStopInterval = -1;
@@ -113,7 +114,7 @@ public class BinauralBeatsView extends Fragment {
                 binauralTimeline.setText(getTimeStringFromSeconds(0));
                 binauralFrequency.setText("0.00");
                 freqCarrierFreq.setText(String.format(Locale.ENGLISH, "%.0f Hz", binauralBeat.getBaseFrequency()));
-                playTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
+                playTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
                 setDataForProgress(binauralBeat, 0);
                 if(binBeatPlayer != null){
                     binBeatPlayer.stop();
@@ -140,7 +141,7 @@ public class BinauralBeatsView extends Fragment {
                         binBeatPlayer.play();
                     }
                     else {
-                        playTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
+                        playTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
                     }
                 });
             });
@@ -182,7 +183,7 @@ public class BinauralBeatsView extends Fragment {
 
         autoStopButton.setOnClickListener(e -> {
             if(autoStopInterval != -1){
-                new AlertDialog.Builder(getContext(), Tools.getThemeDialog()).setTitle("Disable Auto-Stop").setMessage("Do you really want to disable Auto-Stop?")
+                new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog).setTitle("Disable Auto-Stop").setMessage("Do you really want to disable Auto-Stop?")
                         .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                             autoStopHandler.removeCallbacks(stopCurrentlyPlayingTrack);
                             autoStopButton.setImageDrawable(getContext().getDrawable(R.drawable.ic_outline_timer_24));
@@ -231,14 +232,14 @@ public class BinauralBeatsView extends Fragment {
                     playingFinished = false;
                 }
                 if(!binBeatPlayer.isPlaying()){
-                    playTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_pause_24));
+                    playTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_pause_24));
                     binBeatPlayer.play();
                     if(autoStopInterval != -1 && !isAutoStopTimerRunning) {
                         startAutoStopTimeNow();
                     }
                 }
                 else {
-                    playTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
+                    playTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
                     binBeatPlayer.pause();
                 }
             }

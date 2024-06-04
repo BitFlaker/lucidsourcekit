@@ -43,7 +43,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/background_scrapes"
-                    app:tint="?attr/slightElevated" />
+                    app:tint="?attr/colorSurfaceContainer" />
 
                 <ImageView
                     android:id="@+id/icon"
@@ -53,7 +53,7 @@
                     android:layout_centerVertical="true"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/ic_baseline_key_24"
-                    app:tint="#868791" />
+                    app:tint="?attr/colorOutline" />
             </RelativeLayout>
         </RelativeLayout>
 
@@ -96,16 +96,16 @@
         android:layout_marginBottom="96dp"
         android:autofillHints="password"
         android:background="@drawable/rounded_spinner"
-        android:backgroundTint="?attr/slightElevated"
+        android:backgroundTint="?attr/colorSurfaceContainer"
         android:drawableStart="@drawable/ic_baseline_lock_24"
         android:drawablePadding="10dp"
-        android:drawableTint="#868791"
+        android:drawableTint="?attr/colorOutline"
         android:hint="@string/login_password_hint"
         android:inputType="textPassword"
         android:minHeight="48dp"
         android:padding="15dp"
         android:textColor="?attr/primaryTextColor"
-        android:textColorHint="#6F9E9BB1"
+        android:textColorHint="?attr/tertiaryTextColor"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -12,6 +11,7 @@ import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
@@ -29,7 +29,7 @@ public class DreamJournalEntryEditor extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(Tools.getTheme());
+//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dream_journal_entry_editor);
 
@@ -86,7 +86,7 @@ public class DreamJournalEntryEditor extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(this, Tools.getThemeDialog()).setTitle("Discard changes").setMessage("Do you really want to discard all changes")
+        new MaterialAlertDialogBuilder(this, R.style.Theme_LucidSourceKit_ThemedDialog).setTitle("Discard changes").setMessage("Do you really want to discard all changes")
                 .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                     super.onBackPressed();
                 })

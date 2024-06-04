@@ -3,22 +3,22 @@
     <item android:height="@dimen/cardRadius">
         <shape android:shape="rectangle">
             <corners android:topLeftRadius="@dimen/cardRadius" android:topRightRadius="@dimen/cardRadius"/>
-            <solid android:color="?attr/slightElevated"/>
+            <solid android:color="?attr/colorSurfaceContainer"/>
             <stroke android:width="1dp" android:color="#44ffffff" />
         </shape>
     </item>
     <item android:height="204dp" android:top="@dimen/cardRadius">
         <shape android:shape="rectangle">
             <gradient
-                android:startColor="?attr/slightElevated"
-                android:endColor="?attr/backgroundColor"
+                android:startColor="?attr/colorSurfaceContainer"
+                android:endColor="?attr/colorSurface"
                 android:angle="270"
                 android:type="linear" />
         </shape>
     </item>
     <item android:top="219dp">
         <shape android:shape="rectangle">
-            <solid android:color="?attr/backgroundColor"/>
+            <solid android:color="?attr/colorSurface"/>
         </shape>
     </item>
 </layer-list>

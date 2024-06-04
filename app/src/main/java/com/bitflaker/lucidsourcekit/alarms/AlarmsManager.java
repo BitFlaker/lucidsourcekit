@@ -11,7 +11,6 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +22,7 @@ import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.main.RecyclerViewAdapterAlarms;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.DateFormat;
@@ -59,7 +59,7 @@ public class AlarmsManager extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(Tools.getTheme());
+//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarms_manager);
 
@@ -67,7 +67,6 @@ public class AlarmsManager extends AppCompatActivity {
         LinearLayout topContainer = findViewById(R.id.ll_top_heading);
         SleepClock clock = findViewById(R.id.slp_clock);
         FloatingActionButton addAlarm = findViewById(R.id.fab_add_alarm);
-        addAlarm.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getTheme()));
         topContainer.setLayoutParams(Tools.addRelativeLayoutParamsTopStatusbarSpacing(AlarmsManager.this, ((RelativeLayout.LayoutParams) topContainer.getLayoutParams())));
 
         clock.startClock();
@@ -76,7 +75,7 @@ public class AlarmsManager extends AppCompatActivity {
                 alarmInteractionLauncher.launch(new Intent(this, AlarmCreator.class));
             }
             else {
-                new AlertDialog.Builder(this, Tools.getThemeDialog())
+                new MaterialAlertDialogBuilder(this, R.style.Theme_LucidSourceKit_ThemedDialog)
                         .setTitle("Delete Alarms")
                         .setMessage("Do you really want to delete the selected alarms?")
                         .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
@@ -134,13 +133,15 @@ public class AlarmsManager extends AppCompatActivity {
             @Override
             public void onSelectionModeEntered() {
                 addAlarm.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorError, getTheme()));
+                addAlarm.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnError, getTheme()));
                 addAlarm.setImageResource(R.drawable.ic_baseline_delete_24);
                 isInSelectionMode = true;
             }
 
             @Override
             public void onSelectionModeLeft() {
-                addAlarm.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getTheme()));
+                addAlarm.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimaryContainer, getTheme()));
+                addAlarm.setImageTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getTheme()));
                 addAlarm.setImageResource(R.drawable.ic_round_add_24);
                 isInSelectionMode = false;
             }

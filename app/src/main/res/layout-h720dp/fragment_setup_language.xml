@@ -30,7 +30,7 @@
             android:layout_marginBottom="8dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/background_scrapes"
-            app:tint="?attr/slightElevated" />
+            app:tint="?attr/colorSurfaceContainer" />
 
         <ImageView
             android:id="@+id/icon"
@@ -40,7 +40,7 @@
             android:layout_centerVertical="true"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_baseline_language_24"
-            app:tint="#868791" />
+            app:tint="?attr/colorOutline" />
     </RelativeLayout>
 
     <TextView
@@ -80,7 +80,7 @@
         android:layout_marginRight="70dp"
         android:layout_marginBottom="175dp"
         android:background="@drawable/rounded_spinner"
-        android:backgroundTint="?attr/slightElevated"
+        android:backgroundTint="?attr/colorSurfaceContainer"
         android:entries="@array/languages"
         android:paddingLeft="10dp"
         android:paddingRight="10dp" />

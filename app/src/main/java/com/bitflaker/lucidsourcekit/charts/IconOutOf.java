@@ -80,7 +80,7 @@ public class IconOutOf extends View {
     private void setup() {
         mainColor = getResources().getColor(R.color.pastel_orange, getContext().getTheme());
         @ColorInt int defaultColor = getResources().getColor(R.color.white, getContext().getTheme());
-        @ColorInt int trackColor = Tools.getAttrColor(R.attr.backgroundColor, getContext().getTheme());
+        @ColorInt int trackColor = Tools.getAttrColor(R.attr.colorSurface, getContext().getTheme());
         @ColorInt int secondaryTextColor = Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme());
         @ColorInt int tertiaryTextColor = Tools.getAttrColor(R.attr.tertiaryTextColor, getContext().getTheme());
 

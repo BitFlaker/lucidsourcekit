@@ -4,6 +4,6 @@
     android:shape="rectangle"
     android:padding="10dp">
 
-    <solid android:color="?attr/backgroundColor" />
+    <solid android:color="?attr/colorSurface" />
     <corners android:radius="@dimen/cardRadius" />
 </shape>

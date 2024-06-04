@@ -27,7 +27,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_pure_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.LucidSourceKit.Dark">
+        android:theme="@style/Theme.LucidSourceKit.Default">
         <activity
             android:name=".notification.NotificationManagerEditor"
             android:configChanges="orientation"

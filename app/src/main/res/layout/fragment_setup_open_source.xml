@@ -43,7 +43,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/background_scrapes"
-                    app:tint="?attr/slightElevated" />
+                    app:tint="?attr/colorSurfaceContainer" />
 
                 <ImageView
                     android:id="@+id/icon"
@@ -53,7 +53,7 @@
                     android:layout_centerVertical="true"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/ic_baseline_code_24"
-                    app:tint="#868791" />
+                    app:tint="?attr/colorOutline" />
             </RelativeLayout>
         </RelativeLayout>
 
@@ -91,11 +91,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="96dp"
-        android:background="@drawable/ripple_round"
         android:text="README.md"
         android:textAllCaps="false"
         app:icon="@drawable/ic_round_open_in_new_24"
-        app:backgroundTint="?attr/slightElevated"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

@@ -69,11 +69,6 @@
                 android:valueTo="4"
                 app:labelStyle="@style/Tooltip.Dark"
                 app:labelBehavior="floating"
-                app:thumbColor="?attr/colorPrimary"
-                app:trackColorActive="?attr/colorPrimary"
-                app:tickColorActive="?attr/colorPrimary"
-                app:tickColorInactive="@color/white"
-                app:trackColorInactive="?attr/tertiaryTextColor"
                 app:haloColor="@null" />
 
             <LinearLayout
@@ -190,11 +185,6 @@
                 android:valueTo="3"
                 app:labelStyle="@style/Tooltip.Dark"
                 app:labelBehavior="floating"
-                app:thumbColor="?attr/colorPrimary"
-                app:trackColorActive="?attr/colorPrimary"
-                app:tickColorActive="?attr/colorPrimary"
-                app:tickColorInactive="@color/white"
-                app:trackColorInactive="?attr/tertiaryTextColor"
                 app:haloColor="@null" />
 
             <LinearLayout
@@ -301,11 +291,6 @@
                 android:valueTo="3"
                 app:labelStyle="@style/Tooltip.Dark"
                 app:labelBehavior="floating"
-                app:thumbColor="?attr/colorPrimary"
-                app:trackColorActive="?attr/colorPrimary"
-                app:tickColorActive="?attr/colorPrimary"
-                app:tickColorInactive="@color/white"
-                app:trackColorInactive="?attr/tertiaryTextColor"
                 app:haloColor="@null" />
 
             <LinearLayout

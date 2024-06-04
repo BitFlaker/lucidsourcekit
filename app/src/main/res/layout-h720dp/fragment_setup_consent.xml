@@ -30,7 +30,7 @@
             android:layout_marginLeft="8dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/background_scrapes"
-            app:tint="?attr/slightElevated" />
+            app:tint="?attr/colorSurfaceContainer" />
 
         <ImageView
             android:id="@+id/icon"
@@ -39,7 +39,7 @@
             android:layout_centerInParent="true"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_baseline_report_problem_24"
-            app:tint="#868791" />
+            app:tint="?attr/colorOutline" />
     </RelativeLayout>
 
     <TextView
@@ -79,10 +79,10 @@
         android:layout_marginRight="70dp"
         android:layout_marginBottom="175dp"
         android:background="@drawable/rounded_spinner"
-        android:backgroundTint="?attr/slightElevated"
+        android:backgroundTint="?attr/colorSurfaceContainer"
         android:button="@android:color/transparent"
         android:drawableStart="@drawable/ic_baseline_check_box_outline_blank_24"
-        android:drawableTint="?attr/colorOnSurface"
+        android:drawableTint="?attr/primaryTextColor"
         android:drawablePadding="10dp"
         android:paddingStart="15dp"
         android:text="@string/setup_consent_checkbox"

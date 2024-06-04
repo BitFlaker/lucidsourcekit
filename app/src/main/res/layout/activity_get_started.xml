@@ -43,7 +43,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/background_scrapes"
-                    app:tint="?attr/slightElevated" />
+                    app:tint="?attr/colorSurfaceContainer" />
 
                 <ImageView
                     android:id="@+id/icon"
@@ -53,7 +53,7 @@
                     android:layout_centerVertical="true"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/ic_baseline_play_arrow_24"
-                    app:tint="#868791" />
+                    app:tint="?attr/colorOutline" />
             </RelativeLayout>
         </RelativeLayout>
 
@@ -92,8 +92,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="25dp"
         android:layout_marginBottom="25dp"
-        android:background="@drawable/rounded_button_primary_2"
         android:text="@string/setup_get_started_title"
+        android:textColor="?attr/colorOnPrimaryContainer"
+        app:backgroundTint="?attr/colorPrimaryContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

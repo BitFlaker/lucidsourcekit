@@ -1,83 +1,62 @@
 <resources>
-    <style name="Theme.LucidSourceKit.LCDark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/creamy_blue</item>
-        <item name="android:textColor">?attr/bright_text_color</item>
-        <item name="priorityColor">@color/white</item>
-        <item name="iconColor">@color/darker_white</item>
-        <item name="bright_text_color">@color/white</item>
-        <item name="darker_text_color">@color/darker_white_2x</item>
-        <item name="button_primary">@color/dark_purple_blue</item>
-        <item name="pin_background">@color/dark_purple_blue_transparent</item>
-        <item name="inactivePageDot">@color/dark_blue</item>
-        <item name="activePageDot">@color/lighter_blue</item>
-        <item name="activeTabIcon">@color/creamy_blue</item>
-        <item name="inactiveTabIcon">@color/light_gray</item>
-        <item name="secondColor">@color/dark_blue_lighter</item>
-        <item name="main_background_color">@color/mountain_dark_blue</item>
-        <item name="background_stand_out">@color/mountain_dark_blue_lighter</item>
-        <item name="colorError">@color/lighter_red</item>
-        <item name="highlight_success">@color/darker_green</item>
-        <item name="lightSelection">@color/clay_white</item>
-        <item name="main_overview_graphic">@drawable/deep_night_mountains_lcdark</item>
-    </style>
-
-    <style name="Theme.LucidSourceKit.Amoled.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/creamy_blue</item>
-        <item name="android:textColor">?attr/bright_text_color</item>
-        <item name="priorityColor">@color/white</item>
-        <item name="iconColor">@color/gray</item>
-        <item name="bright_text_color">@color/white</item>
-        <item name="darker_text_color">@color/darker_white_2x</item>
-        <item name="button_primary">@color/dark_purple_blue</item>
-        <item name="pin_background">@color/dark_purple_blue_transparent</item>
-        <item name="inactivePageDot">@color/darker_gray</item>
-        <item name="activePageDot">@color/lighter_blue</item>
-        <item name="activeTabIcon">@color/creamy_blue</item>
-        <item name="inactiveTabIcon">@color/light_gray</item>
-        <item name="secondColor">@color/darker_gray</item>
-        <item name="main_background_color">@color/black</item>
-        <item name="background_stand_out">@color/dark_gray</item>
-        <item name="colorError">@color/lighter_red</item>
-        <item name="colorWarning">@color/lighter_orange</item>
-        <item name="colorSuccess">@color/lighter_green</item>
-        <item name="highlight_success">@color/darker_green</item>
-        <item name="lightSelection">@color/clay_white</item>
-        <item name="main_overview_graphic">@drawable/deep_night_mountains_amoled_dark</item>
-    </style>
-
-
-
-
-
-    <style name="Theme.LucidSourceKit.Dark" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/blue_500</item>
-        <item name="colorPrimaryVariant">@color/blue_var</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorPrimaryHighlight">@color/blue_500_variant</item>
-        <item name="colorSecondary">@color/teal_new</item>
-        <item name="colorSecondaryVariant">@color/teal_var</item>
-        <item name="colorOnSecondary">@color/white</item>
-        <item name="backgroundColor">@color/background</item>
-        <item name="android:windowBackground">@color/background</item>
-        <item name="android:textColorHint">@color/white_50p</item>
-
-        <item name="tertiaryTextColor">@color/white_50p</item>
-        <item name="secondaryTextColor">@color/white_60p</item>
+    <style name="Theme.LucidSourceKit.Default" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="main_overview_graphic">@drawable/deep_night_new</item>
         <item name="primaryTextColor">@color/white</item>
+        <item name="secondaryTextColor">@color/white_60p</item>
+        <item name="tertiaryTextColor">@color/white_50p</item>
 
-        <item name="slightElevated">@color/grayed_blue</item>
-        <item name="slightElevated2x">@color/white_6p</item>
-        <item name="backgroundDreamRatingSheet">?attr/backgroundColor</item>
+        <item name="backgroundDreamRatingSheet">?attr/colorSurface</item>
         <item name="backgroundDreamRatingSheetStroke">?attr/colorOutlineVariant</item>
-        <item name="colorDisabled">@color/background_brighter</item>
-        <item name="colorPrimaryTranslucent">@color/prim_30p</item>
-        <item name="colorError">@color/lighter_red</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="colorWarning">@color/lighter_orange</item>
-        <item name="colorSuccess">@color/lighter_green</item>
-        <item name="main_overview_graphic">@drawable/deep_night_mountains_new_dark</item>
-        <item name="bottomSheetDialogTheme">@style/BottomSheetDialogStyle</item>
-        <item name="typeStyle">@style/Widget.MaterialComponents.Button.TextButton</item>
+
+        <item name="colorWarning">@color/warning</item>
+        <item name="colorSuccess">@color/success</item>
+
+        <item name="colorPrimary">@color/md_theme_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_error</item>
+        <item name="colorOnError">@color/md_theme_onError</item>
+        <item name="colorErrorContainer">@color/md_theme_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/md_theme_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_background</item>
+        <item name="colorOnBackground">@color/md_theme_onBackground</item>
+        <item name="colorSurface">@color/md_theme_surface</item>
+        <item name="colorOnSurface">@color/md_theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_outline</item>
+        <item name="colorOutlineVariant">@color/md_theme_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/md_theme_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/md_theme_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/md_theme_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/md_theme_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/md_theme_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/md_theme_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/md_theme_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/md_theme_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/md_theme_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/md_theme_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/md_theme_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/md_theme_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/md_theme_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/md_theme_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/md_theme_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/md_theme_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/md_theme_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/md_theme_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/md_theme_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
     </style>
 
     <style name="FloatingShapeAppearanceOverlay" parent="">
@@ -85,37 +64,45 @@
         <item name="cornerSize">50%</item>
     </style>
 
-    <style name="PopupMenu.Dark" parent="@style/Widget.AppCompat.PopupMenu">
+    <style name="Theme.LucidSourceKit.PopupMenu" parent="@style/Widget.Material3.PopupMenu">
         <item name="android:textColor">?attr/primaryTextColor</item>
-        <item name="popupMenuBackground">@drawable/popup_menu_background_dark</item>
+        <item name="popupMenuBackground">@drawable/popup_menu_icon_background_dark</item>
     </style>
 
-    <style name="PopupMenu.Icon.Dark" parent="@style/Widget.Material3.PopupMenu">
+    <style name="Theme.LucidSourceKit.PopupMenu.Icon" parent="@style/Widget.Material3.PopupMenu">
         <item name="android:textColor">?attr/primaryTextColor</item>
         <item name="popupMenuBackground">@drawable/popup_menu_icon_background_dark</item>
         <item name="android:clipToPadding">false</item>
         <item name="android:listPreferredItemPaddingStart">16dp</item>
     </style>
 
-<!--    <style name="PopupMenu.Dark" parent="Widget.AppCompat.PopupMenu">-->
-<!--        <item name="android:textColor">?attr/primaryTextColor</item>-->
-<!--        <item name="popupMenuBackground">@drawable/medium_rounded_rectangle_padded</item>-->
-<!--        <item name="android:backgroundTint">?attr/backgroundColor</item>-->
-<!--    </style>-->
-
-    <style name="ThemedDialog.Dark" parent="Theme.AppCompat.DayNight.Dialog.Alert">
-        <item name="colorPrimary">@color/blue_500</item>
-        <item name="slightElevated">@color/white_40p</item>
-        <item name="android:background">@color/background_paper</item>
-        <item name="android:textColor">?attr/primaryTextColor</item>
-        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
-        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    <style name="Theme.LucidSourceKit.ThemedDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@color/md_theme_surface</item>
+        <item name="alertDialogStyle">@style/MaterialAlertDialog.App</item>
     </style>
+
+    <style name="MaterialAlertDialog.App" parent="MaterialAlertDialog.Material3">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.MediumComponent</item>
+        <item name="shapeAppearanceOverlay">@null</item>
+    </style>
+
+    <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <!--    <style name="NegativeButtonStyle" parent="Widget.Material3.Button.TextButton.Dialog">-->
+    <!--        <item name="android:textColor">@color/md_theme_primary</item>-->
+    <!--    </style>-->
+
+    <!--    <style name="PositiveButtonStyle" parent="Widget.Material3.Button.TextButton.Dialog">-->
+    <!--        <item name="android:textColor">@color/md_theme_primary</item>-->
+    <!--    </style>-->
 
     <style name="Custom.Chip.Choice" parent="Widget.Material3.Chip.Filter">
         <item name="chipCornerRadius">@dimen/cardRadius</item>
         <item name="checkedIconVisible">false</item>
-        <item name="android:textColor">@color/chip_text_default_gone</item>
+        <item name="android:textColor">@color/chip_text_default</item>
         <item name="chipBackgroundColor">@color/chip_background_default_gone</item>
         <item name="rippleColor">@color/ripple_color_white</item>
         <item name="chipStrokeWidth">0dp</item>
@@ -124,95 +111,63 @@
     <style name="Custom.Chip.Choice.Outline" parent="Widget.Material3.Chip.Filter">
         <item name="chipCornerRadius">@dimen/cardRadius</item>
         <item name="checkedIconVisible">false</item>
-        <item name="rippleColor">?attr/slightElevated2x</item>
-        <item name="android:textColor">@color/chip_text_default_gone</item>
+        <item name="rippleColor">?attr/colorSurfaceContainer</item>
+        <item name="android:textColor">@color/chip_text_secondary</item>
         <item name="chipBackgroundColor">@color/chip_background_default_gone_inverted</item>
         <item name="chipStrokeColor">@color/chip_stroke_default_gone_inverted</item>
         <item name="chipStrokeWidth">1dp</item>
     </style>
 
-    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/blue_500</item>
-    </style>
-
-    <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/blue_500</item>
-    </style>
-
     <style name="Tooltip.Dark" parent="Widget.Material3.Tooltip">
-        <item name="backgroundTint">?attr/slightElevated2x</item>
+        <item name="backgroundTint">?attr/colorSurfaceContainerHighest</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
     <style name="LSK.MaterialCardView.Outlined" parent="Widget.Material3.CardView.Outlined">
         <item name="cardCornerRadius">@dimen/cardRadius</item>
         <item name="cardElevation">@dimen/cardElevationOutline</item>
-        <item name="cardBackgroundColor">?attr/backgroundColor</item>
+        <item name="cardBackgroundColor">?attr/colorSurface</item>
         <item name="strokeColor">?attr/colorOutlineVariant</item>
         <item name="contentPadding">@dimen/cardDefaultPadding</item>
     </style>
 
     <style name="LSK.MaterialCardView.Filled" parent="Widget.Material3.CardView.Filled">
         <item name="cardCornerRadius">@dimen/cardRadius</item>
-        <item name="cardBackgroundColor">?attr/slightElevated</item>
+        <item name="cardBackgroundColor">@color/md_theme_surfaceContainer</item>
         <item name="cardElevation">@dimen/cardElevationOutline</item>
         <item name="contentPadding">@dimen/cardDefaultPadding</item>
     </style>
 
     <style name="LSK.MaterialCardView.Filled.Elevated" parent="Widget.Material3.CardView.Elevated">
         <item name="cardCornerRadius">@dimen/cardRadius</item>
-        <item name="cardBackgroundColor">?attr/slightElevated</item>
+        <item name="cardBackgroundColor">@color/md_theme_surfaceContainer</item>
         <item name="cardElevation">@dimen/cardElevationRegular</item>
         <item name="contentPadding">@dimen/cardDefaultPadding</item>
     </style>
 
     <!-- Bottom Sheet styles -->
     <style name="BottomSheetDialogStyle" parent="Theme.Material3.Dark.BottomSheetDialog">
-        <item name="slightElevated">@color/grayed_blue</item>
         <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
-        <item name="android:theme">@style/Theme.LucidSourceKit.Dark</item>
+        <item name="theme">@style/Theme.LucidSourceKit.Default</item>
     </style>
 
     <style name="LSK.Persistent.BottomSheet" parent="Theme.Material3.Dark.BottomSheetDialog">
-        <item name="slightElevated">@color/grayed_blue</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
-        <item name="android:theme">@style/Theme.LucidSourceKit.Dark</item>
+        <item name="android:theme">@style/Theme.LucidSourceKit.Default</item>
     </style>
 
     <style name="ModalBottomSheetDialog" parent="Widget.Material3.BottomSheet.Modal">
         <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
-        <item name="android:backgroundTint">@color/background</item>
         <item name="shouldRemoveExpandedCorners">true</item>
     </style>
 
     <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">@dimen/cardRadius</item>
-    </style>
-
-
-
-
-    <style name="ThemedDialog.LCDark" parent="Theme.AppCompat.DayNight.Dialog.Alert">
-        <item name="android:background">?attr/background_stand_out</item>
-        <item name="android:textColor">?attr/bright_text_color</item>
-        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
-        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
-    </style>
-
-    <style name="ThemedDialog.Amoled.Dark" parent="Theme.AppCompat.DayNight.Dialog.Alert">
-        <item name="android:background">?attr/background_stand_out</item>
-        <item name="android:textColor">?attr/bright_text_color</item>
-        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
-        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
-    </style>
-
-    <style name="PopupMenu.LCDark" parent="Widget.AppCompat.PopupMenu">
-        <item name="android:textColor">?attr/bright_text_color</item>
-        <item name="android:itemBackground">?attr/background_stand_out</item>
     </style>
 </resources>

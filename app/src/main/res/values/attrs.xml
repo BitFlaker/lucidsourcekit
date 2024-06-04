@@ -21,9 +21,9 @@
     <attr name="primaryTextColor" format="reference"/>
     <attr name="secondaryTextColor" format="reference"/>
     <attr name="tertiaryTextColor" format="reference"/>
-    <attr name="slightElevated" format="reference"/>
+    <attr name="colorSurfaceContainerLow" format="reference"/>
     <attr name="colorPrimaryHighlight" format="reference"/>
-    <attr name="slightElevated2x" format="reference"/>
+    <attr name="colorSurfaceContainer" format="reference"/>
     <attr name="colorPrimaryTranslucent" format="reference"/>
     <attr name="colorSuccess" format="reference"/>
     <attr name="colorWarning" format="reference"/>

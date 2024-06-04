@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:backgroundTint="?attr/backgroundColor"
+    android:backgroundTint="?attr/colorSurface"
     android:paddingBottom="50dp"
     android:paddingTop="15dp">
 
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:background="@drawable/rounded_spinner"
-                android:backgroundTint="?attr/slightElevated"
+                android:backgroundTint="?attr/colorSurfaceContainer"
                 android:gravity="center_vertical"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
@@ -65,7 +65,7 @@
                     android:layout_height="48dp"
                     android:src="@drawable/ic_baseline_play_arrow_24"
                     android:background="@drawable/ripple_round"
-                    android:backgroundTint="?attr/slightElevated"
+                    android:backgroundTint="?attr/colorSurfaceContainer"
                     android:layout_marginStart="8dp"/>
 
                 <LinearLayout
@@ -108,7 +108,7 @@
                     android:layout_height="48dp"
                     android:src="@drawable/ic_baseline_cross_24"
                     android:background="@drawable/ripple_round"
-                    android:backgroundTint="?attr/slightElevated"
+                    android:backgroundTint="?attr/colorSurfaceContainer"
                     android:layout_marginEnd="8dp"/>
             </LinearLayout>
         </LinearLayout>
@@ -121,7 +121,7 @@
             android:background="@drawable/ripple_round"
             android:src="@drawable/ic_baseline_mic_24"
             android:layout_marginTop="15dp"
-            app:backgroundTint="?attr/slightElevated" />
+            app:backgroundTint="?attr/colorSurfaceContainerHigh" />
     </LinearLayout>
 
     <RelativeLayout
@@ -159,7 +159,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@drawable/ripple_round"
-                android:backgroundTint="?attr/slightElevated"
+                android:backgroundTint="?attr/colorSurfaceContainerHigh"
                 android:contentDescription="@string/pause_continue_recording"
                 android:src="@drawable/ic_baseline_pause_24" />
 
@@ -168,7 +168,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@drawable/ripple_round"
-                android:backgroundTint="?attr/slightElevated"
+                android:backgroundTint="?attr/colorSurfaceContainerHigh"
                 android:contentDescription="@string/stop_recording"
                 android:src="@drawable/ic_baseline_stop_24" />
         </LinearLayout>

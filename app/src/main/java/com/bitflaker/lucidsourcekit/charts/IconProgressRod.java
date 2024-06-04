@@ -54,7 +54,7 @@ public class IconProgressRod extends View {
         dataLinePaint.setStrokeWidth(Tools.dpToPx(getContext(), Tools.dpToPx(getContext(), 4)));
         dataLinePaintBackground.setAntiAlias(true);
         dataLinePaintBackground.setStrokeCap(Paint.Cap.ROUND);
-        dataLinePaintBackground.setColor(Tools.getAttrColor(R.attr.backgroundColor, getContext().getTheme()));
+        dataLinePaintBackground.setColor(Tools.getAttrColor(R.attr.colorSurface, getContext().getTheme()));
         dataLinePaintBackground.setStrokeWidth(dataLinePaint.getStrokeWidth() / 3.0f * 2);
     }
 

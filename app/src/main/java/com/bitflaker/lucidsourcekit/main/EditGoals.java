@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,6 +20,7 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.slider.Slider;
 
@@ -37,7 +37,7 @@ public class EditGoals extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(Tools.getTheme());
+//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_goals);
         Tools.makeStatusBarTransparent(EditGoals.this);
@@ -89,7 +89,7 @@ public class EditGoals extends AppCompatActivity {
             else {
                 List<Integer> selectedGoalIds = editGoalsAdapter.getSelectedGoalIds();
                 List<Goal> selectedGoals = editGoalsAdapter.getSelectedGoals();
-                new AlertDialog.Builder(EditGoals.this, Tools.getThemeDialog()).setTitle(selectedGoalIds.size() == 1 ? "Delete goal" : "Delete goals").setMessage("Do you really want to delete " + (selectedGoalIds.size() == 1 ? "this goal" : ("these " + selectedGoalIds.size() + " selected goals")) + "?") // TODO: extract string resources
+                new MaterialAlertDialogBuilder(EditGoals.this, R.style.Theme_LucidSourceKit_ThemedDialog).setTitle(selectedGoalIds.size() == 1 ? "Delete goal" : "Delete goals").setMessage("Do you really want to delete " + (selectedGoalIds.size() == 1 ? "this goal" : ("these " + selectedGoalIds.size() + " selected goals")) + "?") // TODO: extract string resources
                         .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                             db.getGoalDao().deleteAll(selectedGoals);
                         })
@@ -119,15 +119,15 @@ public class EditGoals extends AppCompatActivity {
         editGoals.setLayoutManager(new LinearLayoutManager(EditGoals.this));
         // TODO: animate change
         editGoalsAdapter.setOnMultiselectEntered(() -> {
-            addGoal.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorError, getTheme()));
+            addGoal.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorErrorContainer, getTheme()));
             addGoal.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_delete_24, getTheme()));
-            addGoal.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnError, getTheme()));
+            addGoal.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnErrorContainer, getTheme()));
             isInSelectionMode = true;
         });
         editGoalsAdapter.setOnMultiselectExited(() -> {
-            addGoal.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getTheme()));
+            addGoal.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimaryContainer, getTheme()));
             addGoal.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_add_24, getTheme()));
-            addGoal.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimary, getTheme()));
+            addGoal.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimaryContainer, getTheme()));
             isInSelectionMode = false;
         });
         editGoalsAdapter.setOnEntryClickedListener((goal, position) -> {
@@ -157,7 +157,7 @@ public class EditGoals extends AppCompatActivity {
                                 .replace("<TOTAL>", Integer.toString(goalStats.totalCount))
                                 .replace("<PERCENTAGE>", String.format(Locale.ENGLISH, "%.1f", (100.0f * goalStats.achievedCount / (float)goalStats.totalCount)));
                     }
-                    new AlertDialog.Builder(EditGoals.this, Tools.getThemeDialog()).setTitle("Goal details").setMessage(message)
+                    new MaterialAlertDialogBuilder(EditGoals.this, R.style.Theme_LucidSourceKit_ThemedDialog).setTitle("Goal details").setMessage(message)
                             .setPositiveButton(getResources().getString(R.string.ok), null)
                             .show();
                 }).dispose();
@@ -189,7 +189,7 @@ public class EditGoals extends AppCompatActivity {
             });
 
             deleteButton.setOnClickListener(view -> {
-                new AlertDialog.Builder(EditGoals.this, Tools.getThemeDialog()).setTitle("Delete goal").setMessage("Do you really want to delete this goal?") // TODO: extract string resources
+                new MaterialAlertDialogBuilder(EditGoals.this, R.style.Theme_LucidSourceKit_ThemedDialog).setTitle("Delete goal").setMessage("Do you really want to delete this goal?") // TODO: extract string resources
                         .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                             db.getGoalDao().delete(goal).subscribe(editGoalSheet::dismiss);
                         })
@@ -205,11 +205,11 @@ public class EditGoals extends AppCompatActivity {
         if (isLocked.get()) {
             toggleLockDifficulty.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_lock_24, getTheme()));
             toggleLockDifficulty.setImageTintList(Tools.getAttrColorStateList(R.attr.primaryTextColor, getTheme()));
-            toggleLockDifficulty.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getTheme()));
+            toggleLockDifficulty.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurfaceContainerLow, getTheme()));
         } else {
             toggleLockDifficulty.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_lock_open_24, getTheme()));
             toggleLockDifficulty.setImageTintList(Tools.getAttrColorStateList(R.attr.secondaryTextColor, getTheme()));
-            toggleLockDifficulty.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.backgroundColor, getTheme()));
+            toggleLockDifficulty.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurfaceContainerLow, getTheme()));
         }
     }
 

@@ -52,11 +52,11 @@ public class RangeProgress extends View {
     }
 
     private void setup() {
-        dataLinePaintBackground.setColor(Tools.getAttrColor(R.attr.backgroundColor, getContext().getTheme()));
+        dataLinePaintBackground.setColor(Tools.getAttrColor(R.attr.colorSurface, getContext().getTheme()));
         dataLinePaintBackground.setStrokeCap(Paint.Cap.ROUND);
         dataLinePaintBackground.setAntiAlias(true);
         dataLinePaintBackground.setStrokeWidth(0);
-        dataLinePaint.setColor(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()));
+        dataLinePaint.setColor(Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme()));
         dataLinePaint.setStrokeCap(Paint.Cap.ROUND);
         dataLinePaint.setAntiAlias(true);
         dataLinePaint.setStrokeWidth(0);
@@ -65,14 +65,14 @@ public class RangeProgress extends View {
         dataLabelPaint.setTextAlign(Paint.Align.LEFT);
         dataLabelPaint.setFakeBoldText(true);
         dataLabelPaint.setAntiAlias(true);
-        progressColors = new int[] {Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), Tools.getAttrColor(R.attr.backgroundColor, getContext().getTheme())};
-        textColors = new int[] { Tools.getAttrColor(R.attr.colorOnSecondary, getContext().getTheme()), Tools.manipulateAlpha(Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme()), 0.7f) };
+        progressColors = new int[] {Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme()), Tools.getAttrColor(R.attr.colorSurface, getContext().getTheme())};
+        textColors = new int[] { Tools.getAttrColor(R.attr.colorOnTertiary, getContext().getTheme()), Tools.manipulateAlpha(Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme()), 0.7f) };
         positions = new float[] { 0f, 0f };
     }
 
     public void setBackgroundAttrColor(int color){
         dataLinePaintBackground.setColor(Tools.getAttrColor(color, getContext().getTheme()));
-        progressColors = new int[] {Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), Tools.getAttrColor(color, getContext().getTheme())};
+        progressColors = new int[] {Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme()), Tools.getAttrColor(color, getContext().getTheme())};
         invalidate();
     }
 

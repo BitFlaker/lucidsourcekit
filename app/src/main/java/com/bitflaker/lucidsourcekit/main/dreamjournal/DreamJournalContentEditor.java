@@ -28,7 +28,6 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -43,6 +42,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -56,8 +56,9 @@ public class DreamJournalContentEditor extends Fragment {
     private EditText title, description;
     private ScrollView editorScroller;
     private FlexboxLayout formsContainer;
-    private ImageButton continueButton, addRecording, closeEditor, addTags, currentPlayingImageButton;
+    private MaterialButton continueButton, addRecording, closeEditor, addTags;
     private MaterialButton dateTime;
+    private ImageButton currentPlayingImageButton;
     private JournalInMemoryManager journalManger;
     private String journalEntryId;
     private boolean isRecordingRunning;
@@ -227,7 +228,7 @@ public class DreamJournalContentEditor extends Fragment {
     }
 
     private void setupCloseButton() {
-        closeEditor.setOnClickListener(e -> new AlertDialog.Builder(getContext(), Tools.getThemeDialog()).setTitle("Discard changes").setMessage("Do you really want to discard all changes")
+        closeEditor.setOnClickListener(e -> new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog).setTitle("Discard changes").setMessage("Do you really want to discard all changes")
                 .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                     journalManger.discardEntry(journalEntryId);
                     if(mCloseButtonClicked != null) {
@@ -241,7 +242,7 @@ public class DreamJournalContentEditor extends Fragment {
     private void setupRecordingsEditor(JournalInMemory entry) {
         addRecording.setOnClickListener(e -> {
             final BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
-            bsd.setContentView(R.layout.fragment_recording);
+            bsd.setContentView(R.layout.sheet_journal_recording);
 
             ImageButton recordAudio = bsd.findViewById(R.id.btn_dj_record_audio);
             LinearLayout recsList = bsd.findViewById(R.id.ll_dj_recs_list);
@@ -323,7 +324,7 @@ public class DreamJournalContentEditor extends Fragment {
     private void setupDateTimePicker(DateFormat df, DateFormat dtf, DateFormat tf, JournalInMemory entry) {
         dateTime.setOnClickListener(e -> {
             final BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
-            bsd.setContentView(R.layout.fragment_date_change);
+            bsd.setContentView(R.layout.sheet_dream_timestamp);
 
             MaterialButton changeDate = bsd.findViewById(R.id.btn_dj_change_date);
             MaterialButton changeTime = bsd.findViewById(R.id.btn_dj_change_time);
@@ -370,7 +371,7 @@ public class DreamJournalContentEditor extends Fragment {
 
         addTags.setOnClickListener(e -> {
             final BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
-            bsd.setContentView(R.layout.fragment_tags_editor);
+            bsd.setContentView(R.layout.sheet_journal_tags_editor);
 
             FlexboxLayout tagsContainer = bsd.findViewById(R.id.flx_dj_tags_to_add);
             AutoCompleteTextView tagAddBox = bsd.findViewById(R.id.txt_dj_tags_enter);
@@ -452,7 +453,8 @@ public class DreamJournalContentEditor extends Fragment {
         lparams.leftMargin = Tools.dpToPx(getContext(), 3);
         lparams.rightMargin = Tools.dpToPx(getContext(), 3);
         tag.setLayoutParams(lparams);
-        tag.setChipBackgroundColor(Tools.getAttrColorStateList(R.attr.slightElevated, getContext().getTheme()));
+        tag.setChipStrokeWidth(0);
+        tag.setChipBackgroundColor(Tools.getAttrColorStateList(R.attr.colorSurfaceContainerHigh, getContext().getTheme()));
         tag.setTextColor(Tools.getAttrColorStateList(R.attr.primaryTextColor, getContext().getTheme()));
         tag.setCloseIconTint(ColorStateList.valueOf(getResources().getColor(R.color.white, getContext().getTheme())));
         tag.setCheckedIconVisible(false);
@@ -546,7 +548,10 @@ public class DreamJournalContentEditor extends Fragment {
     }
 
     private void setupRecordingsDeleteDialog(RecordingData currentRecording, LinearLayout entryContainer, ImageButton playButton, TextView noRecordingsFound) {
-        new AlertDialog.Builder(getContext(), Tools.getThemeDialog()).setTitle(getResources().getString(R.string.recording_delete_header)).setMessage(getResources().getString(R.string.recording_delete_message))
+        new MaterialAlertDialogBuilder
+
+
+                (getContext(), R.style.Theme_LucidSourceKit_ThemedDialog).setTitle(getResources().getString(R.string.recording_delete_header)).setMessage(getResources().getString(R.string.recording_delete_message))
                 .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                     if(currentPlayingImageButton == playButton){ stopCurrentPlayback(); }
                     ((LinearLayout) entryContainer.getParent()).removeView(entryContainer);

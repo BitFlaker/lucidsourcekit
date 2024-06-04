@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,6 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
@@ -136,7 +136,7 @@ public class NotificationManagerEditor extends AppCompatActivity {
             numberPicker.setMinValue(1);
             numberPicker.setValue(customNotificationWeightValue);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
             builder.setView(numberPicker);
             builder.setTitle("Daily notifications count");
             builder.setMessage("Choose an amount");

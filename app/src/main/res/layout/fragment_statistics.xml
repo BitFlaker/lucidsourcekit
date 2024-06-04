@@ -162,7 +162,7 @@
                         android:drawableTint="?attr/secondaryTextColor"
                         android:textColor="?attr/secondaryTextColor"
                         app:iconPadding="4dp"
-                        app:backgroundTint="?attr/slightElevated"
+                        app:backgroundTint="?attr/colorSurfaceContainer"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 

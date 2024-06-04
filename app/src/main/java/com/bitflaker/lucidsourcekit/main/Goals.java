@@ -19,7 +19,6 @@ import android.widget.TextView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.res.ResourcesCompat;
@@ -43,6 +42,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.checkbox.MaterialCheckBox;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.slider.Slider;
 
@@ -63,7 +63,7 @@ public class Goals extends Fragment {
     private TextView currentSelectionDiff, currentOccurrenceFreq, currentSelectionDiffPart, currentOccurrenceFreqPart, yGoalsAchieved, yGoalsAchievedPart, yGoalsDiff, yGoalsDiffPart, yGoalsOccFreq, yGoalsOccFreqPart, yGoalsSelDiff, yGoalsSelDiffPart;
     private ImageView selectionDiffComparison, occFreqComparison;
     private ImageButton reshuffle;
-    private ImageButton adjustAlgorithm;
+    private MaterialButton adjustAlgorithm;
     private BottomSheetDialog bsdAdjustAlgorithm;
     private RecyclerView quickScrollAdjustmentsContainer;
     private CompositeDisposable compositeDisposable;
@@ -128,7 +128,8 @@ public class Goals extends Fragment {
         updateStats();
 
         reshuffle.setOnClickListener(e -> {
-            PopupMenu popup = new PopupMenu(new ContextThemeWrapper(getContext(), Tools.getPopupTheme()), reshuffle);
+            PopupMenu popup = new PopupMenu(new ContextThemeWrapper(getContext(), R.style.Theme_LucidSourceKit_PopupMenu), reshuffle);
+//            PopupMenu popup = new PopupMenu(new ContextThemeWrapper(getContext(), Tools.getPopupTheme()), reshuffle);
             popup.getMenuInflater().inflate(R.menu.more_goals_options, popup.getMenu());
             popup.setOnMenuItemClickListener(item -> {
                 if(item.getItemId() == R.id.itm_shuffle) {
@@ -189,7 +190,7 @@ public class Goals extends Fragment {
 
         // TODO only ask whether or not to save changes if actual changes were made
         bsdAdjustAlgorithm.setOnCancelListener(e -> {
-            new AlertDialog.Builder(getContext(), Tools.getThemeDialog()).setTitle("Save changes").setMessage("Do you want to save all changes made to the goal algorithm?")
+            new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog).setTitle("Save changes").setMessage("Do you want to save all changes made to the goal algorithm?")
                     .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                         saveGoalAlgorithm(sldCommon.getValue(), sldUncommon.getValue(), sldRare.getValue(), (int) sldGoalCount.getValue(), swtAutoAdjustGoalDifficulty.isChecked());
                     })

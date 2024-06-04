@@ -60,7 +60,7 @@ public class IconCircleHeatmap extends View {
     }
 
     public void setup() {
-        @ColorInt int trackColor = Tools.getAttrColor(R.attr.backgroundColor, getContext().getTheme());
+        @ColorInt int trackColor = Tools.getAttrColor(R.attr.colorSurface, getContext().getTheme());
         textColorPrimary = Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme());
         textColorSecondary = Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme());
         textColorTertiary = Tools.getAttrColor(R.attr.tertiaryTextColor, getContext().getTheme());

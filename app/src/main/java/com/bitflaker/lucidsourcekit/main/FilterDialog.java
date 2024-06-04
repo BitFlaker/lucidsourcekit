@@ -2,12 +2,12 @@ package com.bitflaker.lucidsourcekit.main;
 
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
-import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
@@ -15,8 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.widget.TextViewCompat;
+import androidx.fragment.app.DialogFragment;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.general.JournalTypes;
@@ -25,46 +28,67 @@ import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamMoods;
 import com.bitflaker.lucidsourcekit.general.database.values.SleepQuality;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FilterDialog extends Dialog implements android.view.View.OnClickListener {
+public class FilterDialog extends DialogFragment implements DialogInterface.OnClickListener {
     private MaterialButton ok, cancel, filterDreamMoodCat, filterDreamClarityCat, filterSleepQualityCat, filterJournalTypeCat, filterDreamTypeCat, filterEntryTagsCat;
     private AutoCompleteTextView filterTags;
     private final String[] tags;
-    private View.OnClickListener okClickListener;
+    private DialogInterface.OnClickListener okClickListener;
     private List<String> filterTagsList;
     private boolean[] filterDreamTypes;
     private AppliedFilter currentFilter;
     private RadioGroup filterDreamMoodRadioGroup, filterDreamClarityRadioGroup, filterSleepQualityRadioGroup, filterJournalTypeRadioGroup;
     private LinearLayout filterDreamType, filterEntryTag;
 
-    public FilterDialog(Activity activity, String[] tags, AppliedFilter currentFilter) {
-        super(activity, Tools.getThemeDialog());
+    public FilterDialog(Context context, String[] tags, AppliedFilter currentFilter) {
+//        super(context);
         this.tags = tags;
         this.currentFilter = currentFilter;
         filterDreamTypes = currentFilter.getFilterDreamTypes();
         filterTagsList = new ArrayList<>();
     }
 
+    @NonNull
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_filter);
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        View view = getLayoutInflater().inflate(R.layout.dialog_filter, null);
 
-        setData();
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+        builder.setView(view);
+        builder.setPositiveButton(R.string.ok, okClickListener).setNegativeButton(R.string.cancel, this);
+
+        setData(view);
         setupSimpleCategoryListeners();
         setupTagsCategoryListener();
         for (String filterTag : currentFilter.getFilterTagsList()) { addTagFilterEntry(filterTag); }
         setupStateWatchListeners();
         setCurrentFilterCategoryStates();
 
-        ok.setOnClickListener(okClickListener);
-        cancel.setOnClickListener(this);
+        return builder.create();
     }
+
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        setContentView(R.layout.dialog_filter);
+//        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//
+//        setData();
+//        setupSimpleCategoryListeners();
+//        setupTagsCategoryListener();
+//        for (String filterTag : currentFilter.getFilterTagsList()) { addTagFilterEntry(filterTag); }
+//        setupStateWatchListeners();
+//        setCurrentFilterCategoryStates();
+//
+//        ok.setOnClickListener(okClickListener);
+//        cancel.setOnClickListener(this);
+//    }
 
     private void setCurrentFilterCategoryStates() {
         checkboxSelectionWatcher(filterDreamTypeCat, filterDreamType);
@@ -121,27 +145,25 @@ public class FilterDialog extends Dialog implements android.view.View.OnClickLis
         filterEntryTagsCat.setOnClickListener(e -> openCloseExpander(filterEntryTag));
     }
 
-    private void setData() {
-        ok = findViewById(R.id.btn_filter_ok);
-        cancel = findViewById(R.id.btn_filter_cancel);
-        filterTags = findViewById(R.id.actv_filter_tags);
-        filterDreamMoodCat = findViewById(R.id.btn_filter_dream_mood);
-        filterDreamMoodRadioGroup = findViewById(R.id.rdg_dm);
-        filterDreamClarityCat = findViewById(R.id.btn_filter_dream_clarity);
-        filterDreamClarityRadioGroup = findViewById(R.id.rdg_dc);
-        filterSleepQualityCat = findViewById(R.id.btn_filter_sleep_quality);
-        filterSleepQualityRadioGroup = findViewById(R.id.rdg_sq);
-        filterJournalTypeCat = findViewById(R.id.btn_filter_journal_type);
-        filterJournalTypeRadioGroup = findViewById(R.id.rdg_jt);
-        filterDreamTypeCat = findViewById(R.id.btn_filter_dream_type);
-        filterDreamType = findViewById(R.id.ll_dt);
-        filterEntryTag = findViewById(R.id.ll_et);
-        filterEntryTagsCat = findViewById(R.id.btn_filter_entry_tags);
+    private void setData(View view) {
+        filterTags = view.findViewById(R.id.actv_filter_tags);
+        filterDreamMoodCat = view.findViewById(R.id.btn_filter_dream_mood);
+        filterDreamMoodRadioGroup = view.findViewById(R.id.rdg_dm);
+        filterDreamClarityCat = view.findViewById(R.id.btn_filter_dream_clarity);
+        filterDreamClarityRadioGroup = view.findViewById(R.id.rdg_dc);
+        filterSleepQualityCat = view.findViewById(R.id.btn_filter_sleep_quality);
+        filterSleepQualityRadioGroup = view.findViewById(R.id.rdg_sq);
+        filterJournalTypeCat = view.findViewById(R.id.btn_filter_journal_type);
+        filterJournalTypeRadioGroup = view.findViewById(R.id.rdg_jt);
+        filterDreamTypeCat = view.findViewById(R.id.btn_filter_dream_type);
+        filterDreamType = view.findViewById(R.id.ll_dt);
+        filterEntryTag = view.findViewById(R.id.ll_et);
+        filterEntryTagsCat = view.findViewById(R.id.btn_filter_entry_tags);
     }
 
     private void radioSelectionWatcher(MaterialButton categoryButton, RadioGroup container) {
         if(((RadioButton) container.getChildAt(0)).isChecked()){
-            TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.slightElevated, getContext().getTheme()));
+            TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.colorSurfaceContainer, getContext().getTheme()));
         }
         else {
             TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
@@ -161,7 +183,7 @@ public class FilterDialog extends Dialog implements android.view.View.OnClickLis
             TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
         }
         else{
-            TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.slightElevated, getContext().getTheme()));
+            TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.colorSurfaceContainerLow, getContext().getTheme()));
         }
     }
 
@@ -236,12 +258,12 @@ public class FilterDialog extends Dialog implements android.view.View.OnClickLis
         return -1;
     }
 
-    public void setOnClickPositiveButton(View.OnClickListener listener) {
+    public void setOnClickPositiveButton(DialogInterface.OnClickListener listener) {
         okClickListener = listener;
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(DialogInterface dialog, int which) {
         dismiss();
     }
 }

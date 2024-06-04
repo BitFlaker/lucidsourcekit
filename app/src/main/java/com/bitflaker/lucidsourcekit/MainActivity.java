@@ -73,14 +73,14 @@ public class MainActivity extends AppCompatActivity {
         int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         switch (currentNightMode) {
             case Configuration.UI_MODE_NIGHT_NO:
-                Tools.setThemeColors(R.style.Theme_LucidSourceKit_Dark);
-//                Tools.setThemeColors(R.style.Theme_LucidSourceKit_Light);
+//                Tools.setThemeColors(R.style.Theme_LucidSourceKit_Dark);
+////                Tools.setThemeColors(R.style.Theme_LucidSourceKit_Light);
                 break;
             case Configuration.UI_MODE_NIGHT_YES:
-                Tools.setThemeColors(R.style.Theme_LucidSourceKit_Dark);
+//                Tools.setThemeColors(R.style.Theme_LucidSourceKit_Dark);
                 break;
         }
-        setTheme(Tools.getTheme());
+//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

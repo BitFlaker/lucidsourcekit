@@ -49,7 +49,7 @@ public class OutsideSlider extends View {
     private void setup() {
         setLayerType(View.LAYER_TYPE_HARDWARE, null);
         primColor = Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme());
-        dataLinePaintBackground.setColor(Tools.getAttrColor(R.attr.backgroundColor, getContext().getTheme()));
+        dataLinePaintBackground.setColor(Tools.getAttrColor(R.attr.colorSurface, getContext().getTheme()));
         dataLinePaintBackground.setStrokeCap(Paint.Cap.ROUND);
         dataLinePaintBackground.setAntiAlias(true);
         dataLinePaintBackground.setStrokeWidth(0);

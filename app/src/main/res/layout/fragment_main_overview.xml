@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/img_top_graphic"
-            android:layout_marginTop="-30dp"
+            android:layout_marginTop="-42dp"
             android:orientation="vertical">
 
             <TextView
@@ -63,7 +63,7 @@
                     android:layout_columnWeight="1"
                     android:layout_gravity="fill"
                     app:strokeWidth="0dp"
-                    app:cardBackgroundColor="?attr/slightElevated"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainer"
                     app:cardCornerRadius="@dimen/cardRadius"
                     app:cardElevation="@dimen/cardElevationRegular">
 
@@ -88,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_gravity="fill"
-                    android:backgroundTint="?attr/slightElevated"
+                    android:backgroundTint="?attr/colorSurfaceContainer"
                     android:gravity="center_vertical"
                     app:strokeWidth="0dp"
                     app:cardCornerRadius="@dimen/cardRadius"
@@ -115,7 +115,7 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_gravity="fill"
-                    android:backgroundTint="?attr/slightElevated"
+                    android:backgroundTint="?attr/colorSurfaceContainer"
                     android:gravity="center_vertical"
                     app:strokeWidth="0dp"
                     app:cardCornerRadius="@dimen/cardRadius"
@@ -143,7 +143,7 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_gravity="fill"
-                    android:backgroundTint="?attr/slightElevated"
+                    android:backgroundTint="?attr/colorSurfaceContainer"
                     android:gravity="center_vertical"
                     app:strokeWidth="0dp"
                     app:cardCornerRadius="@dimen/cardRadius"
@@ -231,7 +231,7 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginBottom="24dp"
-                    android:backgroundTint="?attr/slightElevated"
+                    android:backgroundTint="?attr/colorSurfaceContainer"
                     app:strokeWidth="0dp"
                     app:cardCornerRadius="@dimen/cardRadius"
                     app:cardElevation="@dimen/cardElevationRegular">
@@ -418,19 +418,20 @@
 <!--                    </LinearLayout>-->
                 </com.google.android.material.card.MaterialCardView>
 
-                <ImageButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_manage_alarms"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
-                    android:background="@drawable/ripple_round"
-                    android:backgroundTint="?attr/colorPrimary"
-                    android:minWidth="48dp"
-                    android:minHeight="48dp"
-                    android:src="@drawable/ic_baseline_access_alarm_24"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="16dp"
                     android:translationZ="6dp"
-                    app:tint="?attr/colorOnPrimary" />
+                    app:backgroundTint="?attr/colorPrimaryContainer"
+                    app:iconTint="?attr/colorPrimary"
+                    app:icon="@drawable/ic_baseline_access_alarm_24"
+                    app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
+                    style="@style/Widget.Material3.Button.IconButton.Filled" />
             </RelativeLayout>
 
             <TextView
@@ -459,11 +460,11 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="25dp"
-                android:backgroundTint="?attr/backgroundColor"
+                android:backgroundTint="?attr/colorSurface"
                 android:padding="15dp"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:strokeWidth="2dp"
-                app:strokeColor="?attr/slightElevated"
+                app:strokeColor="?attr/colorSurfaceContainer"
                 app:cardElevation="@dimen/cardElevationOutline">
 
                 <LinearLayout
@@ -515,11 +516,11 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="25dp"
-                android:backgroundTint="?attr/backgroundColor"
+                android:backgroundTint="?attr/colorSurface"
                 android:padding="15dp"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:strokeWidth="2dp"
-                app:strokeColor="?attr/slightElevated"
+                app:strokeColor="?attr/colorSurfaceContainer"
                 app:cardElevation="@dimen/cardElevationOutline">
 
                 <LinearLayout
@@ -571,11 +572,11 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="25dp"
-                android:backgroundTint="?attr/backgroundColor"
+                android:backgroundTint="?attr/colorSurface"
                 android:padding="15dp"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:strokeWidth="2dp"
-                app:strokeColor="?attr/slightElevated"
+                app:strokeColor="?attr/colorSurfaceContainer"
                 app:cardElevation="@dimen/cardElevationOutline">
 
                 <LinearLayout
@@ -628,11 +629,11 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="25dp"
                 android:layout_marginBottom="25dp"
-                android:backgroundTint="?attr/backgroundColor"
+                android:backgroundTint="?attr/colorSurface"
                 android:padding="15dp"
                 app:cardCornerRadius="@dimen/cardRadius"
                 app:strokeWidth="2dp"
-                app:strokeColor="?attr/slightElevated"
+                app:strokeColor="?attr/colorSurfaceContainer"
                 app:cardElevation="@dimen/cardElevationOutline">
 
                 <LinearLayout

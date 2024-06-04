@@ -24,37 +24,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_dj_close_editor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:background="@drawable/ripple_round"
-                    android:backgroundTint="?attr/backgroundColor"
+                    android:layout_marginVertical="4dp"
                     android:minWidth="48dp"
                     android:minHeight="48dp"
-                    android:src="@drawable/ic_round_close_24"
+                    android:layout_marginStart="4dp"
+                    app:backgroundTint="?attr/colorSurface"
+                    app:iconTint="?attr/colorOnSurface"
+                    app:icon="@drawable/ic_round_close_24"
+                    app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    style="@style/Widget.Material3.Button.IconButton.Filled" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_dj_date"
                     android:layout_width="wrap_content"
-                    android:layout_height="28dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="13dp"
-                    android:background="@drawable/ripple_rounded"
+                    android:layout_height="36dp"
+                    android:layout_marginEnd="12dp"
                     android:fontFamily="sans-serif"
-                    android:paddingStart="8dp"
-                    android:paddingTop="0dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="0dp"
+                    android:paddingStart="12dp"
+                    android:paddingTop="4dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="4dp"
                     android:text="20.03.2022 03:45 AM"
                     android:textAlignment="center"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="12sp"
-                    app:backgroundTint="?attr/slightElevated"
+                    app:backgroundTint="?attr/colorSurfaceContainerHigh"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -70,12 +71,11 @@
                 android:gravity="center_vertical"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="24sp"
+                android:background="@null"
                 android:fontFamily="sans-serif-medium"
                 android:hint="@string/dream_title_hint"
                 android:importantForAutofill="no"
-                android:inputType="textCapSentences|textMultiLine"
-                android:background="@drawable/rectangle"
-                android:backgroundTint="?attr/backgroundColor" />
+                android:inputType="textCapSentences|textMultiLine" />
 
             <!-- NOTE: due to performance reasons, the framework automatically limits text length to 5000 characters, if not configured otherwise -->
             <EditText
@@ -83,8 +83,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="5dp"
-                android:background="@drawable/rectangle"
-                android:backgroundTint="?attr/backgroundColor"
                 android:fontFamily="sans-serif"
                 android:gravity="fill_horizontal"
                 android:hint="@string/dream_story_hint"
@@ -93,6 +91,7 @@
                 android:isScrollContainer="false"
                 android:paddingStart="15dp"
                 android:paddingEnd="15dp"
+                android:background="@null"
                 android:textColor="?attr/secondaryTextColor"
                 android:textSize="16sp"
                 android:paddingBottom="70dp"/>
@@ -104,7 +103,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/rectangle"
-                android:backgroundTint="?attr/backgroundColor"
+                android:backgroundTint="?attr/colorSurface"
                 android:gravity="fill_horizontal"
                 android:paddingStart="15dp"
                 android:paddingEnd="15dp"
@@ -117,53 +116,49 @@
         </LinearLayout>
     </ScrollView>
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_dj_continue_to_ratings"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/ripple_round"
-        android:backgroundTint="?attr/colorPrimary"
-        android:contentDescription="continue to dream ratings"
-        android:elevation="2dp"
-        android:src="@drawable/ic_baseline_arrow_forward_24"
-        app:borderWidth="0dp"
-        app:tint="?attr/colorOnPrimary" />
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Continue"
+        android:textColor="?attr/colorOnPrimaryContainer"
+        app:backgroundTint="?attr/colorPrimaryContainer"
+        app:iconTint="?attr/colorOnPrimaryContainer"
+        app:icon="@drawable/ic_baseline_arrow_forward_24"
+        app:iconGravity="end"
+        app:shapeAppearance="@style/FloatingShapeAppearanceOverlay" />
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_dj_add_tag"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="16dp"
         android:layout_toEndOf="@+id/btn_dj_add_recording"
-        android:background="@drawable/ripple_round"
-        android:backgroundTint="?attr/slightElevated"
-        android:contentDescription="continue to dream ratings"
-        android:elevation="2dp"
-        android:src="@drawable/ic_baseline_label_24"
-        app:tint="?attr/primaryTextColor"
-        app:borderWidth="0dp" />
+        app:backgroundTint="?attr/colorSurfaceContainerHigh"
+        app:iconTint="?attr/colorOnSurface"
+        app:icon="@drawable/ic_baseline_label_24"
+        app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
+        style="@style/Widget.Material3.Button.IconButton.Filled" />
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_dj_add_recording"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="15dp"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/ripple_round"
-        android:backgroundTint="?attr/slightElevated"
-        android:contentDescription="continue to dream ratings"
-        android:elevation="2dp"
-        android:src="@drawable/ic_baseline_mic_24"
-        app:tint="?attr/primaryTextColor"
-        app:borderWidth="0dp" />
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        app:backgroundTint="?attr/colorSurfaceContainerHigh"
+        app:iconTint="?attr/colorOnSurface"
+        app:icon="@drawable/ic_baseline_mic_24"
+        app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
+        style="@style/Widget.Material3.Button.IconButton.Filled" />
 
     <TextView
         android:id="@+id/txt_dj_recordings_indicator"

@@ -38,7 +38,7 @@ public class RecordingObjectTools {
         deleteButton.setLayoutParams(lParamsDeleteButton);
         deleteButton.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_baseline_cross_24, context.getTheme()));
         deleteButton.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.rounded_spinner, context.getTheme()));
-        deleteButton.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, context.getTheme()));
+        deleteButton.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurfaceContainerHigh, context.getTheme()));
         return deleteButton;
     }
 
@@ -105,7 +105,7 @@ public class RecordingObjectTools {
         entryContainer.setLayoutParams(lParamsEntryContainer);
         entryContainer.setOrientation(LinearLayout.HORIZONTAL);
         entryContainer.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.rounded_spinner, context.getTheme()));
-        entryContainer.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, context.getTheme()));
+        entryContainer.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurfaceContainerHigh, context.getTheme()));
         entryContainer.setGravity(Gravity.CENTER_VERTICAL);
         return entryContainer;
     }
@@ -119,7 +119,7 @@ public class RecordingObjectTools {
         playButton.setLayoutParams(lParamsPlayButton);
         playButton.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_baseline_play_arrow_24, context.getTheme()));
         playButton.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.rounded_spinner, context.getTheme()));
-        playButton.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, context.getTheme()));
+        playButton.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurfaceContainerHigh, context.getTheme()));
         return playButton;
     }
 }

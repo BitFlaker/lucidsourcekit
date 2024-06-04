@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="20dp"
     android:layout_marginEnd="20dp"
-    app:cardBackgroundColor="?attr/backgroundColor"
+    app:cardBackgroundColor="?attr/colorSurface"
     app:cardCornerRadius="@dimen/cardRadius">
 
     <LinearLayout
@@ -44,7 +44,7 @@
                 android:drawableTop="@drawable/ic_baseline_text_fields_24"
                 android:drawableTint="@color/white"
                 android:background="@drawable/ripple_rounded"
-                app:backgroundTint="?attr/slightElevated"/>
+                app:backgroundTint="?attr/colorSurfaceContainer"/>
 
             <Space
                 android:layout_width="8dp"
@@ -61,7 +61,7 @@
                 android:drawableTop="@drawable/ic_baseline_ballot_24"
                 android:drawableTint="@color/white"
                 android:background="@drawable/ripple_rounded"
-                app:backgroundTint="?attr/slightElevated"/>
+                app:backgroundTint="?attr/colorSurfaceContainer"/>
         </LinearLayout>
 
 <!--        <ImageButton-->

@@ -3,7 +3,6 @@ package com.bitflaker.lucidsourcekit.clock;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -11,6 +10,7 @@ import android.graphics.RectF;
 import android.graphics.SweepGradient;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.AttributeSet;
@@ -66,6 +66,8 @@ public class SleepClock extends View {
     private int slightElevated2x;
     private int colorSecondary;
     private int colorPrimary;
+    private int colorOnPrimary;
+    private int colorOnSecondary;
     private int[] colorsREMRotator;
     private int[] colorsRotator;
     private Vibrator vib;
@@ -83,19 +85,22 @@ public class SleepClock extends View {
     private OnAlarmTimeChanged mAlarmTimeChangedListener;
     private OnFirstDrawFinished mFirstDrawFinishedListener;
     private boolean drewAtLeastOnce = false;
+    private Handler mainHandler;
 
     public SleepClock(Context context, AttributeSet as){
         super(context, as);
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        slightElevated2x = Tools.getAttrColor(R.attr.slightElevated2x, getContext().getTheme());
-        colorSecondary = Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme());
+        slightElevated2x = Tools.getAttrColor(R.attr.colorSurfaceContainerHigh, getContext().getTheme());
+        colorSecondary = Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme());
         colorPrimary = Tools.getAttrColor(R.attr.colorPrimary, getContext().getTheme());
+        colorOnPrimary = Tools.getAttrColor(R.attr.colorOnPrimary, getContext().getTheme());
+        colorOnSecondary = Tools.getAttrColor(R.attr.colorOnSecondary, getContext().getTheme());
         vib = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        dataLinePaint.setColor(Tools.getAttrColor(R.attr.slightElevated, getContext().getTheme()));
+        dataLinePaint.setColor(Tools.getAttrColor(R.attr.colorSurfaceContainer, getContext().getTheme()));
         dataLinePaint.setAntiAlias(true);
         dataLinePaint.setStyle(Paint.Style.STROKE);
         dataLinePaint.setStrokeWidth(Tools.dpToPx(getContext(), 2));
-        dataLinePaintStroker.setColor(Tools.getAttrColor(R.attr.slightElevated, getContext().getTheme()));
+        dataLinePaintStroker.setColor(Tools.getAttrColor(R.attr.colorSurfaceContainer, getContext().getTheme()));
         dataLinePaintStroker.setAntiAlias(true);
         dataLinePaintStroker.setStyle(Paint.Style.STROKE);
         dataLinePaintStroker.setStrokeWidth(Tools.dpToPx(getContext(), 2));
@@ -134,6 +139,7 @@ public class SleepClock extends View {
         colorsRotator = new int[] { slightElevated2x, colorPrimary, colorPrimary, slightElevated2x };
         angleOffset = (360 / 12.0) * Math.PI / 180.0;
         startAngle = (float)(-3 * angleOffset);
+        mainHandler = new Handler(context.getMainLooper());
         this.setOnTouchListener(preventScrollOnTouch());
     }
 
@@ -252,10 +258,10 @@ public class SleepClock extends View {
             }
             lastStateWasInREM = isAlarmWithinREM;
             canvas.drawCircle(xBedtime, yBedtime, timeSetterButtonRadius, dataLinePaintButton);
-            Bitmap icon = Tools.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_airline_seat_individual_suite_24, getContext().getTheme()), Color.WHITE, Tools.dpToPx(getContext(), 16));
+            Bitmap icon = Tools.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_airline_seat_individual_suite_24, getContext().getTheme()), colorOnPrimary, Tools.dpToPx(getContext(), 16));
             canvas.drawBitmap(icon, xBedtime-icon.getWidth()/2.0f, yBedtime-icon.getHeight()/2.0f, dataLinePaint);
             canvas.drawCircle(xAlarm, yAlarm, timeSetterButtonRadius, isAlarmWithinREM ? dataHandPaintSeconds : dataLinePaintButton);
-            Bitmap alarm = Tools.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_access_alarm_24, getContext().getTheme()), Color.WHITE, Tools.dpToPx(getContext(), 16));
+            Bitmap alarm = Tools.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_access_alarm_24, getContext().getTheme()), isAlarmWithinREM ? colorOnSecondary : colorOnPrimary, Tools.dpToPx(getContext(), 16));
             canvas.drawBitmap(alarm, xAlarm-alarm.getWidth()/2.0f, yAlarm-alarm.getHeight()/2.0f, dataLinePaint);
         }
         if(!drewAtLeastOnce){
@@ -416,7 +422,7 @@ public class SleepClock extends View {
                 @Override
                 public void run() {
                     currentTime = Calendar.getInstance();
-                    invalidate();
+                    mainHandler.post(() -> invalidate());
                 }
             }, cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 1000);
         }

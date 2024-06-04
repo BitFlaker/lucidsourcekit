@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:backgroundTint="?attr/backgroundColor"
+    android:backgroundTint="?attr/colorSurface"
     android:paddingBottom="50dp"
     android:paddingTop="15dp">
 
@@ -41,7 +41,7 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:background="@drawable/rounded_spinner"
-        android:backgroundTint="?attr/slightElevated"
+        android:backgroundTint="?attr/colorSurfaceContainerHigh"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
         android:inputType="textAutoComplete"

@@ -18,7 +18,6 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.PopupMenu;
@@ -41,6 +40,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.text.DateFormat;
@@ -62,7 +62,7 @@ public class NotificationManager extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(Tools.getTheme());
+//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_manager);
         Tools.makeStatusBarTransparent(NotificationManager.this);
@@ -143,13 +143,13 @@ public class NotificationManager extends AppCompatActivity {
         DataStoreManager dsManager = DataStoreManager.getInstance();
         notificationsDisabledNotice.setVisibility(dsManager.getSetting(DataStoreKeys.NOTIFICATION_PAUSED_ALL).blockingFirst() ? View.VISIBLE : View.GONE);
         moreNotificationOptions.setOnClickListener(e -> {
-            PopupMenu popup = new PopupMenu(new ContextThemeWrapper(this, Tools.getPopupTheme()), moreNotificationOptions);
+            PopupMenu popup = new PopupMenu(new ContextThemeWrapper(this, R.style.Theme_LucidSourceKit_PopupMenu), moreNotificationOptions);
             popup.getMenuInflater().inflate(R.menu.more_notification_options, popup.getMenu());
             popup.getMenu().findItem(R.id.itm_pause_notifications).setTitle(dsManager.getSetting(DataStoreKeys.NOTIFICATION_PAUSED_ALL).blockingFirst() ? "Resume notifications" : "Pause notifications");
             popup.setOnMenuItemClickListener(item -> {
                 if(item.getItemId() == R.id.itm_pause_notifications) {
                     boolean allNotificationsPaused = dsManager.getSetting(DataStoreKeys.NOTIFICATION_PAUSED_ALL).blockingFirst();
-                    new AlertDialog.Builder(this, Tools.getThemeDialog())
+                    new MaterialAlertDialogBuilder(this, R.style.Theme_LucidSourceKit_ThemedDialog)
                             .setTitle(allNotificationsPaused ? "Resume notifications" : "Pause notifications")
                             .setMessage(allNotificationsPaused ? "Do you really want to resume all notifications?" : "Do you really want to pause all notifications for the time being? You can re-enable all notifications any time later.")
                             .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
@@ -161,7 +161,7 @@ public class NotificationManager extends AppCompatActivity {
                             .show();
                 }
                 else if (item.getItemId() == R.id.itm_disable_notifications) {
-                    new AlertDialog.Builder(this, Tools.getThemeDialog())
+                    new MaterialAlertDialogBuilder(this, R.style.Theme_LucidSourceKit_ThemedDialog)
                             .setTitle("Disable notifications")
                             .setMessage("Do you really want to disable all notifications?")
                             .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
@@ -294,8 +294,7 @@ public class NotificationManager extends AppCompatActivity {
                 bottomSheetDialog.findViewById(R.id.chp_notification_1),
                 bottomSheetDialog.findViewById(R.id.chp_notification_2),
                 bottomSheetDialog.findViewById(R.id.chp_notification_3),
-                bottomSheetDialog.findViewById(R.id.chp_notification_5),
-                bottomSheetDialog.findViewById(R.id.chp_notification_10)
+                bottomSheetDialog.findViewById(R.id.chp_notification_5)
         };
 
         DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
@@ -364,7 +363,7 @@ public class NotificationManager extends AppCompatActivity {
             numberPicker.setMinValue(1);
             numberPicker.setValue(customDailyNotificationsCount);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
             builder.setView(numberPicker);
             builder.setTitle("Daily notifications count");
             builder.setMessage("Choose an amount");

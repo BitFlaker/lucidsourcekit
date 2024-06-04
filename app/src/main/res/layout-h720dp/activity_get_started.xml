@@ -30,7 +30,7 @@
             android:layout_marginLeft="8dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/background_scrapes"
-            app:tint="?attr/slightElevated" />
+            app:tint="?attr/colorSurfaceContainer" />
 
         <ImageView
             android:id="@+id/icon"

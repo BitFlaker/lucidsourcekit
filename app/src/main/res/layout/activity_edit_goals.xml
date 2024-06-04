@@ -35,14 +35,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom|end"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:src="@drawable/ic_round_add_24"
-        app:backgroundTint="?attr/colorPrimary"
         app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
-        app:borderWidth="0dp"
-        app:tint="?attr/colorOnPrimary" />
+        app:borderWidth="0dp" />
 </RelativeLayout>

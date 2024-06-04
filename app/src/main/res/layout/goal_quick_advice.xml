@@ -10,7 +10,7 @@
     android:layout_marginStart="20dp"
     android:layout_marginEnd="20dp"
     app:strokeWidth="0dp"
-    app:cardBackgroundColor="?attr/slightElevated"
+    app:cardBackgroundColor="?attr/colorSurfaceContainer"
     app:cardCornerRadius="@dimen/cardRadius"
     app:cardElevation="@dimen/cardElevationRegular">
 

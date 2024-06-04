@@ -42,7 +42,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/background_scrapes"
-                    app:tint="?attr/slightElevated" />
+                    app:tint="?attr/colorSurfaceContainer" />
 
                 <ImageView
                     android:id="@+id/icon"
@@ -52,7 +52,7 @@
                     android:layout_centerVertical="true"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/ic_baseline_admin_panel_settings_24"
-                    app:tint="#868791" />
+                    app:tint="?attr/colorOutline" />
             </RelativeLayout>
         </RelativeLayout>
 
@@ -98,7 +98,7 @@
         android:paddingRight="10dp"
         android:entries="@array/lock_types"
         android:background="@drawable/rounded_spinner"
-        android:backgroundTint="?attr/slightElevated"
+        android:backgroundTint="?attr/colorSurfaceContainer"
         app:layout_constraintBottom_toTopOf="@+id/chk_use_biometrics"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -109,15 +109,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="96dp"
         android:minWidth="168dp"
-        android:background="@drawable/rounded_spinner"
-        android:backgroundTint="?attr/backgroundColor"
         android:button="@android:color/transparent"
         android:drawableStart="@drawable/ic_baseline_check_box_outline_blank_24"
         android:drawablePadding="10dp"
-        android:drawableTint="?attr/colorOnSurface"
-        android:paddingStart="16dp"
+        android:drawableTint="?attr/primaryTextColor"
+        android:paddingStart="14dp"
         android:paddingEnd="24dp"
         android:text="@string/setup_privacy_biometrics"
+        android:textColor="?attr/primaryTextColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

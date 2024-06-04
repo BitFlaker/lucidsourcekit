@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="32dp">
+        android:paddingBottom="24dp">
 
         <RelativeLayout
             android:id="@+id/ll_alarm_creator_heading"
@@ -29,7 +29,7 @@
                 android:layout_marginStart="5dp"
                 android:src="@drawable/ic_round_close_24"
                 android:background="@drawable/ripple_round"
-                android:backgroundTint="?attr/backgroundColor"/>
+                android:backgroundTint="?attr/colorSurface"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -69,9 +69,9 @@
                     android:layout_gravity="center_horizontal"
                     app:cardCornerRadius="@dimen/cardRadius"
                     app:cardElevation="0dp"
-                    app:cardBackgroundColor="?attr/backgroundColor"
+                    app:cardBackgroundColor="?attr/colorSurface"
                     app:strokeWidth="0dp"
-                    app:strokeColor="?attr/slightElevated">
+                    app:strokeColor="?attr/colorSurfaceContainer">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -116,9 +116,9 @@
                     android:layout_gravity="center_horizontal"
                     app:cardCornerRadius="@dimen/cardRadius"
                     app:cardElevation="0dp"
-                    app:cardBackgroundColor="?attr/backgroundColor"
+                    app:cardBackgroundColor="?attr/colorSurface"
                     app:strokeWidth="0dp"
-                    app:strokeColor="?attr/slightElevated">
+                    app:strokeColor="?attr/colorSurfaceContainer">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -301,13 +301,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            android:layout_marginBottom="15dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            app:cardBackgroundColor="?attr/backgroundColor"
+            app:cardBackgroundColor="?attr/colorSurface"
             app:cardCornerRadius="@dimen/cardRadius"
             app:cardElevation="0dp"
-            app:strokeColor="?attr/slightElevated"
+            app:strokeColor="?attr/colorSurfaceContainer"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -341,7 +340,7 @@
                         android:id="@+id/chp_ringtone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="?attr/colorOnPrimary"
+                        android:textColor="@color/chip_text_color"
                         android:text="Ringtone"
                         app:chipBackgroundColor="@drawable/chip_background"
                         style="@style/Widget.MaterialComponents.Chip.Choice" />
@@ -350,7 +349,7 @@
                         android:id="@+id/chp_binaural_beats"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="?attr/colorOnPrimary"
+                        android:textColor="@color/chip_text_color"
                         android:text="Binaural Beats"
                         app:chipBackgroundColor="@drawable/chip_background"
                         style="@style/Widget.MaterialComponents.Chip.Choice" />
@@ -359,7 +358,7 @@
                         android:id="@+id/chp_custom_file"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="?attr/colorOnPrimary"
+                        android:textColor="@color/chip_text_color"
                         android:text="Custom file"
                         app:chipBackgroundColor="@drawable/chip_background"
                         style="@style/Widget.MaterialComponents.Chip.Choice" />
@@ -370,7 +369,7 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="?attr/slightElevated" />
+                    android:background="?attr/colorSurfaceContainer" />
 
 
 
@@ -554,32 +553,20 @@
                     app:cardCornerRadius="0dp"
                     app:cardElevation="0dp">
 
-                    <LinearLayout
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/swt_vibrate_alarm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingStart="@dimen/tone_creation_setting_padding"
-                        android:paddingEnd="@dimen/tone_creation_setting_padding"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Vibrate"
-                            android:textColor="?attr/secondaryTextColor"
-                            android:textSize="14sp"/>
-
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/swt_vibrate_alarm"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:checked="true"
-                            android:theme="@style/Switch.Dark"
-                            app:useMaterialThemeColors="true" />
-                    </LinearLayout>
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="20dp"
+                        android:checked="true"
+                        android:text="Vibrate"
+                        android:textOn="On"
+                        android:textOff="Off"
+                        android:textColor="?attr/secondaryTextColor"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
@@ -591,45 +578,37 @@
                     app:cardCornerRadius="0dp"
                     app:cardElevation="0dp">
 
-                    <LinearLayout
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/swt_alarm_use_flashlight"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingStart="@dimen/tone_creation_setting_padding"
-                        android:paddingEnd="@dimen/tone_creation_setting_padding"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="8dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Use flashlight"
-                            android:textColor="?attr/secondaryTextColor"
-                            android:textSize="14sp"/>
-
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/swt_alarm_use_flashlight"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:checked="true"
-                            android:theme="@style/Switch.Dark"
-                            android:shadowColor="@android:color/transparent" />
-                    </LinearLayout>
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="20dp"
+                        android:checked="true"
+                        android:text="Use flashlight"
+                        android:textOn="On"
+                        android:textOff="Off"
+                        android:textColor="?attr/secondaryTextColor"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_create_alarm"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="21dp"
+            android:layout_marginTop="36dp"
             android:text="Set Alarm"
-            android:background="@drawable/ripple_round"
-            android:backgroundTint="?attr/colorPrimary"
-            android:layout_gravity="end"
-            android:layout_marginEnd="15dp"
-            android:layout_marginTop="15dp"/>
+            android:textColor="?attr/colorOnPrimaryContainer"
+            app:iconGravity="textStart"
+            app:iconTint="?attr/colorOnPrimaryContainer"
+            app:icon="@drawable/ic_baseline_check_24"
+            app:backgroundTint="?attr/colorPrimaryContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
     </LinearLayout>
 </ScrollView>

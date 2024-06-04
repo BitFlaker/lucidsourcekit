@@ -59,7 +59,7 @@ public class SetupViewer extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(Tools.getTheme());
+//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup_viewer);
         Tools.makeStatusBarTransparent(this);
@@ -185,7 +185,7 @@ public class SetupViewer extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                pageDots.get(tab.getPosition()).setBackgroundTintList(Tools.getAttrColorStateList(R.attr.slightElevated, getTheme()));
+                pageDots.get(tab.getPosition()).setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurfaceContainerLow, getTheme()));
             }
 
             @Override
@@ -200,7 +200,7 @@ public class SetupViewer extends AppCompatActivity {
             dotPage.setBackgroundResource(R.drawable.page_dot);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Tools.dpToPx(this, 8), Tools.dpToPx(this, 8));
             lp.setMargins(Tools.dpToPx(this, 2), 0, Tools.dpToPx(this, 2), 0);
-            dotPage.setBackgroundTintList(Tools.getAttrColorStateList(i == 0 ? R.attr.colorPrimary : R.attr.slightElevated, getTheme()));
+            dotPage.setBackgroundTintList(Tools.getAttrColorStateList(i == 0 ? R.attr.colorPrimary : R.attr.colorSurfaceContainerLow, getTheme()));
             pageDotContainer.addView(dotPage, lp);
             pageDots.add(dotPage);
         }
