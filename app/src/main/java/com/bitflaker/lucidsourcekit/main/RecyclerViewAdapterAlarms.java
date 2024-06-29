@@ -17,7 +17,7 @@ import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.android.material.materialswitch.MaterialSwitch;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     @Override
     public MainViewHolderAlarms onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.alarm_entry, parent, false);
+        View view = inflater.inflate(R.layout.entry_alarm, parent, false);
         return new MainViewHolderAlarms(view);
     }
 
@@ -94,7 +94,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         }
         holder.active.setChecked(alarm.isAlarmActive && alarm.requestCodeActiveAlarm != -1);
         holder.active.setOnClickListener(e -> {
-            SwitchMaterial currSwitch = ((SwitchMaterial) e);
+            MaterialSwitch currSwitch = ((MaterialSwitch) e);
             alarm.isAlarmActive = currSwitch.isChecked();
             if(currSwitch.isChecked()){
                 // get the current weekday and reduce it by 1 to get the index
@@ -330,7 +330,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         TextView title, timePrimary, timeSecondary, activeDays;
         TextView dayMo, dayTu, dayWe, dayTh, dayFr, daySa, daySu;
         MaterialCardView card;
-        SwitchMaterial active;
+        MaterialSwitch active;
         List<TextView> weekdays;
         CheckBox chkChecked;
         boolean controlsHidden;

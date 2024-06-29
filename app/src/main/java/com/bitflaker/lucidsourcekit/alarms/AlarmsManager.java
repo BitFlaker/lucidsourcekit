@@ -132,8 +132,8 @@ public class AlarmsManager extends AppCompatActivity {
         adapterAlarms.setOnSelectionModeStateChangedListener(new RecyclerViewAdapterAlarms.OnSelectionModeStateChanged() {
             @Override
             public void onSelectionModeEntered() {
-                addAlarm.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorError, getTheme()));
-                addAlarm.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnError, getTheme()));
+                addAlarm.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorErrorContainer, getTheme()));
+                addAlarm.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnErrorContainer, getTheme()));
                 addAlarm.setImageResource(R.drawable.ic_baseline_delete_24);
                 isInSelectionMode = true;
             }
@@ -141,7 +141,7 @@ public class AlarmsManager extends AppCompatActivity {
             @Override
             public void onSelectionModeLeft() {
                 addAlarm.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimaryContainer, getTheme()));
-                addAlarm.setImageTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getTheme()));
+                addAlarm.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimaryContainer, getTheme()));
                 addAlarm.setImageResource(R.drawable.ic_round_add_24);
                 isInSelectionMode = false;
             }

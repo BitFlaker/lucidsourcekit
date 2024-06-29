@@ -257,21 +257,86 @@
 
                     <com.bitflaker.lucidsourcekit.charts.IconCircleHeatmap
                         android:id="@+id/ich_session_heatmap"
-                        android:layout_width="0dp"
-                        android:layout_height="144dp"
+                        android:layout_width="144dp"
+                        android:layout_height="160dp"
                         android:layout_marginTop="12dp"
                         android:gravity="center"
                         android:orientation="vertical"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_chainStyle="spread_inside"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/txt_card_label" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_averageSessionCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toTopOf="@+id/ll_averageSessionLength"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_chainStyle="packed">
+
+                        <TextView
+                            android:id="@+id/txt_averageSessionCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="9,5"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="28sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="-2dp"
+                            android:text="Average count"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_averageSessionLength"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="24dp"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toTopOf="@+id/view"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/ll_averageSessionCount">
+
+                        <TextView
+                            android:id="@+id/txt_AverageSessionLength"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="32 min"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="28sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="-2dp"
+                            android:text="Average length"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="11sp"/>
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/view"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?attr/colorSurfaceContainerHigh"
+                        app:layout_constraintBottom_toTopOf="@+id/ioo_streak_check_in"
+                        app:layout_constraintTop_toBottomOf="@+id/ich_session_heatmap" />
 
                     <com.bitflaker.lucidsourcekit.charts.IconOutOf
                         android:id="@+id/ioo_streak_check_in"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="48dp"
                         android:layout_marginEnd="24dp"
                         app:description="Check-ins"
                         app:diameter="32dp"
@@ -289,7 +354,7 @@
                         android:id="@+id/ioo_streak_goal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="48dp"
                         app:description="Goal tracking"
                         app:diameter="32dp"
                         app:icon="@drawable/ic_baseline_local_fire_department_24"
@@ -346,21 +411,21 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="7 days"
-                        style="@style/Custom.Chip.Choice.Outline" />
+                        style="@style/Custom.Chip.Choice.Secondary" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chp_last_30_days"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="30 days"
-                        style="@style/Custom.Chip.Choice.Outline" />
+                        style="@style/Custom.Chip.Choice.Secondary" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chp_all_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="All time"
-                        style="@style/Custom.Chip.Choice.Outline" />
+                        style="@style/Custom.Chip.Choice.Secondary" />
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
 
@@ -413,7 +478,7 @@
                                 android:text="Lucid dream"
                                 android:textColor="?attr/primaryTextColor"
                                 app:drawableLeftCompat="@drawable/ic_round_square_24"
-                                app:drawableTint="?attr/colorSecondary" />
+                                app:drawableTint="?attr/colorTertiary" />
 
                             <TextView
                                 android:layout_width="wrap_content"

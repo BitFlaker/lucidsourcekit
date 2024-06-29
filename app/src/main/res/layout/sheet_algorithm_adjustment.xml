@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -16,49 +17,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="32dp"
             android:drawablePadding="8dp"
             android:gravity="center_horizontal"
             android:text="Algorithm Adjustments"
             android:textColor="?attr/primaryTextColor"
-            android:textSize="22sp"
+            android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
-
-        <TextView
-            android:id="@+id/txt_weighting_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginStart="20dp"
-            android:text="Weight"
-            android:textColor="?attr/primaryTextColor"
-            android:textSize="23sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@+id/txt_goal_algo_adjustments"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-        <TextView
-            android:id="@+id/txt_weighting_description"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:text="Set the weights of the occurrence ratings. The higher the weight the more likely that category gets chosen"
-            android:textColor="?attr/secondaryTextColor"
-            android:textSize="14sp"
-            app:layout_constraintTop_toBottomOf="@id/txt_weighting_heading"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/crd_occurrence_weights_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:layout_marginHorizontal="24dp"
-            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
-            app:layout_constraintTop_toBottomOf="@id/txt_weighting_description"
+            android:layout_marginTop="48dp"
+            android:layout_marginHorizontal="20dp"
+            app:contentPadding="0dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:layout_constraintTop_toBottomOf="@id/txt_goal_algo_adjustments"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             style="@style/LSK.MaterialCardView.Filled">
@@ -74,7 +51,7 @@
                     android:layout_marginHorizontal="12dp"
                     android:text="Common goals"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
@@ -83,7 +60,7 @@
                     android:id="@+id/sld_algo_diff_common"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-8dp"
+                    android:layout_marginTop="4dp"
                     android:valueFrom="0"
                     android:valueTo="1"
                     android:value="0.33"
@@ -100,12 +77,12 @@
                     android:id="@+id/txt_sld_value_common"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minWidth="28dp"
+                    android:minWidth="44dp"
                     android:layout_marginEnd="12dp"
-                    android:layout_marginStart="8dp"
                     android:text="33%"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
                     android:textAlignment="textEnd"
                     app:layout_constraintTop_toTopOf="@id/sld_algo_diff_common"
                     app:layout_constraintBottom_toBottomOf="@id/sld_algo_diff_common"
@@ -117,10 +94,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="12dp"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="12dp"
                     android:text="Uncommon goals"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     app:layout_constraintTop_toBottomOf="@id/sld_algo_diff_common"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
@@ -129,7 +106,7 @@
                     android:id="@+id/sld_algo_diff_uncommon"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-8dp"
+                    android:layout_marginTop="4dp"
                     android:valueFrom="0"
                     android:valueTo="1"
                     android:value="0.33"
@@ -146,12 +123,12 @@
                     android:id="@+id/txt_sld_value_uncommon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minWidth="28dp"
+                    android:minWidth="44dp"
                     android:layout_marginEnd="12dp"
-                    android:layout_marginStart="8dp"
                     android:text="33%"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
                     android:textAlignment="textEnd"
                     app:layout_constraintTop_toTopOf="@id/sld_algo_diff_uncommon"
                     app:layout_constraintBottom_toBottomOf="@id/sld_algo_diff_uncommon"
@@ -163,10 +140,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="12dp"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="12dp"
                     android:text="Rare goals"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     app:layout_constraintTop_toBottomOf="@id/sld_algo_diff_uncommon"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
@@ -175,7 +152,7 @@
                     android:id="@+id/sld_algo_diff_rare"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-8dp"
+                    android:layout_marginTop="4dp"
                     android:valueFrom="0"
                     android:valueTo="1"
                     android:value="0.33"
@@ -192,12 +169,12 @@
                     android:id="@+id/txt_sld_value_rare"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minWidth="28dp"
+                    android:minWidth="44dp"
                     android:layout_marginEnd="12dp"
-                    android:layout_marginStart="8dp"
                     android:text="33%"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
                     android:textAlignment="textEnd"
                     app:layout_constraintTop_toTopOf="@id/sld_algo_diff_rare"
                     app:layout_constraintBottom_toBottomOf="@id/sld_algo_diff_rare"
@@ -206,42 +183,17 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <TextView
-            android:id="@+id/txt_goal_count_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginStart="20dp"
-            android:text="Goal count"
-            android:textColor="?attr/primaryTextColor"
-            android:textSize="23sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@+id/crd_occurrence_weights_container"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-        <TextView
-            android:id="@+id/txt_goal_count_description"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:text="Set the amount of goals to pick each day"
-            android:textColor="?attr/secondaryTextColor"
-            android:textSize="14sp"
-            app:layout_constraintTop_toBottomOf="@id/txt_goal_count_heading"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/crd_goal_count_container"
+            style="@style/LSK.MaterialCardView.Filled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:layout_marginHorizontal="24dp"
-            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
-            app:layout_constraintTop_toBottomOf="@id/txt_goal_count_description"
+            android:layout_marginHorizontal="20dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:contentPadding="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            style="@style/LSK.MaterialCardView.Filled">
+            app:layout_constraintTop_toBottomOf="@+id/crd_occurrence_weights_container">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -252,99 +204,105 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="12dp"
+                    android:layout_marginTop="12dp"
                     android:text="Goal count"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="14sp"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.slider.Slider
                     android:id="@+id/sld_goal_count"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:contentDescription="Slider to set how many goals to receive each day"
+                    android:stepSize="1"
+                    android:value="3"
                     android:valueFrom="2"
                     android:valueTo="6"
-                    android:value="3"
-                    android:stepSize="1"
-                    app:haloColor="@android:color/transparent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/txt_sld_value_goal_count"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_sld_heading_goal_count"
                     app:labelStyle="@style/Tooltip.Dark"
-                    android:contentDescription="Slider to set how many goals to receive each day"/>
+                    app:layout_constraintEnd_toStartOf="@+id/txt_sld_value_goal_count"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_sld_heading_goal_count" />
 
                 <TextView
                     android:id="@+id/txt_sld_value_goal_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minWidth="28dp"
                     android:layout_marginEnd="12dp"
-                    android:layout_marginStart="8dp"
+                    android:minWidth="44dp"
                     android:text="3"
-                    android:textColor="?attr/primaryTextColor"
-                    android:textSize="14sp"
                     android:textAlignment="textEnd"
-                    app:layout_constraintTop_toTopOf="@id/sld_goal_count"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/sld_goal_count"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/sld_goal_count"/>
+                    app:layout_constraintStart_toEndOf="@+id/sld_goal_count"
+                    app:layout_constraintTop_toTopOf="@id/sld_goal_count" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <TextView
-            android:id="@+id/txt_extras_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginStart="20dp"
-            android:text="Extras"
-            android:textColor="?attr/primaryTextColor"
-            android:textSize="23sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@+id/crd_goal_count_container"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-        <TextView
-            android:id="@+id/txt_extras_description"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:text="Set if goal occurrence ratings should be adjusted automatically"
-            android:textColor="?attr/secondaryTextColor"
-            android:textSize="14sp"
-            app:layout_constraintTop_toBottomOf="@id/txt_extras_heading"
+        <View
+            android:id="@+id/vw_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginHorizontal="12dp"
+            android:background="?attr/colorSurfaceContainerHigh"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/crd_goal_count_container" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/crd_extra_container"
+            style="@style/LSK.MaterialCardView.Filled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:layout_marginHorizontal="24dp"
-            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
-            app:layout_constraintTop_toBottomOf="@id/txt_extras_description"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:contentPadding="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            style="@style/LSK.MaterialCardView.Filled">
+            app:layout_constraintTop_toBottomOf="@+id/vw_divider">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/swt_auto_adjust_goal_difficulty"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="Auto adjust goal difficulties"
-                    android:textOn="On"
+                    android:text="Dynamic goal ratings"
                     android:textOff="Off"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:textOn="On"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/swt_dynamic_goal_shuffle_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:checked="true"
+                    android:text="Dynamic shuffle count"
+                    android:textOff="Off"
+                    android:textOn="On"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.button.MaterialButton

@@ -54,6 +54,8 @@
         <item name="colorSurfaceContainer">@color/md_theme_surfaceContainer</item>
         <item name="colorSurfaceContainerHigh">@color/md_theme_surfaceContainerHigh</item>
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
+
+        <item name="materialAlertDialogTheme">@style/Theme.LucidSourceKit.ThemedDialog</item>
     </style>
 
     <style name="FloatingShapeAppearanceOverlay" parent="">
@@ -95,6 +97,8 @@
     <style name="Theme.LucidSourceKit.ThemedDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="colorSurface">@color/md_theme_surface</item>
         <item name="alertDialogStyle">@style/MaterialAlertDialog.App</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButton</item>
     </style>
 
     <style name="MaterialAlertDialog.App" parent="MaterialAlertDialog.Material3">
@@ -105,6 +109,14 @@
     <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="NegativeButton" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/md_theme_primary</item>
+    </style>
+
+    <style name="PositiveButton" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Material3.Button</item>
     </style>
 
     <style name="Tooltip.Dark" parent="Widget.Material3.Tooltip">

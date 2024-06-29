@@ -190,7 +190,7 @@ public class Goals extends Fragment {
 
         // TODO only ask whether or not to save changes if actual changes were made
         bsdAdjustAlgorithm.setOnCancelListener(e -> {
-            new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog).setTitle("Save changes").setMessage("Do you want to save all changes made to the goal algorithm?")
+            new MaterialAlertDialogBuilder(getContext()).setTitle("Save changes").setMessage("Do you want to save all changes made to the goal algorithm?")
                     .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                         saveGoalAlgorithm(sldCommon.getValue(), sldUncommon.getValue(), sldRare.getValue(), (int) sldGoalCount.getValue(), swtAutoAdjustGoalDifficulty.isChecked());
                     })

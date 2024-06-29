@@ -26,6 +26,7 @@ import com.bitflaker.lucidsourcekit.charts.IconOutOf;
 import com.bitflaker.lucidsourcekit.charts.ProportionLineChart;
 import com.bitflaker.lucidsourcekit.charts.RangeProgress;
 import com.bitflaker.lucidsourcekit.charts.RodGraph;
+import com.bitflaker.lucidsourcekit.data.AppUsage;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AverageEntryValues;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.TagCount;
@@ -37,14 +38,19 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.ChipGroup;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -57,7 +63,7 @@ public class Statistics extends Fragment {
     private LinearLayout goalsReachedContainer;
     private ChipGroup chartTimeSpan;
     private CircleGraph lucidPercentage;
-    private TextView totalJournalEntries, totalTagCount, totalGoalCount;
+    private TextView totalJournalEntries, totalTagCount, totalGoalCount, timeSpent, averageSessionCount, averageSessionLength;
     private RangeProgress rpDreamMood, rpDreamClarity, rpSleepQuality, rpDreamsPerNight, rpGoalsReached, rpAvgDiff;
     private MainDatabase db;
     private List<Double> avgClarities = new ArrayList<>();
@@ -74,6 +80,7 @@ public class Statistics extends Fragment {
     private ProportionLineChart timeSpentProportions;
     private IconCircleHeatmap sessionHeatmap;
     private MaterialButton dreamFrequencyTypeFilter;
+    private final DecimalFormat df = new DecimalFormat("#.0");
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -118,49 +125,12 @@ public class Statistics extends Fragment {
         heatmapChart = getView().findViewById(R.id.htm_dream_count_heatmap);
         timeSpentProportions = getView().findViewById(R.id.pc_time_spent_proportions);
         sessionHeatmap = getView().findViewById(R.id.ich_session_heatmap);
+        timeSpent = getView().findViewById(R.id.txt_time_spent_value);
+
+        averageSessionCount = getView().findViewById(R.id.txt_averageSessionCount);
+        averageSessionLength = getView().findViewById(R.id.txt_AverageSessionLength);
 
         db = MainDatabase.getInstance(getContext());
-
-        List<Long> ts = new ArrayList<>();
-        ts.add(10*60*1000L);
-
-        ts.add(4*30*60*1000L);
-        ts.add(4*30*60*1000L);
-        ts.add(4*30*60*1000L);
-
-        ts.add(5*30*60*1000L);
-        ts.add(5*30*60*1000L);
-        ts.add(5*30*60*1000L);
-        ts.add(5*30*60*1000L);
-        ts.add(5*30*60*1000L);
-        ts.add(5*30*60*1000L);
-
-        ts.add(6*30*60*1000L);
-        ts.add(6*30*60*1000L);
-        ts.add(6*30*60*1000L);
-        ts.add(6*30*60*1000L);
-        ts.add(6*30*60*1000L);
-        ts.add(6*30*60*1000L);
-        ts.add(6*30*60*1000L);
-        ts.add(6*30*60*1000L);
-        ts.add(6*30*60*1000L);
-
-        ts.add(23*60*60*1000L + 20 * 60 * 1000);
-        ts.add(22*60*60*1000L + 44 * 60 * 1000);
-
-        ts.add(8 * 60 * 60 * 1000L + 12 * 60 * 1000);
-        ts.add(8 * 60 * 60 * 1000L + 12 * 60 * 1000);
-        ts.add(8 * 60 * 60 * 1000L + 12 * 60 * 1000);
-        ts.add(8 * 60 * 60 * 1000L + 12 * 60 * 1000);
-        ts.add(8 * 60 * 60 * 1000L + 12 * 60 * 1000);
-
-        ts.add(19 * 60 * 60 * 1000L + 34 * 60 * 1000);
-        ts.add(19 * 60 * 60 * 1000L + 34 * 60 * 1000);
-        ts.add(19 * 60 * 60 * 1000L + 34 * 60 * 1000);
-        ts.add(19 * 60 * 60 * 1000L + 34 * 60 * 1000);
-        ts.add(19 * 60 * 60 * 1000L + 34 * 60 * 1000);
-        ts.add(19 * 60 * 60 * 1000L + 34 * 60 * 1000);
-        sessionHeatmap.setTimestamps(ts);
 
         dreamFrequencyTypeFilter.setOnClickListener(e -> {
             Drawable arrowUp = ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_keyboard_arrow_up_24, getContext().getTheme());
@@ -180,14 +150,16 @@ public class Statistics extends Fragment {
             popup.show();
         });
 
-        timeSpentProportions.setValues(new ProportionLineChart.DataPoint[] {
-                new ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.colorPrimary, getContext().getTheme()), 60, "Dream journal"),
-//                new ProportionLineChart.DataPoint(Color.parseColor("#52b2cf"), 60, "Dream journal"),
-                new ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme()), 15, "Binaural beats"),
-//                new ProportionLineChart.DataPoint(Color.parseColor("#d4afb9"), 15, "Binaural beats"),
-                new ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), 25, "Other")
-//                new ProportionLineChart.DataPoint(Color.parseColor("#d1cfe2"), 25, "Other")
-        });
+        // Set stats for app usage (time spent, session count, session length, ...)
+        AppUsage.AppUsageEvents appUsage = AppUsage.Companion.getUsageStats(getContext(), 1000 * 60 * 60 * 24 * 7);
+        List<AppUsage.AppOpenStats> appOpenTimes = appUsage.getAppOpenTimeStamps();
+        long totalTime = appUsage.getTotalTime();
+        float journalTime = appUsage.getJournalTime() / 1000.0f;
+        float otherTime = totalTime / 1000.0f - journalTime;
+        setAppUsageStats(totalTime, journalTime, otherTime);
+        if (!appOpenTimes.isEmpty()) {
+            setAppSessionStats(appOpenTimes);
+        }
 
         heatmapChart.setOnWeekCountCalculatedListener(weekCount -> {
             Calendar calendar = Calendar.getInstance();
@@ -244,6 +216,55 @@ public class Statistics extends Fragment {
                     .subscribeOn(Schedulers.io())
                     .subscribe(this::updateStats));
         });
+    }
+
+    private void setAppUsageStats(long totalTime, float journalTime, float otherTime) {
+        long hours = TimeUnit.MILLISECONDS.toHours(totalTime);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(totalTime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(totalTime));
+        timeSpentProportions.setValues(new ProportionLineChart.DataPoint[] {
+                new ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.colorPrimary, getContext().getTheme()), journalTime, "Dream journal"),
+                new ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme()), 0, "Binaural beats"),
+                new ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()), otherTime, "Other")
+        });
+        timeSpent.setText(hours == 0 ? String.format(Locale.ENGLISH, "%d min", minutes) : String.format(Locale.ENGLISH, "%d hr %d min", hours, minutes));
+    }
+
+    private void setAppSessionStats(List<AppUsage.AppOpenStats> appOpenTimes) {
+        HashMap<Long, List<Long>> daySessionDurations = groupSessionDurationsByDay(appOpenTimes);
+        double averageDailyAppOpens = daySessionDurations.values()
+                .stream()
+                .mapToDouble(List::size)
+                .average()
+                .orElse(0);
+        int averageSessionLengthMs = (int) daySessionDurations.values()
+                .stream()
+                .filter(x -> !x.isEmpty())
+                .mapToDouble(x -> x.stream().mapToDouble(d -> d).average().orElse(0))
+                .average()
+                .orElse(0);
+        long averageSessionLengthMin = TimeUnit.MILLISECONDS.toMinutes(averageSessionLengthMs);
+        averageSessionCount.setText(df.format(averageDailyAppOpens));
+        averageSessionLength.setText(String.format(Locale.getDefault(), "%d min", averageSessionLengthMin));
+        sessionHeatmap.setTimestamps(appOpenTimes.stream()
+                .map(x -> x.getOpenedAt() - Tools.getMidnightTime(x.getOpenedAt()))
+                .collect(Collectors.toList())
+        );
+    }
+
+    private static HashMap<Long, List<Long>> groupSessionDurationsByDay(List<AppUsage.AppOpenStats> appOpenTimes) {
+        HashMap<Long, List<Long>> daySessionDurations = new HashMap<>();
+        long currentMidnight = Tools.getMidnightTime();
+        for (int i = 0; i < 7; i++) {
+            daySessionDurations.put(currentMidnight - 1000 * 60 * 60 * 24 * i, new ArrayList<>());
+        }
+        for (int i = 0; i < appOpenTimes.size(); i++) {
+            AppUsage.AppOpenStats appOpenStats = appOpenTimes.get(i);
+            Long midnightTime = Tools.getMidnightTime(appOpenStats.getOpenedAt());
+            if (daySessionDurations.containsKey(midnightTime)) {
+                Objects.requireNonNull(daySessionDurations.get(midnightTime)).add(appOpenStats.getOpenFor());
+            }
+        }
+        return daySessionDurations;
     }
 
     @Override

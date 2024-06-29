@@ -311,6 +311,8 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:translationZ="6dp"
+                        app:backgroundTint="?attr/colorPrimaryContainer"
+                        app:iconTint="?attr/colorPrimary"
                         app:iconGravity="textStart"
                         app:icon="@drawable/ic_baseline_play_arrow_24"
                         app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"

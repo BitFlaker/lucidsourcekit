@@ -25,7 +25,7 @@ public class CircleGraph extends View {
     public CircleGraph(Context context, AttributeSet as){
         super(context, as);
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        dataLinePaint.setColor(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()));
+        dataLinePaint.setColor(Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme()));
         dataLinePaint.setAntiAlias(true);
         dataLinePaint2.setColor(Tools.getAttrColor(R.attr.colorPrimary, getContext().getTheme()));
         dataLinePaint2.setAntiAlias(true);
