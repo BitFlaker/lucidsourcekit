@@ -3,190 +3,334 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="20dp"
-    android:orientation="vertical"
-    android:paddingBottom="5dp">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/txt_filter_title"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawablePadding="5dp"
-        android:text="Filter entries"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"/>
+        android:background="?attr/colorSurfaceContainerHighest">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_main_rating_filter_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/txt_tag_filter_info">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_title_dream_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/cl_title_dream_mood"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/img_title_image_dream_type"
+                    style="@style/Widget.Material3.Button.IconButton.Filled"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:backgroundTint="?attr/colorSecondary"
+                    app:icon="@drawable/rounded_cinematic_blur_24"
+                    app:iconTint="?attr/colorOnSecondary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rippleColor="?attr/colorOutline"
+                    app:shapeAppearance="@style/FloatingShapeAppearanceOverlay" />
+
+                <TextView
+                    android:id="@+id/txt_title_dream_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="DREAM\nTYPE"
+                    android:textAlignment="center"
+                    android:textColor="?attr/tertiaryTextColor"
+                    android:textSize="11sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/img_title_image_dream_type" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_title_dream_mood"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/cl_title_dream_clarity"
+                app:layout_constraintStart_toEndOf="@+id/cl_title_dream_type"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/img_title_image_dream_mood"
+                    style="@style/Widget.Material3.Button.IconButton.Filled"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:backgroundTint="?attr/colorSecondary"
+                    app:icon="@drawable/ic_baseline_sentiment_dissatisfied_24"
+                    app:iconTint="?attr/colorOnSecondary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rippleColor="?attr/colorOutline"
+                    app:shapeAppearance="@style/FloatingShapeAppearanceOverlay" />
+
+                <TextView
+                    android:id="@+id/txt_title_dream_mood"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="DREAM\nMOOD"
+                    android:textAlignment="center"
+                    android:textColor="?attr/tertiaryTextColor"
+                    android:textSize="11sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/img_title_image_dream_mood" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_title_dream_clarity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/cl_title_sleep_quality"
+                app:layout_constraintStart_toEndOf="@+id/cl_title_dream_mood"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/img_title_image_dream_clarity"
+                    style="@style/Widget.Material3.Button.IconButton.Filled"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:backgroundTint="@android:color/transparent"
+                    app:icon="@drawable/rounded_add_24"
+                    app:iconTint="?attr/colorOutline"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rippleColor="?attr/colorOutline"
+                    app:shapeAppearance="@style/FloatingShapeAppearanceOverlay" />
+
+                <TextView
+                    android:id="@+id/txt_title_dream_clarity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="DREAM\nCLARITY"
+                    android:textAlignment="center"
+                    android:textColor="?attr/tertiaryTextColor"
+                    android:textSize="11sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/img_title_image_dream_clarity" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_title_sleep_quality"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cl_title_dream_clarity"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/img_title_image_sleep_quality"
+                    style="@style/Widget.Material3.Button.IconButton.Filled"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:backgroundTint="?attr/colorSecondary"
+                    app:icon="@drawable/ic_baseline_star_half_24"
+                    app:iconTint="?attr/colorOnSecondary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rippleColor="?attr/colorOutline"
+                    app:shapeAppearance="@style/FloatingShapeAppearanceOverlay" />
+
+                <TextView
+                    android:id="@+id/txt_title_sleep_quality"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="SLEEP\nQUALITY"
+                    android:textAlignment="center"
+                    android:textColor="?attr/tertiaryTextColor"
+                    android:textSize="11sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/img_title_image_sleep_quality" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/txt_tag_filter_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:paddingVertical="4dp"
+            android:paddingHorizontal="8dp"
+            android:text="7 tags in filter"
+            android:textColor="?attr/colorOnSecondary"
+            android:background="@drawable/small_rounded_rectangle"
+            android:backgroundTint="?attr/colorSecondary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_main_rating_filter_title" />
+
+<!--        <HorizontalScrollView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/cl_main_rating_filter_title">-->
+
+<!--            <com.google.android.material.chip.ChipGroup-->
+<!--                android:id="@+id/chp_grp_filter_tags"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="12dp"-->
+<!--                android:paddingVertical="8dp" />-->
+<!--        </HorizontalScrollView>-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:id="@+id/scrl_filter_scroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="5dp">
+        android:paddingTop="16dp"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:id="@+id/ll_filter_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:orientation="vertical"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp">
+            android:orientation="vertical">
+
+            <AutoCompleteTextView
+                android:id="@+id/actv_filter_tags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginHorizontal="16dp"
+                android:paddingVertical="12dp"
+                android:paddingHorizontal="16dp"
+                android:textSize="14sp"
+                android:textColor="?attr/primaryTextColor"
+                android:inputType="textAutoComplete"
+                android:imeOptions="actionDone"
+                android:drawableStart="@drawable/rounded_new_label_24"
+                android:drawableTint="?attr/secondaryTextColor"
+                android:drawablePadding="8dp"
+                android:background="@drawable/rounded_spinner"
+                android:backgroundTint="?attr/colorSurfaceContainer"
+                android:hint="Add tag to filter" />
 
             <LinearLayout
                 android:id="@+id/ll_dt_cat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:orientation="vertical">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_filter_dream_type"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/ThemeOverlay.Material3.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/small_circle"
-                    android:drawableTint="@color/white"
+                    android:drawableTint="?attr/tertiaryTextColor"
+                    android:drawableEnd="@drawable/rounded_add_24"
                     android:text="Dream Type"
                     android:textAlignment="textStart"
                     android:textColor="?attr/primaryTextColor"
+                    app:cornerRadius="0dp"
+                    app:rippleColor="?attr/colorOutlineVariant"
                     app:backgroundTint="@android:color/transparent" />
 
                 <LinearLayout
-                    android:id="@+id/ll_dt"
+                    android:id="@+id/ll_content_dt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="30dp"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:visibility="gone">
+                    
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="32dp"
+                        android:background="?attr/colorOutlineVariant" />
 
-                    <CheckBox
-                        android:id="@+id/chk_dt_nightmare"
+                    <LinearLayout
+                        android:id="@+id/ll_dt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/rounded_sentiment_stressed_24"
-                        android:text="@string/dream_nightmare" />
+                        android:paddingStart="16dp"
+                        android:paddingHorizontal="4dp"
+                        android:orientation="vertical">
 
-                    <CheckBox
-                        android:id="@+id/chk_dt_paralysis"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_accessibility_new_24"
-                        android:text="@string/dream_paralysis" />
+                        <CheckBox
+                            android:id="@+id/chk_dt_nightmare"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/rounded_sentiment_stressed_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="@string/dream_nightmare" />
 
-                    <CheckBox
-                        android:id="@+id/chk_dt_false_awakening"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/rounded_cinematic_blur_24"
-                        android:text="@string/dream_false_awakening" />
+                        <CheckBox
+                            android:id="@+id/chk_dt_paralysis"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/ic_baseline_accessibility_new_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="@string/dream_paralysis" />
 
-                    <CheckBox
-                        android:id="@+id/chk_dt_lucid"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/rounded_award_star_24"
-                        android:text="@string/dream_lucid" />
+                        <CheckBox
+                            android:id="@+id/chk_dt_false_awakening"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/rounded_cinematic_blur_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="@string/dream_false_awakening" />
 
-                    <CheckBox
-                        android:id="@+id/chk_dt_recurring"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/rounded_sentiment_stressed_24"
-                        android:text="@string/recurring" />
+                        <CheckBox
+                            android:id="@+id/chk_dt_lucid"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/rounded_award_star_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="@string/dream_lucid" />
+
+                        <CheckBox
+                            android:id="@+id/chk_dt_recurring"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/rounded_sentiment_stressed_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="@string/recurring" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_et_cat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_filter_entry_tags"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/small_circle"
-                    android:drawableTint="@color/white"
-                    android:text="Tags"
-                    android:textAlignment="textStart"
-                    android:textColor="?attr/primaryTextColor"
-                    app:backgroundTint="@android:color/transparent" />
-
-                <LinearLayout
-                    android:id="@+id/ll_et"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="30dp"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/actv_filter_tags"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textAutoComplete"
-                        android:imeOptions="actionDone"
-                        android:hint="enter tag to filter" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_jt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_filter_journal_type"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/small_circle"
-                    android:drawableTint="@color/white"
-                    android:text="Journal Type"
-                    android:textAlignment="textStart"
-                    android:textColor="?attr/primaryTextColor"
-                    app:backgroundTint="@android:color/transparent" />
-
-                <RadioGroup
-                    android:id="@+id/rdg_jt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="30dp"
-                    android:visibility="gone">
-
-                    <RadioButton
-                        android:id="@+id/rdb_jt_no_filter"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_horizontal_rule_24"
-                        android:text="Do not filter" />
-
-                    <RadioButton
-                        android:id="@+id/rdb_jt_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_text_fields_24"
-                        android:text="Text / Form" />
-
-                    <RadioButton
-                        android:id="@+id/rdb_jt_audio"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_mic_24"
-                        android:text="Audio" />
-                </RadioGroup>
             </LinearLayout>
 
             <LinearLayout
@@ -197,67 +341,91 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_filter_dream_mood"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/ThemeOverlay.Material3.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/small_circle"
-                    android:drawableTint="@color/white"
+                    android:drawableTint="?attr/tertiaryTextColor"
+                    android:drawableEnd="@drawable/rounded_add_24"
                     android:text="Dream Mood"
                     android:textAlignment="textStart"
                     android:textColor="?attr/primaryTextColor"
+                    app:cornerRadius="0dp"
+                    app:rippleColor="?attr/colorOutlineVariant"
                     app:backgroundTint="@android:color/transparent" />
 
-                <RadioGroup
-                    android:id="@+id/rdg_dm"
+                <LinearLayout
+                    android:id="@+id/ll_content_dm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="30dp"
+                    android:orientation="horizontal"
                     android:visibility="gone">
 
-                    <RadioButton
-                        android:id="@+id/rdb_dm_no_filter"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_horizontal_rule_24"
-                        android:text="Do not filter" />
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="32dp"
+                        android:background="?attr/colorOutlineVariant" />
 
-                    <RadioButton
-                        android:id="@+id/rdb_dm_terrible"
+                    <RadioGroup
+                        android:id="@+id/rdg_dm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_sentiment_very_dissatisfied_24"
-                        android:text="Terrible" />
+                        android:paddingStart="16dp"
+                        android:paddingVertical="4dp">
 
-                    <RadioButton
-                        android:id="@+id/rdb_dm_poor"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_sentiment_dissatisfied_24"
-                        android:text="Poor" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/rdb_dm_no_filter"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:text="Any" />
 
-                    <RadioButton
-                        android:id="@+id/rdb_dm_ok"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_sentiment_neutral_24"
-                        android:text="Ok" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/rdb_dm_terrible"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/ic_baseline_sentiment_very_dissatisfied_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="Terrible" />
 
-                    <RadioButton
-                        android:id="@+id/rdb_dm_great"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_sentiment_satisfied_24"
-                        android:text="Great" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/rdb_dm_poor"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/ic_baseline_sentiment_dissatisfied_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="Poor" />
 
-                    <RadioButton
-                        android:id="@+id/rdb_dm_outstanding"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_sentiment_very_satisfied_24"
-                        android:text="Outstanding" />
-                </RadioGroup>
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/rdb_dm_ok"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/ic_baseline_sentiment_neutral_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="Ok" />
+
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/rdb_dm_great"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/ic_baseline_sentiment_satisfied_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="Great" />
+
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/rdb_dm_outstanding"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/ic_baseline_sentiment_very_satisfied_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="Outstanding" />
+                    </RadioGroup>
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -268,60 +436,81 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_filter_dream_clarity"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/ThemeOverlay.Material3.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/small_circle"
-                    android:drawableTint="@color/white"
+                    android:drawableTint="?attr/tertiaryTextColor"
+                    android:drawableEnd="@drawable/rounded_add_24"
                     android:text="Dream Clarity"
                     android:textAlignment="textStart"
                     android:textColor="?attr/primaryTextColor"
+                    app:cornerRadius="0dp"
+                    app:rippleColor="?attr/colorOutlineVariant"
                     app:backgroundTint="@android:color/transparent" />
 
-                <RadioGroup
-                    android:id="@+id/rdg_dc"
+                <LinearLayout
+                    android:id="@+id/ll_content_dc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="30dp"
+                    android:orientation="horizontal"
                     android:visibility="gone">
 
-                    <RadioButton
-                        android:id="@+id/rdb_dc_no_filter"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_horizontal_rule_24"
-                        android:text="Do not filter" />
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="32dp"
+                        android:background="?attr/colorOutlineVariant" />
 
-                    <RadioButton
-                        android:id="@+id/rdb_dc_very_cloudy"
+                    <RadioGroup
+                        android:id="@+id/rdg_dc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_brightness_4_24"
-                        android:text="Very Cloudy" />
+                        android:paddingStart="16dp"
+                        android:paddingVertical="4dp">
 
-                    <RadioButton
-                        android:id="@+id/rdb_dc_cloudy"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_brightness_5_24"
-                        android:text="Cloudy" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/rdb_dc_no_filter"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Any" />
 
-                    <RadioButton
-                        android:id="@+id/rdb_dc_clear"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_brightness_6_24"
-                        android:text="Clear" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/rdb_dc_very_cloudy"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/ic_baseline_brightness_4_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="Very Cloudy" />
 
-                    <RadioButton
-                        android:id="@+id/rdb_dc_crystal_clear"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_brightness_7_24"
-                        android:text="Crystal Clear" />
-                </RadioGroup>
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/rdb_dc_cloudy"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/ic_baseline_brightness_5_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="Cloudy" />
+
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/rdb_dc_clear"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/ic_baseline_brightness_6_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="Clear" />
+
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/rdb_dc_crystal_clear"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/ic_baseline_brightness_7_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="Crystal Clear" />
+                    </RadioGroup>
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -332,60 +521,162 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_filter_sleep_quality"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/ThemeOverlay.Material3.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/small_circle"
-                    android:drawableTint="@color/white"
+                    android:drawableTint="?attr/colorOnSurface"
+                    android:drawableEnd="@drawable/ic_baseline_star_half_24"
                     android:text="Sleep Quality"
                     android:textAlignment="textStart"
                     android:textColor="?attr/primaryTextColor"
+                    app:cornerRadius="0dp"
+                    app:rippleColor="?attr/colorOutlineVariant"
                     app:backgroundTint="@android:color/transparent" />
 
-                <RadioGroup
-                    android:id="@+id/rdg_sq"
+                <LinearLayout
+                    android:id="@+id/ll_content_sq"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="30dp"
+                    android:orientation="horizontal"
                     android:visibility="gone">
 
-                    <RadioButton
-                        android:id="@+id/rdb_sq_no_filter"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_horizontal_rule_24"
-                        android:text="Do not filter" />
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="32dp"
+                        android:background="?attr/colorOutlineVariant" />
 
-                    <RadioButton
-                        android:id="@+id/rdb_sq_terrible"
+                    <RadioGroup
+                        android:id="@+id/rdg_sq"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_star_border_24"
-                        android:text="Terrible" />
+                        android:paddingStart="16dp"
+                        android:paddingVertical="4dp">
 
-                    <RadioButton
-                        android:id="@+id/rdb_sq_poor"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_star_half_24"
-                        android:text="Poor" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/rdb_sq_no_filter"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Any" />
 
-                    <RadioButton
-                        android:id="@+id/rdb_sq_great"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_star_24"
-                        android:text="Great" />
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/rdb_sq_terrible"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/ic_baseline_star_border_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="Terrible" />
 
-                    <RadioButton
-                        android:id="@+id/rdb_sq_outstanding"
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/rdb_sq_poor"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/ic_baseline_star_half_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="Poor" />
+
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/rdb_sq_great"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/ic_baseline_star_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="Great" />
+
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/rdb_sq_outstanding"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableEnd="@drawable/ic_baseline_stars_24"
+                            android:drawableTint="?attr/colorOutlineVariant"
+                            android:text="Outstanding" />
+                    </RadioGroup>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_et_cat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_filter_entry_tags"
+                        style="@style/ThemeOverlay.Material3.Button.TextButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_baseline_stars_24"
-                        android:text="Outstanding" />
-                </RadioGroup>
+                        android:drawableTint="?attr/tertiaryTextColor"
+                        android:drawableEnd="@drawable/rounded_add_24"
+                        android:text="Tags"
+                        android:textAlignment="textStart"
+                        android:textColor="?attr/primaryTextColor"
+                        app:cornerRadius="0dp"
+                        app:rippleColor="?attr/colorOutlineVariant"
+                        app:backgroundTint="@android:color/transparent" />
+
+                    <TextView
+                        android:id="@+id/txt_filter_tag_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="32dp"
+                        android:textColor="?attr/colorOnSurface"
+                        android:text="0"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_content_tags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="32dp"
+                        android:background="?attr/colorOutlineVariant" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingStart="16dp"
+                        android:paddingVertical="4dp">
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/chp_grp_filter_tags"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="36dp"
+                            app:chipSpacingVertical="0dp"/>
+
+                        <TextView
+                            android:id="@+id/txt_no_tags_filtered"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="12dp"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="24dp"
+                            android:text="No tags selected.\nAdd tags to the filter\nby searching them in\nthe text box at the top"
+                            android:textSize="14sp"
+                            android:textAlignment="textStart"
+                            android:textColor="?attr/tertiaryTextColor" />
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

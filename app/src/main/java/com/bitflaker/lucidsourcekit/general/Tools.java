@@ -498,4 +498,10 @@ public class Tools {
         colorAnimation.addUpdateListener(animator -> view.setImageTintList(ColorStateList.valueOf((int) animator.getAnimatedValue())));
         colorAnimation.start();
     }
+
+    public static Drawable cloneDrawable(Drawable drawable) {
+        Drawable icon = drawable.getConstantState().newDrawable();
+        icon.setBounds(drawable.copyBounds());
+        return icon;
+    }
 }

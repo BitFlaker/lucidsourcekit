@@ -5,19 +5,26 @@ import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.DialogFragment;
 
@@ -28,27 +35,41 @@ import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamMoods;
 import com.bitflaker.lucidsourcekit.general.database.values.SleepQuality;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.checkbox.MaterialCheckBox;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.radiobutton.MaterialRadioButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class FilterDialog extends DialogFragment implements DialogInterface.OnClickListener {
-    private MaterialButton ok, cancel, filterDreamMoodCat, filterDreamClarityCat, filterSleepQualityCat, filterJournalTypeCat, filterDreamTypeCat, filterEntryTagsCat;
+    private MaterialButton filterDreamMoodCat, filterDreamClarityCat, filterSleepQualityCat, filterDreamTypeCat, filterEntryTagsCat;
     private AutoCompleteTextView filterTags;
     private final String[] tags;
     private DialogInterface.OnClickListener okClickListener;
     private List<String> filterTagsList;
     private boolean[] filterDreamTypes;
     private AppliedFilter currentFilter;
-    private RadioGroup filterDreamMoodRadioGroup, filterDreamClarityRadioGroup, filterSleepQualityRadioGroup, filterJournalTypeRadioGroup;
+    private RadioGroup filterDreamMoodRadioGroup, filterDreamClarityRadioGroup, filterSleepQualityRadioGroup;
     private LinearLayout filterDreamType, filterEntryTag;
+    private Context context;
+    private HashMap<View, MaterialButton> titleButtonMap = new HashMap<>();
+    private HashMap<MaterialButton, View> optionsEntryMap = new HashMap<>();
+    private ChipGroup tagFilterGroupTitle;
+    private TextView noTagsInFilter, filterTagCount, tagFilterInfo;
+    private LinearLayout contentDreamMood, contentDreamType, contentDreamClarity, contentSleepQuality, dreamTypeCheckboxContainer;
+    private MaterialButton titleDreamType, titleDreamMood, titleDreamClarity, titleSleepQuality;
 
     public FilterDialog(Context context, String[] tags, AppliedFilter currentFilter) {
-//        super(context);
         this.tags = tags;
         this.currentFilter = currentFilter;
+        this.context = context;
         filterDreamTypes = currentFilter.getFilterDreamTypes();
         filterTagsList = new ArrayList<>();
     }
@@ -61,130 +82,190 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
         builder.setView(view);
         builder.setPositiveButton(R.string.ok, okClickListener).setNegativeButton(R.string.cancel, this);
-
         setData(view);
+
+        titleButtonMap.put(contentDreamType, titleDreamType);
+        titleButtonMap.put(contentDreamMood, titleDreamMood);
+        titleButtonMap.put(contentDreamClarity, titleDreamClarity);
+        titleButtonMap.put(contentSleepQuality, titleSleepQuality);
+        optionsEntryMap = new HashMap<>(titleButtonMap.keySet().stream().collect(Collectors.toMap(k -> titleButtonMap.get(k), k -> k)));
+        optionsEntryMap.keySet().forEach(b -> b.setOnClickListener(this::openFilterFromTitle));
+
         setupSimpleCategoryListeners();
         setupTagsCategoryListener();
         for (String filterTag : currentFilter.getFilterTagsList()) { addTagFilterEntry(filterTag); }
-        setupStateWatchListeners();
-        setCurrentFilterCategoryStates();
+        setupRadioChangedListeners();
+        updateStatesWhenLoaded(view);
 
         return builder.create();
     }
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        setContentView(R.layout.dialog_filter);
-//        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//
-//        setData();
-//        setupSimpleCategoryListeners();
-//        setupTagsCategoryListener();
-//        for (String filterTag : currentFilter.getFilterTagsList()) { addTagFilterEntry(filterTag); }
-//        setupStateWatchListeners();
-//        setCurrentFilterCategoryStates();
-//
-//        ok.setOnClickListener(okClickListener);
-//        cancel.setOnClickListener(this);
-//    }
-
-    private void setCurrentFilterCategoryStates() {
-        checkboxSelectionWatcher(filterDreamTypeCat, filterDreamType);
-        checkboxSelectionWatcher(filterEntryTagsCat, filterEntryTag);
-        radioSelectionWatcher(filterJournalTypeCat, filterJournalTypeRadioGroup);
-        radioSelectionWatcher(filterDreamMoodCat, filterDreamMoodRadioGroup);
-        radioSelectionWatcher(filterDreamClarityCat, filterDreamClarityRadioGroup);
-        radioSelectionWatcher(filterSleepQualityCat, filterSleepQualityRadioGroup);
+    private void openFilterFromTitle(View view) {
+        optionsEntryMap.values().forEach(v -> v.setVisibility(View.GONE));
+        optionsEntryMap.get(view).setVisibility(View.VISIBLE);
     }
 
-    private void setupStateWatchListeners() {
-        for (int i = 0; i < filterJournalTypeRadioGroup.getChildCount(); i++){
-            ((RadioButton) filterJournalTypeRadioGroup.getChildAt(i)).setOnCheckedChangeListener((compoundButton, b) -> radioSelectionWatcher(filterJournalTypeCat, filterJournalTypeRadioGroup));
-        }
-        for (int i = 0; i < filterDreamMoodRadioGroup.getChildCount(); i++){
-            ((RadioButton) filterDreamMoodRadioGroup.getChildAt(i)).setOnCheckedChangeListener((compoundButton, b) -> radioSelectionWatcher(filterDreamMoodCat, filterDreamMoodRadioGroup));
-        }
-        for (int i = 0; i < filterDreamClarityRadioGroup.getChildCount(); i++){
-            ((RadioButton) filterDreamClarityRadioGroup.getChildAt(i)).setOnCheckedChangeListener((compoundButton, b) -> radioSelectionWatcher(filterDreamClarityCat, filterDreamClarityRadioGroup));
-        }
-        for (int i = 0; i < filterSleepQualityRadioGroup.getChildCount(); i++){
-            ((RadioButton) filterSleepQualityRadioGroup.getChildAt(i)).setOnCheckedChangeListener((compoundButton, b) -> radioSelectionWatcher(filterSleepQualityCat, filterSleepQualityRadioGroup));
+    private void setCurrentFilterCategoryStates(View view) {
+        checkboxSelectionChanged(filterDreamTypeCat, dreamTypeCheckboxContainer, contentDreamType);
+        radioSelectionChanged(view.findViewById(filterDreamMoodRadioGroup.getCheckedRadioButtonId()), filterDreamMoodCat, filterDreamMoodRadioGroup, contentDreamMood);
+        radioSelectionChanged(view.findViewById(filterDreamClarityRadioGroup.getCheckedRadioButtonId()), filterDreamClarityCat, filterDreamClarityRadioGroup, contentDreamClarity);
+        radioSelectionChanged(view.findViewById(filterSleepQualityRadioGroup.getCheckedRadioButtonId()), filterSleepQualityCat, filterSleepQualityRadioGroup, contentSleepQuality);
+    }
+
+    private void setupRadioChangedListeners() {
+        setupRadioSelectionChangedListeners(filterDreamMoodRadioGroup, filterDreamMoodCat, contentDreamMood);
+        setupRadioSelectionChangedListeners(filterDreamClarityRadioGroup, filterDreamClarityCat, contentDreamClarity);
+        setupRadioSelectionChangedListeners(filterSleepQualityRadioGroup, filterSleepQualityCat, contentSleepQuality);
+    }
+
+    private void setupRadioSelectionChangedListeners(RadioGroup group, MaterialButton category, LinearLayout content) {
+        for (int i = 0; i < group.getChildCount(); i++) {
+            if (group.getChildAt(i) instanceof MaterialRadioButton button) {
+                button.setOnCheckedChangeListener((compoundButton, isSelected) -> {
+                    if (isSelected) {
+                        radioSelectionChanged(compoundButton, category, group, content);
+                    }
+                });
+            }
         }
     }
 
     private void setupTagsCategoryListener() {
         filterTags.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, tags));
+        filterTags.setOnItemClickListener((adapterView, view, i, l) -> addTagToFilter());
         filterTags.setOnEditorActionListener((textView, i, keyEvent) -> {
-            String enteredTag = filterTags.getText().toString();
-            if(i == IME_ACTION_DONE && Arrays.asList(tags).contains(enteredTag) && !filterTagsList.contains(enteredTag)){
-                addTagFilterEntry(enteredTag);
-            }
+            if(i == IME_ACTION_DONE) addTagToFilter();
             return true;
         });
-        filterTags.setOnItemClickListener((adapterView, view, i, l) -> {
-            String enteredTag = filterTags.getText().toString();
-            if(Arrays.asList(tags).contains(enteredTag) && !filterTagsList.contains(enteredTag)){
-                addTagFilterEntry(enteredTag);
-            }
-        });
+    }
+
+    private void addTagToFilter() {
+        String enteredTag = filterTags.getText().toString();
+        if(Arrays.asList(tags).contains(enteredTag) && !filterTagsList.contains(enteredTag)){
+            addTagFilterEntry(enteredTag);
+        }
     }
 
     private void setupSimpleCategoryListeners() {
-        filterDreamMoodCat.setOnClickListener(e -> openCloseExpander(filterDreamMoodRadioGroup));
-        ((RadioButton) filterDreamMoodRadioGroup.getChildAt((currentFilter.getDreamMood().ordinal() + 1) % DreamMoods.values().length)).setChecked(true);
-        filterDreamClarityCat.setOnClickListener(e -> openCloseExpander(filterDreamClarityRadioGroup));
-        ((RadioButton) filterDreamClarityRadioGroup.getChildAt((currentFilter.getDreamClarity().ordinal() + 1) % DreamClarity.values().length)).setChecked(true);
-        filterSleepQualityCat.setOnClickListener(e -> openCloseExpander(filterSleepQualityRadioGroup));
-        ((RadioButton) filterSleepQualityRadioGroup.getChildAt((currentFilter.getSleepQuality().ordinal() + 1) % SleepQuality.values().length)).setChecked(true);
-        filterJournalTypeCat.setOnClickListener(e -> openCloseExpander(filterJournalTypeRadioGroup));
-        ((RadioButton) filterJournalTypeRadioGroup.getChildAt((currentFilter.getJournalType().ordinal() + 1) % JournalTypes.values().length)).setChecked(true);
-        filterDreamTypeCat.setOnClickListener(e -> openCloseExpander(filterDreamType));
-        setCheckedStateInList(filterDreamType, currentFilter.getFilterDreamTypes());
+        filterDreamMoodCat.setOnClickListener(e -> openCloseExpander(contentDreamMood));
+        filterDreamClarityCat.setOnClickListener(e -> openCloseExpander(contentDreamClarity));
+        filterSleepQualityCat.setOnClickListener(e -> openCloseExpander(contentSleepQuality));
+        filterDreamTypeCat.setOnClickListener(e -> openCloseExpander(contentDreamType));
         filterEntryTagsCat.setOnClickListener(e -> openCloseExpander(filterEntryTag));
+
+        // Setting default values
+        ((MaterialRadioButton) filterDreamMoodRadioGroup.getChildAt((currentFilter.getDreamMood().ordinal() + 1) % DreamMoods.values().length)).setChecked(true);
+        ((MaterialRadioButton) filterDreamClarityRadioGroup.getChildAt((currentFilter.getDreamClarity().ordinal() + 1) % DreamClarity.values().length)).setChecked(true);
+        ((MaterialRadioButton) filterSleepQualityRadioGroup.getChildAt((currentFilter.getSleepQuality().ordinal() + 1) % SleepQuality.values().length)).setChecked(true);
+        setCheckedStateInList(dreamTypeCheckboxContainer, currentFilter.getFilterDreamTypes());
     }
 
     private void setData(View view) {
+        tagFilterInfo = view.findViewById(R.id.txt_tag_filter_info);
+        filterTagCount = view.findViewById(R.id.txt_filter_tag_count);
+        noTagsInFilter = view.findViewById(R.id.txt_no_tags_filtered);
         filterTags = view.findViewById(R.id.actv_filter_tags);
+        tagFilterGroupTitle = view.findViewById(R.id.chp_grp_filter_tags);
         filterDreamMoodCat = view.findViewById(R.id.btn_filter_dream_mood);
         filterDreamMoodRadioGroup = view.findViewById(R.id.rdg_dm);
         filterDreamClarityCat = view.findViewById(R.id.btn_filter_dream_clarity);
         filterDreamClarityRadioGroup = view.findViewById(R.id.rdg_dc);
         filterSleepQualityCat = view.findViewById(R.id.btn_filter_sleep_quality);
         filterSleepQualityRadioGroup = view.findViewById(R.id.rdg_sq);
-        filterJournalTypeCat = view.findViewById(R.id.btn_filter_journal_type);
-        filterJournalTypeRadioGroup = view.findViewById(R.id.rdg_jt);
         filterDreamTypeCat = view.findViewById(R.id.btn_filter_dream_type);
-        filterDreamType = view.findViewById(R.id.ll_dt);
-        filterEntryTag = view.findViewById(R.id.ll_et);
+        filterDreamType = view.findViewById(R.id.ll_content_dt);
+        filterEntryTag = view.findViewById(R.id.ll_content_tags);
         filterEntryTagsCat = view.findViewById(R.id.btn_filter_entry_tags);
+        dreamTypeCheckboxContainer = view.findViewById(R.id.ll_dt);
+
+        contentDreamType = view.findViewById(R.id.ll_content_dt);
+        titleDreamType = view.findViewById(R.id.img_title_image_dream_type);
+        contentDreamMood = view.findViewById(R.id.ll_content_dm);
+        titleDreamMood = view.findViewById(R.id.img_title_image_dream_mood);
+        contentDreamClarity = view.findViewById(R.id.ll_content_dc);
+        titleDreamClarity = view.findViewById(R.id.img_title_image_dream_clarity);
+        contentSleepQuality = view.findViewById(R.id.ll_content_sq);
+        titleSleepQuality = view.findViewById(R.id.img_title_image_sleep_quality);
+
+        tagFilterGroupTitle.removeAllViews();
+        tagFilterInfo.setVisibility(View.GONE);
+        TextViewCompat.setCompoundDrawableTintList(filterEntryTagsCat, Tools.getAttrColorStateList(R.attr.colorOutlineVariant, context.getTheme()));
     }
 
-    private void radioSelectionWatcher(MaterialButton categoryButton, RadioGroup container) {
-        if(((RadioButton) container.getChildAt(0)).isChecked()){
-            TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.colorSurfaceContainer, getContext().getTheme()));
+    private void radioSelectionChanged(View checked, MaterialButton categoryButton, RadioGroup radioGroup, LinearLayout container) {
+        filterTags.clearFocus();
+        MaterialRadioButton doNotFilterOption = (MaterialRadioButton) radioGroup.getChildAt(0);
+        MaterialRadioButton selected = (MaterialRadioButton) checked;
+        setIcons(categoryButton, container, List.of(selected), selected.isChecked() && selected == doNotFilterOption);
+    }
+
+    private <E> void setIcons(MaterialButton categoryButton, View container, List<E> selected, boolean hasValue) {
+        if(hasValue) {
+            Drawable icon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.rounded_add_24, context.getTheme());
+            icon.setBounds(0, 0, Tools.dpToPx(context, 24), Tools.dpToPx(context, 24));
+            categoryButton.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
+            TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.colorOutlineVariant, context.getTheme()));
+
+            // Set the title button
+            Drawable titleIcon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_baseline_horizontal_rule_24, context.getTheme());
+            MaterialButton titleButton = titleButtonMap.get(container);
+            titleButton.setBackgroundTintList(Tools.getAttrColorStateList(android.R.color.transparent, context.getTheme()));
+            titleButton.setIconTint(Tools.getAttrColorStateList(R.attr.colorOutline, context.getTheme()));
+            titleButton.setIcon(titleIcon);
         }
         else {
-            TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
+            Drawable[] drawables = getSelectedCompoundDrawables(selected);
+            Drawable icon = combineDrawables(drawables);
+            categoryButton.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
+            TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.colorOnSurface, context.getTheme()));
+
+            // Set the title button
+            MaterialButton titleButton = titleButtonMap.get(container);
+            titleButton.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSecondary, context.getTheme()));
+            titleButton.setIconTint(Tools.getAttrColorStateList(R.attr.colorOnSecondary, context.getTheme()));
+            titleButton.setIcon(getSingleDrawable(drawables));
         }
     }
 
-    private void checkboxSelectionWatcher(MaterialButton categoryButton, LinearLayout container) {
-        boolean anythingChecked = false;
+    private void checkboxSelectionChanged(MaterialButton categoryButton, LinearLayout container, LinearLayout content) {
+        filterTags.clearFocus();
+        List<MaterialCheckBox> checkedItems = new ArrayList<>();
         for (int i = 0; i < container.getChildCount(); i++) {
-            View childView = container.getChildAt(i);
-            if(childView instanceof CheckBox && ((CheckBox) childView).isChecked()){
-                anythingChecked = true;
-                break;
+            if (container.getChildAt(i) instanceof MaterialCheckBox chk && chk.isChecked()){
+                checkedItems.add(chk);
             }
         }
-        if(anythingChecked){
-            TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme()));
+        setIcons(categoryButton, content, checkedItems, checkedItems.isEmpty());
+    }
+
+    private static <E> Drawable[] getSelectedCompoundDrawables(List<E> checkedItems) {
+        Drawable[] drawables = new Drawable[checkedItems.size()];
+        for (int i = 0; i < checkedItems.size(); i++) {
+            if (checkedItems.get(i) instanceof CompoundButton compoundButton) {
+                drawables[i] = Tools.cloneDrawable(compoundButton.getCompoundDrawables()[2]);
+            }
         }
-        else{
-            TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(R.attr.colorSurfaceContainerLow, getContext().getTheme()));
+        return drawables;
+    }
+
+    private Drawable getSingleDrawable(Drawable[] drawables) {
+        if (drawables.length == 1) {
+            return Tools.cloneDrawable(drawables[0]);
         }
+        return ResourcesCompat.getDrawable(context.getResources(), R.drawable.rounded_more_horiz_24, context.getTheme());
+    }
+
+    private static Drawable combineDrawables(Drawable[] drawables) {
+        if (drawables.length == 1) {
+            return drawables[0];
+        }
+        LayerDrawable finalDrawable = new LayerDrawable(drawables);
+        for (int i = 0; i < drawables.length; i++) {
+            finalDrawable.setLayerGravity(i, Gravity.START);
+            finalDrawable.setLayerInsetEnd(i, Arrays.stream(drawables).skip(i + 1).mapToInt(Drawable::getIntrinsicWidth).sum());
+            finalDrawable.setLayerInsetStart(i, Arrays.stream(drawables).limit(i).mapToInt(Drawable::getIntrinsicWidth).sum());
+        }
+        return finalDrawable;
     }
 
     private void setCheckedStateInList(LinearLayout container, boolean[] values) {
@@ -193,7 +274,7 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
             if(values[i]) { chk.setChecked(true); }
             chk.setOnCheckedChangeListener((compoundButton, b) -> {
                 filterDreamTypes[getIdInContainer(container, chk)] = b;
-                checkboxSelectionWatcher(filterDreamTypeCat, filterDreamType);
+                checkboxSelectionChanged(filterDreamTypeCat, dreamTypeCheckboxContainer, contentDreamType);
             });
         }
     }
@@ -207,51 +288,82 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
         return -1;
     }
 
-    private void openCloseExpander(View filterSleepQualityRadioGroup) {
-        if (filterSleepQualityRadioGroup.getVisibility() == View.GONE) {
-            filterSleepQualityRadioGroup.setVisibility(View.VISIBLE);
+    private void openCloseExpander(View expanderContent) {
+        filterTags.clearFocus();
+        if (expanderContent.getVisibility() == View.GONE) {
+            expanderContent.setVisibility(View.VISIBLE);
         } else {
-            filterSleepQualityRadioGroup.setVisibility(View.GONE);
+            expanderContent.setVisibility(View.GONE);
         }
     }
 
     private void addTagFilterEntry(String enteredTag) {
-        CheckBox tag = generateCheckbox(enteredTag, R.drawable.ic_baseline_label_24);
-        tag.setChecked(true);
-        tag.setOnCheckedChangeListener((compoundButton, b) -> {
-            if(b) { filterTagsList.add(enteredTag); }
-            else { filterTagsList.remove(enteredTag); }
-            checkboxSelectionWatcher(filterEntryTagsCat, filterEntryTag);
-        });
-        filterEntryTag.addView(tag);
+        Chip titleChip = generateTagFilterChip(enteredTag, true);
+        tagFilterGroupTitle.addView(titleChip);
         filterTagsList.add(enteredTag);
         filterTags.setText("");
-        checkboxSelectionWatcher(filterEntryTagsCat, filterEntryTag);
+        if (noTagsInFilter.getVisibility() == View.VISIBLE) {
+            noTagsInFilter.setVisibility(View.GONE);
+        }
+        updateTagFilterCount();
     }
 
-    private CheckBox generateCheckbox(String text, int icon) {
-        CheckBox chk = new CheckBox(getContext());
-        chk.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        chk.setCompoundDrawablesWithIntrinsicBounds(null, null, AppCompatResources.getDrawable(getContext(), icon), null);
-        chk.setText(text);
-        return chk;
+    private Chip generateTagFilterChip(String enteredTag, boolean isTitle) {
+        Chip chip = new Chip(context);
+        chip.setText(enteredTag);
+        chip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        chip.setCheckable(false);
+        chip.setCloseIconVisible(true);
+        chip.setChipStrokeWidth(0);
+        int colorAttrBackground = isTitle ? R.attr.colorSecondary : R.attr.colorSurfaceContainer;
+        int colorAttrForeground = isTitle ? R.attr.colorOnSecondary : R.attr.colorOnSurface;
+        ColorStateList colorBackground = Tools.getAttrColorStateList(colorAttrBackground, context.getTheme());
+        ColorStateList colorForeground = Tools.getAttrColorStateList(colorAttrForeground, context.getTheme());
+        chip.setTextColor(colorForeground);
+        chip.setChipBackgroundColor(colorBackground);
+        chip.setCloseIconTint(colorForeground);
+        chip.setOnClickListener(e -> {
+            filterTagsList.remove(enteredTag);
+            ((ViewGroup) e.getParent()).removeView(e);
+            if (filterTagsList.isEmpty()) {
+                noTagsInFilter.setVisibility(View.VISIBLE);
+            }
+            updateTagFilterCount();
+        });
+        return chip;
+    }
+
+    private void updateTagFilterCount() {
+        int tagFilterCount = filterTagsList.size();
+        filterTagCount.setText(String.format(Locale.getDefault(), "%d %s", tagFilterCount, (tagFilterCount == 1 ? "tag" : "tags")));
+        tagFilterInfo.setText(String.format(Locale.getDefault(), "%d %s in filter", tagFilterCount, (tagFilterCount == 1 ? "tag" : "tags")));
+        if (tagFilterCount == 0) {
+            Drawable icon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.rounded_add_24, context.getTheme());
+            icon.setBounds(0, 0, Tools.dpToPx(context, 24), Tools.dpToPx(context, 24));
+            filterEntryTagsCat.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
+            filterTagCount.setVisibility(View.GONE);
+            tagFilterInfo.setVisibility(View.GONE);
+        }
+        else {
+            filterEntryTagsCat.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+            filterTagCount.setVisibility(View.VISIBLE);
+            tagFilterInfo.setVisibility(View.VISIBLE);
+        }
     }
 
     public AppliedFilter getFilters() {
-        int typeIndex = getSelectedRadio(filterJournalTypeRadioGroup)-1;
         int moodIndex = getSelectedRadio(filterDreamMoodRadioGroup)-1;
         int clarityIndex = getSelectedRadio(filterDreamClarityRadioGroup)-1;
         int qualityIndex = getSelectedRadio(filterSleepQualityRadioGroup)-1;
-        JournalTypes type = typeIndex >= 0 ? JournalTypes.values()[typeIndex] : JournalTypes.None;
         DreamMoods mood = moodIndex >= 0 ? DreamMoods.values()[moodIndex] : DreamMoods.None;
         DreamClarity clarity = clarityIndex >= 0 ? DreamClarity.values()[clarityIndex] : DreamClarity.None;
         SleepQuality quality = qualityIndex >= 0 ? SleepQuality.values()[qualityIndex] : SleepQuality.None;
-        return new AppliedFilter(filterTagsList, filterDreamTypes, type, mood, clarity, quality);
+        return new AppliedFilter(filterTagsList, filterDreamTypes, JournalTypes.None, mood, clarity, quality);
     }
 
     private int getSelectedRadio(RadioGroup radioGroup) {
         for (int i = 0; i < radioGroup.getChildCount(); i++) {
-            if(((RadioButton) radioGroup.getChildAt(i)).isChecked()){
+            if(((MaterialRadioButton) radioGroup.getChildAt(i)).isChecked()){
                 return i;
             }
         }
@@ -260,6 +372,19 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
 
     public void setOnClickPositiveButton(DialogInterface.OnClickListener listener) {
         okClickListener = listener;
+    }
+
+    private void updateStatesWhenLoaded(View view) {
+        ViewTreeObserver viewTreeObserver = view.getViewTreeObserver();
+        if (viewTreeObserver.isAlive()) {
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    setCurrentFilterCategoryStates(view);
+                }
+            });
+        }
     }
 
     @Override

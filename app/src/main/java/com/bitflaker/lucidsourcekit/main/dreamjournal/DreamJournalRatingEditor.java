@@ -308,7 +308,8 @@ public class DreamJournalRatingEditor extends Fragment {
             for (int i = 0; i < icons.length; i++) {
                 if(icons[i] != null) {
                     icons[i].setImageTintList(i == value ? selectedIconColor : unselectedIconColor);
-                    ViewGroup.LayoutParams lParams = icons[i].getLayoutParams();
+                    LinearLayout.LayoutParams lParams = (LinearLayout.LayoutParams) icons[i].getLayoutParams();
+                    lParams.topMargin = i == value ? Tools.dpToPx(getContext(), 6) : 0;
                     lParams.height = i == value ? Tools.dpToPx(getContext(), 24) : Tools.dpToPx(getContext(), 16);
                     icons[i].setLayoutParams(lParams);
                     icons[i].invalidate();

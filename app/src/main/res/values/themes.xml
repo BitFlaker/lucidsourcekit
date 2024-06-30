@@ -121,6 +121,7 @@
 
     <style name="Tooltip.Dark" parent="Widget.Material3.Tooltip">
         <item name="backgroundTint">?attr/colorSurfaceContainer</item>
+        <item name="android:padding">8dp</item>
     </style>
 
     <style name="LSK.MaterialCardView.Outlined" parent="Widget.Material3.CardView.Outlined">
