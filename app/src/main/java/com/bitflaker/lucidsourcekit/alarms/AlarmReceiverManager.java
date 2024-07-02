@@ -1,6 +1,7 @@
 package com.bitflaker.lucidsourcekit.alarms;
 
 import android.Manifest;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.alarms.updated.AlarmHandler;
@@ -70,6 +70,9 @@ public class AlarmReceiverManager extends BroadcastReceiver {
         db.getNotificationCategoryDao().getAll().blockingSubscribe(notificationCategories -> {
             NotificationOrderManager notificationOrderManager = NotificationOrderManager.load(notificationCategories);
             if(notificationOrderManager.hasNotifications()) {
+                if (!DataStoreManager.isInitialized()) {
+                    DataStoreManager.initialize(context);
+                }
                 boolean allNotificationsPaused = DataStoreManager.getInstance().getSetting(DataStoreKeys.NOTIFICATION_PAUSED_ALL).blockingFirst();
                 NotificationScheduleData nsd = notificationOrderManager.getNextNotification();
                 boolean categoryFound = false, categoryEnabled = false;
@@ -99,20 +102,20 @@ public class AlarmReceiverManager extends BroadcastReceiver {
                             return;
                         }
                         NotificationMessage msg = getWeightedNotificationMessage(messages);
-                        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, notificationCategoryId)
+                        Notification builder = new NotificationCompat.Builder(context, notificationCategoryId)
                                 .setSmallIcon(R.drawable.icon_no_bg)
                                 .setContentTitle("Reminder")
                                 .setContentText(msg.getMessage())
                                 .setStyle(new NotificationCompat.BigTextStyle().bigText(msg.getMessage()))
-                                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                                .setPriority(NotificationManager.IMPORTANCE_DEFAULT)
+                                .build();
                         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                             return;
                         }
                         int notifyId = Tools.getUniqueNotificationId(notificationCategoryId);
                         NotificationManager nMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                         nMgr.cancel(notifyId);
-                        notificationManager.notify(notifyId, builder.build());
+                        nMgr.notify(notifyId, builder);
                     }).dispose();
                 }).dispose();
             }

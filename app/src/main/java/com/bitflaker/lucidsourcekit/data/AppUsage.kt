@@ -89,8 +89,13 @@ class AppUsage {
                 if(!classNameFilters.isNullOrEmpty() && !classNameFilters.contains(state.className)) continue
                 if (actCount == 0 && state.isRunning) {
                     appLaunchTimeStamp = state.eventTime
+                    println("Last open time: " + state.eventTime)
                 } else if (actCount == 1 && !state.isRunning) {
+                    println("Last close time: " + state.eventTime)
                     appOpenStats.add(AppOpenStats(appLaunchTimeStamp, state.eventTime))
+                }
+                else {
+                    println("Other: " + state.eventTime + " [" + actCount + "]")
                 }
                 actCount += if (state.isRunning) 1 else -1
             }
