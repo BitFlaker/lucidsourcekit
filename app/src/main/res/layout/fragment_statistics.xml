@@ -290,7 +290,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="-2dp"
-                            android:text="Average count"
+                            android:text="Average sessions"
                             android:textColor="?attr/secondaryTextColor"
                             android:textSize="11sp" />
                     </LinearLayout>

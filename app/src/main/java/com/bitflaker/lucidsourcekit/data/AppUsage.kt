@@ -7,10 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS
-import android.util.Log
 import com.bitflaker.lucidsourcekit.main.dreamjournal.DreamJournalEntryEditor
-import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 class AppUsage {
     companion object {
@@ -37,6 +34,10 @@ class AppUsage {
                     else if (event.eventType == UsageEvents.Event.ACTIVITY_STOPPED) {
                         val state = stateMap[event.packageName]
                         state?.appUsageEvents?.add(LaunchEvent(event.className, event.timeStamp, false))
+                    }
+                    else if (event.eventType == UsageEvents.Event.ACTIVITY_PAUSED) {
+                        val state = stateMap[event.packageName]
+                        state?.appUsageEvents?.add(LaunchEvent(event.className, event.timeStamp, null))
                     }
                 }
                 return stateMap[context.packageName] ?: AppUsageEvents(packageName = context.packageName)
@@ -81,23 +82,50 @@ class AppUsage {
         }
 
         private fun getAppOpenStats(classNameFilters: List<String>?): ArrayList<AppOpenStats> {
+            var runningActivityCount = 0
+            var appLaunchTimeStamp: Long = 0
+            val appPauseEvents: HashMap<String, Long> = hashMapOf()
             val appOpenStats: ArrayList<AppOpenStats> = arrayListOf()
             appUsageEvents.sortBy { x -> x.eventTime }
-            var actCount = 0
-            var appLaunchTimeStamp: Long = 0
             for (state in appUsageEvents) {
+                // Only process events complying with the provided class name filter
                 if(!classNameFilters.isNullOrEmpty() && !classNameFilters.contains(state.className)) continue
-                if (actCount == 0 && state.isRunning) {
-                    appLaunchTimeStamp = state.eventTime
-                    println("Last open time: " + state.eventTime)
-                } else if (actCount == 1 && !state.isRunning) {
-                    println("Last close time: " + state.eventTime)
-                    appOpenStats.add(AppOpenStats(appLaunchTimeStamp, state.eventTime))
+
+                if (state.isRunning == true) {
+                    if (appPauseEvents.containsKey(state.className)) {
+                        // In case the activity was paused before and is launched again, count the
+                        // usage time excluding the time the app was paused and without incrementing
+                        // the runningActivityCount as the activity was just unpaused
+                        appOpenStats.add(AppOpenStats(appLaunchTimeStamp, appPauseEvents[state.className]!!))
+                        appPauseEvents.remove(state.className)
+                        appLaunchTimeStamp = state.eventTime
+                        continue
+                    }
+                    if (runningActivityCount == 0) {
+                        // The first activity instance was launched. A new app usage session was started
+                        appLaunchTimeStamp = state.eventTime
+                    }
+                    runningActivityCount++
+                }
+                else if (state.isRunning == false) {
+                    if (appPauseEvents.containsKey(state.className)) {
+                        // In case the activity was paused before it was closed, untrack the
+                        // pause event timestamp and handle it like every other activity closed event
+                        appPauseEvents.remove(state.className)
+                    }
+                    if (runningActivityCount == 1) {
+                        // The last activity instance was closed, the current app usage session
+                        // is now considered completed
+                        appPauseEvents.clear()
+                        appOpenStats.add(AppOpenStats(appLaunchTimeStamp, state.eventTime))
+                    }
+                    runningActivityCount--
                 }
                 else {
-                    println("Other: " + state.eventTime + " [" + actCount + "]")
+                    // In case the activity was paused, store the timestamp without modifying
+                    // the runningActivityCount as the activity has not yet been closed
+                    appPauseEvents[state.className] = state.eventTime
                 }
-                actCount += if (state.isRunning) 1 else -1
             }
             return appOpenStats
         }
@@ -114,6 +142,6 @@ class AppUsage {
     data class LaunchEvent(
         val className: String,
         val eventTime: Long = 0,
-        val isRunning: Boolean = false
+        val isRunning: Boolean? = false
     )
 }
