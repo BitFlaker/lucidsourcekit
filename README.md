@@ -39,7 +39,7 @@ To install this app, you have to build it from source. To do so, you can clone t
 There is a list of known issues [here](https://github.com/BitFlaker/lucidsourcekit/issues) (bugs, feature suggestions and other issues).\
 In case you found a bug or have a new idea/feature for the application, feel free to create a new issue [here](https://github.com/BitFlaker/lucidsourcekit/issues/new).
 
-### Currently known issues
+#### Currently known issues
 * The app does not support light mode
 * Some buttons / features are still placeholders (like automatic goal difficulty adjustment)
 * Settings and customizations are not yet available
@@ -50,6 +50,9 @@ In case you found a bug or have a new idea/feature for the application, feel fre
 
 ## 📱 Requirements
 This application requires an Android device with **at least Android 7.0 (Nougat)** or newer.
+
+## 💫 Like this project?
+If you like this app, consider giving this repository a star ⭐
 
 ## 📜 License
 This application is licensed under the [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/).

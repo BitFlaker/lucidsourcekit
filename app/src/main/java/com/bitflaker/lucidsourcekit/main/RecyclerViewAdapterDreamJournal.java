@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.util.Pair;
@@ -19,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.res.ResourcesCompat;
@@ -36,12 +38,9 @@ import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.
 import com.bitflaker.lucidsourcekit.general.RecordingObjectTools;
 import com.bitflaker.lucidsourcekit.general.SortOrders;
 import com.bitflaker.lucidsourcekit.general.Tools;
-import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntriesList;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntry;
-import com.bitflaker.lucidsourcekit.general.database.values.DreamMoods;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamTypes;
-import com.bitflaker.lucidsourcekit.general.database.values.SleepQuality;
 import com.bitflaker.lucidsourcekit.main.dreamjournal.DreamJournalEntryEditor;
 import com.bitflaker.lucidsourcekit.main.dreamjournal.JournalInMemory;
 import com.bitflaker.lucidsourcekit.main.dreamjournal.JournalInMemoryManager;
@@ -58,7 +57,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<RecyclerViewAdapterDreamJournal.MainViewHolder> {
@@ -122,68 +120,38 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
 
         holder.title.setText(current.getTitles()[position]);
 
-        if(current.getDescriptions()[position].equals("")){
-            int audioCount = current.getAudioLocations().get(position).size();
-            holder.description.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_mic_24, 0, 0, 0);
-            holder.description.setText(String.format(Locale.getDefault(), "%d %s", audioCount, context.getResources().getString(audioCount == 1 ? R.string.recording_single : R.string.recording_multiple)));
-            holder.description.setGravity(Gravity.CENTER_VERTICAL);
+        String currentDescription = current.getDescriptions()[position];
+        if(currentDescription.isEmpty()) {
+            holder.description.setText("This dream journal entry contains no text. How about adding some content now?");
+            holder.description.setTypeface(null, Typeface.ITALIC);
+            holder.description.setTextColor(Tools.getAttrColor(R.attr.tertiaryTextColor, context.getTheme()));
         }
         else {
-            String previewDescription = current.getDescriptions()[position];
-            holder.description.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            holder.description.setText(previewDescription);
-//            holder.description.setText(previewDescription.substring(0, Math.min(previewDescription.length(), 300)));
-            holder.description.setGravity(Gravity.TOP);
-            holder.setDescription(current.getDescriptions()[position]);
+            holder.description.setText(currentDescription);
+            holder.description.setTypeface(null, Typeface.NORMAL);
+            holder.description.setTextColor(Tools.getAttrColor(R.attr.secondaryTextColor, context.getTheme()));
+            holder.setDescription(currentDescription);
         }
 
+        // Settings the icon for recordings count
+        int audioCount = current.getAudioLocations().get(position).size();
+        holder.recordingsCount.setText(String.format(Locale.getDefault(), "%d", audioCount));
+//        holder.recordingsCount.setVisibility(audioCount == 0 ? View.GONE : View.VISIBLE);     // TODO: make auto visibility available again when tag list is calculated properly
+        holder.recordingsCount.setVisibility(View.GONE);
+
+        // Setting the tag list -> TODO: reduce the calculated width by the (width + margin) of the recordingsCount in case it is visible
         List<String> tagItems = current.getTags().get(position).stream().map(assignedTags -> assignedTags.description).collect(Collectors.toList());
         int layoutWidth = calculateTagsContainerWidth(holder.tagsHolder);
         holder.tagsHolder.removeAllViews();
         addTags(holder, tagItems, layoutWidth);
 
         holder.titleIcons.removeAllViews();
-        switch (Objects.requireNonNull(DreamMoods.getEnum(current.getDreamMoods()[position]))){
-            case Outstanding: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_sentiment_very_satisfied_24)); break;
-            case Great: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_sentiment_satisfied_24)); break;
-            case Ok: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_sentiment_neutral_24)); break;
-            case Poor: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_sentiment_dissatisfied_24)); break;
-            case Terrible: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_sentiment_very_dissatisfied_24)); break;
-        }
-        switch (Objects.requireNonNull(SleepQuality.getEnum(current.getSleepQualities()[position]))){
-            case Outstanding: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_stars_24)); break;
-            case Great: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_star_24)); break;
-            case Poor: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_star_half_24)); break;
-            case Terrible: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_star_border_24)); break;
-        }
-        switch (Objects.requireNonNull(DreamClarity.getEnum(current.getDreamClarities()[position]))){
-            case CrystalClear: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_7_24)); break;
-            case Clear: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_6_24)); break;
-            case Cloudy: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_5_24)); break;
-            case VeryCloudy: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_brightness_4_24)); break;
-        }
-
-        int specialTypesCount = current.getTypes().get(position).size();
-        if(specialTypesCount > 0) {
-            int dp2 = Tools.dpToPx(context, 2);
-            View specialDivider = new View(context);
-            LinearLayout.LayoutParams lParamsDivider = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Tools.dpToPx(context, 2));
-            lParamsDivider.leftMargin = dp2;
-            lParamsDivider.rightMargin = dp2;
-            lParamsDivider.topMargin = dp2 * 3;
-            lParamsDivider.bottomMargin = dp2 * 3;
-            specialDivider.setLayoutParams(lParamsDivider);
-            specialDivider.setBackgroundColor(Tools.getAttrColor(R.attr.colorSurface, context.getTheme()));
-            holder.titleIcons.addView(specialDivider);
-        }
-
-        for (int i = 0; i < specialTypesCount; i++) {
-            switch (Objects.requireNonNull(DreamTypes.getEnum(current.getTypes().get(position).get(i).typeId))) {
-                case Lucid: holder.titleIcons.addView(generateIconHighlight(R.drawable.rounded_award_star_24)); break;
-                case Nightmare: holder.titleIcons.addView(generateIcon(R.drawable.rounded_sentiment_stressed_24)); break;
-                case FalseAwakening: holder.titleIcons.addView(generateIcon(R.drawable.rounded_cinematic_blur_24)); break;
-                case SleepParalysis: holder.titleIcons.addView(generateIcon(R.drawable.ic_baseline_accessibility_new_24)); break;
-                case Recurring: holder.titleIcons.addView(generateIcon(R.drawable.ic_round_loop_24)); break;
+        List<JournalEntryHasType> types = current.getTypes().get(position);
+        for (int i = 0; i < types.size(); i++) {
+            DreamTypes dreamType = DreamTypes.getEnum(types.get(i).typeId);
+            ImageView specialTypeIcon = getSpecialTypeIcon(dreamType);
+            if (specialTypeIcon != null) {
+                holder.titleIcons.addView(specialTypeIcon);
             }
         }
 
@@ -303,6 +271,17 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         });
     }
 
+    private @Nullable ImageView getSpecialTypeIcon(DreamTypes dreamType) {
+        return switch (dreamType) {
+            case Lucid -> generateIconHighlight(R.drawable.rounded_award_star_24);
+            case Nightmare -> generateIconHighlight(R.drawable.rounded_sentiment_stressed_24);
+            case FalseAwakening -> generateIconHighlight(R.drawable.rounded_cinematic_blur_24);
+            case SleepParalysis -> generateIconHighlight(R.drawable.ic_baseline_accessibility_new_24);
+            case Recurring -> generateIconHighlight(R.drawable.ic_round_loop_24);
+            default -> null;
+        };
+    }
+
     private int calculateTagsContainerWidth(@NonNull ViewGroup tagsContainer) {
         // Remove all horizontal margins and paddings from all parents, so we get the resulting width of the tag container
         int totalWidth = activity.getWindow().getDecorView().getMeasuredWidth();
@@ -312,9 +291,8 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             View view = (View) viewParent;
             totalHorizontalMargins += getHorizontalSpacing(view);
         }
-        totalHorizontalMargins += Tools.dpToPx(context, 20);    // add the known fixed width of the icons sidebar
-        int layoutWidth = totalWidth - totalHorizontalMargins;
-        return layoutWidth;
+        totalHorizontalMargins += Tools.dpToPx(context, 20);    // add the known fixed width of the icons sidebar // TODO: only add this in case any icons are actually being displayed
+        return totalWidth - totalHorizontalMargins;
     }
 
     private static int getHorizontalSpacing(View view) {
@@ -545,7 +523,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         return index;
     }
 
-    private View generateIcon(int iconId) {
+    private ImageView generateIcon(int iconId) {
         ImageView icon = new ImageView(context);
         icon.setImageResource(iconId);
         ColorStateList stateList = Tools.getAttrColorStateList(R.attr.secondaryTextColor, context.getTheme());
@@ -555,7 +533,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         return icon;
     }
 
-    private View generateIconHighlight(int iconId) {
+    private ImageView generateIconHighlight(int iconId) {
         ImageView icon = new ImageView(context);
         icon.setImageResource(iconId);
         ColorStateList stateList = Tools.getAttrColorStateList(R.attr.secondaryTextColor, context.getTheme());
@@ -799,7 +777,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     }
 
     public class MainViewHolder extends RecyclerView.ViewHolder {
-        TextView title, description, firstDateIndicatorName, firstDateIndicatorDate;
+        TextView title, description, firstDateIndicatorName, firstDateIndicatorDate, recordingsCount;
         LinearLayout titleIcons, tagsHolder;
         MaterialCardView entryCard;
         ConstraintLayout mainContent;
@@ -816,6 +794,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             mainContent = itemView.findViewById(R.id.cl_main_content);
             firstDateIndicatorName = itemView.findViewById(R.id.txt_journal_entry_first_date_indicator_name);
             firstDateIndicatorDate = itemView.findViewById(R.id.txt_journal_entry_first_date_indicator_date);
+            recordingsCount = itemView.findViewById(R.id.txt_recordings_count);
 
             descriptionLineHeight = description.getLineHeight();
             ConstraintSet cs = new ConstraintSet();

@@ -244,19 +244,19 @@ public class DreamJournal extends Fragment {
         journalEditorActivityResultLauncher.launch(intent);
     }
 
-    private void animateFab(){
-        @ColorInt int colorPrimaryContainer = Tools.getAttrColor(R.attr.colorPrimaryContainer, getContext().getTheme());
-        @ColorInt int colorOnPrimaryContainer = Tools.getAttrColor(R.attr.colorOnPrimaryContainer, getContext().getTheme());
-        @ColorInt int colorSecondaryContainer = Tools.getAttrColor(R.attr.colorSecondaryContainer, getContext().getTheme());
-        @ColorInt int colorOnSecondaryContainer = Tools.getAttrColor(R.attr.colorOnSecondaryContainer, getContext().getTheme());
+    private void animateFab() {
+        @ColorInt int colorClosedBackground = Tools.getAttrColor(R.attr.colorPrimaryContainer, getContext().getTheme());
+        @ColorInt int colorOnClosedBackground = Tools.getAttrColor(R.attr.colorOnPrimaryContainer, getContext().getTheme());
+        @ColorInt int colorOpenBackground = Tools.getAttrColor(R.attr.colorSurfaceContainerHigh, getContext().getTheme());
+        @ColorInt int colorOnOpenBackground = Tools.getAttrColor(R.attr.colorOnSurface, getContext().getTheme());
 
         if (fabAdd == null) { return; }
         if (isOpen) {
             fabAdd.startAnimation(rotateForward);
             fabText.startAnimation(fabClose);
             fabForms.startAnimation(fabClose);
-            Tools.animateBackgroundTint(fabAdd, colorSecondaryContainer, colorPrimaryContainer, 300);
-            Tools.animateImageTint(fabAdd, colorOnSecondaryContainer, colorOnPrimaryContainer, 300);
+            Tools.animateBackgroundTint(fabAdd, colorOpenBackground, colorClosedBackground, 300);
+            Tools.animateImageTint(fabAdd, colorOnOpenBackground, colorOnClosedBackground, 300);
             fabText.setClickable(false);
             fabForms.setClickable(false);
             isOpen=false;
@@ -265,8 +265,8 @@ public class DreamJournal extends Fragment {
             fabAdd.startAnimation(rotateBackward);
             fabText.startAnimation(fabOpen);
             fabForms.startAnimation(fabOpen);
-            Tools.animateBackgroundTint(fabAdd, colorPrimaryContainer, colorSecondaryContainer, 300);
-            Tools.animateImageTint(fabAdd, colorOnPrimaryContainer, colorOnSecondaryContainer, 300);
+            Tools.animateBackgroundTint(fabAdd, colorClosedBackground, colorOpenBackground, 300);
+            Tools.animateImageTint(fabAdd, colorOnClosedBackground, colorOnOpenBackground, 300);
             fabText.setClickable(true);
             fabForms.setClickable(true);
             isOpen=true;

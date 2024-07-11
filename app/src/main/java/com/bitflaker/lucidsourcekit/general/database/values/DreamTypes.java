@@ -18,12 +18,12 @@ public enum DreamTypes {
         return id;
     }
 
-    public static DreamTypes getEnum(String id){
+    public static DreamTypes getEnum(String id) {
         for (DreamTypes enm : DreamTypes.values()) {
             if (enm.getId().equalsIgnoreCase(id)) {
                 return enm;
             }
         }
-        return null;
+        return DreamTypes.None;
     }
 }
