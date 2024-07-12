@@ -30,7 +30,8 @@ Use the app at your own risk.
 > The code quaility is not great at the moment and requires a lot of refactoring which will be done piece by piece in the future.
 
 ## 🚀 Installation
-To install this app, you have to build it from source. To do so, you can clone this repository and use the "Import Project" option in Android Studio.
+To install this app, you have to build it from source. To do so, you can clone this repository and use the "Import Project" option in [Android Studio](https://developer.android.com/studio?hl=de). Then you can export the project as an `apk` file and install it on your phone. \
+This application requires an Android device with **at least Android 7.0 (Nougat)** or newer.
 
 > [!WARNING]  
 > Be careful installing apk files from any sources you do not fully trust! Currently no official builds of this app are distributed. Make sure to check the apk files / code before installing it.
@@ -44,12 +45,11 @@ In case you found a bug or have a new idea/feature for the application, feel fre
 * Some buttons / features are still placeholders (like automatic goal difficulty adjustment)
 * Settings and customizations are not yet available
 
-## 🌐 Supported languages
-* English
-* German (currently very poorly supported)
-
-## 📱 Requirements
-This application requires an Android device with **at least Android 7.0 (Nougat)** or newer.
+## 🌐 Language support
+| Language | Translated |
+|----------|------------|
+| English  | 100%       |
+| German   | TBD        |
 
 ## 💫 Like this project?
 If you like this app, consider giving this repository a star ⭐

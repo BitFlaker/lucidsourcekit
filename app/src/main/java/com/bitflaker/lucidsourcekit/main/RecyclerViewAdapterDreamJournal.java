@@ -118,8 +118,18 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             holder.firstDateIndicatorDate.setText(dateFormat.format(cCurrent.getTime()));
         }
 
-        holder.title.setText(current.getTitles()[position]);
+        holder.titleIcons.removeAllViews();
+        List<JournalEntryHasType> types = current.getTypes().get(position);
+        for (int i = 0; i < types.size(); i++) {
+            DreamTypes dreamType = DreamTypes.getEnum(types.get(i).typeId);
+            ImageView specialTypeIcon = getSpecialTypeIcon(dreamType);
+            if (specialTypeIcon != null) {
+                holder.titleIcons.addView(specialTypeIcon);
+            }
+        }
+        holder.titleIcons.setVisibility(types.isEmpty() ? View.GONE : View.VISIBLE);
 
+        holder.title.setText(current.getTitles()[position]);
         String currentDescription = current.getDescriptions()[position];
         if(currentDescription.isEmpty()) {
             holder.description.setText("This dream journal entry contains no text. How about adding some content now?");
@@ -136,24 +146,17 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         // Settings the icon for recordings count
         int audioCount = current.getAudioLocations().get(position).size();
         holder.recordingsCount.setText(String.format(Locale.getDefault(), "%d", audioCount));
-//        holder.recordingsCount.setVisibility(audioCount == 0 ? View.GONE : View.VISIBLE);     // TODO: make auto visibility available again when tag list is calculated properly
-        holder.recordingsCount.setVisibility(View.GONE);
+        holder.recordingsCount.setVisibility(audioCount == 0 ? View.GONE : View.VISIBLE);
 
-        // Setting the tag list -> TODO: reduce the calculated width by the (width + margin) of the recordingsCount in case it is visible
-        List<String> tagItems = current.getTags().get(position).stream().map(assignedTags -> assignedTags.description).collect(Collectors.toList());
-        int layoutWidth = calculateTagsContainerWidth(holder.tagsHolder);
+        // Setting the tag list
+        List<String> tagItems = current.getTags().get(position)
+                .stream()
+                .map(assignedTags -> assignedTags.description).
+                collect(Collectors.toList());
+
+        int layoutWidth = calculateTagsContainerWidth(holder.tagsHolder, holder.recordingsCount, holder.titleIcons);
         holder.tagsHolder.removeAllViews();
         addTags(holder, tagItems, layoutWidth);
-
-        holder.titleIcons.removeAllViews();
-        List<JournalEntryHasType> types = current.getTypes().get(position);
-        for (int i = 0; i < types.size(); i++) {
-            DreamTypes dreamType = DreamTypes.getEnum(types.get(i).typeId);
-            ImageView specialTypeIcon = getSpecialTypeIcon(dreamType);
-            if (specialTypeIcon != null) {
-                holder.titleIcons.addView(specialTypeIcon);
-            }
-        }
 
         holder.entryCard.setOnClickListener(e -> {
             final BottomSheetDialog bsd = new BottomSheetDialog(context, R.style.BottomSheetDialogStyle);
@@ -282,7 +285,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         };
     }
 
-    private int calculateTagsContainerWidth(@NonNull ViewGroup tagsContainer) {
+    private int calculateTagsContainerWidth(@NonNull ViewGroup tagsContainer, @NonNull TextView recordingsCount, @NonNull ViewGroup specialIconContainer) {
         // Remove all horizontal margins and paddings from all parents, so we get the resulting width of the tag container
         int totalWidth = activity.getWindow().getDecorView().getMeasuredWidth();
         int totalHorizontalMargins = getHorizontalSpacing(tagsContainer);
@@ -291,21 +294,24 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             View view = (View) viewParent;
             totalHorizontalMargins += getHorizontalSpacing(view);
         }
-        totalHorizontalMargins += Tools.dpToPx(context, 20);    // add the known fixed width of the icons sidebar // TODO: only add this in case any icons are actually being displayed
-        return totalWidth - totalHorizontalMargins;
+        int recordingsWidth = getViewWidth(recordingsCount);    // Seems to ignore the compound drawable at the start, therefore manually add it below
+        if (recordingsCount.getVisibility() != View.GONE) {
+            recordingsWidth += Tools.dpToPx(context, 20);   // TODO: find a way not to hardcode this: get the sum of all horizontal compound drawable widths (.intrinsicWidth(), .bounds().width() are all 0 at this point)
+        }
+        int specialIconContainerWidth = getViewWidth(specialIconContainer);
+        return totalWidth - totalHorizontalMargins - recordingsWidth - specialIconContainerWidth;
     }
 
     private static int getHorizontalSpacing(View view) {
         int margin = 0;
-        if(view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        if(view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams params) {
             margin = params.leftMargin + params.rightMargin;
         }
         return margin + view.getPaddingLeft() + view.getPaddingRight();
     }
 
     private void addTags(@NonNull MainViewHolder holder, List<String> tagItems, int layoutWidth) {
-        if (tagItems.size() == 0) {
+        if (tagItems.isEmpty()) {
             holder.tagsHolder.addView(generateTagInfo("no tags available"));
             return;
         }
@@ -320,15 +326,17 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
                 totalTagsWidth += currentTagWidth + currentMargin;
             }
             else {
+                int removeCount = 0;
                 TextView collapsedTagCount = generateCollapsedTagCountView(tagItems.size() - i);
-                int collapsedTagCountWidth = getViewWidth(collapsedTagCount);
-                while (totalTagsWidth + collapsedTagCountWidth + dividerSpacing > layoutWidth) {
+                while (totalTagsWidth + getViewWidth(collapsedTagCount) + dividerSpacing > layoutWidth) {
+                    removeCount++;
                     int index = holder.tagsHolder.getChildCount() - 1;
                     View lastView = holder.tagsHolder.getChildAt(index);
+                    holder.tagsHolder.removeViewAt(index);
                     int marginToRemove = index == 0 ? 0 : dividerSpacing;
                     int viewToRemoveWidth = getViewWidth(lastView);
-                    holder.tagsHolder.removeView(lastView);
                     totalTagsWidth -= viewToRemoveWidth + marginToRemove;
+                    collapsedTagCount = generateCollapsedTagCountView(tagItems.size() - i + removeCount);
                 }
                 holder.tagsHolder.addView(collapsedTagCount);
                 break;
@@ -437,6 +445,9 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     }
 
     private int getViewWidth(View view) {
+        if (view.getVisibility() == View.GONE) {
+            return 0;
+        }
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         return view.getMeasuredWidth();
     }

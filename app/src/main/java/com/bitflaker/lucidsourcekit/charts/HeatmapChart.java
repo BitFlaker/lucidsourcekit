@@ -94,7 +94,7 @@ public class HeatmapChart extends View {
     }
 
     private void setup() {
-        fullTileColor = Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme());
+        fullTileColor = Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme());
         mainColor = getResources().getColor(R.color.lighter_orange, getContext().getTheme());
         @ColorInt int defaultColor = getResources().getColor(R.color.white, getContext().getTheme());
         @ColorInt int trackColor = Tools.getAttrColor(R.attr.colorSurface, getContext().getTheme());

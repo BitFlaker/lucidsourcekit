@@ -46,7 +46,7 @@ public class RodGraph extends View {
         dataLinePaintBackground.setColor(Tools.getAttrColor(R.attr.colorSurface, getContext().getTheme()));
         dataLinePaintBackground.setStrokeCap(Paint.Cap.ROUND);
         dataLinePaintBackground.setAntiAlias(true);
-        dataLinePaint.setColor(Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme()));
+        dataLinePaint.setColor(Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme()));
         dataLinePaint.setStrokeCap(Paint.Cap.ROUND);
         dataLinePaint.setAntiAlias(true);
         dataLabelPaint.setColor(Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme()));

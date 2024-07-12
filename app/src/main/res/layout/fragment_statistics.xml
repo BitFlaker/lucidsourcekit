@@ -257,7 +257,7 @@
 
                     <com.bitflaker.lucidsourcekit.charts.IconCircleHeatmap
                         android:id="@+id/ich_session_heatmap"
-                        android:layout_width="144dp"
+                        android:layout_width="136dp"
                         android:layout_height="160dp"
                         android:layout_marginTop="12dp"
                         android:gravity="center"

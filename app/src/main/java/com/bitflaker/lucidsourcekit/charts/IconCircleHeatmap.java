@@ -111,10 +111,10 @@ public class IconCircleHeatmap extends View {
         int time18Width = textBounds.width();
         int time18Height = textBounds.height();
 
-        dataLabelPaint.getTextBounds("App session", 0, "App usage".length(), textBounds);
+        dataLabelPaint.getTextBounds("Session", 0, "Session".length(), textBounds);
         int descriptionL1Width = textBounds.width();
         int descriptionL1Height = textBounds.height();
-        dataLabelPaint.getTextBounds("timeline", 0, "times".length(), textBounds);
+        dataLabelPaint.getTextBounds("timeline", 0, "timeline".length(), textBounds);
         int descriptionL2Width = textBounds.width();
         int descriptionL2Height = textBounds.height();
 
@@ -128,8 +128,8 @@ public class IconCircleHeatmap extends View {
 
         dataLabelPaint.setColor(textColorSecondary);
         float diameterDescSpacing = (diameter - descriptionL1Height - textMargin - descriptionL2Height) / 2.0f;
-        canvas.drawText("App session", horizontalSpacing - strokePadding + diameter / 2.0f - descriptionL1Width / 2.0f, verticalSpacing + diameterDescSpacing + descriptionL1Height, dataLabelPaint);
-        canvas.drawText("timeline", horizontalSpacing - strokePadding + diameter / 2.0f - descriptionL2Width / 2.0f, verticalSpacing + diameterDescSpacing + descriptionL1Height + textMargin + descriptionL2Height, dataLabelPaint);
+        canvas.drawText("Session", horizontalSpacing + diameter / 2.0f - descriptionL1Width / 2.0f, verticalSpacing + diameterDescSpacing + descriptionL1Height, dataLabelPaint);
+        canvas.drawText("timeline", horizontalSpacing + diameter / 2.0f - descriptionL2Width / 2.0f, verticalSpacing + diameterDescSpacing + descriptionL1Height + textMargin + descriptionL2Height, dataLabelPaint);
         dataLabelPaint.setColor(textColorTertiary);
 
         // draw track
