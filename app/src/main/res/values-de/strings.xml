@@ -29,8 +29,8 @@
     <string name="active_events">Aktive Ereignisse</string>
     <string name="reality_check_reminder">Reality-Check Erinnerung</string>
     <string name="active_alarms">Aktive Wecker</string>
-    <string name="collection">Sammlung</string>
-    <string name="all_time_counts">Allzeit Werte</string>
+    <string name="remember">Rückblick</string>
+    <string name="remember_description">Rufe Träume in Erinnerung</string>
     <string name="total_journal_entries">Tagebucheinträge</string>
     <string name="lucid_journal_entries">luzide Tagebucheinträge</string>
     <string name="days_opening_streak">Tage Streak</string>

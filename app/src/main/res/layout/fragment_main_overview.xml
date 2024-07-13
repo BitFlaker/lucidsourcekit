@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/img_top_graphic"
-            android:layout_marginTop="-42dp"
+            android:layout_marginTop="-48dp"
             android:orientation="vertical">
 
             <TextView
@@ -34,8 +34,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="@string/overview"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="23sp"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="21sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -43,8 +43,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
+                android:layout_marginTop="-2dp"
                 android:text="@string/active_events"
-                android:textColor="?attr/secondaryTextColor"
+                android:textColor="?attr/tertiaryTextColor"
                 android:textSize="14sp" />
 
             <GridLayout
@@ -59,11 +60,12 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/crd_reality_check_reminder_state"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_columnWeight="1"
                     android:layout_gravity="fill"
-                    app:strokeWidth="0dp"
+                    android:gravity="center_vertical"
                     app:cardBackgroundColor="?attr/colorSurfaceContainer"
+                    app:strokeWidth="0dp"
                     app:cardCornerRadius="@dimen/cardRadius"
                     app:cardElevation="@dimen/cardElevationRegular">
 
@@ -79,17 +81,19 @@
                         android:paddingBottom="5dp"
                         android:text="@string/reality_check_reminder"
                         android:textColor="?attr/primaryTextColor"
-                        app:drawableStartCompat="@drawable/ic_baseline_check_24" />
+                        android:textSize="14sp"
+                        app:drawableStartCompat="@drawable/rounded_close_24"
+                        app:drawableTint="?attr/tertiaryTextColor" />
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/crd_permanent_notification_state"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_columnWeight="1"
                     android:layout_gravity="fill"
-                    android:backgroundTint="?attr/colorSurfaceContainer"
                     android:gravity="center_vertical"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainer"
                     app:strokeWidth="0dp"
                     app:cardCornerRadius="@dimen/cardRadius"
                     app:cardElevation="@dimen/cardElevationRegular">
@@ -104,19 +108,21 @@
                         android:paddingTop="5dp"
                         android:paddingEnd="10dp"
                         android:paddingBottom="5dp"
-                        android:text="Permanent notification"
+                        android:text="Pinned notification"
                         android:textColor="?attr/primaryTextColor"
-                        app:drawableStartCompat="@drawable/ic_baseline_cross_24" />
+                        android:textSize="14sp"
+                        app:drawableStartCompat="@drawable/rounded_close_24"
+                        app:drawableTint="?attr/tertiaryTextColor" />
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/crd_lockscreen_writer_state"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_columnWeight="1"
                     android:layout_gravity="fill"
-                    android:backgroundTint="?attr/colorSurfaceContainer"
                     android:gravity="center_vertical"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainer"
                     app:strokeWidth="0dp"
                     app:cardCornerRadius="@dimen/cardRadius"
                     app:cardElevation="@dimen/cardElevationRegular">
@@ -131,20 +137,21 @@
                         android:paddingTop="5dp"
                         android:paddingEnd="10dp"
                         android:paddingBottom="5dp"
-                        android:text="Lockscreen journal writer"
+                        android:text="Lockscreen launcher"
                         android:textColor="?attr/primaryTextColor"
-                        app:drawableStartCompat="@drawable/ic_baseline_cross_24" />
+                        android:textSize="14sp"
+                        app:drawableStartCompat="@drawable/rounded_close_24"
+                        app:drawableTint="?attr/tertiaryTextColor" />
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- morning / evening reminder -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/crd_task_reminder_state"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_columnWeight="1"
                     android:layout_gravity="fill"
-                    android:backgroundTint="?attr/colorSurfaceContainer"
                     android:gravity="center_vertical"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainer"
                     app:strokeWidth="0dp"
                     app:cardCornerRadius="@dimen/cardRadius"
                     app:cardElevation="@dimen/cardElevationRegular">
@@ -159,66 +166,35 @@
                         android:paddingTop="5dp"
                         android:paddingEnd="10dp"
                         android:paddingBottom="5dp"
-                        android:text="Task reminder"
+                        android:text="Goals reminder"
                         android:textColor="?attr/primaryTextColor"
-                        app:drawableStartCompat="@drawable/ic_baseline_cross_24" />
+                        android:textSize="14sp"
+                        app:drawableStartCompat="@drawable/rounded_close_24"
+                        app:drawableTint="?attr/tertiaryTextColor" />
                 </com.google.android.material.card.MaterialCardView>
             </GridLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/txt_alarms_title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginEnd="20dp"
-                android:gravity="top"
-                android:orientation="horizontal">
+                android:layout_marginTop="32dp"
+                android:layout_weight="1"
+                android:text="@string/active_alarms"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="21sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/txt_alarms_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/active_alarms"
-                    android:textColor="?attr/primaryTextColor"
-                    android:textSize="23sp"
-                    android:textStyle="bold" />
-
-                <!--                <com.google.android.material.card.MaterialCardView-->
-                <!--                    android:id="@+id/crd_show_all_alarms"-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="32dp"-->
-                <!--                    android:padding="0dp"-->
-                <!--                    android:text="Show All"-->
-                <!--                    android:textColor="?attr/primaryTextColor"-->
-                <!--                    android:textSize="12sp"-->
-                <!--                    app:cardBackgroundColor="?attr/backgroundColor"-->
-                <!--                    app:cardCornerRadius="32dp">-->
-
-                <!--                    <TextView-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:layout_gravity="center_vertical"-->
-                <!--                        android:layout_marginStart="15dp"-->
-                <!--                        android:layout_marginEnd="5dp"-->
-                <!--                        android:gravity="center_vertical"-->
-                <!--                        android:drawableEnd="@drawable/ic_round_keyboard_arrow_right_24"-->
-                <!--                        android:text="More"-->
-                <!--                        android:textAllCaps="true"-->
-                <!--                        android:textColor="?attr/secondaryTextColor"-->
-                <!--                        android:textSize="12sp"-->
-                <!--                        android:textStyle="bold" />-->
-                <!--                </com.google.android.material.card.MaterialCardView>-->
-            </LinearLayout>
-
-            <!--            <TextView-->
-            <!--                android:id="@+id/txt_alarms_description"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_marginStart="20dp"-->
-            <!--                android:text="@string/active_tonight"-->
-            <!--                android:textColor="?attr/secondaryTextColor"-->
-            <!--                android:textSize="14sp" />-->
+            <TextView
+                android:id="@+id/txt_alarms_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="-2dp"
+                android:text="Alarms to wake you during REM"
+                android:textColor="?attr/tertiaryTextColor"
+                android:textSize="14sp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -240,8 +216,8 @@
                         android:id="@+id/txt_no_alarms_set"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="46dp"
-                        android:layout_marginBottom="54dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginBottom="48dp"
                         android:text="No active alarms set"
                         android:textColor="?attr/tertiaryTextColor"
                         android:textAlignment="center"
@@ -254,168 +230,6 @@
                         android:layout_marginBottom="50dp"
                         android:overScrollMode="never"
                         android:nestedScrollingEnabled="false"/>
-
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginBottom="50dp"-->
-<!--                        android:orientation="vertical">-->
-
-<!--                        <com.google.android.material.card.MaterialCardView-->
-<!--                            android:id="@+id/crd_alarm1"-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:backgroundTint="?attr/slightElevated"-->
-<!--                            app:cardCornerRadius="0dp"-->
-<!--                            app:cardElevation="0dp">-->
-
-<!--                            <LinearLayout-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:gravity="center_vertical"-->
-<!--                                android:orientation="horizontal"-->
-<!--                                android:layout_marginTop="6dp"-->
-<!--                                android:paddingStart="15dp"-->
-<!--                                android:paddingTop="13dp"-->
-<!--                                android:paddingBottom="13dp"-->
-<!--                                android:paddingEnd="15dp">-->
-
-<!--                                <LinearLayout-->
-<!--                                    android:layout_width="0dp"-->
-<!--                                    android:layout_height="wrap_content"-->
-<!--                                    android:layout_weight="1"-->
-<!--                                    android:orientation="horizontal">-->
-
-<!--                                    <LinearLayout-->
-<!--                                        android:layout_width="wrap_content"-->
-<!--                                        android:layout_height="wrap_content"-->
-<!--                                        android:layout_gravity="center_vertical"-->
-<!--                                        android:divider="@drawable/divider_small"-->
-<!--                                        android:orientation="horizontal"-->
-<!--                                        android:showDividers="middle">-->
-
-<!--                                        <TextView-->
-<!--                                            android:layout_width="wrap_content"-->
-<!--                                            android:layout_height="wrap_content"-->
-<!--                                            android:text="02:15"-->
-<!--                                            android:textColor="?attr/primaryTextColor"-->
-<!--                                            android:textSize="24sp" />-->
-
-<!--                                        <TextView-->
-<!--                                            android:layout_width="wrap_content"-->
-<!--                                            android:layout_height="wrap_content"-->
-<!--                                            android:text="AM"-->
-<!--                                            android:textColor="?attr/secondaryTextColor"-->
-<!--                                            android:textSize="12sp" />-->
-<!--                                    </LinearLayout>-->
-
-<!--                                    <LinearLayout-->
-<!--                                        android:layout_width="0dp"-->
-<!--                                        android:layout_height="wrap_content"-->
-<!--                                        android:layout_weight="1"-->
-<!--                                        android:layout_gravity="center_vertical"-->
-<!--                                        android:layout_marginStart="20dp"-->
-<!--                                        android:gravity="center"-->
-<!--                                        android:orientation="vertical">-->
-
-<!--                                        <TextView-->
-<!--                                            android:layout_width="wrap_content"-->
-<!--                                            android:layout_height="wrap_content"-->
-<!--                                            android:fontFamily="sans-serif"-->
-<!--                                            android:text="First REM-Period Alarm"-->
-<!--                                            android:layout_marginBottom="3dp"-->
-<!--                                            android:textColor="?attr/primaryTextColor"-->
-<!--                                            android:textSize="15sp" />-->
-
-<!--                                        <TextView-->
-<!--                                            android:layout_width="wrap_content"-->
-<!--                                            android:layout_height="wrap_content"-->
-<!--                                            android:text="Mo, Tu, Fr, Su"-->
-<!--                                            android:textColor="?attr/secondaryTextColor"-->
-<!--                                            android:textSize="12sp" />-->
-<!--                                    </LinearLayout>-->
-<!--                                </LinearLayout>-->
-
-<!--                            </LinearLayout>-->
-<!--                        </com.google.android.material.card.MaterialCardView>-->
-
-<!--                        <com.google.android.material.card.MaterialCardView-->
-<!--                            android:id="@+id/crd_alarm2"-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:backgroundTint="?attr/slightElevated"-->
-<!--                            app:cardCornerRadius="0dp"-->
-<!--                            app:cardElevation="0dp">-->
-
-<!--                            <LinearLayout-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:gravity="center_vertical"-->
-<!--                                android:orientation="horizontal"-->
-<!--                                android:paddingStart="15dp"-->
-<!--                                android:paddingTop="13dp"-->
-<!--                                android:paddingBottom="13dp"-->
-<!--                                android:paddingEnd="15dp">-->
-
-<!--                                <LinearLayout-->
-<!--                                    android:layout_width="0dp"-->
-<!--                                    android:layout_height="wrap_content"-->
-<!--                                    android:layout_weight="1"-->
-<!--                                    android:orientation="horizontal">-->
-
-<!--                                    <LinearLayout-->
-<!--                                        android:layout_width="wrap_content"-->
-<!--                                        android:layout_height="wrap_content"-->
-<!--                                        android:layout_gravity="center_vertical"-->
-<!--                                        android:divider="@drawable/divider_small"-->
-<!--                                        android:orientation="horizontal"-->
-<!--                                        android:showDividers="middle">-->
-
-<!--                                        <TextView-->
-<!--                                            android:layout_width="wrap_content"-->
-<!--                                            android:layout_height="wrap_content"-->
-<!--                                            android:text="04:42"-->
-<!--                                            android:textColor="?attr/primaryTextColor"-->
-<!--                                            android:textSize="24sp" />-->
-
-<!--                                        <TextView-->
-<!--                                            android:layout_width="wrap_content"-->
-<!--                                            android:layout_height="wrap_content"-->
-<!--                                            android:text="AM"-->
-<!--                                            android:textColor="?attr/secondaryTextColor"-->
-<!--                                            android:textSize="14sp" />-->
-<!--                                    </LinearLayout>-->
-
-<!--                                    <LinearLayout-->
-<!--                                        android:layout_width="0dp"-->
-<!--                                        android:layout_height="wrap_content"-->
-<!--                                        android:layout_weight="1"-->
-<!--                                        android:layout_gravity="center_vertical"-->
-<!--                                        android:layout_marginStart="20dp"-->
-<!--                                        android:gravity="center"-->
-<!--                                        android:orientation="vertical">-->
-
-<!--                                        <TextView-->
-<!--                                            android:layout_width="wrap_content"-->
-<!--                                            android:layout_height="wrap_content"-->
-<!--                                            android:layout_marginBottom="3dp"-->
-<!--                                            android:fontFamily="sans-serif"-->
-<!--                                            android:text="Second REM-Period Alarm"-->
-<!--                                            android:textColor="?attr/primaryTextColor"-->
-<!--                                            android:textSize="15sp" />-->
-
-<!--                                        <TextView-->
-<!--                                            android:layout_width="wrap_content"-->
-<!--                                            android:layout_height="wrap_content"-->
-<!--                                            android:text="Mo, Tu, Fr, Su"-->
-<!--                                            android:textColor="?attr/secondaryTextColor"-->
-<!--                                            android:textSize="12sp" />-->
-<!--                                    </LinearLayout>-->
-<!--                                </LinearLayout>-->
-
-<!--                            </LinearLayout>-->
-<!--                        </com.google.android.material.card.MaterialCardView>-->
-<!--                    </LinearLayout>-->
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.button.MaterialButton
@@ -439,10 +253,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="40dp"
-                android:text="@string/collection"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="23sp"
+                android:layout_marginTop="32dp"
+                android:text="@string/remember"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="21sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -450,233 +264,42 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:text="@string/all_time_counts"
-                android:textColor="?attr/secondaryTextColor"
+                android:layout_marginTop="-2dp"
+                android:text="@string/remember_description"
+                android:textColor="?attr/tertiaryTextColor"
                 android:textSize="14sp" />
 
-            <com.google.android.material.card.MaterialCardView
+            <include
+                android:id="@+id/dje_remember_dream"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="25dp"
-                android:backgroundTint="?attr/colorSurface"
-                android:padding="15dp"
-                app:cardCornerRadius="@dimen/cardRadius"
-                app:strokeWidth="2dp"
-                app:strokeColor="?attr/colorSurfaceContainer"
-                app:cardElevation="@dimen/cardElevationOutline">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:elevation="2dp"
-                    android:orientation="horizontal"
-                    android:padding="20dp">
-
-                    <TextView
-                        android:id="@+id/txt_total_journal_entries"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="15dp"
-                        android:gravity="top"
-                        android:text="196"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="40sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/total_journal_entries"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/total_journal_entries_description"
-                            android:textColor="?attr/secondaryTextColor"
-                            android:textSize="14sp"
-                            android:textStyle="italic" />
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="24dp"
+                android:layout_marginHorizontal="10dp"
+                layout="@layout/item_journal_entry" />
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/crd_no_remember_entry"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="25dp"
-                android:backgroundTint="?attr/colorSurface"
-                android:padding="15dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="32dp"
+                android:layout_marginHorizontal="20dp"
+                android:visibility="gone"
+                app:contentPadding="16dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainer"
+                app:strokeWidth="0dp"
                 app:cardCornerRadius="@dimen/cardRadius"
-                app:strokeWidth="2dp"
-                app:strokeColor="?attr/colorSurfaceContainer"
-                app:cardElevation="@dimen/cardElevationOutline">
+                app:cardElevation="@dimen/cardElevationRegular">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/txt_no_remember_entry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:elevation="2dp"
-                    android:orientation="horizontal"
-                    android:padding="20dp">
-
-                    <TextView
-                        android:id="@+id/txt_lucid_journal_entries"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="15dp"
-                        android:gravity="top"
-                        android:text="2"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="40sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/lucid_journal_entries"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/lucid_journal_entries_description"
-                            android:textColor="?attr/secondaryTextColor"
-                            android:textSize="14sp"
-                            android:textStyle="italic" />
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="25dp"
-                android:backgroundTint="?attr/colorSurface"
-                android:padding="15dp"
-                app:cardCornerRadius="@dimen/cardRadius"
-                app:strokeWidth="2dp"
-                app:strokeColor="?attr/colorSurfaceContainer"
-                app:cardElevation="@dimen/cardElevationOutline">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:elevation="2dp"
-                    android:orientation="horizontal"
-                    android:padding="20dp">
-
-                    <TextView
-                        android:id="@+id/txt_days_streak"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="15dp"
-                        android:gravity="top"
-                        android:text="18"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="40sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/days_opening_streak"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/app_opening_streak_description"
-                            android:textColor="?attr/secondaryTextColor"
-                            android:textSize="14sp"
-                            android:textStyle="italic" />
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginBottom="25dp"
-                android:backgroundTint="?attr/colorSurface"
-                android:padding="15dp"
-                app:cardCornerRadius="@dimen/cardRadius"
-                app:strokeWidth="2dp"
-                app:strokeColor="?attr/colorSurfaceContainer"
-                app:cardElevation="@dimen/cardElevationOutline">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:elevation="2dp"
-                    android:orientation="horizontal"
-                    android:padding="20dp">
-
-                    <TextView
-                        android:id="@+id/txt_total_goals_reached"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="15dp"
-                        android:gravity="top"
-                        android:text="56"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="40sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/goals_reached"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/goals_reached_description"
-                            android:textColor="?attr/secondaryTextColor"
-                            android:textSize="14sp"
-                            android:textStyle="italic" />
-                    </LinearLayout>
-                </LinearLayout>
+                    android:text="Add some dream journal entries and see a random one here every time you open the app."
+                    android:textColor="?attr/tertiaryTextColor"
+                    android:textAlignment="center"
+                    android:textSize="14sp" />
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </RelativeLayout>

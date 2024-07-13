@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-07-12T16:31:50.708820300Z">
+        <DropdownSelection timestamp="2024-07-13T16:39:32.774214Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=2f0154b1" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\david\.android\avd\Nexus_One_API_31.avd" />
             </handle>
           </Target>
         </DropdownSelection>

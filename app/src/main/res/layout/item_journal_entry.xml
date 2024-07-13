@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:text="01.01.1970"
         android:textSize="18sp"
+        android:textColor="?attr/secondaryTextColor"
         android:layout_marginStart="16dp"
         android:layout_marginTop="14dp"
         android:fontFamily="sans-serif-light"/>
@@ -25,6 +26,7 @@
         android:id="@+id/txt_journal_entry_first_date_indicator_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="?attr/secondaryTextColor"
         android:text="Monday"
         android:textSize="12sp"
         android:layout_marginStart="16dp"/>

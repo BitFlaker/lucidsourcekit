@@ -15,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,15 +24,25 @@ import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.alarms.AlarmCreator;
 import com.bitflaker.lucidsourcekit.alarms.AlarmsManager;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasType;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AssignedTags;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
+import com.bitflaker.lucidsourcekit.general.Tools;
+import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntry;
+import com.bitflaker.lucidsourcekit.general.database.values.DreamTypes;
 import com.bitflaker.lucidsourcekit.notification.NotificationManager;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class MainOverview extends Fragment {
-    private TextView totalEntries, totalLucidEntries, totalGoalsReached, streak, noAlarmsSet;
+    private TextView noAlarmsSet;
     private RecyclerViewAdapterAlarms adapterAlarms;
     private MaterialCardView realityCheckReminderCard, permanentNotificationCard, lockscreenWriterCard, taskReminderCard;
     private TextView realityCheckReminderText, permanentNotificationText, lockscreenWriterText, taskReminderText;
@@ -56,6 +67,7 @@ public class MainOverview extends Fragment {
     private final ActivityResultLauncher<Intent> activeEventsReloadLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> reloadActiveEventsStates());
     private RecyclerView recyclerView;
     private MainDatabase db;
+    public CompositeDisposable disposables = new CompositeDisposable();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,16 +78,11 @@ public class MainOverview extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setData();
-        fillStats();
     }
 
     private void setData() {
         db = MainDatabase.getInstance(getContext());
 
-        totalEntries = getView().findViewById(R.id.txt_total_journal_entries);
-        totalLucidEntries = getView().findViewById(R.id.txt_lucid_journal_entries);
-        totalGoalsReached = getView().findViewById(R.id.txt_total_goals_reached);
-        streak = getView().findViewById(R.id.txt_days_streak);
         noAlarmsSet = getView().findViewById(R.id.txt_no_alarms_set);
 
         realityCheckReminderCard = getView().findViewById(R.id.crd_reality_check_reminder_state);
@@ -86,6 +93,26 @@ public class MainOverview extends Fragment {
         permanentNotificationText = getView().findViewById(R.id.txt_permanent_notification_state);
         lockscreenWriterText = getView().findViewById(R.id.txt_lockscreen_writer_state);
         taskReminderText = getView().findViewById(R.id.txt_task_reminder_state);
+
+        View rememberDream = getView().findViewById(R.id.dje_remember_dream);
+        MaterialCardView noRememberEntries = getView().findViewById(R.id.crd_no_remember_entry);
+        disposables.add(db.getJournalEntryDao().getRandomEntry().subscribe(entries -> {
+            if (entries.isEmpty()) {
+                rememberDream.setVisibility(View.GONE);
+                noRememberEntries.setVisibility(View.VISIBLE);
+                return;
+            }
+            JournalEntry entry = entries.get(0);
+            List<AssignedTags> assignedTags = db.getJournalEntryHasTagDao().getAllFromEntryId(entry.entryId).blockingGet();
+            List<JournalEntryHasType> journalEntryHasTypes = db.getJournalEntryIsTypeDao().getAllFromEntryId(entry.entryId).blockingGet();
+            List<AudioLocation> audioLocations = db.getAudioLocationDao().getAllFromEntryId(entry.entryId).blockingGet();
+            DreamJournalEntry djEntry = new DreamJournalEntry(entry, assignedTags, journalEntryHasTypes, audioLocations);
+            generateRememberEntry(rememberDream, djEntry);
+            rememberDream.setOnClickListener(e -> {
+                // TODO: switch over to dream journal entries, scroll to this entry and click it to open the dream journal entry viewer
+                //       maybe allow as option not to scroll all the way to the entry but to just simply open it
+            });
+        }));
 
         recyclerView = getView().findViewById(R.id.rcv_active_alarms);
         adapterAlarms = new RecyclerViewAdapterAlarms(getContext(), new ArrayList<>());
@@ -125,18 +152,34 @@ public class MainOverview extends Fragment {
         permanentNotificationCard.setOnClickListener(e -> openNotificationSettingsWithId("PN"));
     }
 
+    private RecyclerViewAdapterDreamJournal.MainViewHolder generateRememberEntry(View rememberDream, DreamJournalEntry entry) {
+        RecyclerViewAdapterDreamJournal.MainViewHolder rememberDreamHolder = new RecyclerViewAdapterDreamJournal.MainViewHolder(rememberDream, getContext());
+        rememberDreamHolder.resetEntry();
+        List<DreamTypes> dreamTypes = entry.getTypes().stream()
+                .map(e -> DreamTypes.getEnum(e.typeId))
+                .collect(Collectors.toList());
+        rememberDreamHolder.setSpecialDreamIcons(dreamTypes);
+        rememberDreamHolder.setTitleAndTextContent(entry.getEntry().title, entry.getEntry().description);
+        rememberDreamHolder.setRecordingsCount(entry.getAudioLocations().size());
+        rememberDreamHolder.setTagList(entry.getTagStrings(), getActivity());
+        return rememberDreamHolder;
+    }
+
     private void reloadActiveEventsStates() {
         List<NotificationCategory> categories = db.getNotificationCategoryDao().getAll().blockingGet();
         for (NotificationCategory category : categories) {
             switch(category.getId()){
                 case "RCR":
-                    realityCheckReminderText.setCompoundDrawablesWithIntrinsicBounds(category.isEnabled() ? R.drawable.ic_baseline_check_24 : R.drawable.ic_baseline_cross_24, 0, 0, 0);
+                    realityCheckReminderText.setCompoundDrawablesWithIntrinsicBounds(category.isEnabled() ? R.drawable.rounded_check_24 : R.drawable.rounded_close_24, 0, 0, 0);
+                    TextViewCompat.setCompoundDrawableTintList(realityCheckReminderText, Tools.getAttrColorStateList(category.isEnabled() ? R.attr.secondaryTextColor : R.attr.tertiaryTextColor, getContext().getTheme()));
                     break;
                 case "DGR":
-                    taskReminderText.setCompoundDrawablesWithIntrinsicBounds(category.isEnabled() ? R.drawable.ic_baseline_check_24 : R.drawable.ic_baseline_cross_24, 0, 0, 0);
+                    taskReminderText.setCompoundDrawablesWithIntrinsicBounds(category.isEnabled() ? R.drawable.rounded_check_24 : R.drawable.rounded_close_24, 0, 0, 0);
+                    TextViewCompat.setCompoundDrawableTintList(taskReminderText, Tools.getAttrColorStateList(category.isEnabled() ? R.attr.secondaryTextColor : R.attr.tertiaryTextColor, getContext().getTheme()));
                     break;
                 case "PN":
-                    permanentNotificationText.setCompoundDrawablesWithIntrinsicBounds(category.isEnabled() ? R.drawable.ic_baseline_check_24 : R.drawable.ic_baseline_cross_24, 0, 0, 0);
+                    permanentNotificationText.setCompoundDrawablesWithIntrinsicBounds(category.isEnabled() ? R.drawable.rounded_check_24 : R.drawable.rounded_close_24, 0, 0, 0);
+                    TextViewCompat.setCompoundDrawableTintList(permanentNotificationText, Tools.getAttrColorStateList(category.isEnabled() ? R.attr.secondaryTextColor : R.attr.tertiaryTextColor, getContext().getTheme()));
                     break;
             }
         }
@@ -159,13 +202,9 @@ public class MainOverview extends Fragment {
         }
     }
 
-    private void fillStats() {
-        // TODO: fill with real data
-        //totalEntries
-        //totalLucidEntries
-        //totalGoalsReached
-        //streak
-//        ((TextView) getView().findViewById(R.id.txt_alarm1)).setText(Html.fromHtml("<span><big><big><strong>03:12</strong></big></big></span><br /><span>first night timer</span>", Html.FROM_HTML_MODE_COMPACT));
-//        ((TextView) getView().findViewById(R.id.txt_alarm2)).setText(Html.fromHtml("<span><big><big><strong>06:24</strong></big></big></span><br /><span>last night timer</span>", Html.FROM_HTML_MODE_COMPACT));
+    @Override
+    public void onDestroyView() {
+        disposables.clear();
+        super.onDestroyView();
     }
 }

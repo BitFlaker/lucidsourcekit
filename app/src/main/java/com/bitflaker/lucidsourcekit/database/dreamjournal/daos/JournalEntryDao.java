@@ -20,6 +20,9 @@ public interface JournalEntryDao {
     @Query("SELECT * FROM JournalEntry ORDER BY timeStamp DESC")
     Single<List<JournalEntry>> getAll();
 
+    @Query("SELECT * FROM JournalEntry ORDER BY RANDOM() LIMIT 1")
+    Single<List<JournalEntry>> getRandomEntry();
+
     @Query("SELECT * FROM JournalEntry WHERE entryId = :id")
     Single<JournalEntry> getEntryById(int id);
 

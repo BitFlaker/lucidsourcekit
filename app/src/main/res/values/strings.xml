@@ -28,8 +28,8 @@
     <string name="active_events">Active events</string>
     <string name="reality_check_reminder">Reality-Check reminder</string>
     <string name="active_alarms">Active alarms</string>
-    <string name="collection">Collection</string>
-    <string name="all_time_counts">all time counts</string>
+    <string name="remember">Remember?</string>
+    <string name="remember_description">Think about your past dreams</string>
     <string name="total_journal_entries">journal entries in total</string>
     <string name="lucid_journal_entries">lucid journal entries</string>
     <string name="days_opening_streak">days streak opening the app</string>

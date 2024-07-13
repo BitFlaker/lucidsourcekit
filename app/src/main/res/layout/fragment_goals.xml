@@ -290,7 +290,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="30dp"
                 android:text="Yesterday's Stats"
-                android:textColor="?attr/primaryTextColor"
+                android:textColor="?attr/secondaryTextColor"
                 android:textSize="23sp"
                 android:textStyle="bold" />
 
@@ -299,7 +299,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="The statistics about your goals yesterday"
-                android:textColor="?attr/secondaryTextColor"
+                android:textColor="?attr/tertiaryTextColor"
                 android:textSize="14sp" />
 
             <com.google.android.material.card.MaterialCardView
@@ -617,7 +617,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="30dp"
                 android:text="Advice"
-                android:textColor="?attr/primaryTextColor"
+                android:textColor="?attr/secondaryTextColor"
                 android:textSize="23sp"
                 android:textStyle="bold" />
 
@@ -626,7 +626,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="Suggestions for improving your performance"
-                android:textColor="?attr/secondaryTextColor"
+                android:textColor="?attr/tertiaryTextColor"
                 android:textSize="14sp" />
 
             <androidx.recyclerview.widget.RecyclerView
