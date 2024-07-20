@@ -1,5 +1,6 @@
 package com.bitflaker.lucidsourcekit.database.dreamjournal.entities;
 
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
@@ -12,5 +13,12 @@ public class JournalEntryTag {
 
     public JournalEntryTag(String description) {
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return obj instanceof JournalEntryTag tag &&
+                tagId == tag.tagId &&
+                description.equals(tag.description);
     }
 }

@@ -24,20 +24,14 @@ import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.alarms.AlarmCreator;
 import com.bitflaker.lucidsourcekit.alarms.AlarmsManager;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasType;
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AssignedTags;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
 import com.bitflaker.lucidsourcekit.general.Tools;
-import com.bitflaker.lucidsourcekit.general.database.values.DreamJournalEntry;
-import com.bitflaker.lucidsourcekit.general.database.values.DreamTypes;
 import com.bitflaker.lucidsourcekit.notification.NotificationManager;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
@@ -47,11 +41,11 @@ public class MainOverview extends Fragment {
     private MaterialCardView realityCheckReminderCard, permanentNotificationCard, lockscreenWriterCard, taskReminderCard;
     private TextView realityCheckReminderText, permanentNotificationText, lockscreenWriterText, taskReminderText;
     private final ActivityResultCallback<ActivityResult> alarmCreationOrModificationCallback = result -> {
-        if(result.getResultCode() == RESULT_OK){
+        if(result.getResultCode() == RESULT_OK) {
             Intent data = result.getData();
             if (data != null && data.hasExtra("CREATED_NEW_ALARM") && data.hasExtra("ALARM_ID")) {
                 if(!data.getBooleanExtra("CREATED_NEW_ALARM", false)){
-                    adapterAlarms.reloadModifiedAlarmWithId(data.getIntExtra("ALARM_ID", -1));
+                    adapterAlarms.reloadModifiedAlarmWithId(data.getLongExtra("ALARM_ID", -1));
                 }
             }
         }
@@ -102,12 +96,8 @@ public class MainOverview extends Fragment {
                 noRememberEntries.setVisibility(View.VISIBLE);
                 return;
             }
-            JournalEntry entry = entries.get(0);
-            List<AssignedTags> assignedTags = db.getJournalEntryHasTagDao().getAllFromEntryId(entry.entryId).blockingGet();
-            List<JournalEntryHasType> journalEntryHasTypes = db.getJournalEntryIsTypeDao().getAllFromEntryId(entry.entryId).blockingGet();
-            List<AudioLocation> audioLocations = db.getAudioLocationDao().getAllFromEntryId(entry.entryId).blockingGet();
-            DreamJournalEntry djEntry = new DreamJournalEntry(entry, assignedTags, journalEntryHasTypes, audioLocations);
-            generateRememberEntry(rememberDream, djEntry);
+            DreamJournalEntry entry = entries.get(0);
+            generateRememberEntry(rememberDream, entry);
             rememberDream.setOnClickListener(e -> {
                 // TODO: switch over to dream journal entries, scroll to this entry and click it to open the dream journal entry viewer
                 //       maybe allow as option not to scroll all the way to the entry but to just simply open it
@@ -152,17 +142,13 @@ public class MainOverview extends Fragment {
         permanentNotificationCard.setOnClickListener(e -> openNotificationSettingsWithId("PN"));
     }
 
-    private RecyclerViewAdapterDreamJournal.MainViewHolder generateRememberEntry(View rememberDream, DreamJournalEntry entry) {
+    private void generateRememberEntry(View rememberDream, DreamJournalEntry entry) {
         RecyclerViewAdapterDreamJournal.MainViewHolder rememberDreamHolder = new RecyclerViewAdapterDreamJournal.MainViewHolder(rememberDream, getContext());
         rememberDreamHolder.resetEntry();
-        List<DreamTypes> dreamTypes = entry.getTypes().stream()
-                .map(e -> DreamTypes.getEnum(e.typeId))
-                .collect(Collectors.toList());
-        rememberDreamHolder.setSpecialDreamIcons(dreamTypes);
-        rememberDreamHolder.setTitleAndTextContent(entry.getEntry().title, entry.getEntry().description);
-        rememberDreamHolder.setRecordingsCount(entry.getAudioLocations().size());
-        rememberDreamHolder.setTagList(entry.getTagStrings(), getActivity());
-        return rememberDreamHolder;
+        rememberDreamHolder.setSpecialDreamIcons(entry.getDreamTypes());
+        rememberDreamHolder.setTitleAndTextContent(entry.journalEntry.title, entry.journalEntry.description);
+        rememberDreamHolder.setRecordingsCount(entry.audioLocations.size());
+        rememberDreamHolder.setTagList(entry.getStringTags(), getActivity());
     }
 
     private void reloadActiveEventsStates() {

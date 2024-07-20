@@ -22,11 +22,16 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamClarity;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.SleepQuality;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import com.bitflaker.lucidsourcekit.general.datastore.DataStoreKeys;
 import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
@@ -37,7 +42,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -53,12 +60,15 @@ public class Tools {
 //    private static int THEME_DIALOG;
 //    private static int THEME_POPUP;
 //    private static int THEME;
-    private static final HashMap<String, Integer> notificationIdMap = new HashMap<String, Integer>() {{
+    private static final HashMap<String, Integer> notificationIdMap = new HashMap<>() {{
         put("DJR", NOTIFICATION_ID_START + 11);
         put("RCR", NOTIFICATION_ID_START + 12);
         put("DGR", NOTIFICATION_ID_START + 13);
         put("CR", NOTIFICATION_ID_START + 14);
     }};
+    private static HashMap<String, Drawable> iconsDreamMood = null;
+    private static HashMap<String, Drawable> iconsDreamClarity = null;
+    private static HashMap<String, Drawable> iconsSleepQuality = null;
 
 //    public static void setThemeColors(int theme){
 //        THEME_DIALOG = R.style.ThemedDialog_Dark;
@@ -284,28 +294,83 @@ public class Tools {
     }
 
     public static Drawable[] getIconsDreamMood(Context context) {
-        Drawable iconMood1 = context.getResources().getDrawable(R.drawable.ic_baseline_sentiment_very_dissatisfied_24, context.getTheme());
-        Drawable iconMood2 = context.getResources().getDrawable(R.drawable.ic_baseline_sentiment_dissatisfied_24, context.getTheme());
-        Drawable iconMood3 = context.getResources().getDrawable(R.drawable.ic_baseline_sentiment_neutral_24, context.getTheme());
-        Drawable iconMood4 = context.getResources().getDrawable(R.drawable.ic_baseline_sentiment_satisfied_24, context.getTheme());
-        Drawable iconMood5 = context.getResources().getDrawable(R.drawable.ic_baseline_sentiment_very_satisfied_24, context.getTheme());
-        return new Drawable[] { iconMood1, iconMood2, iconMood3, iconMood4, iconMood5 };
+        initIconsDreamMood(context);
+        return Arrays.stream(DreamMood.defaultData)
+                .filter(x -> x != DreamMood.DEFAULT)
+                .sorted(Comparator.comparing(x -> x.value))
+                .map(x -> iconsDreamMood.getOrDefault(x.moodId, null))
+                .toArray(Drawable[]::new);
     }
 
     public static Drawable[] getIconsDreamClarity(Context context) {
-        Drawable iconClarity1 = context.getResources().getDrawable(R.drawable.ic_baseline_brightness_4_24, context.getTheme());
-        Drawable iconClarity2 = context.getResources().getDrawable(R.drawable.ic_baseline_brightness_5_24, context.getTheme());
-        Drawable iconClarity3 = context.getResources().getDrawable(R.drawable.ic_baseline_brightness_6_24, context.getTheme());
-        Drawable iconClarity4 = context.getResources().getDrawable(R.drawable.ic_baseline_brightness_7_24, context.getTheme());
-        return new Drawable[] { iconClarity1, iconClarity2, iconClarity3, iconClarity4 };
+        initDreamClarities(context);
+        return Arrays.stream(DreamClarity.defaultData)
+                .filter(x -> x != DreamClarity.DEFAULT)
+                .sorted(Comparator.comparing(x -> x.value))
+                .map(x -> iconsDreamClarity.getOrDefault(x.clarityId, null))
+                .toArray(Drawable[]::new);
     }
 
     public static Drawable[] getIconsSleepQuality(Context context) {
-        Drawable iconQuality1 = context.getResources().getDrawable(R.drawable.ic_baseline_star_border_24, context.getTheme());
-        Drawable iconQuality2 = context.getResources().getDrawable(R.drawable.ic_baseline_star_half_24, context.getTheme());
-        Drawable iconQuality3 = context.getResources().getDrawable(R.drawable.ic_baseline_star_24, context.getTheme());
-        Drawable iconQuality4 = context.getResources().getDrawable(R.drawable.ic_baseline_stars_24, context.getTheme());
-        return new Drawable[] { iconQuality1, iconQuality2, iconQuality3, iconQuality4 };
+        initSleepQualities(context);
+        return Arrays.stream(SleepQuality.defaultData)
+                .filter(x -> x != SleepQuality.DEFAULT)
+                .sorted(Comparator.comparing(x -> x.value))
+                .map(x -> iconsSleepQuality.getOrDefault(x.qualityId, null))
+                .toArray(Drawable[]::new);
+    }
+
+    public static Drawable resolveIconDreamMood(Context context, String dreamMoodId) {
+        initIconsDreamMood(context);
+        return iconsDreamMood.getOrDefault(dreamMoodId, null);
+    }
+
+    public static Drawable resolveIconDreamClarity(Context context, String dreamClarityId) {
+        initDreamClarities(context);
+        return iconsDreamClarity.getOrDefault(dreamClarityId, null);
+    }
+
+    public static Drawable resolveIconSleepQuality(Context context, String sleepQualityId) {
+        initSleepQualities(context);
+        return iconsSleepQuality.getOrDefault(sleepQualityId, null);
+    }
+
+    private static void initIconsDreamMood(Context context) {
+        if (iconsDreamMood == null) {
+            iconsDreamMood = new HashMap<>() {{
+                put("TRB", resolveDrawable(context, R.drawable.ic_baseline_sentiment_very_dissatisfied_24));
+                put("POR", resolveDrawable(context, R.drawable.ic_baseline_sentiment_dissatisfied_24));
+                put("OKY", resolveDrawable(context, R.drawable.ic_baseline_sentiment_neutral_24));
+                put("GRT", resolveDrawable(context, R.drawable.ic_baseline_sentiment_satisfied_24));
+                put("OSD", resolveDrawable(context, R.drawable.ic_baseline_sentiment_very_satisfied_24));
+            }};
+        }
+    }
+
+    private static void initDreamClarities(Context context) {
+        if (iconsDreamClarity == null) {
+            iconsDreamClarity = new HashMap<>() {{
+                put("VCL", resolveDrawable(context, R.drawable.ic_baseline_brightness_4_24));
+                put("CLD", resolveDrawable(context, R.drawable.ic_baseline_brightness_5_24));
+                put("CLR", resolveDrawable(context, R.drawable.ic_baseline_brightness_6_24));
+                put("CCL", resolveDrawable(context, R.drawable.ic_baseline_brightness_7_24));
+            }};
+        }
+    }
+
+    private static void initSleepQualities(Context context) {
+        if (iconsSleepQuality == null) {
+            iconsSleepQuality = new HashMap<>() {{
+                put("TRB", resolveDrawable(context, R.drawable.ic_baseline_star_border_24));
+                put("POR", resolveDrawable(context, R.drawable.ic_baseline_star_half_24));
+                put("GRT", resolveDrawable(context, R.drawable.ic_baseline_star_24));
+                put("OSD", resolveDrawable(context, R.drawable.ic_baseline_stars_24));
+            }};
+        }
+    }
+
+    public static Drawable resolveDrawable(Context context, @DrawableRes int drawable) {
+        return ResourcesCompat.getDrawable(context.getResources(), drawable, context.getTheme());
     }
 
     public static void runResourceStatsPrinter() {
@@ -503,5 +568,11 @@ public class Tools {
         Drawable icon = drawable.getConstantState().newDrawable();
         icon.setBounds(drawable.copyBounds());
         return icon;
+    }
+
+    public static Calendar calendarFromMillis(long milliseconds) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(milliseconds);
+        return cal;
     }
 }

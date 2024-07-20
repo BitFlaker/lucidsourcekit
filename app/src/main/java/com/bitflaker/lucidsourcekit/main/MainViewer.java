@@ -18,7 +18,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
-import com.bitflaker.lucidsourcekit.general.JournalTypes;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
@@ -97,9 +97,9 @@ public class MainViewer extends AppCompatActivity {
             tabLayout.selectTab(tabLayout.getTabAt(position));
             viewPager2.setCurrentItem(position);
             if(title != null && title.equalsIgnoreCase(PAGE_LOGGING)) {
-                int ordinal = getIntent().getIntExtra("type", -1);
-                if(ordinal >= 0 && ordinal < JournalTypes.values().length) {
-                    vwLogging.showJournalCreatorWhenLoaded(JournalTypes.values()[ordinal]);
+                int ordinal = getIntent().getIntExtra("DREAM_JOURNAL_TYPE", -1);
+                if(ordinal >= 0 && ordinal < DreamJournalEntry.EntryType.values().length) {
+                    vwLogging.showJournalCreatorWhenLoaded(DreamJournalEntry.EntryType.values()[ordinal]);
                 }
             }
         }

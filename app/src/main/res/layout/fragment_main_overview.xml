@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="@string/overview"
-                android:textColor="?attr/secondaryTextColor"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="21sp"
                 android:textStyle="bold" />
 
@@ -45,7 +45,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="-2dp"
                 android:text="@string/active_events"
-                android:textColor="?attr/tertiaryTextColor"
+                android:textColor="?attr/secondaryTextColor"
                 android:textSize="14sp" />
 
             <GridLayout
@@ -182,7 +182,7 @@
                 android:layout_marginTop="32dp"
                 android:layout_weight="1"
                 android:text="@string/active_alarms"
-                android:textColor="?attr/secondaryTextColor"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="21sp"
                 android:textStyle="bold" />
 
@@ -193,7 +193,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="-2dp"
                 android:text="Alarms to wake you during REM"
-                android:textColor="?attr/tertiaryTextColor"
+                android:textColor="?attr/secondaryTextColor"
                 android:textSize="14sp" />
 
             <RelativeLayout
@@ -255,7 +255,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="32dp"
                 android:text="@string/remember"
-                android:textColor="?attr/secondaryTextColor"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="21sp"
                 android:textStyle="bold" />
 
@@ -266,7 +266,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="-2dp"
                 android:text="@string/remember_description"
-                android:textColor="?attr/tertiaryTextColor"
+                android:textColor="?attr/secondaryTextColor"
                 android:textSize="14sp" />
 
             <include

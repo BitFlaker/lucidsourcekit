@@ -25,4 +25,7 @@ public interface AudioLocationDao {
 
     @Delete
     Completable delete(AudioLocation audioLocation);
+
+    @Query("DELETE FROM AudioLocation WHERE entryId = :entryId")
+    Completable deleteAll(int entryId);
 }

@@ -66,10 +66,10 @@ public class Statistics extends Fragment {
     private TextView totalJournalEntries, totalTagCount, totalGoalCount, timeSpent, averageSessionCount, averageSessionLength;
     private RangeProgress rpDreamMood, rpDreamClarity, rpSleepQuality, rpDreamsPerNight, rpGoalsReached, rpAvgDiff;
     private MainDatabase db;
-    private List<Double> avgClarities = new ArrayList<>();
-    private List<Double> avgMoods = new ArrayList<>();
-    private List<Double> avgQualities = new ArrayList<>();
-    private List<Double> dreamCounts = new ArrayList<>();
+    private final List<Double> avgClarities = new ArrayList<>();
+    private final List<Double> avgMoods = new ArrayList<>();
+    private final List<Double> avgQualities = new ArrayList<>();
+    private final List<Double> dreamCounts = new ArrayList<>();
     private Drawable[] moodIcons;
     private Drawable[] clarityIcons;
     private Drawable[] qualityIcons;
@@ -80,7 +80,7 @@ public class Statistics extends Fragment {
     private ProportionLineChart timeSpentProportions;
     private IconCircleHeatmap sessionHeatmap;
     private MaterialButton dreamFrequencyTypeFilter;
-    private final DecimalFormat df = new DecimalFormat("#.0");
+    private final DecimalFormat df = new DecimalFormat("0.0");
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

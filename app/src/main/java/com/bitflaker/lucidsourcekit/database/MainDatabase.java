@@ -143,9 +143,9 @@ public abstract class MainDatabase extends RoomDatabase {
     }
 
     private static void populateStaticTables(MainDatabase instance) {
-        SleepQuality[] sleepQualities = SleepQuality.populateData();
-        DreamMood[] dreamMoods = DreamMood.populateData();
-        DreamClarity[] dreamClarities = DreamClarity.populateData();
+        SleepQuality[] sleepQualities = SleepQuality.defaultData;
+        DreamMood[] dreamMoods = DreamMood.defaultData;
+        DreamClarity[] dreamClarities = DreamClarity.defaultData;
         DreamType[] dreamTypes = DreamType.populateData();
 
         instance.getSleepQualityDao().insertAll(sleepQualities);

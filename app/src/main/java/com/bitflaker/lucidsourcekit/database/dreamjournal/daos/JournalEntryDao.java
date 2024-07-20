@@ -6,9 +6,11 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AverageEntryValues;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
 
 import java.util.List;
 
@@ -17,11 +19,17 @@ import io.reactivex.rxjava3.core.Single;
 
 @Dao
 public interface JournalEntryDao {
+    @Transaction
     @Query("SELECT * FROM JournalEntry ORDER BY timeStamp DESC")
-    Single<List<JournalEntry>> getAll();
+    Single<List<DreamJournalEntry>> getAll();
 
+    @Transaction
     @Query("SELECT * FROM JournalEntry ORDER BY RANDOM() LIMIT 1")
-    Single<List<JournalEntry>> getRandomEntry();
+    Single<List<DreamJournalEntry>> getRandomEntry();
+
+    @Transaction
+    @Query("SELECT * FROM JournalEntry WHERE entryId = :id")
+    Single<DreamJournalEntry> getEntryDataById(int id);
 
     @Query("SELECT * FROM JournalEntry WHERE entryId = :id")
     Single<JournalEntry> getEntryById(int id);

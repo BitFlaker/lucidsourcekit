@@ -57,6 +57,7 @@ class AppUsage {
                 appOpsManager.unsafeCheckOpNoThrow("android:get_usage_stats", uid, context.packageName)
             }
             else {
+                @Suppress("DEPRECATION")
                 appOpsManager.checkOpNoThrow("android:get_usage_stats", uid, context.packageName)
             }
             return accessMode == AppOpsManager.MODE_ALLOWED

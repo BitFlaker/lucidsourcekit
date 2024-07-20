@@ -29,7 +29,7 @@ import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.general.JournalTypes;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamType;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamMoods;
@@ -54,7 +54,7 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
     private final String[] tags;
     private DialogInterface.OnClickListener okClickListener;
     private List<String> filterTagsList;
-    private boolean[] filterDreamTypes;
+    private List<String> filterDreamTypes;
     private AppliedFilter currentFilter;
     private RadioGroup filterDreamMoodRadioGroup, filterDreamClarityRadioGroup, filterSleepQualityRadioGroup;
     private LinearLayout filterDreamType, filterEntryTag;
@@ -70,7 +70,7 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
         this.tags = tags;
         this.currentFilter = currentFilter;
         this.context = context;
-        filterDreamTypes = currentFilter.getFilterDreamTypes();
+        filterDreamTypes = currentFilter.dreamTypes();
         filterTagsList = new ArrayList<>();
     }
 
@@ -93,7 +93,7 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
 
         setupSimpleCategoryListeners();
         setupTagsCategoryListener();
-        for (String filterTag : currentFilter.getFilterTagsList()) { addTagFilterEntry(filterTag); }
+        for (String filterTag : currentFilter.filterTagsList()) { addTagFilterEntry(filterTag); }
         setupRadioChangedListeners();
         updateStatesWhenLoaded(view);
 
@@ -154,10 +154,10 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
         filterEntryTagsCat.setOnClickListener(e -> openCloseExpander(filterEntryTag));
 
         // Setting default values
-        ((MaterialRadioButton) filterDreamMoodRadioGroup.getChildAt((currentFilter.getDreamMood().ordinal() + 1) % DreamMoods.values().length)).setChecked(true);
-        ((MaterialRadioButton) filterDreamClarityRadioGroup.getChildAt((currentFilter.getDreamClarity().ordinal() + 1) % DreamClarity.values().length)).setChecked(true);
-        ((MaterialRadioButton) filterSleepQualityRadioGroup.getChildAt((currentFilter.getSleepQuality().ordinal() + 1) % SleepQuality.values().length)).setChecked(true);
-        setCheckedStateInList(dreamTypeCheckboxContainer, currentFilter.getFilterDreamTypes());
+        ((MaterialRadioButton) filterDreamMoodRadioGroup.getChildAt((currentFilter.dreamMood().ordinal() + 1) % DreamMoods.values().length)).setChecked(true);
+        ((MaterialRadioButton) filterDreamClarityRadioGroup.getChildAt((currentFilter.dreamClarity().ordinal() + 1) % DreamClarity.values().length)).setChecked(true);
+        ((MaterialRadioButton) filterSleepQualityRadioGroup.getChildAt((currentFilter.sleepQuality().ordinal() + 1) % SleepQuality.values().length)).setChecked(true);
+        setCheckedStateInList(dreamTypeCheckboxContainer, Arrays.stream(DreamType.populateData()).map(x -> x.typeId).collect(Collectors.toList()));
     }
 
     private void setData(View view) {
@@ -268,12 +268,20 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
         return finalDrawable;
     }
 
-    private void setCheckedStateInList(LinearLayout container, boolean[] values) {
-        for (int i = 0; i < container.getChildCount(); i++){
+    // TODO: The order of the checkboxes can get out of sync with the dreamTypes list order when the checkbox order changes! This should not be possible.
+    private void setCheckedStateInList(LinearLayout container, List<String> dreamTypes) {
+        for (int i = 0; i < container.getChildCount(); i++) {
             CheckBox chk = (CheckBox) container.getChildAt(i);
-            if(values[i]) { chk.setChecked(true); }
+            if(filterDreamTypes.contains(dreamTypes.get(i))) { chk.setChecked(true); }
+            int finalI = i;
             chk.setOnCheckedChangeListener((compoundButton, b) -> {
-                filterDreamTypes[getIdInContainer(container, chk)] = b;
+                String dreamTypeId = dreamTypes.get(finalI);
+                if (b) {
+                    filterDreamTypes.add(dreamTypeId);
+                }
+                else {
+                    filterDreamTypes.remove(dreamTypeId);
+                }
                 checkboxSelectionChanged(filterDreamTypeCat, dreamTypeCheckboxContainer, contentDreamType);
             });
         }
@@ -358,7 +366,7 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
         DreamMoods mood = moodIndex >= 0 ? DreamMoods.values()[moodIndex] : DreamMoods.None;
         DreamClarity clarity = clarityIndex >= 0 ? DreamClarity.values()[clarityIndex] : DreamClarity.None;
         SleepQuality quality = qualityIndex >= 0 ? SleepQuality.values()[qualityIndex] : SleepQuality.None;
-        return new AppliedFilter(filterTagsList, filterDreamTypes, JournalTypes.None, mood, clarity, quality);
+        return new AppliedFilter(filterTagsList, filterDreamTypes, mood, clarity, quality);
     }
 
     private int getSelectedRadio(RadioGroup radioGroup) {

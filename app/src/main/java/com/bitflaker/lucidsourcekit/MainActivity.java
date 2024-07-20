@@ -143,9 +143,9 @@ public class MainActivity extends AppCompatActivity {
 
             // Populate all default data in database
             db.getDreamTypeDao().insertAll(DreamType.populateData()).blockingSubscribe();
-            db.getDreamMoodDao().insertAll(DreamMood.populateData()).blockingSubscribe();
-            db.getDreamClarityDao().insertAll(DreamClarity.populateData()).blockingSubscribe();
-            db.getSleepQualityDao().insertAll(SleepQuality.populateData()).blockingSubscribe();
+            db.getDreamMoodDao().insertAll(DreamMood.defaultData).blockingSubscribe();
+            db.getDreamClarityDao().insertAll(DreamClarity.defaultData).blockingSubscribe();
+            db.getSleepQualityDao().insertAll(SleepQuality.defaultData).blockingSubscribe();
             db.getWeekdaysDao().insertAll(Weekdays.populateData()).blockingSubscribe();
             db.getAlarmToneTypesDao().insertAll(AlarmToneTypes.populateData()).blockingSubscribe();
             db.getNotificationObfuscationDao().insertAll(NotificationObfuscations.populateData()).blockingSubscribe();
@@ -210,11 +210,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void startMainApp() {
         Intent intent = new Intent(MainActivity.this, MainViewer.class);
-        if(getIntent().hasExtra("INITIAL_PAGE")){
+        if (getIntent().hasExtra("INITIAL_PAGE")) {
             intent.putExtra("INITIAL_PAGE", getIntent().getStringExtra("INITIAL_PAGE"));
         }
-        if(getIntent().hasExtra("type")){
-            intent.putExtra("type", getIntent().getIntExtra("type", -1));
+        if (getIntent().hasExtra("DREAM_JOURNAL_TYPE")) {
+            intent.putExtra("DREAM_JOURNAL_TYPE", getIntent().getIntExtra("DREAM_JOURNAL_TYPE", -1));
         }
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

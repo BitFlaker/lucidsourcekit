@@ -3,6 +3,7 @@ package com.bitflaker.lucidsourcekit.main.dreamjournal;
 import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,21 +18,15 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.view.ViewCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.database.MainDatabase;
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasTag;
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasType;
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryTag;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
 import com.bitflaker.lucidsourcekit.general.database.values.DreamMoods;
+import com.bitflaker.lucidsourcekit.general.database.values.DreamTypes;
 import com.bitflaker.lucidsourcekit.general.database.values.SleepQuality;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.button.MaterialButton;
@@ -40,41 +35,32 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.slider.Slider;
 
 import java.util.HashMap;
-import java.util.List;
 
-import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class DreamJournalRatingEditor extends Fragment {
-    OnBackButtonClicked mBackButtonListener;
-    OnDoneButtonClicked mDoneButtonListener;
-    OnDreamJournalEntrySaved mDreamJournalEntrySaved;
-    MaterialButton backToDreamEditor, closeEditor;
-    MaterialButton doneRatingBtn;
-    Slider sliderDreamMood, sliderSleepQuality, sliderDreamClarity;
-    ImageView previewDreamMood, previewDreamClarity, previewSleepQuality;
-    ImageView[] dreamMoods = new ImageView[5];
-    ImageView[] sleepQualities = new ImageView[4];
-    ImageView[] dreamClarities = new ImageView[4];
-    ToggleButton toggleNightmare, toggleParalysis, toggleLucid, toggleRecurring, toggleFalseAwakening;
-    LinearLayout specialDreamIconsContainer;
     private final String[] dreamMoodLabels = new String[] { "Terrible", "Poor", "Okay", "Great", "Outstanding"};
     private final String[] sleepQualityLabels = new String[] { "Terrible", "Poor", "Great", "Outstanding"};
     private final String[] dreamClarityLabels = new String[] { "Very Cloudy", "Cloudy", "Clear", "Crystal Clear"};
+    private ImageView[] dreamMoods = new ImageView[5];
+    private ImageView[] sleepQualities = new ImageView[4];
+    private ImageView[] dreamClarities = new ImageView[4];
+    private ToggleButton toggleNightmare, toggleParalysis, toggleLucid, toggleRecurring, toggleFalseAwakening;
+    private Slider sliderDreamMood, sliderSleepQuality, sliderDreamClarity;
+    private ImageView previewDreamMood, previewDreamClarity, previewSleepQuality;
+    private LinearLayout specialDreamIconsContainer;
     private ColorStateList unselectedIconColor;
     private ColorStateList selectedIconColor;
-    private OnCloseButtonClicked mCloseButtonClicked;
-    private JournalInMemoryManager journalManger;
-    private String journalEntryId;
-    private MainDatabase db;
-    private HashMap<ToggleButton, ImageView> toggleButtonIcons;
-    private TextView specialDreamHeading, specialDreamDescription;
-    private MaterialCardView cardRatingsPreview;
-    private NestedScrollView bottomSheet;
     private ImageView dragHandle;
+    private TextView specialDreamHeading, specialDreamDescription;
+    private HashMap<ToggleButton, ImageView> toggleButtonIcons;
+    private MaterialCardView cardRatingsPreview;
     private BottomSheetBehavior<NestedScrollView> bottomSheetBehavior;
     private CompositeDisposable compositeDisposable;
+    private DreamJournalEntry entry;
+    private OnCloseButtonClicked mCloseButtonClicked;
+    private OnBackButtonClicked mBackButtonListener;
+    private OnDoneButtonClicked mDoneButtonListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -92,13 +78,12 @@ public class DreamJournalRatingEditor extends Fragment {
         unselectedIconColor = Tools.getAttrColorStateList(R.attr.colorSurfaceContainerHigh, getContext().getTheme());
         selectedIconColor = Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme());
 
-        backToDreamEditor = getView().findViewById(R.id.btn_dj_back_to_text);
-        doneRatingBtn = getView().findViewById(R.id.btn_dj_done_rating);
-        closeEditor = getView().findViewById(R.id.btn_dj_close_editor);
+        MaterialButton backToDreamEditor = getView().findViewById(R.id.btn_dj_back_to_text);
+        MaterialButton doneRatingBtn = getView().findViewById(R.id.btn_dj_done_rating);
+        MaterialButton closeEditor = getView().findViewById(R.id.btn_dj_close_editor);
 
         cardRatingsPreview = getView().findViewById(R.id.mcv_dream_rating_preview);
-        bottomSheet = getView().findViewById(R.id.nsv_dream_rating_bottom_sheet);
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(getView().findViewById(R.id.nsv_dream_rating_bottom_sheet));
         dragHandle = getView().findViewById(R.id.img_drag_handle);
 
         sliderDreamMood = getView().findViewById(R.id.sld_dj_dream_mood);
@@ -139,15 +124,13 @@ public class DreamJournalRatingEditor extends Fragment {
                 getView().findViewById(R.id.img_very_clear)
         };
 
-        db = MainDatabase.getInstance(getContext());
-        JournalInMemory jim = journalManger.getEntry(journalEntryId);
-        restoreStoredEntry(jim);
+        restoreStoredEntry();
 
-        toggleNightmare.setOnClickListener(e -> toggleSpecialDreamType(jim, (ToggleButton) e, JournalInMemory.SpecialDreamType.NIGHTMARE));
-        toggleParalysis.setOnClickListener(e -> toggleSpecialDreamType(jim, (ToggleButton) e, JournalInMemory.SpecialDreamType.PARALYSIS));
-        toggleLucid.setOnClickListener(e -> toggleSpecialDreamType(jim, (ToggleButton) e, JournalInMemory.SpecialDreamType.LUCID));
-        toggleRecurring.setOnClickListener(e -> toggleSpecialDreamType(jim, (ToggleButton) e, JournalInMemory.SpecialDreamType.RECURRING));
-        toggleFalseAwakening.setOnClickListener(e -> toggleSpecialDreamType(jim, (ToggleButton) e, JournalInMemory.SpecialDreamType.FALSE_AWAKENING));
+        toggleNightmare.setOnClickListener(e -> toggleSpecialDreamType((ToggleButton) e, DreamTypes.Nightmare.getId()));
+        toggleParalysis.setOnClickListener(e -> toggleSpecialDreamType((ToggleButton) e, DreamTypes.SleepParalysis.getId()));
+        toggleLucid.setOnClickListener(e -> toggleSpecialDreamType((ToggleButton) e, DreamTypes.Lucid.getId()));
+        toggleRecurring.setOnClickListener(e -> toggleSpecialDreamType((ToggleButton) e, DreamTypes.Recurring.getId()));
+        toggleFalseAwakening.setOnClickListener(e -> toggleSpecialDreamType((ToggleButton) e, DreamTypes.FalseAwakening.getId()));
 
         sliderDreamMood.setLabelFormatter(value -> dreamMoodLabels[(int)value]);
         sliderSleepQuality.setLabelFormatter(value -> sleepQualityLabels[(int)value]);
@@ -155,22 +138,22 @@ public class DreamJournalRatingEditor extends Fragment {
 
         sliderDreamMood.addOnChangeListener((slider, value, fromUser) -> {
             handleIconSlider((int) value, dreamMoods, previewDreamMood);
-            jim.setDreamMood(DreamMoods.values()[(int) value].getId());
+            entry.journalEntry.moodId = DreamMoods.values()[(int) value].getId();
         });
         sliderSleepQuality.addOnChangeListener((slider, value, fromUser) -> {
             handleIconSlider((int) value, sleepQualities, previewSleepQuality);
-            jim.setSleepQuality(SleepQuality.values()[(int) value].getId());
+            entry.journalEntry.qualityId = SleepQuality.values()[(int) value].getId();
         });
         sliderDreamClarity.addOnChangeListener((slider, value, fromUser) -> {
             handleIconSlider((int) value, dreamClarities, previewDreamClarity);
-            jim.setDreamClarity(DreamClarity.values()[(int) value].getId());
+            entry.journalEntry.clarityId = DreamClarity.values()[(int) value].getId();
         });
 
         closeEditor.setOnClickListener(e -> new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog)
                 .setTitle("Discard changes")
                 .setMessage("Do you really want to discard all changes")
                 .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-                    journalManger.discardEntry(journalEntryId);
+                    entry.removeAllAddedRecordings();
                     if(mCloseButtonClicked != null) {
                         mCloseButtonClicked.onEvent();
                     }
@@ -185,7 +168,7 @@ public class DreamJournalRatingEditor extends Fragment {
         });
 
         doneRatingBtn.setOnClickListener(e -> {
-            if(jim.getTitle().equals("") || (jim.getDescription().equals("") && jim.getAudioRecordings().size() == 0)) {
+            if(TextUtils.isEmpty(entry.journalEntry.title) || (TextUtils.isEmpty(entry.journalEntry.description) && entry.audioLocations.isEmpty())) {
                 new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog)
                         .setTitle("No content")
                         .setMessage("You have to provide a title and a description or audio recording for your dream journal entry!")
@@ -194,11 +177,9 @@ public class DreamJournalRatingEditor extends Fragment {
                 return;
             }
 
-            compositeDisposable.add(storeEntry().subscribeOn(Schedulers.io()).subscribe((currentEntryId) ->{
-                if(mDreamJournalEntrySaved != null) {
-                    mDreamJournalEntrySaved.onEvent(currentEntryId);
-                }
-            }));
+            if (mDoneButtonListener != null) {
+                mDoneButtonListener.onEvent();
+            }
         });
 
         cardRatingsPreview.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -216,14 +197,7 @@ public class DreamJournalRatingEditor extends Fragment {
         bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    ViewCompat.setBackground(bottomSheet, ResourcesCompat.getDrawable(getResources(), R.drawable.bottomsheet_background_line_expanded, getContext().getTheme()));
-                    dragHandle.setVisibility(View.INVISIBLE);
-                }
-                else {
-                    ViewCompat.setBackground(bottomSheet, ResourcesCompat.getDrawable(getResources(), R.drawable.bottomsheet_background_line, getContext().getTheme()));
-                    dragHandle.setVisibility(View.VISIBLE);
-                }
+                dragHandle.setVisibility(newState == BottomSheetBehavior.STATE_EXPANDED ? View.INVISIBLE : View.VISIBLE);
             }
 
             @Override
@@ -245,38 +219,34 @@ public class DreamJournalRatingEditor extends Fragment {
         heading.setLayoutParams(Tools.addLinearLayoutParamsTopStatusbarSpacing(getContext(), lParams));
     }
 
-    private void toggleSpecialDreamType(JournalInMemory jim, ToggleButton button, JournalInMemory.SpecialDreamType specialDreamType) {
-        setToggledSpecialDreamType(button, getSpecialDreamTypeIcon(specialDreamType));
-        if(jim != null) {
-            jim.setSpecialDreamType(specialDreamType, button.isChecked());
-        }
-    }
-
-    private static int getSpecialDreamTypeIcon(JournalInMemory.SpecialDreamType specialDreamType) {
-        @DrawableRes int icon = -1;
-        switch (specialDreamType) {
-            case NIGHTMARE: icon = R.drawable.rounded_sentiment_stressed_24; break;
-            case PARALYSIS: icon = R.drawable.ic_baseline_accessibility_new_24; break;
-            case LUCID: icon = R.drawable.rounded_award_star_24; break;
-            case RECURRING: icon = R.drawable.ic_round_loop_24; break;
-            case FALSE_AWAKENING: icon = R.drawable.rounded_cinematic_blur_24; break;
-        }
-        return icon;
-    }
-
-    private void setToggledSpecialDreamType(ToggleButton button, @DrawableRes int iconId) {
+    private void toggleSpecialDreamType(ToggleButton button, String dreamType) {
+        @DrawableRes int iconId = getSpecialDreamTypeIcon(dreamType);
         if(button.isChecked()) {
             setSpecialDreamNoticeIfFirst();
             ImageView icon = generateIcon(iconId);
             toggleButtonIcons.put(button, icon);
             specialDreamIconsContainer.addView(icon);
+            entry.addDreamType(dreamType);
         }
         else {
             setRegularDreamNoticeIfLast(button);
             ImageView icon = toggleButtonIcons.get(button);
             toggleButtonIcons.remove(button);
             specialDreamIconsContainer.removeView(icon);
+            entry.removeDreamType(dreamType);
         }
+    }
+
+    private static int getSpecialDreamTypeIcon(String dreamType) {
+        @DrawableRes int icon = switch (DreamTypes.getEnum(dreamType)) {
+            case Nightmare -> R.drawable.rounded_sentiment_stressed_24;
+            case SleepParalysis -> R.drawable.ic_baseline_accessibility_new_24;
+            case Lucid -> R.drawable.rounded_award_star_24;
+            case Recurring -> R.drawable.ic_round_loop_24;
+            case FalseAwakening -> R.drawable.rounded_cinematic_blur_24;
+            default -> -1;
+        };
+        return icon;
     }
 
     private void setRegularDreamNoticeIfLast(ToggleButton button) {
@@ -288,7 +258,7 @@ public class DreamJournalRatingEditor extends Fragment {
     }
 
     private void setSpecialDreamNoticeIfFirst() {
-        if (toggleButtonIcons.size() == 0) {
+        if (toggleButtonIcons.isEmpty()) {
             specialDreamIconsContainer.removeAllViews();
             specialDreamHeading.setText("Special dream");
             specialDreamDescription.setText("This is a special dream with at least one special type");
@@ -328,24 +298,24 @@ public class DreamJournalRatingEditor extends Fragment {
         return deviceHeight - insetBottom;
     }
 
-    private void restoreStoredEntry(JournalInMemory jim) {
-        sliderDreamMood.setValue(DreamMoods.getEnum(jim.getDreamMood()).ordinal());
+    private void restoreStoredEntry() {
+        sliderDreamMood.setValue(DreamMoods.getEnum(entry.journalEntry.moodId).ordinal());
         handleIconSlider((int) sliderDreamMood.getValue(), dreamMoods, previewDreamMood);
-        sliderDreamClarity.setValue(DreamClarity.getEnum(jim.getDreamClarity()).ordinal());
+        sliderDreamClarity.setValue(DreamClarity.getEnum(entry.journalEntry.clarityId).ordinal());
         handleIconSlider((int) sliderDreamClarity.getValue(), dreamClarities, previewDreamClarity);
-        sliderSleepQuality.setValue(SleepQuality.getEnum(jim.getSleepQuality()).ordinal());
+        sliderSleepQuality.setValue(SleepQuality.getEnum(entry.journalEntry.qualityId).ordinal());
         handleIconSlider((int) sliderSleepQuality.getValue(), sleepQualities, previewSleepQuality);
 
-        toggleNightmare.setChecked(jim.isNightmare());
-        toggleSpecialDreamType(null, toggleNightmare, JournalInMemory.SpecialDreamType.NIGHTMARE);
-        toggleParalysis.setChecked(jim.isParalysis());
-        toggleSpecialDreamType(null, toggleParalysis, JournalInMemory.SpecialDreamType.PARALYSIS);
-        toggleLucid.setChecked(jim.isLucid());
-        toggleSpecialDreamType(null, toggleLucid, JournalInMemory.SpecialDreamType.LUCID);
-        toggleRecurring.setChecked(jim.isRecurring());
-        toggleSpecialDreamType(null, toggleRecurring, JournalInMemory.SpecialDreamType.RECURRING);
-        toggleFalseAwakening.setChecked(jim.isFalseAwakening());
-        toggleSpecialDreamType(null, toggleFalseAwakening, JournalInMemory.SpecialDreamType.FALSE_AWAKENING);
+        toggleNightmare.setChecked(entry.hasSpecialType(DreamTypes.Nightmare.getId()));
+        toggleSpecialDreamType(toggleNightmare, DreamTypes.Nightmare.getId());
+        toggleParalysis.setChecked(entry.hasSpecialType(DreamTypes.SleepParalysis.getId()));
+        toggleSpecialDreamType(toggleParalysis, DreamTypes.SleepParalysis.getId());
+        toggleLucid.setChecked(entry.hasSpecialType(DreamTypes.Lucid.getId()));
+        toggleSpecialDreamType(toggleLucid, DreamTypes.Lucid.getId());
+        toggleRecurring.setChecked(entry.hasSpecialType(DreamTypes.Recurring.getId()));
+        toggleSpecialDreamType(toggleRecurring, DreamTypes.Recurring.getId());
+        toggleFalseAwakening.setChecked(entry.hasSpecialType(DreamTypes.FalseAwakening.getId()));
+        toggleSpecialDreamType(toggleFalseAwakening, DreamTypes.FalseAwakening.getId());
     }
 
     @Override
@@ -366,43 +336,12 @@ public class DreamJournalRatingEditor extends Fragment {
         super.onDestroyView();
     }
 
-    private Single<Integer> storeEntry() {
-        return Single.fromCallable(() -> {
-            JournalInMemory jim = journalManger.getEntry(journalEntryId);
-            JournalEntry entry = new JournalEntry(jim.getTime().getTimeInMillis(), jim.getTitle(), jim.getDescription(), jim.getSleepQuality(), jim.getDreamClarity(), jim.getDreamMood());
-
-            if(jim.getEntryId() != -1) {
-                entry.setEntryId(jim.getEntryId());
-                db.getJournalEntryHasTagDao().deleteAll(jim.getEntryId()).blockingSubscribe();
-                db.getJournalEntryIsTypeDao().deleteAll(jim.getEntryId()).blockingSubscribe();
-            }
-
-            int currentEntryId = db.getJournalEntryDao().insert(entry).blockingGet().intValue();
-            List<JournalEntryHasType> journalEntryHasTypes = jim.getDreamTypes(currentEntryId);
-            db.getJournalEntryIsTypeDao().insertAll(journalEntryHasTypes).blockingSubscribe();
-            List<JournalEntryTag> journalEntryTagsToInsert = jim.getJournalEntryTag();
-            db.getJournalEntryTagDao().insertAll(journalEntryTagsToInsert).blockingSubscribe();
-            List<JournalEntryTag> journalEntryTags = db.getJournalEntryTagDao().getIdsByDescription(jim.getTags()).blockingGet();
-            List<JournalEntryHasTag> journalEntryHasTags = jim.getJournalEntryHasTag(currentEntryId, journalEntryTags);
-            db.getJournalEntryHasTagDao().insertAll(journalEntryHasTags).blockingSubscribe();
-            List<AudioLocation> audioLocations = AudioLocation.parse(currentEntryId, jim.getAudioRecordings());
-            db.getAudioLocationDao().insertAll(audioLocations).blockingSubscribe();
-            jim.deleteMarkedAudioRecordings();
-            return currentEntryId;
-        });
-    }
-
     public interface OnDreamJournalEntrySaved {
         void onEvent(int entryId);
     }
 
-    public void setOnDreamJournalEntrySavedListener(OnDreamJournalEntrySaved eventListener) {
-        mDreamJournalEntrySaved = eventListener;
-    }
-
-    public void setJournalEntryId(String id) {
-        journalEntryId = id;
-        journalManger = JournalInMemoryManager.getInstance();
+    public void setJournalEntryId(DreamJournalEntry entry) {
+        this.entry = entry;
     }
 
     public interface OnBackButtonClicked {
@@ -427,12 +366,5 @@ public class DreamJournalRatingEditor extends Fragment {
 
     public void setOnCloseButtonClicked(OnCloseButtonClicked eventListener) {
         mCloseButtonClicked = eventListener;
-    }
-
-    private enum SelectedRating {
-        DREAM_MOOD,
-        SLEEP_QUALITY,
-        DREAM_CLARITY,
-        DREAM_CHARACTERISTICS
     }
 }

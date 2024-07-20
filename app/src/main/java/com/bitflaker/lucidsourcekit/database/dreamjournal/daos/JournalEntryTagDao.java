@@ -26,7 +26,7 @@ public interface JournalEntryTagDao {
     Single<Integer> getTotalTagCount();
 
     @Query("SELECT * FROM JournalEntryTag WHERE description IN (:descriptions)")
-    Single<List<JournalEntryTag>> getIdsByDescription(List<String> descriptions);
+    Single<List<JournalEntryTag>> getByDescription(List<String> descriptions);
 
     @Insert
     Single<List<Long>> insertAll(JournalEntryTag... tags);

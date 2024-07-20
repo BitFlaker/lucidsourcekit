@@ -1,9 +1,13 @@
 package com.bitflaker.lucidsourcekit.database.dreamjournal.entities;
 
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+
+import java.util.Calendar;
 
 @Entity(foreignKeys = {
         @ForeignKey(entity = SleepQuality.class,
@@ -44,7 +48,29 @@ public class JournalEntry {
         this.moodId = moodId;
     }
 
+    @Ignore
+    public JournalEntry() {
+        this.timeStamp = Calendar.getInstance().getTimeInMillis();
+        this.title = null;
+        this.description = null;
+        this.qualityId = SleepQuality.ofValue(0).qualityId;
+        this.clarityId = DreamClarity.ofValue(0).clarityId;
+        this.moodId = DreamMood.ofValue(0).moodId;
+    }
+
     public void setEntryId(int entryId) {
         this.entryId = entryId;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return obj instanceof JournalEntry entry &&
+                entryId == entry.entryId &&
+                timeStamp == entry.timeStamp &&
+                title.equals(entry.title) &&
+                description.equals(entry.description) &&
+                qualityId.equals(entry.qualityId) &&
+                clarityId.equals(entry.clarityId) &&
+                moodId.equals(entry.moodId);
     }
 }

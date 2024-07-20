@@ -35,7 +35,7 @@ import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.alarms.updated.AlarmHandler;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
-import com.bitflaker.lucidsourcekit.general.JournalTypes;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -308,7 +308,7 @@ public class AlarmViewer extends AppCompatActivity {
         cameraId = null;
         String[] cameraIds = camManager.getCameraIdList();
         for (String camId : cameraIds) {
-            boolean flashAvailable = camManager.getCameraCharacteristics(camId).get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+            boolean flashAvailable = Boolean.TRUE.equals(camManager.getCameraCharacteristics(camId).get(CameraCharacteristics.FLASH_INFO_AVAILABLE));
             if(flashAvailable){
                 cameraId = camId;
                 break;
@@ -316,10 +316,10 @@ public class AlarmViewer extends AppCompatActivity {
         }
     }
 
-    private void showJournalCreator(JournalTypes type) {
+    private void showJournalCreator(DreamJournalEntry.EntryType type) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("type", type.ordinal());
+        intent.putExtra("DREAM_JOURNAL_TYPE", type.ordinal());
         intent.putExtra("INITIAL_PAGE", "journal");
         startActivity(intent);
         finishAffinity();

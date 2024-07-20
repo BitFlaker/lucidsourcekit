@@ -11,9 +11,10 @@ import android.widget.TextView;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.main.dreamjournal.RecordingData;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
 
 import java.text.DateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public class RecordingObjectTools {
@@ -42,7 +43,7 @@ public class RecordingObjectTools {
         return deleteButton;
     }
 
-    public TextView generateDuration(RecordingData recording, boolean extendedMarginEnd) {
+    public TextView generateDuration(AudioLocation recording, boolean extendedMarginEnd) {
         TextView duration = new TextView(context);
         int dp10 = Tools.dpToPx(context, 10);
         int dp25 = Tools.dpToPx(context, 25);
@@ -63,12 +64,13 @@ public class RecordingObjectTools {
         return duration;
     }
 
-    public TextView generateTimestamp(RecordingData recording) {
+    public TextView generateTimestamp(AudioLocation recording) {
         TextView timestamp = new TextView(context);
         timestamp.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
         DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
-        timestamp.setText(df.format(recording.getRecordingTime().getTime()) + " • " + tf.format(recording.getRecordingTime().getTime()));
+        Date date = Tools.calendarFromMillis(recording.recordingTimestamp).getTime();
+        timestamp.setText(String.format(Locale.getDefault(), "%s • %s", df.format(date), tf.format(date)));
         timestamp.setTextColor(Tools.getAttrColorStateList(R.attr.secondaryTextColor, context.getTheme()));
         timestamp.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         return timestamp;

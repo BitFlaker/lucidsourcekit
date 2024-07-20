@@ -1,78 +1,77 @@
 package com.bitflaker.lucidsourcekit.main.dreamjournal;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.window.OnBackInvokedDispatcher;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.general.JournalTypes;
+import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasTag;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryTag;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class DreamJournalEntryEditor extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
-    private ViewPagerAdapter vpAdapter;
-    private DreamJournalContentEditor vwDreamContentEditor;
-    private DreamJournalRatingEditor vwDreamRatingsEditor;
-    private String journalInMemoryEntryID;
-    private boolean isSaved;
-    private JournalInMemory jim;
+    private int journalEntryId;
+    private boolean isSaved = false;
+    private DreamJournalEntry entry;
+    private MainDatabase db;
+    private CompositeDisposable compositeDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dream_journal_entry_editor);
-
         Tools.makeStatusBarTransparent(this);
 
-        vpAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
+        db = MainDatabase.getInstance(this);
+        compositeDisposable = new CompositeDisposable();
+        ViewPagerAdapter vpAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
         tabLayout = findViewById(R.id.tl_dj_editor_layout);
         viewPager2 = findViewById(R.id.vp_dj_editor);
         viewPager2.setUserInputEnabled(false);
         viewPager2.setOnTouchListener((v, event) -> true);
-        if(getIntent().hasExtra("journal_in_memory_id")) {
-            journalInMemoryEntryID = getIntent().getStringExtra("journal_in_memory_id");
-        }
-        else {
-            journalInMemoryEntryID = JournalInMemoryManager.getInstance().newEntry();
-        }
-        jim = JournalInMemoryManager.getInstance().getEntry(journalInMemoryEntryID);
-        if(getIntent().hasExtra("type") && getIntent().getIntExtra("type", JournalTypes.Text.ordinal()) == JournalTypes.Forms.ordinal()){
-            jim.setEntryType(JournalInMemory.EntryType.FORMS_TEXT);
-        }
-        isSaved = false;
 
-        vwDreamContentEditor = new DreamJournalContentEditor();
-        vwDreamContentEditor.setJournalEntryId(journalInMemoryEntryID);
+        journalEntryId = getIntent().getIntExtra("JOURNAL_ENTRY_ID", -1);
+        entry = journalEntryId == -1 ? DreamJournalEntry.createDefault() : db.getJournalEntryDao().getEntryDataById(journalEntryId).blockingGet();
+
+        DreamJournalEntry.EntryType type = DreamJournalEntry.EntryType.PLAIN_TEXT;
+        int journalTypeId = getIntent().getIntExtra("DREAM_JOURNAL_TYPE", DreamJournalEntry.EntryType.PLAIN_TEXT.ordinal());
+        if (journalTypeId >= 0 && journalTypeId < DreamJournalEntry.EntryType.values().length) {
+            type = DreamJournalEntry.EntryType.values()[journalTypeId];
+        }
+
+        DreamJournalContentEditor vwDreamContentEditor = new DreamJournalContentEditor();
+        vwDreamContentEditor.setJournalEntryId(entry);
+        vwDreamContentEditor.setJournalEntryType(type);
         vwDreamContentEditor.setOnContinueButtonClicked(() -> tabLayout.selectTab(tabLayout.getTabAt(1)));
         vwDreamContentEditor.setOnCloseButtonClicked(this::finish);
 
-        vwDreamRatingsEditor = new DreamJournalRatingEditor();
-        vwDreamRatingsEditor.setJournalEntryId(journalInMemoryEntryID);
+        DreamJournalRatingEditor vwDreamRatingsEditor = new DreamJournalRatingEditor();
+        vwDreamRatingsEditor.setJournalEntryId(entry);
         vwDreamRatingsEditor.setOnBackButtonClicked(() -> tabLayout.selectTab(tabLayout.getTabAt(0)));
-        vwDreamRatingsEditor.setOnDoneButtonClicked(() -> {
-            // TODO: store data
-        });
-        vwDreamRatingsEditor.setOnDreamJournalEntrySavedListener((entryId) -> {
-            isSaved = true;
-            runOnUiThread(() -> {
-                Intent data = new Intent();
-                data.putExtra("entryId", entryId);
-                data.putExtra("journal_in_memory_id", journalInMemoryEntryID);
-                setResult(RESULT_OK, data);
-                finish();
-            });
-        });
+        vwDreamRatingsEditor.setOnDoneButtonClicked(() -> compositeDisposable.add(storeEntry().subscribeOn(Schedulers.io()).subscribe()));
         vwDreamRatingsEditor.setOnCloseButtonClicked(this::finish);
 
         vpAdapter.addFragment(vwDreamContentEditor, "");
@@ -82,26 +81,79 @@ public class DreamJournalEntryEditor extends AppCompatActivity {
 
         tabLayout.addOnTabSelectedListener(tabSelected());
         viewPager2.registerOnPageChangeCallback(changeTab());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, this::promptDiscardChanges);
+        }
+        else {
+            getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+                @Override
+                public void handleOnBackPressed() {
+                    promptDiscardChanges();
+                }
+            });
+        }
     }
 
-    @Override
-    public void onBackPressed() {
-        new MaterialAlertDialogBuilder(this, R.style.Theme_LucidSourceKit_ThemedDialog).setTitle("Discard changes").setMessage("Do you really want to discard all changes")
-                .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-                    super.onBackPressed();
-                })
+    private Completable storeEntry() {
+        return Completable.fromCallable(() -> {
+            // In case this entry already exists, remove all already present assigned types,
+            // tags and audio locations to ensure no duplicates will be created.
+            // This should probably be replaced with a diff calculation in the future
+            if (entry.journalEntry.entryId != -1) {
+                db.getJournalEntryHasTagDao().deleteAll(entry.journalEntry.entryId).blockingSubscribe();
+                db.getJournalEntryIsTypeDao().deleteAll(entry.journalEntry.entryId).blockingSubscribe();
+                db.getAudioLocationDao().deleteAll(entry.journalEntry.entryId).blockingSubscribe();
+            }
+
+            // Insert (or replace if already exists) the current journal entry
+            int entryId = db.getJournalEntryDao().insert(entry.journalEntry).blockingGet().intValue();
+
+            // Assign dream types to the current entry
+            db.getJournalEntryIsTypeDao().insertAll(entry.getDreamTypeEntries(entryId)).blockingSubscribe();
+
+            // Insert missing tags and assign them to the entry
+            db.getJournalEntryTagDao().insertAll(entry.journalEntryTags).blockingSubscribe();
+            List<JournalEntryTag> journalEntryTags = db.getJournalEntryTagDao().getByDescription(entry.journalEntryTags.stream().map(x -> x.description).collect(Collectors.toList())).blockingGet();
+            List<JournalEntryHasTag> tags = journalEntryTags.stream().map(x -> new JournalEntryHasTag(entryId, x.tagId)).collect(Collectors.toList());
+            db.getJournalEntryHasTagDao().insertAll(tags).blockingSubscribe();
+
+            // Insert all added audio locations
+            db.getAudioLocationDao().insertAll(entry.getAudioLocations(entryId)).blockingSubscribe();
+
+            // Only delete all recordings after the entry was saved and the
+            // reference to the recording in the database was removed
+            entry.deleteAllRemovedAudioLocations();
+
+            // Finish the editor activity
+            isSaved = true;
+            runOnUiThread(() -> {
+                Intent data = new Intent();
+                data.putExtra("entryId", entryId);
+                setResult(RESULT_OK, data);
+                finish();
+            });
+
+            return Completable.complete();
+        });
+    }
+
+    private void promptDiscardChanges() {
+        new MaterialAlertDialogBuilder(this, R.style.Theme_LucidSourceKit_ThemedDialog)
+                .setTitle("Discard changes")
+                .setMessage("Do you really want to discard all changes")
+                .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> finish())
                 .setNegativeButton(getResources().getString(R.string.no), null)
                 .show();
     }
 
     @Override
     protected void onStop() {
-        if(!isSaved && jim.getEditMode() != JournalInMemory.EditMode.EDIT) {
-            for (RecordingData recData : jim.getAudioRecordings()) {
-                File audio = new File(recData.getFilepath());
-                if(audio.delete()) {
-                    jim.markAudioRecordingToRemove(recData);
-                }
+        compositeDisposable.dispose();
+        boolean isModeCreate = journalEntryId == -1;
+        if (!isSaved && isModeCreate) {
+            for (AudioLocation recData : entry.audioLocations) {
+                new File(recData.audioPath).delete();
             }
         }
         super.onStop();
@@ -112,12 +164,7 @@ public class DreamJournalEntryEditor extends AppCompatActivity {
         return new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                // TODO probably optimize as it should only store when it was 0 before and is different now (but does not matter with only 2 pages)
-                if(tabLayout.getSelectedTabPosition() != 0) {
-                    jim.setTitle(vwDreamContentEditor.getTitle());
-                    jim.setDescription(vwDreamContentEditor.getDescription());
-                }
-                tabLayout.selectTab(tabLayout.getTabAt(position));
+            tabLayout.selectTab(tabLayout.getTabAt(position));
             }
         };
     }
@@ -125,16 +172,13 @@ public class DreamJournalEntryEditor extends AppCompatActivity {
     @NonNull
     private TabLayout.OnTabSelectedListener tabSelected() {
         return new TabLayout.OnTabSelectedListener() {
+            @Override public void onTabUnselected(TabLayout.Tab tab) { }
+            @Override public void onTabReselected(TabLayout.Tab tab) { }
+
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager2.setCurrentItem(tab.getPosition());
             }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) { }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) { }
         };
     }
 }

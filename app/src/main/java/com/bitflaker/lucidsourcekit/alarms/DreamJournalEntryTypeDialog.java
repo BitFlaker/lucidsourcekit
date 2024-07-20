@@ -9,11 +9,10 @@ import android.view.Window;
 import androidx.annotation.NonNull;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.general.JournalTypes;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
 import com.google.android.material.button.MaterialButton;
 
 public class DreamJournalEntryTypeDialog extends Dialog implements View.OnClickListener {
-    private MaterialButton formsEntry, textEntry;
     private OnEntryTypeSelected mListener;
 
     public DreamJournalEntryTypeDialog(@NonNull Context context) {
@@ -25,17 +24,17 @@ public class DreamJournalEntryTypeDialog extends Dialog implements View.OnClickL
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_journal_type);
-        textEntry = findViewById(R.id.btn_text_entry);
-        formsEntry = findViewById(R.id.btn_forms_entry);
+        MaterialButton textEntry = findViewById(R.id.btn_text_entry);
+        MaterialButton formsEntry = findViewById(R.id.btn_forms_entry);
         textEntry.setOnClickListener(e -> {
-            if(mListener != null){
-                mListener.onEvent(JournalTypes.Text);
+            if (mListener != null) {
+                mListener.onEvent(DreamJournalEntry.EntryType.PLAIN_TEXT);
             }
             dismiss();
         });
         formsEntry.setOnClickListener(e -> {
-            if(mListener != null){
-                mListener.onEvent(JournalTypes.Forms);
+            if (mListener != null) {
+                mListener.onEvent(DreamJournalEntry.EntryType.FORMS_TEXT);
             }
             dismiss();
         });
@@ -47,7 +46,7 @@ public class DreamJournalEntryTypeDialog extends Dialog implements View.OnClickL
     }
 
     public interface OnEntryTypeSelected {
-        void onEvent(JournalTypes journalType);
+        void onEvent(DreamJournalEntry.EntryType journalType);
     }
 
     public void setOnEntryTypeSelected(OnEntryTypeSelected listener) {

@@ -13,6 +13,9 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,10 +28,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -36,6 +37,9 @@ import androidx.fragment.app.Fragment;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryTag;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
 import com.bitflaker.lucidsourcekit.general.RecordingObjectTools;
 import com.bitflaker.lucidsourcekit.general.Tools;
 import com.google.android.flexbox.FlexboxLayout;
@@ -46,39 +50,41 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+
 public class DreamJournalContentEditor extends Fragment {
+    public static final int REQUEST_AUDIO_PERMISSION_CODE = 1;
     private OnContinueButtonClicked mContinueButtonClicked;
     private OnCloseButtonClicked mCloseButtonClicked;
-    private ConstraintLayout topHeading;
     private EditText title, description;
-    private ScrollView editorScroller;
     private FlexboxLayout formsContainer;
     private MaterialButton continueButton, addRecording, closeEditor, addTags;
     private MaterialButton dateTime;
     private ImageButton currentPlayingImageButton;
-    private JournalInMemoryManager journalManger;
-    private String journalEntryId;
     private boolean isRecordingRunning;
-    public static final int REQUEST_AUDIO_PERMISSION_CODE = 1;
     private MediaRecorder mRecorder;
     private String audioFName;
-    private RecordingData currentRecording;
+    private AudioLocation currentRecording;
     private MainDatabase db;
     private List<String> allAvailableTags;
     private MediaPlayer mPlayer;
+    private DreamJournalEntry.EntryType entryType;
+    private DreamJournalEntry entry;
+    private CompositeDisposable compositeDisposable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dream_journal_content_editor, container, false);
 
         db = MainDatabase.getInstance(getContext());
-        topHeading = view.findViewById(R.id.csl_dj_top_bar);
+        compositeDisposable = new CompositeDisposable();
         title = view.findViewById(R.id.txt_dj_title_dream);
         description = view.findViewById(R.id.txt_dj_description_dream);
-        editorScroller = view.findViewById(R.id.scrl_editor_scroll);
         continueButton = view.findViewById(R.id.btn_dj_continue_to_ratings);
         dateTime = view.findViewById(R.id.btn_dj_date);
         addRecording = view.findViewById(R.id.btn_dj_add_recording);
@@ -90,51 +96,60 @@ public class DreamJournalContentEditor extends Fragment {
         DateFormat shortDateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
         DateFormat shortTimeFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
 
-        JournalInMemory entry = journalManger.getEntry(journalEntryId);
-        dateTime.setText(shortDateTimeFormat.format(entry.getTime().getTime()));
+        dateTime.setText(shortDateTimeFormat.format(Tools.calendarFromMillis(entry.journalEntry.timeStamp).getTime()));
 
-        if(entry.getEntryType() == JournalInMemory.EntryType.FORMS_TEXT) {
+        if(entryType == DreamJournalEntry.EntryType.FORMS_TEXT) {
             formsContainer.setVisibility(View.VISIBLE);
-            setupForms();
             description.setVisibility(View.GONE);
+            setupForms();
         }
 
         setupCloseButton();
-        setupTagsEditor(entry);
-        setupDateTimePicker(mediumDateFormat, shortDateTimeFormat, shortTimeFormat, entry);
-        setupRecordingsEditor(entry);
+        setupTagsEditor();
+        setupDateTimePicker(mediumDateFormat, shortDateTimeFormat, shortTimeFormat);
+        setupRecordingsEditor();
         setupContinueButton();
 
-        title.setText(entry.getTitle());
-        description.setText(entry.getDescription());
-        if(entry.getTitle().equals("")) {
+        title.setText(entry.journalEntry.title);
+        title.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override public void afterTextChanged(Editable s) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                entry.journalEntry.title = s.toString();
+            }
+        });
+        description.setText(entry.journalEntry.description);
+        description.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override public void afterTextChanged(Editable s) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                entry.journalEntry.description = s.toString();
+            }
+        });
+        if(TextUtils.isEmpty(entry.journalEntry.title)) {
             new Handler().postDelayed(() -> {
                 title.requestFocus();
                 InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 mgr.showSoftInput(title, InputMethodManager.SHOW_IMPLICIT);
             }, 100);
         }
-
         return view;
     }
 
     private void setupForms() {
         String formsTemplate = "I was in <<EDIT>> and I saw <<EDIT>>. The daytime was <<EDIT>>. Characters in my dream were <<EDIT>>. I was <<EDIT>>. The characters in my dream behaved <<EDIT>>."; // TODO make this text editable for users
-        String[] formsTemplateSplit = formsTemplate.split("<<EDIT>>");
+        String[] formsTemplateSplit = Arrays.stream(formsTemplate.split("<<EDIT>>")).filter(x -> x != null && !x.isEmpty() && !x.isBlank()).toArray(String[]::new);
         for (int i = 0; i < formsTemplateSplit.length; i++) {
+            String[] sentences = new String[] { formsTemplateSplit[i] };
             if (startsWithSentenceEnd(formsTemplateSplit[i])) {
-                String[] separatedSentences = separateAtSentenceEnd(formsTemplateSplit[i]);
-                formsContainer.addView(generateTextView(separatedSentences[0]));
-                TextView tv = generateTextView(separatedSentences[1]);
-                if(tv != null){
-                    formsContainer.addView(tv);
-                }
+                sentences = separateAtSentenceEnd(formsTemplateSplit[i]);
             }
-            else{
-                TextView tv = generateTextView(formsTemplateSplit[i]);
-                if(tv != null){
-                    formsContainer.addView(tv);
-                }
+            for (String sentence : sentences) {
+                formsContainer.addView(generateTextView(sentence));
             }
             if(i < formsTemplateSplit.length - 1) {
                 formsContainer.addView(generateEditText());
@@ -150,13 +165,23 @@ public class DreamJournalContentEditor extends Fragment {
         et.setLayoutParams(lParams);
         et.setMinWidth(Tools.dpToPx(getContext(), 70));
         et.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+
+        // This will lead to a lot of events while typing the description
+        // (after every character written), but it works very smoothly even for long
+        // texts and therefore this implementation seems to be fine for now
+        et.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override public void afterTextChanged(Editable s) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                entry.journalEntry.description = getFormResult();
+            }
+        });
         return et;
     }
 
     private TextView generateTextView(String sentence) {
-        if(sentence.length() == 0){
-            return null;
-        }
         TextView tv = new TextView(getContext());
         tv.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
@@ -196,22 +221,22 @@ public class DreamJournalContentEditor extends Fragment {
     }
 
     private boolean startsWithSentenceEnd(String sentence) {
-        if(sentence.length() == 0){
+        if(sentence.isEmpty()){
             return false;
         }
         return isSentenceEndSymbol(sentence.charAt(0));
     }
 
     public String getFormResult() {
-        int count = formsContainer.getChildCount();
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < count; i++){
-            View v = formsContainer.getChildAt(i);
-            if(v instanceof EditText){
-                sb.append(((TextView) v).getText());
+        int count = formsContainer.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View view = formsContainer.getChildAt(i);
+            if (view instanceof EditText editText) {
+                sb.append(editText.getText());
             }
-            else if (v instanceof TextView) {
-                sb.append(((TextView) v).getText());
+            else if (view instanceof TextView textView) {
+                sb.append(textView.getText());
             }
         }
         return sb.toString();
@@ -228,9 +253,11 @@ public class DreamJournalContentEditor extends Fragment {
     }
 
     private void setupCloseButton() {
-        closeEditor.setOnClickListener(e -> new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog).setTitle("Discard changes").setMessage("Do you really want to discard all changes")
+        closeEditor.setOnClickListener(e -> new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog)
+                .setTitle("Discard changes")
+                .setMessage("Do you really want to discard all changes")
                 .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-                    journalManger.discardEntry(journalEntryId);
+                    entry.removeAllAddedRecordings();
                     if(mCloseButtonClicked != null) {
                         mCloseButtonClicked.onEvent();
                     }
@@ -239,7 +266,7 @@ public class DreamJournalContentEditor extends Fragment {
                 .show());
     }
 
-    private void setupRecordingsEditor(JournalInMemory entry) {
+    private void setupRecordingsEditor() {
         addRecording.setOnClickListener(e -> {
             final BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
             bsd.setContentView(R.layout.sheet_journal_recording);
@@ -253,7 +280,7 @@ public class DreamJournalContentEditor extends Fragment {
             ImageButton recContinuePause = bsd.findViewById(R.id.btn_dj_pause_continue_recording);
             ImageButton recStop = bsd.findViewById(R.id.btn_dj_stop_recording);
 
-            showStoredRecordings(entry, recsEntryList, noRecordingsFound);
+            showStoredRecordings(recsEntryList, noRecordingsFound);
             setupStartRecordingButton(recordAudio, recsList, recNow, recordingText, recContinuePause);
             setupStopRecordingButton(recsList, recsEntryList, recNow, noRecordingsFound, recStop);
             setupPauseContinueRecordingButton(recordingText, recContinuePause);
@@ -272,12 +299,12 @@ public class DreamJournalContentEditor extends Fragment {
         });
     }
 
-    private void showStoredRecordings(JournalInMemory entry, LinearLayout recsEntryList, TextView noRecordingsFound) {
-        if(entry.getAudioRecordings().size() == 0) {
+    private void showStoredRecordings(LinearLayout recsEntryList, TextView noRecordingsFound) {
+        if(entry.audioLocations.isEmpty()) {
             noRecordingsFound.setVisibility(View.VISIBLE);
         }
         else {
-            for (RecordingData recData : entry.getAudioRecordings()) {
+            for (AudioLocation recData : entry.audioLocations) {
                 recsEntryList.addView(generateAudioEntry(recData, noRecordingsFound));
             }
         }
@@ -321,7 +348,7 @@ public class DreamJournalContentEditor extends Fragment {
         });
     }
 
-    private void setupDateTimePicker(DateFormat df, DateFormat dtf, DateFormat tf, JournalInMemory entry) {
+    private void setupDateTimePicker(DateFormat df, DateFormat dtf, DateFormat tf) {
         dateTime.setOnClickListener(e -> {
             final BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
             bsd.setContentView(R.layout.sheet_dream_timestamp);
@@ -329,46 +356,46 @@ public class DreamJournalContentEditor extends Fragment {
             MaterialButton changeDate = bsd.findViewById(R.id.btn_dj_change_date);
             MaterialButton changeTime = bsd.findViewById(R.id.btn_dj_change_time);
 
-            changeDate.setText(df.format(entry.getTime().getTime()));
-            changeTime.setText(tf.format(entry.getTime().getTime()));
+            Date date = Tools.calendarFromMillis(entry.journalEntry.timeStamp).getTime();
+            changeDate.setText(df.format(date));
+            changeTime.setText(tf.format(date));
 
-            setupChangeDateButton(df, dtf, entry, changeDate);
-            setupChangeTimeButton(dtf, tf, entry, changeTime);
+            setupChangeDateButton(df, dtf, changeDate);
+            setupChangeTimeButton(dtf, tf, changeTime);
 
             bsd.show();
         });
     }
 
-    private void setupChangeTimeButton(DateFormat dtf, DateFormat tf, JournalInMemory entry, MaterialButton changeTime) {
+    private void setupChangeTimeButton(DateFormat dtf, DateFormat tf, MaterialButton changeTime) {
         changeTime.setOnClickListener(e1 -> {
+            Calendar time = Tools.calendarFromMillis(entry.journalEntry.timeStamp);
             new TimePickerDialog(getContext(), (timePickerFrom, hourFrom, minuteFrom) -> {
-                Calendar time = entry.getTime();
                 time.set(Calendar.HOUR_OF_DAY, hourFrom);
                 time.set(Calendar.MINUTE, minuteFrom);
-                entry.setTime(time);
+                entry.journalEntry.timeStamp = time.getTimeInMillis();
                 changeTime.setText(tf.format(time.getTime()));
                 dateTime.setText(dtf.format(time.getTime()));
-            }, entry.getTime().get(Calendar.HOUR_OF_DAY), entry.getTime().get(Calendar.MINUTE), true).show();
+            }, time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), true).show();
         });
     }
 
-    private void setupChangeDateButton(DateFormat df, DateFormat dtf, JournalInMemory entry, MaterialButton changeDate) {
+    private void setupChangeDateButton(DateFormat df, DateFormat dtf, MaterialButton changeDate) {
         changeDate.setOnClickListener(e1 -> {
+            Calendar date = Tools.calendarFromMillis(entry.journalEntry.timeStamp);
             new DatePickerDialog(getContext(), (datePicker, year, monthOfYear, dayOfMonth) -> {
-                Calendar date = entry.getTime();
                 date.set(Calendar.YEAR, year);
                 date.set(Calendar.MONTH, monthOfYear);
                 date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                entry.setTime(date);
+                entry.journalEntry.timeStamp = date.getTimeInMillis();
                 changeDate.setText(df.format(date.getTime()));
                 dateTime.setText(dtf.format(date.getTime()));
-            }, entry.getTime().get(Calendar.YEAR), entry.getTime().get(Calendar.MONTH), entry.getTime().get(Calendar.DAY_OF_MONTH)).show();
+            }, date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH)).show();
         });
     }
 
-    private void setupTagsEditor(JournalInMemory entry) {
-        db.getJournalEntryTagDao().getAllTagTexts().subscribe((tagsTexts, throwable) -> allAvailableTags = tagsTexts);
-
+    private void setupTagsEditor() {
+        compositeDisposable.add(db.getJournalEntryTagDao().getAllTagTexts().subscribe((tagsTexts, throwable) -> allAvailableTags = tagsTexts));
         addTags.setOnClickListener(e -> {
             final BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
             bsd.setContentView(R.layout.sheet_journal_tags_editor);
@@ -376,58 +403,62 @@ public class DreamJournalContentEditor extends Fragment {
             FlexboxLayout tagsContainer = bsd.findViewById(R.id.flx_dj_tags_to_add);
             AutoCompleteTextView tagAddBox = bsd.findViewById(R.id.txt_dj_tags_enter);
 
-            showAllSetTags(entry, tagsContainer);
+            showAllSetTags(tagsContainer);
             tagAddBox.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, allAvailableTags));
-            setupTagEditorEditText(entry, tagsContainer, tagAddBox);
-            setupTagEditorSelection(entry, tagsContainer, tagAddBox);
+            setupTagEditorEditText(tagsContainer, tagAddBox);
+            setupTagEditorSelection(tagsContainer, tagAddBox);
 
             bsd.show();
         });
     }
 
-    private void setupTagEditorSelection(JournalInMemory entry, FlexboxLayout tagsContainer, AutoCompleteTextView tagAddBox) {
+    private void setupTagEditorSelection(FlexboxLayout tagsContainer, AutoCompleteTextView tagAddBox) {
         tagAddBox.setOnItemClickListener((adapterView, view1, i, l) -> {
             String enteredTag = tagAddBox.getText().toString();
-            if(!entry.getTags().contains(enteredTag)){
-                entry.addTag(enteredTag);
-                Chip tagChip = generateTagChip(enteredTag);
-                tagChip.setOnCloseIconClickListener(e1 -> {
-                    entry.removeTag(tagChip.getText().toString());
-                    tagsContainer.removeView(tagChip);
-                });
-                tagsContainer.addView(tagChip);
-                tagAddBox.setText("");
-            }
+            tryAddTag(tagsContainer, tagAddBox, enteredTag);
         });
     }
 
-    private void setupTagEditorEditText(JournalInMemory entry, FlexboxLayout tagsContainer, AutoCompleteTextView tagAddBox) {
+    private void setupTagEditorEditText(FlexboxLayout tagsContainer, AutoCompleteTextView tagAddBox) {
         tagAddBox.setOnEditorActionListener((textView, i, keyEvent) -> {
             String enteredTag = tagAddBox.getText().toString();
-            if(i == IME_ACTION_DONE && !entry.getTags().contains(enteredTag) && enteredTag.length() > 0) {
-                entry.addTag(enteredTag);
-                Chip tagChip = generateTagChip(enteredTag);
-                tagChip.setOnCloseIconClickListener(e1 -> {
-                    entry.removeTag(tagChip.getText().toString());
-                    tagsContainer.removeView(tagChip);
-                });
-                tagsContainer.addView(tagChip);
-                tagAddBox.setText("");
+            if (i == IME_ACTION_DONE  && !enteredTag.isEmpty()) {
+                tryAddTag(tagsContainer, tagAddBox, enteredTag);
             }
             return true;
         });
     }
 
-    private void showAllSetTags(JournalInMemory entry, FlexboxLayout tagsContainer) {
-        List<String> tags = entry.getTags();
+    private void tryAddTag(FlexboxLayout tagsContainer, AutoCompleteTextView tagAddBox, String enteredTag) {
+        if(entry.journalEntryTags.stream().noneMatch(x -> x.description.equalsIgnoreCase(enteredTag))){
+            entry.journalEntryTags.add(new JournalEntryTag(enteredTag));
+            Chip tagChip = generateTagChip(enteredTag);
+            tagChip.setOnCloseIconClickListener(e1 -> {
+                removeTag(enteredTag);
+                tagsContainer.removeView(tagChip);
+            });
+            tagsContainer.addView(tagChip);
+            tagAddBox.setText("");
+        }
+    }
+
+    private void showAllSetTags(FlexboxLayout tagsContainer) {
+        List<String> tags = entry.getStringTags();
         for (String tag : tags) {
             Chip tagChip = generateTagChip(tag);
             tagChip.setOnCloseIconClickListener(e1 -> {
-                entry.removeTag(tagChip.getText().toString());
+                removeTag(tag);
                 tagsContainer.removeView(tagChip);
             });
             tagsContainer.addView(tagChip);
         }
+    }
+
+    private void removeTag(String tag) {
+        entry.journalEntryTags.remove(entry.journalEntryTags.stream()
+                .filter(x -> x.description.equalsIgnoreCase(tag))
+                .findFirst()
+                .orElse(null));
     }
 
     private void stopCurrentPlaybackIfPlaying() {
@@ -474,10 +505,8 @@ public class DreamJournalContentEditor extends Fragment {
     private void startRecordingAudio(LinearLayout listLayout, RelativeLayout recordLayout) {
         if(ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED){
             isRecordingRunning = true;
-            audioFName = getActivity().getFilesDir().getAbsolutePath();
-            String filename = "/Recordings/recording_" + randomUUID() + ".aac";
-            audioFName += filename;
-            currentRecording = new RecordingData(audioFName);
+            audioFName = getActivity().getFilesDir().getAbsolutePath() + "/Recordings/recording_" + randomUUID() + ".aac";
+            currentRecording = new AudioLocation(audioFName, Calendar.getInstance().getTimeInMillis());
             mRecorder = new MediaRecorder();
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
@@ -508,56 +537,44 @@ public class DreamJournalContentEditor extends Fragment {
 
     private void storeRecording(LinearLayout recList, LinearLayout listLayout, RelativeLayout recordLayout, TextView noRecordingsFound) {
         stopRecordingAudio();
-        MediaPlayer dataReader = new MediaPlayer();
-        try {
-            dataReader.setDataSource(currentRecording.getFilepath());
-            dataReader.prepare();
-            currentRecording.setRecordingLength(dataReader.getDuration());
-        } catch (IOException e) {
-            e.printStackTrace();
-            currentRecording.setRecordingLength(0);
-        }
-        currentRecording.setRecordingTime(Calendar.getInstance());
-        journalManger.getEntry(journalEntryId).addAudioRecording(currentRecording);
+        entry.addAudioLocation(currentRecording);
         listLayout.setVisibility(View.VISIBLE);
         recordLayout.setVisibility(View.GONE);
         recList.addView(generateAudioEntry(currentRecording, noRecordingsFound));
         currentRecording = null;
     }
 
-    private LinearLayout generateAudioEntry(RecordingData currentRecording, TextView noRecordingsFound) {
+    private LinearLayout generateAudioEntry(AudioLocation recording, TextView noRecordingsFound) {
         RecordingObjectTools rot = RecordingObjectTools.getInstance(getContext());
         LinearLayout entryContainer = rot.generateContainerLayout();
 
         ImageButton playButton = rot.generatePlayButton();
-        playButton.setOnClickListener(e -> handlePlayPauseMediaPlayer(currentRecording, playButton));
+        playButton.setOnClickListener(e -> handlePlayPauseMediaPlayer(recording, playButton));
         entryContainer.addView(playButton);
 
         LinearLayout labelsContainer = rot.generateLabelsContrainer();
         entryContainer.addView(labelsContainer);
 
         labelsContainer.addView(rot.generateHeading());
-        labelsContainer.addView(rot.generateTimestamp(currentRecording));
-        entryContainer.addView(rot.generateDuration(currentRecording, false));
+        labelsContainer.addView(rot.generateTimestamp(recording));
+        entryContainer.addView(rot.generateDuration(recording, false));
 
         ImageButton deleteButton = rot.generateDeleteButton();
-        deleteButton.setOnClickListener(e -> setupRecordingsDeleteDialog(currentRecording, entryContainer, playButton, noRecordingsFound));
+        deleteButton.setOnClickListener(e -> setupRecordingsDeleteDialog(recording, entryContainer, playButton, noRecordingsFound));
         entryContainer.addView(deleteButton);
 
         return entryContainer;
     }
 
-    private void setupRecordingsDeleteDialog(RecordingData currentRecording, LinearLayout entryContainer, ImageButton playButton, TextView noRecordingsFound) {
-        new MaterialAlertDialogBuilder
-
-
-                (getContext(), R.style.Theme_LucidSourceKit_ThemedDialog).setTitle(getResources().getString(R.string.recording_delete_header)).setMessage(getResources().getString(R.string.recording_delete_message))
+    private void setupRecordingsDeleteDialog(AudioLocation recording, LinearLayout entryContainer, ImageButton playButton, TextView noRecordingsFound) {
+        new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog)
+                .setTitle(getResources().getString(R.string.recording_delete_header))
+                .setMessage(getResources().getString(R.string.recording_delete_message))
                 .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-                    if(currentPlayingImageButton == playButton){ stopCurrentPlayback(); }
+                    if (currentPlayingImageButton == playButton) { stopCurrentPlayback(); }
                     ((LinearLayout) entryContainer.getParent()).removeView(entryContainer);
-                    JournalInMemory journalInMemory = journalManger.getEntry(journalEntryId);
-                    journalInMemory.markAudioRecordingToRemove(currentRecording);
-                    if(journalInMemory.getAudioRecordings().size() == 0) {
+                    entry.deleteAudioLocation(recording.audioPath);
+                    if(entry.audioLocations.isEmpty()) {
                         noRecordingsFound.setVisibility(View.VISIBLE);
                     }
                 })
@@ -565,7 +582,7 @@ public class DreamJournalContentEditor extends Fragment {
                 .show();
     }
 
-    private void handlePlayPauseMediaPlayer(RecordingData currentRecording, ImageButton playButton) {
+    private void handlePlayPauseMediaPlayer(AudioLocation currentRecording, ImageButton playButton) {
         if(mPlayer != null && mPlayer.isPlaying() && currentPlayingImageButton == playButton) {
             mPlayer.pause();
             currentPlayingImageButton.setImageResource(R.drawable.ic_baseline_play_arrow_24);
@@ -577,12 +594,12 @@ public class DreamJournalContentEditor extends Fragment {
         else if(mPlayer != null && mPlayer.isPlaying()) {
             stopCurrentPlayback();
             playButton.setImageResource(R.drawable.ic_baseline_pause_24);
-            setupAudioPlayer(currentRecording.getFilepath());
+            setupAudioPlayer(currentRecording.audioPath);
             currentPlayingImageButton = playButton;
         }
         else {
             playButton.setImageResource(R.drawable.ic_baseline_pause_24);
-            setupAudioPlayer(currentRecording.getFilepath());
+            setupAudioPlayer(currentRecording.audioPath);
             currentPlayingImageButton = playButton;
         }
     }
@@ -600,22 +617,12 @@ public class DreamJournalContentEditor extends Fragment {
         }
     }
 
-    public String getTitle() {
-        return title.getText().toString();
+    public void setJournalEntryId(DreamJournalEntry entry) {
+        this.entry = entry;
     }
 
-    public String getDescription() {
-        if(journalManger.getEntry(journalEntryId).getEntryType() == JournalInMemory.EntryType.PLAIN_TEXT){
-            return description.getText().toString();
-        }
-        else {
-            return getFormResult();
-        }
-    }
-
-    public void setJournalEntryId(String id) {
-        journalEntryId = id;
-        journalManger = JournalInMemoryManager.getInstance();
+    public void setJournalEntryType(DreamJournalEntry.EntryType type) {
+        this.entryType = type;
     }
 
     public interface OnContinueButtonClicked {
@@ -632,5 +639,11 @@ public class DreamJournalContentEditor extends Fragment {
 
     public void setOnCloseButtonClicked(OnCloseButtonClicked eventListener) {
         mCloseButtonClicked = eventListener;
+    }
+
+    @Override
+    public void onStop() {
+        compositeDisposable.dispose();
+        super.onStop();
     }
 }
