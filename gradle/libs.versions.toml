@@ -1,0 +1,42 @@
+[versions]
+appcompat = "1.7.0"
+biometric = "1.2.0-alpha05"
+constraintlayout = "2.1.4"
+coreKtx = "1.13.1"
+datastoreVersion = "1.1.1"
+espressoCore = "3.6.1"
+flexbox = "3.0.0"
+gradle = "8.5.1"
+junit = "1.2.1"
+kotlinVersion = "2.0.0"
+legacySupportV4 = "1.0.0"
+material = "1.12.0"
+ossLicensesPlugin = "0.10.6"
+playServicesOssLicenses = "17.1.0"
+preferenceKtx = "1.2.1"
+roomVersion = "2.6.1"
+viewpager2 = "1.1.0"
+
+[libraries]
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastoreVersion" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-datastore-preferences-rxjava3 = { module = "androidx.datastore:datastore-preferences-rxjava3", version.ref = "datastoreVersion" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junit" }
+androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupportV4" }
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion" }
+androidx-room-rxjava3 = { module = "androidx.room:room-rxjava3", version.ref = "roomVersion" }
+androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
+flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinVersion" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+oss-licenses-plugin = { module = "com.google.android.gms:oss-licenses-plugin", version.ref = "ossLicensesPlugin" }
+play-services-oss-licenses = { module = "com.google.android.gms:play-services-oss-licenses", version.ref = "playServicesOssLicenses" }
+
+[plugins]
