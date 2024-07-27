@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrl_alarm_creator_scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none"
+    tools:context=".main.alarms.AlarmEditorView">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="24dp">
+
+        <RelativeLayout
+            android:id="@+id/ll_alarm_creator_heading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/btn_close_alarm_creator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:layout_marginStart="5dp"
+                android:src="@drawable/ic_round_close_24"
+                android:background="@drawable/ripple_round"
+                android:backgroundTint="?attr/colorSurface"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="sans-serif-thin"
+                android:text="Create an Alarm"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="20sp" />
+        </RelativeLayout>
+
+        <com.bitflaker.lucidsourcekit.views.SleepClock
+            android:id="@+id/slp_clk_set_time"
+            android:layout_marginTop="40dp"
+            android:layout_width="260dp"
+            android:layout_height="260dp"
+            android:layout_gravity="center_horizontal"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/crd_bedtime_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    app:cardCornerRadius="@dimen/cardRadius"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:strokeWidth="0dp"
+                    app:strokeColor="?attr/colorSurfaceContainer">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:paddingTop="15dp"
+                        android:paddingBottom="15dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bedtime"
+                            android:textAllCaps="true"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="12sp"/>
+
+                        <TextView
+                            android:id="@+id/txt_time_bedtime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="22:43"
+                            android:textAllCaps="true"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="28sp"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/crd_alarm_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    app:cardCornerRadius="@dimen/cardRadius"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:strokeWidth="0dp"
+                    app:strokeColor="?attr/colorSurfaceContainer">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:paddingTop="15dp"
+                        android:paddingBottom="15dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Alarm"
+                            android:textAllCaps="true"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="12sp"/>
+
+                        <TextView
+                            android:id="@+id/txt_time_alarm"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="05:58"
+                            android:textAllCaps="true"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="28sp"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_weekdays_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="45dp"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:divider="@drawable/divider_medium"
+            android:showDividers="middle">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chp_monday"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:text="Mo"
+                android:includeFontPadding="false"
+                android:textAlignment="center"
+                android:textColor="@color/chip_text_check_change"
+                app:chipBackgroundColor="@drawable/chip_background"
+                app:chipCornerRadius="48dp"
+                app:chipMinHeight="36dp"
+                app:textStartPadding="0dp"
+                app:textEndPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:chipStartPadding="0dp"
+                app:chipMinTouchTargetSize="0dp"
+                style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chp_tuesday"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:text="Tu"
+                android:includeFontPadding="false"
+                android:textAlignment="center"
+                android:textColor="@color/chip_text_check_change"
+                app:chipBackgroundColor="@drawable/chip_background"
+                app:chipCornerRadius="48dp"
+                app:chipMinHeight="48dp"
+                app:textStartPadding="0dp"
+                app:textEndPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:chipStartPadding="0dp"
+                app:chipMinTouchTargetSize="0dp"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chp_wednesday"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:text="We"
+                android:includeFontPadding="false"
+                android:textAlignment="center"
+                android:textColor="@color/chip_text_check_change"
+                app:chipBackgroundColor="@drawable/chip_background"
+                app:chipCornerRadius="48dp"
+                app:chipMinHeight="48dp"
+                app:textStartPadding="0dp"
+                app:textEndPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:chipStartPadding="0dp"
+                app:chipMinTouchTargetSize="0dp"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chp_thursday"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:text="Th"
+                android:includeFontPadding="false"
+                android:textAlignment="center"
+                android:textColor="@color/chip_text_check_change"
+                app:chipBackgroundColor="@drawable/chip_background"
+                app:chipCornerRadius="48dp"
+                app:chipMinHeight="48dp"
+                app:textStartPadding="0dp"
+                app:textEndPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:chipStartPadding="0dp"
+                app:chipMinTouchTargetSize="0dp"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chp_friday"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:text="Fr"
+                android:includeFontPadding="false"
+                android:textAlignment="center"
+                android:textColor="@color/chip_text_check_change"
+                app:chipBackgroundColor="@drawable/chip_background"
+                app:chipCornerRadius="48dp"
+                app:chipMinHeight="48dp"
+                app:textStartPadding="0dp"
+                app:textEndPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:chipStartPadding="0dp"
+                app:chipMinTouchTargetSize="0dp"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chp_saturday"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:text="Sa"
+                android:includeFontPadding="false"
+                android:textAlignment="center"
+                android:textColor="@color/chip_text_check_change"
+                app:chipBackgroundColor="@drawable/chip_background"
+                app:chipCornerRadius="48dp"
+                app:chipMinHeight="48dp"
+                app:textStartPadding="0dp"
+                app:textEndPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:chipStartPadding="0dp"
+                app:chipMinTouchTargetSize="0dp"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chp_sunday"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:text="Su"
+                android:includeFontPadding="false"
+                android:textAlignment="center"
+                android:textColor="@color/chip_text_check_change"
+                app:chipBackgroundColor="@drawable/chip_background"
+                app:chipCornerRadius="48dp"
+                app:chipMinHeight="48dp"
+                app:textStartPadding="0dp"
+                app:textEndPadding="0dp"
+                app:chipEndPadding="0dp"
+                app:chipStartPadding="0dp"
+                app:chipMinTouchTargetSize="0dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_repeat_pattern_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Repeat only once"
+            android:layout_gravity="center_horizontal"
+            android:textColor="?attr/tertiaryTextColor" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardCornerRadius="@dimen/cardRadius"
+            app:cardElevation="0dp"
+            app:strokeColor="?attr/colorSurfaceContainer"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:text="Alarm settings"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-thin"/>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chp_grp_alarm_tone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_gravity="center_horizontal"
+                    app:chipSpacingHorizontal="10dp"
+                    app:checkedChip="@+id/chp_ringtone"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chp_ringtone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/chip_text_color"
+                        android:text="Ringtone"
+                        app:chipBackgroundColor="@drawable/chip_background"
+                        style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chp_binaural_beats"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/chip_text_color"
+                        android:text="Binaural Beats"
+                        app:chipBackgroundColor="@drawable/chip_background"
+                        style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chp_custom_file"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/chip_text_color"
+                        android:text="Custom file"
+                        app:chipBackgroundColor="@drawable/chip_background"
+                        style="@style/Widget.MaterialComponents.Chip.Choice" />
+                </com.google.android.material.chip.ChipGroup>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="?attr/colorSurfaceContainer" />
+
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/crd_alarm_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:cardCornerRadius="0dp"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/tone_creation_setting_padding"
+                        android:paddingEnd="@dimen/tone_creation_setting_padding"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Alarm title"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="14sp"/>
+
+                        <EditText
+                            android:id="@+id/txt_alarm_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Alarm title"
+                            android:inputType="text"
+                            android:textSize="16sp"
+                            android:textColor="?attr/primaryTextColor"
+                            android:background="@android:color/transparent"
+                            android:textAlignment="textEnd"
+                            android:minHeight="48dp"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/crd_alarm_tone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:cardCornerRadius="0dp"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/tone_creation_setting_padding"
+                        android:paddingEnd="@dimen/tone_creation_setting_padding"
+                        android:paddingTop="18dp"
+                        android:paddingBottom="18dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tone"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="14sp"/>
+
+                        <TextView
+                            android:id="@+id/txt_tone_selected"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textAlignment="textEnd"
+                            android:text="Chord Bell"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="16sp"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/crd_alarm_volume"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:cardCornerRadius="0dp"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/tone_creation_setting_padding"
+                        android:paddingEnd="@dimen/tone_creation_setting_padding"
+                        android:paddingTop="15dp"
+                        android:paddingBottom="0dp"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Alarm volume"
+                                android:textColor="?attr/secondaryTextColor"
+                                android:textSize="14sp"/>
+
+                            <TextView
+                                android:id="@+id/txt_curr_alarm_volume"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textAlignment="textEnd"
+                                android:text="100%"
+                                android:textColor="?attr/primaryTextColor"
+                                android:textSize="16sp"/>
+                        </LinearLayout>
+
+                        <com.google.android.material.slider.Slider
+                            android:id="@+id/sld_alarm_volume"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:value="1"
+                            android:valueFrom="0"
+                            android:valueTo="1"
+                            app:labelBehavior="gone"
+                            app:haloColor="@android:color/transparent" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/crd_alarm_volume_increase"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:cardCornerRadius="0dp"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/tone_creation_setting_padding"
+                        android:paddingEnd="@dimen/tone_creation_setting_padding"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="20dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Increase volume to target for"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="14sp"/>
+
+                        <TextView
+                            android:id="@+id/txt_inc_volume_for"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textAlignment="textEnd"
+                            android:text="2m 30s"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="16sp"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/crd_alarm_vibrate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:cardCornerRadius="0dp"
+                    app:cardElevation="0dp">
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/swt_vibrate_alarm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="20dp"
+                        android:checked="true"
+                        android:text="Vibrate"
+                        android:textOn="On"
+                        android:textOff="Off"
+                        android:textColor="?attr/secondaryTextColor"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/crd_alarm_use_flashlight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:cardCornerRadius="0dp"
+                    app:cardElevation="0dp">
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/swt_alarm_use_flashlight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="20dp"
+                        android:checked="true"
+                        android:text="Use flashlight"
+                        android:textOn="On"
+                        android:textOff="Off"
+                        android:textColor="?attr/secondaryTextColor"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_create_alarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="21dp"
+            android:layout_marginTop="36dp"
+            android:text="Set Alarm"
+            android:textColor="?attr/colorOnPrimaryContainer"
+            app:iconGravity="textStart"
+            app:iconTint="?attr/colorOnPrimaryContainer"
+            app:icon="@drawable/ic_baseline_check_24"
+            app:backgroundTint="?attr/colorPrimaryContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </LinearLayout>
+</ScrollView>

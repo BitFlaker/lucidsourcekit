@@ -30,41 +30,38 @@
         android:enableOnBackInvokedCallback="true"
         android:theme="@style/Theme.LucidSourceKit.Default">
         <activity
-            android:name=".notification.NotificationManagerEditor"
+            android:name=".main.notification.NotificationManagerEditorView"
             android:configChanges="orientation"
             android:exported="false" />
         <activity
-            android:name=".notification.NotificationManager"
+            android:name=".main.notification.NotificationManagerView"
             android:screenOrientation="portrait"
             android:configChanges="orientation"
             android:exported="false" />
         <activity
-            android:name=".alarms.IsolatedBinauralBeatsView"
-            android:exported="false" />
-        <activity
-            android:name=".alarms.AlarmViewer"
+            android:name=".main.alarms.AlarmViewer"
             android:autoRemoveFromRecents="true"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait"
             android:showOnLockScreen="true" />
         <activity
-            android:name=".alarms.AlarmCreator"
+            android:name=".main.alarms.AlarmEditorView"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".alarms.AlarmsManager"
+            android:name=".main.alarms.AlarmManagerView"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".main.dreamjournal.DreamJournalEntryEditor"
+            android:name=".main.dreamjournal.DreamJournalEditorView"
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
-            android:name=".main.EditGoals"
+            android:name=".main.goals.GoalsEditorView"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
@@ -78,7 +75,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".setup.SetupGetStarted"
+            android:name=".setup.SetupGetStartedView"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait" />
@@ -95,7 +92,7 @@
         </activity>
 
         <receiver
-            android:name=".alarms.AlarmReceiverManager"
+            android:name=".main.alarms.AlarmReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

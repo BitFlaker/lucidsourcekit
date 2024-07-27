@@ -19,7 +19,12 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
-import com.bitflaker.lucidsourcekit.general.Tools;
+import com.bitflaker.lucidsourcekit.utils.Tools;
+import com.bitflaker.lucidsourcekit.main.binauralbeats.BinauralBeatsView;
+import com.bitflaker.lucidsourcekit.main.dreamjournal.DreamJournalView;
+import com.bitflaker.lucidsourcekit.main.goals.GoalsView;
+import com.bitflaker.lucidsourcekit.main.overview.MainOverviewView;
+import com.bitflaker.lucidsourcekit.main.statistics.StatisticsView;
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.google.android.material.tabs.TabLayout;
@@ -39,10 +44,10 @@ public class MainViewer extends AppCompatActivity {
     private ImageButton moreOptions;
     private ViewPagerAdapter vpAdapter;
 
-    private MainOverview vwOverview;
-    private DreamJournal vwLogging;
-    private Statistics vwPageStats;
-    private Goals vwPageGoals;
+    private MainOverviewView vwOverview;
+    private DreamJournalView vwLogging;
+    private StatisticsView vwPageStats;
+    private GoalsView vwPageGoals;
     private BinauralBeatsView vwPageBinauralBeats;
 
     @Override
@@ -178,10 +183,10 @@ public class MainViewer extends AppCompatActivity {
         moreOptions = findViewById(R.id.btn_more_options);
 
         vpAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
-        vwOverview = new MainOverview();
-        vwLogging = new DreamJournal();
-        vwPageStats = new Statistics();
-        vwPageGoals = new Goals();
+        vwOverview = new MainOverviewView();
+        vwLogging = new DreamJournalView();
+        vwPageStats = new StatisticsView();
+        vwPageGoals = new GoalsView();
         vwPageBinauralBeats = new BinauralBeatsView();
     }
 }

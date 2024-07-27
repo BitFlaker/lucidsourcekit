@@ -25,7 +25,7 @@
             android:layout_margin="10dp"
             android:orientation="horizontal">
 
-            <com.bitflaker.lucidsourcekit.charts.LineGraph
+            <com.bitflaker.lucidsourcekit.views.LineGraph
                 android:id="@+id/lg_binaural_gradient"
                 android:layout_width="120dp"
                 android:layout_height="80dp"

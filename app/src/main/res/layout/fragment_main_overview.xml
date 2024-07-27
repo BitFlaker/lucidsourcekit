@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.MainOverview"
+    tools:context=".main.overview.MainOverviewView"
     android:scrollbars="none">
 
     <RelativeLayout
@@ -276,7 +276,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="24dp"
                 android:layout_marginHorizontal="10dp"
-                layout="@layout/item_journal_entry" />
+                layout="@layout/entry_journal" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/crd_no_remember_entry"

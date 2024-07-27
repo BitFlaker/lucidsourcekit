@@ -6,10 +6,10 @@ import android.media.AudioTrack;
 
 import androidx.annotation.NonNull;
 
-import com.bitflaker.lucidsourcekit.charts.FrequencyData;
-import com.bitflaker.lucidsourcekit.general.AudioBufferPosition;
-import com.bitflaker.lucidsourcekit.general.FastSineTable;
-import com.bitflaker.lucidsourcekit.main.BinauralBeat;
+import com.bitflaker.lucidsourcekit.data.FrequencyData;
+import com.bitflaker.lucidsourcekit.data.records.BinauralBeat;
+import com.bitflaker.lucidsourcekit.data.AudioBufferPosition;
+import com.bitflaker.lucidsourcekit.data.FastSineTable;
 
 import java.util.Arrays;
 
@@ -156,7 +156,6 @@ public class BinauralBeatsPlayer {
             frameCounter = track.getPlaybackHeadPosition() + preStopCount;
             int currentPlaybackSecond = (int)(frameCounter / (float) SAMPLE_RATE);
             if(currentPlaybackSecond > lastSecUpdate){
-//                System.out.println("UPDATING " + ++updateSecondsCounter);
                 lastSecUpdate = currentPlaybackSecond;
                 if(mProgressListener != null){
                     mProgressListener.onEvent(binauralBeat, lastSecUpdate);
@@ -179,8 +178,8 @@ public class BinauralBeatsPlayer {
             // If the audio has been fully output, get the buffered next data
             if (playerWrittenCount == 0) {
                 NextBufferGenerator.BufferGeneratorResult bufferGeneratorResult = bufferGeneratorResultSingle.blockingGet();
-                buffer = bufferGeneratorResult.getBuffer();
-                currentPosition = bufferGeneratorResult.getNextStartAfter();
+                buffer = bufferGeneratorResult.buffer();
+                currentPosition = bufferGeneratorResult.nextStartAfter();
             }
         }
 
@@ -236,12 +235,12 @@ class NextBufferGenerator {
      * @return an updated clone of the passed AudioBufferPosition
      */
     public static AudioBufferPosition generateSamples(BinauralBeat binauralBeat, short[] buffer, AudioBufferPosition audioBufferPosition) {
-        float baseFrequency = binauralBeat.getBaseFrequency();
+        float baseFrequency = binauralBeat.baseFrequency();
         AudioBufferPosition abp = audioBufferPosition.clone();
         int prevWrittenFrameCount = 0;
 
-        for (int j = abp.getIndex(); j < binauralBeat.getFrequencyList().size(); j++) {
-            FrequencyData fd = binauralBeat.getFrequencyList().get(j);
+        for (int j = abp.getIndex(); j < binauralBeat.frequencyList().size(); j++) {
+            FrequencyData fd = binauralBeat.frequencyList().get(j);
             int fdFrameCount = (int)(fd.getDuration() * BinauralBeatsPlayer.SAMPLE_RATE * 2);
             int written = fillFrequencyPacket(buffer, baseFrequency, prevWrittenFrameCount, fd.getFrequency(), fd.getFrequencyStepSize(BinauralBeatsPlayer.SAMPLE_RATE), fdFrameCount, abp);
             int fullCurrentPacketSize = fdFrameCount - abp.getBufferPosition();
@@ -253,7 +252,7 @@ class NextBufferGenerator {
                 abp.setBufferPosition(0);
                 if(prevWrittenFrameCount + fullCurrentPacketSize == buffer.length) {
                     abp.setIndex(j + 1);
-                    if(j + 1 != binauralBeat.getFrequencyList().size()){
+                    if(j + 1 != binauralBeat.frequencyList().size()){
                         return abp;
                     }
                 }
@@ -300,21 +299,5 @@ class NextBufferGenerator {
         return (angle + (long) frequency) % BinauralBeatsPlayer.SAMPLE_RATE;
     }
 
-    static class BufferGeneratorResult {
-        private final short[] buffer;
-        private final AudioBufferPosition nextStartAfter;
-
-        public BufferGeneratorResult(short[] buffer, AudioBufferPosition nextStartAfter) {
-            this.buffer = buffer;
-            this.nextStartAfter = nextStartAfter;
-        }
-
-        public short[] getBuffer() {
-            return buffer;
-        }
-
-        public AudioBufferPosition getNextStartAfter() {
-            return nextStartAfter;
-        }
-    }
+    record BufferGeneratorResult(short[] buffer, AudioBufferPosition nextStartAfter) { }
 }

@@ -3,7 +3,7 @@ package com.bitflaker.lucidsourcekit.database.alarms.entities;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.bitflaker.lucidsourcekit.alarms.AlarmItem;
+import com.bitflaker.lucidsourcekit.data.enums.AlarmToneType;
 
 @Entity
 public class AlarmToneTypes {
@@ -18,8 +18,8 @@ public class AlarmToneTypes {
 
     public static AlarmToneTypes[] populateData(){
         return new AlarmToneTypes[] {
-                new AlarmToneTypes(AlarmItem.AlarmToneType.RINGTONE.ordinal(), "Ringtone"),
-                new AlarmToneTypes(AlarmItem.AlarmToneType.CUSTOM_FILE.ordinal(), "Custom file")
+                new AlarmToneTypes(AlarmToneType.RINGTONE.ordinal(), "Ringtone"),
+                new AlarmToneTypes(AlarmToneType.CUSTOM_FILE.ordinal(), "Custom file")
         };
     }
 }

@@ -54,9 +54,9 @@ import com.bitflaker.lucidsourcekit.database.notifications.daos.NotificationObfu
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationMessage;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationObfuscations;
-import com.bitflaker.lucidsourcekit.general.Tools;
-import com.bitflaker.lucidsourcekit.general.Zipper;
-import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
+import com.bitflaker.lucidsourcekit.utils.Tools;
+import com.bitflaker.lucidsourcekit.utils.Zipper;
+import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager;
 
 import org.json.JSONObject;
 

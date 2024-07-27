@@ -161,7 +161,7 @@
                 app:tint="?attr/secondaryTextColor" />
         </LinearLayout>
 
-        <com.bitflaker.lucidsourcekit.charts.RangeProgress
+        <com.bitflaker.lucidsourcekit.views.RangeProgress
             android:id="@+id/rp_dream_mood"
             android:layout_width="match_parent"
             android:layout_height="35dp"
@@ -169,7 +169,7 @@
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp" />
 
-        <com.bitflaker.lucidsourcekit.charts.RangeProgress
+        <com.bitflaker.lucidsourcekit.views.RangeProgress
             android:id="@+id/rp_dream_clarity"
             android:layout_width="match_parent"
             android:layout_height="35dp"
@@ -177,7 +177,7 @@
             android:layout_marginEnd="25dp"
             android:layout_marginTop="8dp" />
 
-        <com.bitflaker.lucidsourcekit.charts.RangeProgress
+        <com.bitflaker.lucidsourcekit.views.RangeProgress
             android:id="@+id/rp_sleep_quality"
             android:layout_width="match_parent"
             android:layout_height="35dp"

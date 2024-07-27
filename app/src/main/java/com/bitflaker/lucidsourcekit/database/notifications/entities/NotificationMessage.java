@@ -7,7 +7,7 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import com.bitflaker.lucidsourcekit.notification.NotificationMessageModel;
+import com.bitflaker.lucidsourcekit.main.notification.NotificationMessageModel;
 
 @Entity(foreignKeys = {
         @ForeignKey(entity = NotificationObfuscations.class,

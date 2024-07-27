@@ -32,7 +32,7 @@ public class RandomGoalPicker {
         Map.Entry<Float, Goal> entry = map.higherEntry(value);
         if(entry != null) {
             goal = entry.getValue();
-            if(total == entry.getKey()) {
+            if (total == entry.getKey()) {
                 Map.Entry<Float, Goal> lower = map.lowerEntry(entry.getKey());
                 total = lower.getKey();
             }

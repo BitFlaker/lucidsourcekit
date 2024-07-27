@@ -2,7 +2,7 @@ package com.bitflaker.lucidsourcekit.main.goals;
 
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.goals.entities.resulttables.DetailedShuffleHasGoal;
-import com.bitflaker.lucidsourcekit.general.Tools;
+import com.bitflaker.lucidsourcekit.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class GoalStatisticsCalculator {
             Maybe<List<DetailedShuffleHasGoal>> maybeGoalsCurrent = db.getShuffleHasGoalDao().getShuffleFrom(timestampDayStart, timestampDayEnd);
             if(!maybeGoalsCurrent.isEmpty().blockingGet()) {
                 goals = maybeGoalsCurrent.blockingGet();
-                if(goals.size() == 0) {
+                if(goals.isEmpty()) {
                     return this;
                 }
                 int countAchieved = 0;

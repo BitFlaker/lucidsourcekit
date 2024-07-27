@@ -15,11 +15,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.general.AuthTypes;
-import com.bitflaker.lucidsourcekit.general.Crypt;
-import com.bitflaker.lucidsourcekit.general.Tools;
-import com.bitflaker.lucidsourcekit.general.datastore.DataStoreKeys;
-import com.bitflaker.lucidsourcekit.general.datastore.DataStoreManager;
+import com.bitflaker.lucidsourcekit.data.enums.AuthTypes;
+import com.bitflaker.lucidsourcekit.utils.Crypt;
+import com.bitflaker.lucidsourcekit.utils.Tools;
+import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys;
+import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.tabs.TabLayout;
 
@@ -46,11 +46,11 @@ public class SetupViewer extends AppCompatActivity {
     private final String pageAuthData = "AuthData";
 
     private ViewPagerAdapter vpAdapter;
-    private final SetupLanguage setLang = new SetupLanguage();
-    private final SetupConsent setConsent = new SetupConsent();
-    private final SetupOpenSource setOpenSource = new SetupOpenSource();
-    private final SetupPrivacy setPrivacy = new SetupPrivacy();
-    private final SetupAuthData setAuthData = new SetupAuthData();
+    private final SetupLanguageView setLang = new SetupLanguageView();
+    private final SetupConsentView setConsent = new SetupConsentView();
+    private final SetupOpenSourceView setOpenSource = new SetupOpenSourceView();
+    private final SetupPrivacyView setPrivacy = new SetupPrivacyView();
+    private final SetupAuthDataView setAuthData = new SetupAuthDataView();
 
     private final AtomicReference<TabLayout.Tab> tabOpenSource = new AtomicReference<>();
     private final AtomicReference<TabLayout.Tab> tabPrivacy = new AtomicReference<>();
@@ -237,18 +237,18 @@ public class SetupViewer extends AppCompatActivity {
 
     private void languageChanged(String langCode) {
         ((MaterialButton) findViewById(R.id.btn_next)).setText(getResources().getString(R.string.setup_next));
-        ((SetupLanguage) vpAdapter.getFragment(pageLang)).updateLanguages();
-        ((SetupConsent) vpAdapter.getFragment(pageConsent)).updateLanguages();
+        ((SetupLanguageView) vpAdapter.getFragment(pageLang)).updateLanguages();
+        ((SetupConsentView) vpAdapter.getFragment(pageConsent)).updateLanguages();
         if (consented.get()) {
-            ((SetupOpenSource) vpAdapter.getFragment(pageOpenSource)).updateLanguages();
-            ((SetupPrivacy) vpAdapter.getFragment(pagePrivacy)).updateLanguages();
-            ((SetupAuthData) vpAdapter.getFragment(pageAuthData)).updateLanguages();
+            ((SetupOpenSourceView) vpAdapter.getFragment(pageOpenSource)).updateLanguages();
+            ((SetupPrivacyView) vpAdapter.getFragment(pagePrivacy)).updateLanguages();
+            ((SetupAuthDataView) vpAdapter.getFragment(pageAuthData)).updateLanguages();
         }
     }
 
     public void startGetStarted() {
         DataStoreManager.getInstance().updateSetting(DataStoreKeys.APP_SETUP_FINISHED, true).blockingSubscribe();
-        Intent intent = new Intent(SetupViewer.this, SetupGetStarted.class);
+        Intent intent = new Intent(SetupViewer.this, SetupGetStartedView.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();

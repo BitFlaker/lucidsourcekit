@@ -1,13 +1,14 @@
 package com.bitflaker.lucidsourcekit.main.binauralbeats;
 
-import com.bitflaker.lucidsourcekit.main.BinauralBeat;
+import com.bitflaker.lucidsourcekit.data.BinauralBeatStages;
+import com.bitflaker.lucidsourcekit.data.records.BinauralBeat;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BinauralBeatsCollection {
     private static BinauralBeatsCollection instance;
-    private List<BinauralBeat> binauralBeats;
+    private final List<BinauralBeat> binauralBeats;
 
     private BinauralBeatsCollection() {
         binauralBeats = new ArrayList<>();

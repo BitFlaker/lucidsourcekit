@@ -11,11 +11,11 @@ import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasTag;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasType;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryTag;
-import com.bitflaker.lucidsourcekit.general.database.values.DreamClarity;
-import com.bitflaker.lucidsourcekit.general.database.values.DreamMoods;
-import com.bitflaker.lucidsourcekit.general.database.values.DreamTypes;
-import com.bitflaker.lucidsourcekit.general.database.values.SleepQuality;
-import com.bitflaker.lucidsourcekit.main.AppliedFilter;
+import com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamClarity;
+import com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamMoods;
+import com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamTypes;
+import com.bitflaker.lucidsourcekit.data.enums.journalratings.SleepQuality;
+import com.bitflaker.lucidsourcekit.data.records.AppliedFilter;
 
 import java.io.File;
 import java.util.ArrayList;
