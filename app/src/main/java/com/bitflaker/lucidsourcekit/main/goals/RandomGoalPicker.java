@@ -34,7 +34,9 @@ public class RandomGoalPicker {
             goal = entry.getValue();
             if (total == entry.getKey()) {
                 Map.Entry<Float, Goal> lower = map.lowerEntry(entry.getKey());
-                total = lower.getKey();
+                if (lower != null) {
+                    total = lower.getKey();
+                }
             }
             map.remove(entry.getKey(), entry.getValue());
         }

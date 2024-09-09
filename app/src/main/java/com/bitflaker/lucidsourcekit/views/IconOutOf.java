@@ -142,7 +142,9 @@ public class IconOutOf extends View {
         int descriptionSpacing = Tools.dpToPx(getContext(), 3);
 
         canvas.drawArc(padding, padding, diameter, diameter, 270, 360, false, dataLineTrackPaint);
-        canvas.drawArc(padding, padding, diameter, diameter, 270, 360 * (value / (float) maxValue), false, dataLinePaint);
+        if (maxValue > 0) {
+            canvas.drawArc(padding, padding, diameter, diameter, 270, 360 * (value / (float) maxValue), false, dataLinePaint);
+        }
         canvas.drawBitmap(icon, padding + (diameter / 2.0f) - (icon.getWidth() / 2.0f) + translateX, padding + (diameter / 2.0f) - (icon.getHeight() / 2.0f) + translateY, dataLinePaint);
 
         float valueTextPositionY = padding + (diameter / 2.0f) - textBounds.exactCenterY() - (textBoundsDescription.height() / 2.0f) - descriptionSpacing / 2.0f;

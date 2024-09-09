@@ -16,6 +16,7 @@ import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasTag;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryTag;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
+import com.bitflaker.lucidsourcekit.databinding.ActivityJournalEditorBinding;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -30,28 +31,25 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class DreamJournalEditorView extends AppCompatActivity {
-
-    private TabLayout tabLayout;
-    private ViewPager2 viewPager2;
     private int journalEntryId;
     private boolean isSaved = false;
     private DreamJournalEntry entry;
     private MainDatabase db;
     private CompositeDisposable compositeDisposable;
+    private ActivityJournalEditorBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_journal_editor);
+        binding = ActivityJournalEditorBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         Tools.makeStatusBarTransparent(this);
 
         db = MainDatabase.getInstance(this);
         compositeDisposable = new CompositeDisposable();
         ViewPagerAdapter vpAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
-        tabLayout = findViewById(R.id.tl_dj_editor_layout);
-        viewPager2 = findViewById(R.id.vp_dj_editor);
-        viewPager2.setUserInputEnabled(false);
-        viewPager2.setOnTouchListener((v, event) -> true);
+        binding.vpDjEditor.setUserInputEnabled(false);
+        binding.vpDjEditor.setOnTouchListener((v, event) -> true);
 
         journalEntryId = getIntent().getIntExtra("JOURNAL_ENTRY_ID", -1);
         entry = journalEntryId == -1 ? DreamJournalEntry.createDefault() : db.getJournalEntryDao().getEntryDataById(journalEntryId).blockingGet();
@@ -65,22 +63,22 @@ public class DreamJournalEditorView extends AppCompatActivity {
         DreamJournalEditorContentView vwDreamContentEditor = new DreamJournalEditorContentView();
         vwDreamContentEditor.setJournalEntryId(entry);
         vwDreamContentEditor.setJournalEntryType(type);
-        vwDreamContentEditor.setOnContinueButtonClicked(() -> tabLayout.selectTab(tabLayout.getTabAt(1)));
+        vwDreamContentEditor.setOnContinueButtonClicked(() -> binding.tlDjEditorLayout.selectTab(binding.tlDjEditorLayout.getTabAt(1)));
         vwDreamContentEditor.setOnCloseButtonClicked(this::finish);
 
         DreamJournalEditorRatingView vwDreamRatingsEditor = new DreamJournalEditorRatingView();
         vwDreamRatingsEditor.setJournalEntryId(entry);
-        vwDreamRatingsEditor.setOnBackButtonClicked(() -> tabLayout.selectTab(tabLayout.getTabAt(0)));
+        vwDreamRatingsEditor.setOnBackButtonClicked(() -> binding.tlDjEditorLayout.selectTab(binding.tlDjEditorLayout.getTabAt(0)));
         vwDreamRatingsEditor.setOnDoneButtonClicked(() -> compositeDisposable.add(storeEntry().subscribeOn(Schedulers.io()).subscribe()));
         vwDreamRatingsEditor.setOnCloseButtonClicked(this::finish);
 
         vpAdapter.addFragment(vwDreamContentEditor, "");
         vpAdapter.addFragment(vwDreamRatingsEditor, "");
-        viewPager2.setAdapter(vpAdapter);
-        viewPager2.setOffscreenPageLimit(3);
+        binding.vpDjEditor.setAdapter(vpAdapter);
+        binding.vpDjEditor.setOffscreenPageLimit(3);
 
-        tabLayout.addOnTabSelectedListener(tabSelected());
-        viewPager2.registerOnPageChangeCallback(changeTab());
+        binding.tlDjEditorLayout.addOnTabSelectedListener(tabSelected());
+        binding.vpDjEditor.registerOnPageChangeCallback(changeTab());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, this::promptDiscardChanges);
@@ -164,7 +162,7 @@ public class DreamJournalEditorView extends AppCompatActivity {
         return new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-            tabLayout.selectTab(tabLayout.getTabAt(position));
+                binding.tlDjEditorLayout.selectTab(binding.tlDjEditorLayout.getTabAt(position));
             }
         };
     }
@@ -177,7 +175,7 @@ public class DreamJournalEditorView extends AppCompatActivity {
 
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager2.setCurrentItem(tab.getPosition());
+                binding.vpDjEditor.setCurrentItem(tab.getPosition());
             }
         };
     }

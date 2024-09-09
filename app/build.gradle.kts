@@ -33,6 +33,8 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    viewBinding.isEnabled = true
+    viewBinding.enable = true
     kotlinOptions {
         jvmTarget = "17"
     }

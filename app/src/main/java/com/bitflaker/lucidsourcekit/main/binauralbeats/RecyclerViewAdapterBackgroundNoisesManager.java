@@ -2,26 +2,21 @@ package com.bitflaker.lucidsourcekit.main.binauralbeats;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.data.BackgroundNoise;
-import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.slider.Slider;
+import com.bitflaker.lucidsourcekit.databinding.EntryBinauralBackgroundNoiseBinding;
 
 import java.util.List;
 
 public class RecyclerViewAdapterBackgroundNoisesManager extends RecyclerView.Adapter<RecyclerViewAdapterBackgroundNoisesManager.MainViewHolderBackgroundNoises> {
-    private OnEntryClicked mListener;
-    private OnVolumeChanged mVolumeChangedListener;
+    private final List<BackgroundNoise> backgroundNoises;
     private final Context context;
-    private List<BackgroundNoise> backgroundNoises;
+    private OnVolumeChanged mVolumeChangedListener;
+    private OnEntryClicked mListener;
 
     public RecyclerViewAdapterBackgroundNoisesManager(Context context, List<BackgroundNoise> backgroundNoises) {
         this.context = context;
@@ -32,23 +27,22 @@ public class RecyclerViewAdapterBackgroundNoisesManager extends RecyclerView.Ada
     @Override
     public MainViewHolderBackgroundNoises onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.entry_binaural_background_noise, parent, false);
-        return new MainViewHolderBackgroundNoises(view);
+        return new MainViewHolderBackgroundNoises(EntryBinauralBackgroundNoiseBinding.inflate(inflater, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull MainViewHolderBackgroundNoises holder, int position) {
-        holder.noiseTitle.setText(backgroundNoises.get(position).getName());
-        holder.volumeSlider.setValue(backgroundNoises.get(position).getVolume());
-        holder.icon.setImageDrawable(context.getResources().getDrawable(backgroundNoises.get(position).getIcon(), context.getTheme()));
-        holder.icon.setOnClickListener(e -> {
+        holder.binding.txtBackgroundNoiseName.setText(backgroundNoises.get(position).getName());
+        holder.binding.sldVolumeBackgroundNoise.setValue(backgroundNoises.get(position).getVolume());
+        holder.binding.imgNoiseIcon.setImageDrawable(context.getResources().getDrawable(backgroundNoises.get(position).getIcon(), context.getTheme()));
+        holder.binding.imgNoiseIcon.setOnClickListener(e -> {
             if(mListener != null) {
                 // TODO display that it is paused by for example changing slider color to gray?
                 backgroundNoises.get(position).setPaused(!backgroundNoises.get(position).isPaused());
                 mListener.onEvent(backgroundNoises.get(position), position);
             }
         });
-        holder.volumeSlider.addOnChangeListener((slider, value, fromUser) -> {
+        holder.binding.sldVolumeBackgroundNoise.addOnChangeListener((slider, value, fromUser) -> {
             if(fromUser && mVolumeChangedListener != null){
                 backgroundNoises.get(position).setVolume(value);
                 mVolumeChangedListener.onEvent(backgroundNoises.get(position), position);
@@ -62,17 +56,11 @@ public class RecyclerViewAdapterBackgroundNoisesManager extends RecyclerView.Ada
     }
 
     public static class MainViewHolderBackgroundNoises extends RecyclerView.ViewHolder {
-        TextView noiseTitle;
-        MaterialCardView card;
-        Slider volumeSlider;
-        ImageView icon;
+        EntryBinauralBackgroundNoiseBinding binding;
 
-        public MainViewHolderBackgroundNoises(@NonNull View itemView) {
-            super(itemView);
-            card = itemView.findViewById(R.id.crd_background_noise_manager_card);
-            icon = itemView.findViewById(R.id.img_noise_icon);
-            noiseTitle = itemView.findViewById(R.id.txt_background_noise_name);
-            volumeSlider = itemView.findViewById(R.id.sld_volume_background_noise);
+        public MainViewHolderBackgroundNoises(@NonNull EntryBinauralBackgroundNoiseBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
     }
 

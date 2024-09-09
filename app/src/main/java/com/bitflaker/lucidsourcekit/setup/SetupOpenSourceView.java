@@ -7,25 +7,28 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.databinding.FragmentSetupOpenSourceBinding;
 
 public class SetupOpenSourceView extends Fragment {
+    private FragmentSetupOpenSourceBinding binding;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_setup_open_source, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentSetupOpenSourceBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ((TextView) getView().findViewById(R.id.txt_open_source_description)).setMovementMethod(LinkMovementMethod.getInstance());
-        getView().findViewById(R.id.btn_open_readme).setOnClickListener(e -> {
+        binding.txtOpenSourceDescription.setMovementMethod(LinkMovementMethod.getInstance());
+        binding.btnOpenReadme.setOnClickListener(e -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/BitFlaker/lucidsourcekit/blob/main/README.md"));
             startActivity(browserIntent);
         });
@@ -33,8 +36,8 @@ public class SetupOpenSourceView extends Fragment {
 
     public void updateLanguages() {
         if(getView() != null){
-            ((TextView)getView().findViewById(R.id.txt_open_source_title)).setText(getContext().getResources().getString(R.string.setup_open_source_title));
-            ((TextView)getView().findViewById(R.id.txt_open_source_description)).setText(getContext().getResources().getString(R.string.setup_open_source_description));
+            binding.txtOpenSourceTitle.setText(getContext().getResources().getString(R.string.setup_open_source_title));
+            binding.txtOpenSourceDescription.setText(getContext().getResources().getString(R.string.setup_open_source_description));
         }
     }
 }

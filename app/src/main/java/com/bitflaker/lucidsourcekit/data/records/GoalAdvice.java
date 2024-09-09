@@ -11,11 +11,6 @@ public record GoalAdvice(
         @ColorInt int color,
         OnAdviceSelectedListener onAdviceSelectedListener) {
 
-    @Override
-    public int color() {
-        return color;
-    }
-
     public interface OnAdviceSelectedListener {
         void adviceSelected(GoalAdvice advice);
     }

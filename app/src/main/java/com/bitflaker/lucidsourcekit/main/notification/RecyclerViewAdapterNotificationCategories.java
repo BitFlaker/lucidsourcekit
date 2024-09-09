@@ -3,10 +3,7 @@ package com.bitflaker.lucidsourcekit.main.notification;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
@@ -15,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
+import com.bitflaker.lucidsourcekit.databinding.EntryNotificationCategoryBinding;
 import com.bitflaker.lucidsourcekit.utils.NotificationObfuscationLookup;
-import com.google.android.material.card.MaterialCardView;
 
 import java.util.Comparator;
 import java.util.List;
@@ -35,25 +32,19 @@ public class RecyclerViewAdapterNotificationCategories extends RecyclerView.Adap
     @Override
     public MainViewHolderNotificationCategories onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.entry_notification_category, parent, false);
-        return new MainViewHolderNotificationCategories(view);
+        return new MainViewHolderNotificationCategories(EntryNotificationCategoryBinding.inflate(inflater, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull MainViewHolderNotificationCategories holder, int position) {
         NotificationCategory current = notificationCategories.get(position);
-        holder.heading.setText(current.getItemHeading());
-        holder.description.setText(current.getItemDescription());
-        holder.count.setText(current.getDailyNotificationCount() == 0 || !current.isEnabled() ? "No notifications" : current.getDailyNotificationCount() + " daily notifications");
+        holder.binding.txtNotificationCategoryHeading.setText(current.getItemHeading());
+        holder.binding.txtNotificationCategoryDescription.setText(current.getItemDescription());
+        holder.binding.txtNotificationCategoryCount.setText(current.getDailyNotificationCount() == 0 || !current.isEnabled() ? "No notifications" : current.getDailyNotificationCount() + " daily notifications");
         Drawable enabledStateDrawable = ResourcesCompat.getDrawable(context.getResources(), current.isEnabled() ? R.drawable.round_check_24 : R.drawable.round_clear_24, context.getTheme());
-//        DrawableCompat.setTintList(enabledStateDrawable, Tools.getAttrColorStateList(current.isEnabled() ? R.attr.colorSuccess : R.attr.colorError, context.getTheme()));
-//        enabledStateDrawable.setColorFilter(new PorterDuffColorFilter(Tools.getAttrColor(current.isEnabled() ? R.attr.colorSuccess : R.attr.colorError, context.getTheme()), PorterDuff.Mode.CLEAR));
-        holder.count.setCompoundDrawablesRelativeWithIntrinsicBounds(enabledStateDrawable, null, null, null);
-        holder.categoryIcon.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), current.getDrawable(), context.getTheme()));
-
-//        holder.card.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.shade_disabled, context.getTheme()));
-
-        holder.card.setOnClickListener(e -> current.getCategoryClickedListener().notificationCategoryClicked());
+        holder.binding.txtNotificationCategoryCount.setCompoundDrawablesRelativeWithIntrinsicBounds(enabledStateDrawable, null, null, null);
+        holder.binding.imgNotificationCategoryIcon.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), current.getDrawable(), context.getTheme()));
+        holder.binding.crdNotificationEntry.setOnClickListener(e -> current.getCategoryClickedListener().notificationCategoryClicked());
     }
 
     @Override
@@ -114,7 +105,7 @@ public class RecyclerViewAdapterNotificationCategories extends RecyclerView.Adap
     }
 
     public int getObfuscationPercentage() {
-        int totalNotificationCount = 0;
+        long totalNotificationCount = 0;
         double notificationPercentageValue = 0;
         NotificationObfuscationLookup lookup = NotificationObfuscationLookup.parse(MainDatabase.getInstance(context).getNotificationMessageDao().getMessageCountsForObfuscationType().blockingGet());
         for (NotificationCategory category : notificationCategories) {
@@ -126,17 +117,11 @@ public class RecyclerViewAdapterNotificationCategories extends RecyclerView.Adap
     }
 
     public static class MainViewHolderNotificationCategories extends RecyclerView.ViewHolder {
-        MaterialCardView card;
-        TextView heading, description, count;
-        ImageView categoryIcon;
+        EntryNotificationCategoryBinding binding;
 
-        public MainViewHolderNotificationCategories(@NonNull View itemView) {
-            super(itemView);
-            card = itemView.findViewById(R.id.crd_notification_entry);
-            heading = itemView.findViewById(R.id.txt_notification_category_heading);
-            description = itemView.findViewById(R.id.txt_notification_category_description);
-            count = itemView.findViewById(R.id.txt_notification_category_count);
-            categoryIcon = itemView.findViewById(R.id.img_notification_category_icon);
+        public MainViewHolderNotificationCategories(@NonNull EntryNotificationCategoryBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
     }
 

@@ -5,10 +5,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,18 +13,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.data.BackgroundNoise;
 import com.bitflaker.lucidsourcekit.data.Brainwaves;
 import com.bitflaker.lucidsourcekit.data.records.BinauralBeat;
-import com.bitflaker.lucidsourcekit.views.LineGraph;
-import com.bitflaker.lucidsourcekit.views.TextLegend;
+import com.bitflaker.lucidsourcekit.databinding.FragmentMainBinauralBeatsBinding;
+import com.bitflaker.lucidsourcekit.databinding.SheetBinauralAutoStopBinding;
+import com.bitflaker.lucidsourcekit.databinding.SheetBinauralBackgroundNoiseBinding;
+import com.bitflaker.lucidsourcekit.databinding.SheetBinauralBeatsBinding;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
@@ -35,98 +31,72 @@ import java.util.List;
 import java.util.Locale;
 
 public class BinauralBeatsView extends Fragment {
-    private LineGraph progressLineGraph;
-    private ImageButton displayAllBeats, backgroundNoises, repeatButton, autoStopButton;
-    private MaterialButton playTrack;
+    private FragmentMainBinauralBeatsBinding binding;
+    private Handler autoStopHandler = new Handler();
+    private BinauralBeatsPlayer binBeatPlayer;
     private List<BackgroundNoise> noises;
     private boolean repeatBeat, playingFinished, isAutoStopTimerRunning;
-    private TextView currentTrackName, currentTrackDescription, binauralTimeline, binauralTimeTotal, binauralFrequency, freqGreekLetterName, freqGreekLetter, freqCarrierFreq, carrierFreqHeading;
-    private TextLegend binauralLegend;
-    private MaterialCardView legendCard;
-    private BinauralBeatsPlayer binBeatPlayer;
-    private LinearLayout timeContainer, carrierFreqContainer;
-    private Handler autoStopHandler = new Handler();
     private int autoStopInterval = -1;
 
-    private Runnable stopCurrentlyPlayingTrack = () -> {
-        playTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
+    private final Runnable stopCurrentlyPlayingTrack = () -> {
+        binding.btnPlayTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
         binBeatPlayer.pause();
-        autoStopButton.setImageDrawable(getContext().getDrawable(R.drawable.ic_outline_timer_24));
+        binding.btnAutoStop.setImageDrawable(getContext().getDrawable(R.drawable.ic_outline_timer_24));
         autoStopInterval = -1;
     };
 
     // TODO get real noises
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main_binaural_beats, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentMainBinauralBeatsBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getView().findViewById(R.id.txt_binaural_beats_heading).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
-        progressLineGraph = getView().findViewById(R.id.lg_binaural_time_progress);
-        legendCard = getView().findViewById(R.id.crd_legend);
-        displayAllBeats = getView().findViewById(R.id.btn_display_all_beats);
-        backgroundNoises = getView().findViewById(R.id.btn_add_background_noise);
-        repeatButton = getView().findViewById(R.id.btn_loop_track);
-        autoStopButton = getView().findViewById(R.id.btn_auto_stop);
-        currentTrackName = getView().findViewById(R.id.txt_curr_track_name);
-        currentTrackDescription = getView().findViewById(R.id.txt_curr_track_description);
-        playTrack = getView().findViewById(R.id.btn_play_track);
-        binauralLegend = getView().findViewById(R.id.tl_binaural_legend);
-        binauralTimeline = getView().findViewById(R.id.txt_binaural_beats_timeline);
-        binauralTimeTotal = getView().findViewById(R.id.txt_binaural_beats_total_time);
-        binauralFrequency = getView().findViewById(R.id.txt_current_binaural_frequency);
-        freqGreekLetterName = getView().findViewById(R.id.txt_current_frequency_name);
-        freqGreekLetter = getView().findViewById(R.id.txt_current_frequency_greek_letter);
-        freqCarrierFreq = getView().findViewById(R.id.txt_carrier_frequency);
-        timeContainer = getView().findViewById(R.id.ll_bbp_time_container);
-        carrierFreqContainer = getView().findViewById(R.id.ll_bbp_carrier_freq_heading);
-        carrierFreqHeading = getView().findViewById(R.id.txt_bbp_carrier_freq_heading);
-
+        binding.txtBinauralBeatsHeading.setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
         repeatBeat = false;
         playingFinished = false;
-
         generateNoises();
 
-        displayAllBeats.setOnClickListener(e -> {
+        binding.btnDisplayAllBeats.setOnClickListener(e -> {
             final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
-            bottomSheetDialog.setContentView(R.layout.sheet_binaural_beats);
-            RecyclerView rcv = bottomSheetDialog.findViewById(R.id.rcv_list_binaural_beats);
+            SheetBinauralBeatsBinding beatsBinding = SheetBinauralBeatsBinding.inflate(getLayoutInflater());
+            bottomSheetDialog.setContentView(beatsBinding.getRoot());
 
             RecyclerViewAdapterBinauralBeatsSelector rvabbs = new RecyclerViewAdapterBinauralBeatsSelector(getContext(), BinauralBeatsCollection.getInstance().getBinauralBeats());
             rvabbs.setOnEntryClickedListener((binauralBeat, position) -> {
                 playingFinished = false;
                 bottomSheetDialog.dismiss();
-                timeContainer.setVisibility(View.VISIBLE);
-                LinearLayout.LayoutParams lParams = (LinearLayout.LayoutParams) carrierFreqContainer.getLayoutParams();
+                binding.llBbpTimeContainer.setVisibility(View.VISIBLE);
+                LinearLayout.LayoutParams lParams = (LinearLayout.LayoutParams) binding.llBbpCarrierFreqHeading.getLayoutParams();
                 lParams.topMargin = Tools.dpToPx(getContext(), 15);
-                carrierFreqContainer.setLayoutParams(lParams);
-                progressLineGraph.setVisibility(View.VISIBLE);
-                carrierFreqHeading.setVisibility(View.VISIBLE);
-                currentTrackName.setVisibility(View.VISIBLE);
-                currentTrackName.setText(binauralBeat.title());
-                currentTrackDescription.setText(binauralBeat.description());
-                binauralTimeTotal.setText(String.format(" / %s", getTimeStringFromSeconds((int) binauralBeat.frequencyList().getDuration())));
-                binauralTimeline.setText(getTimeStringFromSeconds(0));
-                binauralFrequency.setText("0.00");
-                freqCarrierFreq.setText(String.format(Locale.ENGLISH, "%.0f Hz", binauralBeat.baseFrequency()));
-                playTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
+                binding.llBbpCarrierFreqHeading.setLayoutParams(lParams);
+                binding.lgBinauralTimeProgress.setVisibility(View.VISIBLE);
+                binding.txtBbpCarrierFreqHeading.setVisibility(View.VISIBLE);
+                binding.txtCurrTrackName.setVisibility(View.VISIBLE);
+                binding.txtCurrTrackName.setText(binauralBeat.title());
+                binding.txtCurrTrackDescription.setText(binauralBeat.description());
+                binding.txtBinauralBeatsTotalTime.setText(String.format(" / %s", getTimeStringFromSeconds((int) binauralBeat.frequencyList().getDuration())));
+                binding.txtBinauralBeatsTimeline.setText(getTimeStringFromSeconds(0));
+                binding.txtCurrentBinauralFrequency.setText("0.00");
+                binding.txtCarrierFrequency.setText(String.format(Locale.ENGLISH, "%.0f Hz", binauralBeat.baseFrequency()));
+                binding.btnPlayTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
                 setDataForProgress(binauralBeat, 0);
-                if(binBeatPlayer != null){
+                if (binBeatPlayer != null) {
                     binBeatPlayer.stop();
-                    progressLineGraph.resetProgress();
+                    binding.lgBinauralTimeProgress.resetProgress();
                 }
                 binBeatPlayer = new BinauralBeatsPlayer(binauralBeat);
-                progressLineGraph.setData(binauralBeat.frequencyList(), 32, 4f, 0f, false, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
+                binding.lgBinauralTimeProgress.setData(binauralBeat.frequencyList(), 32, 4f, 0f, false, Brainwaves.getStageColors(), Brainwaves.getStageFrequencyCenters());
                 binBeatPlayer.setOnTrackProgressListener(((currentBinauralBeat, progress) -> {
                     setDataForProgress(currentBinauralBeat, progress);
                     FragmentActivity fragAct = getActivity();
                     if (fragAct != null) {
-                        fragAct.runOnUiThread(() -> progressLineGraph.updateProgress(progress));
+                        fragAct.runOnUiThread(() -> binding.lgBinauralTimeProgress.updateProgress(progress));
                     }
                     else {
                         binBeatPlayer.stop();
@@ -137,24 +107,23 @@ public class BinauralBeatsView extends Fragment {
                     setEndValues(currentBinauralBeat);
                     if(repeatBeat) {
                         playingFinished = false;
-                        progressLineGraph.resetProgress();
+                        binding.lgBinauralTimeProgress.resetProgress();
                         binBeatPlayer.play();
                     }
                     else {
-                        playTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
+                        binding.btnPlayTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
                     }
                 });
             });
-            rcv.setAdapter(rvabbs);
-            rcv.setLayoutManager(new LinearLayoutManager(getContext()));
-
+            beatsBinding.rcvListBinauralBeats.setAdapter(rvabbs);
+            beatsBinding.rcvListBinauralBeats.setLayoutManager(new LinearLayoutManager(getContext()));
             bottomSheetDialog.show();
         });
 
-        backgroundNoises.setOnClickListener(e -> {
+        binding.btnAddBackgroundNoise.setOnClickListener(e -> {
             final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
-            bottomSheetDialog.setContentView(R.layout.sheet_binaural_background_noise);
-            RecyclerView rcv = bottomSheetDialog.findViewById(R.id.rcv_list_background_noises);
+            SheetBinauralBackgroundNoiseBinding sBinding = SheetBinauralBackgroundNoiseBinding.inflate(getLayoutInflater());
+            bottomSheetDialog.setContentView(sBinding.getRoot());
 
             RecyclerViewAdapterBackgroundNoisesManager manager = new RecyclerViewAdapterBackgroundNoisesManager(getContext(), noises);
             manager.setOnEntryClickedListener((backgroundNoise, position) -> {
@@ -163,30 +132,30 @@ public class BinauralBeatsView extends Fragment {
             manager.setOnVolumeChangedListener((backgroundNoise, position) -> {
                 System.out.println(backgroundNoise.getName() + " | " + backgroundNoise.getVolume());
             });
-            rcv.setAdapter(manager);
-            rcv.setLayoutManager(new LinearLayoutManager(getContext()));
+            sBinding.rcvListBackgroundNoises.setAdapter(manager);
+            sBinding.rcvListBackgroundNoises.setLayoutManager(new LinearLayoutManager(getContext()));
 
             bottomSheetDialog.show();
         });
 
-        repeatButton.setOnClickListener(e -> {
+        binding.btnLoopTrack.setOnClickListener(e -> {
             repeatBeat = !repeatBeat;
             if (repeatBeat){
-                repeatButton.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_repeat_on_24));
+                binding.btnLoopTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_repeat_on_24));
                 Toast.makeText(getContext(), "repeat is now on", Toast.LENGTH_SHORT).show();
             }
             else {
-                repeatButton.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_repeat_24));
+                binding.btnLoopTrack.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_repeat_24));
                 Toast.makeText(getContext(), "repeat is now off", Toast.LENGTH_SHORT).show();
             }
         });
 
-        autoStopButton.setOnClickListener(e -> {
+        binding.btnAutoStop.setOnClickListener(e -> {
             if(autoStopInterval != -1){
                 new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog).setTitle("Disable Auto-Stop").setMessage("Do you really want to disable Auto-Stop?")
                         .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                             autoStopHandler.removeCallbacks(stopCurrentlyPlayingTrack);
-                            autoStopButton.setImageDrawable(getContext().getDrawable(R.drawable.ic_outline_timer_24));
+                            binding.btnAutoStop.setImageDrawable(getContext().getDrawable(R.drawable.ic_outline_timer_24));
                             autoStopInterval = -1;
                         })
                         .setNegativeButton(getResources().getString(R.string.no), null)
@@ -194,52 +163,49 @@ public class BinauralBeatsView extends Fragment {
             }
             else {
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
-                bottomSheetDialog.setContentView(R.layout.sheet_binaural_auto_stop);
-                MaterialButton applyAutoStop = bottomSheetDialog.findViewById(R.id.btn_apply_auto_stop);
-                NumberPicker autoStopHours = bottomSheetDialog.findViewById(R.id.np_hours_auto_stop);
-                NumberPicker autoStopMinutes = bottomSheetDialog.findViewById(R.id.np_minutes_auto_stop);
-                NumberPicker autoStopSeconds = bottomSheetDialog.findViewById(R.id.np_seconds_auto_stop);
+                SheetBinauralAutoStopBinding autoStopBinding = SheetBinauralAutoStopBinding.inflate(getLayoutInflater());
+                bottomSheetDialog.setContentView(autoStopBinding.getRoot());
 
-                autoStopHours.setMinValue(0);
-                autoStopHours.setMaxValue(23);
-                autoStopHours.setValue(0);
-                autoStopMinutes.setMinValue(0);
-                autoStopMinutes.setMaxValue(59);
-                autoStopMinutes.setValue(0);
-                autoStopSeconds.setMinValue(0);
-                autoStopSeconds.setMaxValue(59);
-                autoStopSeconds.setValue(0);
+                autoStopBinding.npHoursAutoStop.setMinValue(0);
+                autoStopBinding.npHoursAutoStop.setMaxValue(23);
+                autoStopBinding.npHoursAutoStop.setValue(0);
+                autoStopBinding.npMinutesAutoStop.setMinValue(0);
+                autoStopBinding.npMinutesAutoStop.setMaxValue(59);
+                autoStopBinding.npMinutesAutoStop.setValue(0);
+                autoStopBinding.npSecondsAutoStop.setMinValue(0);
+                autoStopBinding.npSecondsAutoStop.setMaxValue(59);
+                autoStopBinding.npSecondsAutoStop.setValue(0);
 
-                applyAutoStop.setOnClickListener(g -> {
+                autoStopBinding.btnApplyAutoStop.setOnClickListener(g -> {
                     isAutoStopTimerRunning = false;
-                    autoStopInterval = (autoStopHours.getValue() * 3600 + autoStopMinutes.getValue() * 60 + autoStopSeconds.getValue()) * 1000;
+                    autoStopInterval = (autoStopBinding.npHoursAutoStop.getValue() * 3600 + autoStopBinding.npMinutesAutoStop.getValue() * 60 + autoStopBinding.npSecondsAutoStop.getValue()) * 1000;
                     autoStopHandler = new Handler();
-                    if(binBeatPlayer.isPlaying()) {
+                    if(binBeatPlayer != null && binBeatPlayer.isPlaying()) {
                         startAutoStopTimeNow();
                     }
-                    autoStopButton.setImageDrawable(getContext().getDrawable(R.drawable.ic_outline_timer_off_24));
+                    binding.btnAutoStop.setImageDrawable(getContext().getDrawable(R.drawable.ic_outline_timer_off_24));
                     bottomSheetDialog.dismiss();
                 });
                 bottomSheetDialog.show();
             }
         });
 
-        playTrack.setOnClickListener(e -> {
+        binding.btnPlayTrack.setOnClickListener(e -> {
             if(binBeatPlayer != null){
                 if(playingFinished) {
-                    binauralTimeline.setText(getTimeStringFromSeconds(0));
-                    progressLineGraph.resetProgress();
+                    binding.txtBinauralBeatsTimeline.setText(getTimeStringFromSeconds(0));
+                    binding.lgBinauralTimeProgress.resetProgress();
                     playingFinished = false;
                 }
                 if(!binBeatPlayer.isPlaying()){
-                    playTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_pause_24));
+                    binding.btnPlayTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_pause_24));
                     binBeatPlayer.play();
                     if(autoStopInterval != -1 && !isAutoStopTimerRunning) {
                         startAutoStopTimeNow();
                     }
                 }
                 else {
-                    playTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
+                    binding.btnPlayTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
                     binBeatPlayer.pause();
                 }
             }
@@ -248,13 +214,13 @@ public class BinauralBeatsView extends Fragment {
             }
         });
 
-        progressLineGraph.setBottomLineSpacing(10);
-        progressLineGraph.setDrawGradient(true);
-        progressLineGraph.setGradientOpacity(0.25f);
-        progressLineGraph.setDrawProgressIndicator(false);
+        binding.lgBinauralTimeProgress.setBottomLineSpacing(10);
+        binding.lgBinauralTimeProgress.setDrawGradient(true);
+        binding.lgBinauralTimeProgress.setGradientOpacity(0.25f);
+        binding.lgBinauralTimeProgress.setDrawProgressIndicator(false);
 
         String[] labels = new String[] { "β", "α", "θ", "δ" };
-        binauralLegend.setData(labels, Brainwaves.getStageColors(), Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme()), Tools.getAttrColor(R.attr.tertiaryTextColor, getContext().getTheme()), 18);
+        binding.tlBinauralLegend.setData(labels, Brainwaves.getStageColors(), Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme()), Tools.getAttrColor(R.attr.tertiaryTextColor, getContext().getTheme()), 18);
     }
 
     private void startAutoStopTimeNow() {
@@ -266,10 +232,10 @@ public class BinauralBeatsView extends Fragment {
     private void setEndValues(BinauralBeat currentBinauralBeat) {
         getActivity().runOnUiThread(() -> {
             int finishProgress = (int) currentBinauralBeat.frequencyList().getDuration();
-            binauralTimeline.setText(getTimeStringFromSeconds(finishProgress));
-            binauralFrequency.setText(String.format(Locale.ENGLISH, "%.2f", currentBinauralBeat.frequencyList().getFrequencyAtDuration(finishProgress)));
+            binding.txtBinauralBeatsTimeline.setText(getTimeStringFromSeconds(finishProgress));
+            binding.txtCurrentBinauralFrequency.setText(String.format(Locale.ENGLISH, "%.2f", currentBinauralBeat.frequencyList().getFrequencyAtDuration(finishProgress)));
             // TODO: the progress updating is a bit a workaround and should be better
-            progressLineGraph.updateProgress(progressLineGraph.getDurationProgress());
+            binding.lgBinauralTimeProgress.updateProgress(binding.lgBinauralTimeProgress.getDurationProgress());
         });
     }
 
@@ -281,11 +247,11 @@ public class BinauralBeatsView extends Fragment {
         FragmentActivity fragAct = getActivity();
         if (fragAct != null) {
             fragAct.runOnUiThread(() -> {
-                freqGreekLetter.setText(greekLetter);
-                freqGreekLetterName.setText(greekLetterName);
-                binauralLegend.setCurrentSelectedIndex(stageIndex);
-                binauralFrequency.setText(String.format(Locale.ENGLISH, "%.2f", currFreq));
-                binauralTimeline.setText(getTimeStringFromSeconds(progress));
+                binding.txtCurrentFrequencyGreekLetter.setText(greekLetter);
+                binding.txtCurrentFrequencyName.setText(greekLetterName);
+                binding.tlBinauralLegend.setCurrentSelectedIndex(stageIndex);
+                binding.txtCurrentBinauralFrequency.setText(String.format(Locale.ENGLISH, "%.2f", currFreq));
+                binding.txtBinauralBeatsTimeline.setText(getTimeStringFromSeconds(progress));
             });
         }
         else {

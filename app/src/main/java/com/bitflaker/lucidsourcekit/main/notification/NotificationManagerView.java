@@ -9,8 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,23 +23,19 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler;
-import com.bitflaker.lucidsourcekit.views.Speedometer;
-import com.bitflaker.lucidsourcekit.database.MainDatabase;
-import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
-import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys;
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager;
+import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
+import com.bitflaker.lucidsourcekit.databinding.ActivityNotificationManagerBinding;
+import com.bitflaker.lucidsourcekit.databinding.SheetNotificationSettingsBinding;
+import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler;
+import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -51,23 +45,24 @@ import java.util.concurrent.TimeUnit;
 
 public class NotificationManagerView extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 772;
-    private Calendar notificationsTimeFrom, notificationsTimeTo;
     private int customDailyNotificationsCount;
-    private MainDatabase db;
-    private RecyclerViewAdapterNotificationCategories rcvaNotificationCategories;
-    private Speedometer notificationsDelivered;
-    private TextView compliantNotificationCountSettings, totalNotificationCountSettings;
     private int currentDeliveryProgress;
-    private TextView notificationsDisabledNotice;
+    private Calendar notificationsTimeFrom, notificationsTimeTo;
+    private RecyclerViewAdapterNotificationCategories rcvaNotificationCategories;
+    private MainDatabase db;
+    private ActivityNotificationManagerBinding binding;
+    private TextView compliantNotificationCountSettings, totalNotificationCountSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notification_manager);
+
+        binding = ActivityNotificationManagerBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         Tools.makeStatusBarTransparent(NotificationManagerView.this);
-        ConstraintLayout.LayoutParams lParamsHeading = Tools.getConstraintLayoutParamsTopStatusbar((ConstraintLayout.LayoutParams) findViewById(R.id.txt_manage_notification_heading).getLayoutParams(), NotificationManagerView.this);
-        findViewById(R.id.txt_manage_notification_heading).setLayoutParams(lParamsHeading);
+        ConstraintLayout.LayoutParams lParamsHeading = Tools.getConstraintLayoutParamsTopStatusbar((ConstraintLayout.LayoutParams) binding.txtManageNotificationHeading.getLayoutParams(), NotificationManagerView.this);
+        binding.txtManageNotificationHeading.setLayoutParams(lParamsHeading);
 
         db = MainDatabase.getInstance(this);
         List<NotificationCategory> categories = db.getNotificationCategoryDao().getAll().blockingGet();
@@ -117,9 +112,8 @@ public class NotificationManagerView extends AppCompatActivity {
         }
 
         rcvaNotificationCategories = new RecyclerViewAdapterNotificationCategories(this, categories);
-        RecyclerView rcvNotificationCategories = findViewById(R.id.rcv_notification_categories);
-        rcvNotificationCategories.setAdapter(rcvaNotificationCategories);
-        rcvNotificationCategories.setLayoutManager(new LinearLayoutManager(this));
+        binding.rcvNotificationCategories.setAdapter(rcvaNotificationCategories);
+        binding.rcvNotificationCategories.setLayoutManager(new LinearLayoutManager(this));
         rcvaNotificationCategories.setNotificationCategoryChangedListener(this::updateNotificationStats);
 
         if(getIntent().hasExtra("AUTO_OPEN_ID")){
@@ -128,22 +122,19 @@ public class NotificationManagerView extends AppCompatActivity {
         }
 
         currentDeliveryProgress = (int) getNotificationDeliveryProgress();
-        notificationsDelivered = findViewById(R.id.spdo_notifications_delivered);
-        notificationsDelivered.setData(25f, currentDeliveryProgress, 100);
-        notificationsDelivered.setPercentageData(true);
-        notificationsDelivered.setDecimalPlaces(0);
-        notificationsDelivered.setDescription("notifications\nalready delivered today");
+        binding.spdoNotificationsDelivered.setData(25f, currentDeliveryProgress, 100);
+        binding.spdoNotificationsDelivered.setPercentageData(true);
+        binding.spdoNotificationsDelivered.setDecimalPlaces(0);
+        binding.spdoNotificationsDelivered.setDescription("notifications\nalready delivered today");
 
         Calendar curr = Calendar.getInstance();
         long delay = (60 - curr.get(Calendar.SECOND) - 1) * 1000 + 1000 - curr.get(Calendar.MILLISECOND);
         new Handler().postDelayed(deliveryStatusUpdated, delay);
 
-        notificationsDisabledNotice = findViewById(R.id.txt_notifications_disabled_info);
-        ImageButton moreNotificationOptions = findViewById(R.id.btn_more_notification_options);
         DataStoreManager dsManager = DataStoreManager.getInstance();
-        notificationsDisabledNotice.setVisibility(dsManager.getSetting(DataStoreKeys.NOTIFICATION_PAUSED_ALL).blockingFirst() ? View.VISIBLE : View.GONE);
-        moreNotificationOptions.setOnClickListener(e -> {
-            PopupMenu popup = new PopupMenu(new ContextThemeWrapper(this, R.style.Theme_LucidSourceKit_PopupMenu), moreNotificationOptions);
+        binding.txtNotificationsDisabledInfo.setVisibility(dsManager.getSetting(DataStoreKeys.NOTIFICATION_PAUSED_ALL).blockingFirst() ? View.VISIBLE : View.GONE);
+        binding.btnMoreNotificationOptions.setOnClickListener(e -> {
+            PopupMenu popup = new PopupMenu(new ContextThemeWrapper(this, R.style.Theme_LucidSourceKit_PopupMenu), binding.btnMoreNotificationOptions);
             popup.getMenuInflater().inflate(R.menu.more_notification_options, popup.getMenu());
             popup.getMenu().findItem(R.id.itm_pause_notifications).setTitle(dsManager.getSetting(DataStoreKeys.NOTIFICATION_PAUSED_ALL).blockingFirst() ? "Resume notifications" : "Pause notifications");
             popup.setOnMenuItemClickListener(item -> {
@@ -155,7 +146,7 @@ public class NotificationManagerView extends AppCompatActivity {
                             .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                                 dsManager.updateSetting(DataStoreKeys.NOTIFICATION_PAUSED_ALL, !allNotificationsPaused).blockingSubscribe();
                                 popup.getMenu().findItem(R.id.itm_pause_notifications).setTitle(!allNotificationsPaused ? "Resume notifications" : "Pause notifications");
-                                notificationsDisabledNotice.setVisibility(!allNotificationsPaused ? View.VISIBLE : View.GONE);
+                                binding.txtNotificationsDisabledInfo.setVisibility(!allNotificationsPaused ? View.VISIBLE : View.GONE);
                             })
                             .setNegativeButton(getResources().getString(R.string.no), null)
                             .show();
@@ -195,7 +186,7 @@ public class NotificationManagerView extends AppCompatActivity {
         int newDeliveryProgress = (int) getNotificationDeliveryProgress();
         if(currentDeliveryProgress != newDeliveryProgress) {
             currentDeliveryProgress = newDeliveryProgress;
-            notificationsDelivered.updateValue(currentDeliveryProgress);
+            binding.spdoNotificationsDelivered.updateValue(currentDeliveryProgress);
         }
     }
 
@@ -225,19 +216,14 @@ public class NotificationManagerView extends AppCompatActivity {
         long notificationTimeframeTo = rcvaNotificationCategories.getNotificationTimeframeTo();
         int obfuscationPercentage = rcvaNotificationCategories.getObfuscationPercentage();
 
-        TextView dailyNotifications = findViewById(R.id.txt_daily_notifications_val);
-        TextView categoriesEnabled = findViewById(R.id.txt_categories_enabled_val);
-        TextView notificationTimespan = findViewById(R.id.txt_notification_timespan_val);
-        TextView obfuscationLevel = findViewById(R.id.txt_obfuscation_level_val);
-
-        dailyNotifications.setText(String.format(Locale.ENGLISH, "%d", totalDailyNotificationCount));
-        categoriesEnabled.setText(String.format(Locale.ENGLISH, "%d/%d", enabledCategoriesCount, totalCategoriesCount));
+        binding.txtDailyNotificationsVal.setText(String.format(Locale.ENGLISH, "%d", totalDailyNotificationCount));
+        binding.txtCategoriesEnabledVal.setText(String.format(Locale.ENGLISH, "%d/%d", enabledCategoriesCount, totalCategoriesCount));
         long nTimeframeFromHours = TimeUnit.MILLISECONDS.toHours(notificationTimeframeFrom);
         long nTimeframeFromMinutes = TimeUnit.MILLISECONDS.toMinutes(notificationTimeframeFrom) - TimeUnit.HOURS.toMinutes(nTimeframeFromHours);
         long nTimeframeToHours = TimeUnit.MILLISECONDS.toHours(notificationTimeframeTo);
         long nTimeframeToMinutes = TimeUnit.MILLISECONDS.toMinutes(notificationTimeframeTo) - TimeUnit.HOURS.toMinutes(nTimeframeToHours);
-        notificationTimespan.setText(String.format(Locale.ENGLISH, "%02d:%02d - %02d:%02d", nTimeframeFromHours, nTimeframeFromMinutes, nTimeframeToHours, nTimeframeToMinutes));
-        obfuscationLevel.setText(String.format(Locale.ENGLISH, "%d%%", obfuscationPercentage));
+        binding.txtNotificationTimespanVal.setText(String.format(Locale.ENGLISH, "%02d:%02d - %02d:%02d", nTimeframeFromHours, nTimeframeFromMinutes, nTimeframeToHours, nTimeframeToMinutes));
+        binding.txtObfuscationLevelVal.setText(String.format(Locale.ENGLISH, "%d%%", obfuscationPercentage));
         calculateAndApplyNewStatus();
     }
 
@@ -270,31 +256,14 @@ public class NotificationManagerView extends AppCompatActivity {
 
     private void createAndShowBottomSheetConfigurator(NotificationCategory category) {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        bottomSheetDialog.setContentView(R.layout.sheet_notification_settings);
+        SheetNotificationSettingsBinding sBinding = SheetNotificationSettingsBinding.inflate(getLayoutInflater());
+        bottomSheetDialog.setContentView(sBinding.getRoot());
 
-        ImageView notificationSettingsIcon = bottomSheetDialog.findViewById(R.id.img_notification_settings_icon);
-        TextView notificationSettingsHeading = bottomSheetDialog.findViewById(R.id.txt_notification_settings_heading);
-        TextView notificationSettingsDescription = bottomSheetDialog.findViewById(R.id.txt_notification_settings_description);
-        Chip obfuscationMin = bottomSheetDialog.findViewById(R.id.chp_obfuscate_transparent);
-        Chip obfuscationMed = bottomSheetDialog.findViewById(R.id.chp_obfuscate_neutral);
-        Chip obfuscationMax = bottomSheetDialog.findViewById(R.id.chp_obfuscate_max);
-        Chip customNotificationCount = bottomSheetDialog.findViewById(R.id.chp_notification_custom);
-        ChipGroup dailyNotificationChipGroup = bottomSheetDialog.findViewById(R.id.ll_daily_notification_count);
-        SwitchMaterial notificationEnabledSwitch = bottomSheetDialog.findViewById(R.id.chk_enable_notifications);
-        MaterialCardView cardNotificationTimeFrom = bottomSheetDialog.findViewById(R.id.crd_notification_time_from);
-        MaterialCardView cardNotificationTimeTo = bottomSheetDialog.findViewById(R.id.crd_notification_time_to);
-        TextView labelNotificationTimeFrom = bottomSheetDialog.findViewById(R.id.txt_notification_time_from);
-        TextView labelNotificationTimeTo = bottomSheetDialog.findViewById(R.id.txt_notification_time_to);
-        TextView labelCompliantNotificationCount = bottomSheetDialog.findViewById(R.id.txt_compliant_notification_message_count);
-        TextView labelTotalNotificationCount = bottomSheetDialog.findViewById(R.id.txt_total_notification_message_count);
-        MaterialButton cancelButton = bottomSheetDialog.findViewById(R.id.btn_cancel);
-        MaterialButton saveButton = bottomSheetDialog.findViewById(R.id.btn_save);
-        ImageButton editNotificationMessages = bottomSheetDialog.findViewById(R.id.btn_edit_notification_messages);
         Chip[] presetNotificationCounts = new Chip[] {
-                bottomSheetDialog.findViewById(R.id.chp_notification_1),
-                bottomSheetDialog.findViewById(R.id.chp_notification_2),
-                bottomSheetDialog.findViewById(R.id.chp_notification_3),
-                bottomSheetDialog.findViewById(R.id.chp_notification_5)
+                sBinding.chpNotification1,
+                sBinding.chpNotification2,
+                sBinding.chpNotification3,
+                sBinding.chpNotification5
         };
 
         DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
@@ -306,25 +275,25 @@ public class NotificationManagerView extends AppCompatActivity {
         notificationsTimeTo.setTimeInMillis(Tools.getTimeFromMidnight(category.getTimeTo()));
         customDailyNotificationsCount = category.getDailyNotificationCount();
 
-        if(!category.isEnabled()){
-            notificationEnabledSwitch.setChecked(false);
-            dailyNotificationChipGroup.setVisibility(View.GONE);
+        if (!category.isEnabled()) {
+            sBinding.chkEnableNotifications.setChecked(false);
+            sBinding.llDailyNotificationCount.setVisibility(View.GONE);
         }
 
-        labelNotificationTimeFrom.setText(tf.format(notificationsTimeFrom.getTime()));
-        labelNotificationTimeTo.setText(tf.format(notificationsTimeTo.getTime()));
+        sBinding.txtNotificationTimeFrom.setText(tf.format(notificationsTimeFrom.getTime()));
+        sBinding.txtNotificationTimeTo.setText(tf.format(notificationsTimeTo.getTime()));
 
-        labelCompliantNotificationCount.setText(String.format(Locale.ENGLISH, "%d", db.getNotificationMessageDao().getCountOfMessagesForCategoryAndObfuscationType(category.getId(), category.getObfuscationTypeId()).blockingGet()));
-        labelTotalNotificationCount.setText("/ " + db.getNotificationMessageDao().getCountOfMessagesForCategory(category.getId()).blockingGet());
+        sBinding.txtCompliantNotificationMessageCount.setText(String.format(Locale.ENGLISH, "%d", db.getNotificationMessageDao().getCountOfMessagesForCategoryAndObfuscationType(category.getId(), category.getObfuscationTypeId()).blockingGet()));
+        sBinding.txtTotalNotificationMessageCount.setText("/ " + db.getNotificationMessageDao().getCountOfMessagesForCategory(category.getId()).blockingGet());
 
-        notificationSettingsIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(), category.getDrawable(), getTheme()));
-        notificationSettingsHeading.setText(category.getItemHeading());
-        notificationSettingsDescription.setText(category.getItemDescription());
+        sBinding.imgNotificationSettingsIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(), category.getDrawable(), getTheme()));
+        sBinding.txtNotificationSettingsHeading.setText(category.getItemHeading());
+        sBinding.txtNotificationSettingsDescription.setText(category.getItemDescription());
 
-        Chip[] obfuscationChips = new Chip[] { obfuscationMin, obfuscationMed, obfuscationMax };
+        Chip[] obfuscationChips = new Chip[] { sBinding.chpObfuscateTransparent, sBinding.chpObfuscateNeutral, sBinding.chpObfuscateMax };
         for (Chip obfuscationChip : obfuscationChips) {
             obfuscationChip.setOnClickListener(e -> {
-                category.setObfuscationTypeId(obfuscationChip == obfuscationMin ? 0 : (obfuscationChip == obfuscationMed ? 1 : 2));
+                category.setObfuscationTypeId(obfuscationChip == sBinding.chpObfuscateTransparent ? 0 : (obfuscationChip == sBinding.chpObfuscateNeutral ? 1 : 2));
                 if(!obfuscationChip.isChecked()) {
                     obfuscationChip.setChecked(true);
                     return;
@@ -336,28 +305,29 @@ public class NotificationManagerView extends AppCompatActivity {
                 }
             });
         }
+
         obfuscationChips[category.getObfuscationTypeId()].setChecked(true);
-        notificationEnabledSwitch.setOnCheckedChangeListener((compoundButton, checked) -> {
+            sBinding.chkEnableNotifications.setOnCheckedChangeListener((compoundButton, checked) -> {
             category.setEnabled(checked);
-            dailyNotificationChipGroup.setVisibility(checked ? View.VISIBLE : View.GONE);
+            sBinding.llDailyNotificationCount.setVisibility(checked ? View.VISIBLE : View.GONE);
         });
-        cardNotificationTimeFrom.setOnClickListener(e -> {
+        sBinding.crdNotificationTimeFrom.setOnClickListener(e -> {
             new TimePickerDialog(this, (timePickerFrom, hourFrom, minuteFrom) -> {
                 notificationsTimeFrom.set(Calendar.HOUR_OF_DAY, hourFrom);
                 notificationsTimeFrom.set(Calendar.MINUTE, minuteFrom);
-                labelNotificationTimeFrom.setText(tf.format(notificationsTimeFrom.getTime()));
+                sBinding.txtNotificationTimeFrom.setText(tf.format(notificationsTimeFrom.getTime()));
                 category.setTimeFrom(Tools.getTimeOfDayMillis(notificationsTimeFrom));
             }, notificationsTimeFrom.get(Calendar.HOUR_OF_DAY), notificationsTimeFrom.get(Calendar.MINUTE), true).show();
         });
-        cardNotificationTimeTo.setOnClickListener(e -> {
+        sBinding.crdNotificationTimeTo.setOnClickListener(e -> {
             new TimePickerDialog(this, (timePickerFrom, hourFrom, minuteFrom) -> {
                 notificationsTimeTo.set(Calendar.HOUR_OF_DAY, hourFrom);
                 notificationsTimeTo.set(Calendar.MINUTE, minuteFrom);
-                labelNotificationTimeTo.setText(tf.format(notificationsTimeTo.getTime()));
+                sBinding.txtNotificationTimeTo.setText(tf.format(notificationsTimeTo.getTime()));
                 category.setTimeTo(Tools.getTimeOfDayMillis(notificationsTimeTo));
             }, notificationsTimeTo.get(Calendar.HOUR_OF_DAY), notificationsTimeTo.get(Calendar.MINUTE), true).show();
         });
-        customNotificationCount.setOnClickListener(e -> {
+        sBinding.chpNotificationCustom.setOnClickListener(e -> {
             final NumberPicker numberPicker = new NumberPicker(this);
             numberPicker.setMaxValue(99);
             numberPicker.setMinValue(1);
@@ -370,7 +340,7 @@ public class NotificationManagerView extends AppCompatActivity {
             builder.setPositiveButton(getResources().getString(R.string.ok), (dialog, which) -> {
                 customDailyNotificationsCount = numberPicker.getValue();
                 category.setDailyNotificationCount(customDailyNotificationsCount);
-                customNotificationCount.setText("Custom (" + customDailyNotificationsCount + ")");
+                sBinding.chpNotificationCustom.setText("Custom (" + customDailyNotificationsCount + ")");
             });
             builder.setNegativeButton(getResources().getString(R.string.cancel), null);
             builder.create();
@@ -388,19 +358,20 @@ public class NotificationManagerView extends AppCompatActivity {
             });
         }
         if(!setPresetCount){
-            customNotificationCount.setChecked(true);
-            customNotificationCount.setText("Custom (" + customDailyNotificationsCount + ")");
+            sBinding.chpNotificationCustom.setChecked(true);
+            sBinding.chpNotificationCustom.setText("Custom (" + customDailyNotificationsCount + ")");
         }
-        editNotificationMessages.setOnClickListener(e -> {
+
+        sBinding.btnEditNotificationMessages.setOnClickListener(e -> {
             Intent intent = new Intent(this, NotificationManagerEditorView.class);
             intent.putExtra("CATEGORY_ID", category.getId());
             intent.putExtra("OBFUSCATION_TYPE_ID", category.getObfuscationTypeId());
-            compliantNotificationCountSettings = labelCompliantNotificationCount;
-            totalNotificationCountSettings = labelTotalNotificationCount;
+            compliantNotificationCountSettings = sBinding.txtCompliantNotificationMessageCount;
+            totalNotificationCountSettings = sBinding.txtTotalNotificationMessageCount;
             notificationMessageEditorLauncher.launch(intent);
         });
-        cancelButton.setOnClickListener(e -> bottomSheetDialog.cancel());
-        saveButton.setOnClickListener(e -> {
+        sBinding.btnCancel.setOnClickListener(e -> bottomSheetDialog.cancel());
+        sBinding.btnSave.setOnClickListener(e -> {
             // TODO save changes
             int compliantMessageCount = db.getNotificationMessageDao().getCountOfMessagesForCategoryAndObfuscationType(category.getId(), category.getObfuscationTypeId()).blockingGet();
             if(compliantMessageCount == 0 && category.isEnabled()) {

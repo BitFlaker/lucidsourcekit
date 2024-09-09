@@ -9,8 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -20,36 +18,31 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.data.enums.SortBy;
 import com.bitflaker.lucidsourcekit.data.records.AppliedFilter;
+import com.bitflaker.lucidsourcekit.data.records.SortEntry;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
-import com.bitflaker.lucidsourcekit.data.enums.SortBy;
-import com.bitflaker.lucidsourcekit.data.records.SortEntry;
+import com.bitflaker.lucidsourcekit.databinding.FragmentMainJournalBinding;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class DreamJournalView extends Fragment {
-
-    private RecyclerView recyclerView;
-    private TextView noEntryFound;
-    private FloatingActionButton fabAdd, fabText, fabForms;
-    private Animation fabOpen, fabClose, rotateForward, rotateBackward;
-    private boolean isOpen = false;
-    private RecyclerViewAdapterDreamJournal recyclerViewAdapterDreamJournal = null;
     public ActivityResultLauncher<Intent> journalEditorActivityResultLauncher;
-    private ImageButton sortEntries, filterEntries, resetFilterEntries;
-    private int sortBy = 0;
-    private MainDatabase db;
+    private RecyclerViewAdapterDreamJournal recyclerViewAdapterDreamJournal = null;
+    private Animation fabOpen, fabClose, rotateForward, rotateBackward;
     private DreamJournalEntry.EntryType autoOpenJournalTypeCreator = null;
     private CompositeDisposable compositeDisposable;
+    private FragmentMainJournalBinding binding;
+    private MainDatabase db;
+    private boolean isOpen = false;
+    private int sortBy = 0;
 
     private final List<SortEntry> sortEntryValues = List.of(
             new SortEntry("timestamp - newest first", SortBy.Timestamp, true),
@@ -64,24 +57,17 @@ public class DreamJournalView extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setupViewResultLauncher();
-        return inflater.inflate(R.layout.fragment_main_journal, container, false);
+        binding = FragmentMainJournalBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         compositeDisposable = new CompositeDisposable();
-        getView().findViewById(R.id.ll_header).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
+        binding.llHeader.setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(getContext()));
 
         db = MainDatabase.getInstance(getContext());
-        fabAdd = getView().findViewById(R.id.btn_add_journal_entry);
-        fabText = getView().findViewById(R.id.fab_text);
-        fabForms = getView().findViewById(R.id.fab_forms);
-        sortEntries = getView().findViewById(R.id.btn_sort);
-        filterEntries = getView().findViewById(R.id.btn_filter);
-        resetFilterEntries = getView().findViewById(R.id.btn_filter_off);
-        noEntryFound = getView().findViewById(R.id.txt_no_entries);
-        recyclerView = getView().findViewById(R.id.recycler_view);
 
         fabOpen = AnimationUtils.loadAnimation(getContext(), R.anim.add_open);
         fabClose = AnimationUtils.loadAnimation(getContext(),R.anim.add_close);
@@ -109,20 +95,20 @@ public class DreamJournalView extends Fragment {
     }
 
     private void setBasics() {
-        noEntryFound.setText(Html.fromHtml("<span><big><big><strong>Uhh...</strong></big></big><br />" + getContext().getResources().getString(R.string.empty_dream_journal) + "</span>", Html.FROM_HTML_MODE_COMPACT));
-        recyclerView.setAdapter(recyclerViewAdapterDreamJournal);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.txtNoEntries.setText(Html.fromHtml("<span><big><big><strong>Uhh...</strong></big></big><br />" + getContext().getResources().getString(R.string.empty_dream_journal) + "</span>", Html.FROM_HTML_MODE_COMPACT));
+        binding.recyclerView.setAdapter(recyclerViewAdapterDreamJournal);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     private void setupResetFilterButton() {
-        resetFilterEntries.setOnClickListener(e -> {
-            resetFilterEntries.setVisibility(View.GONE);
+        binding.btnFilterOff.setOnClickListener(e -> {
+            binding.btnFilterOff.setVisibility(View.GONE);
             handleItemCount(recyclerViewAdapterDreamJournal.resetFilters());
         });
     }
 
     private void setupFilterButton() {
-        filterEntries.setOnClickListener(e -> {
+        binding.btnFilter.setOnClickListener(e -> {
             // TODO start loading animation
             compositeDisposable.add(db.getJournalEntryTagDao().getAll().subscribe((journalEntryTags, throwable) -> {
                 String[] availableTags = new String[journalEntryTags.size()];
@@ -134,10 +120,10 @@ public class DreamJournalView extends Fragment {
                     AppliedFilter af = fd.getFilters();
                     if(!AppliedFilter.isEmptyFilter(af)){
                         handleItemCount(recyclerViewAdapterDreamJournal.filter(af));
-                        resetFilterEntries.setVisibility(View.VISIBLE);
+                        binding.btnFilterOff.setVisibility(View.VISIBLE);
                     }
-                    else if (resetFilterEntries.getVisibility() == View.VISIBLE) {
-                        resetFilterEntries.setVisibility(View.GONE);
+                    else if (binding.btnFilterOff.getVisibility() == View.VISIBLE) {
+                        binding.btnFilterOff.setVisibility(View.GONE);
                         handleItemCount(recyclerViewAdapterDreamJournal.resetFilters());
                     }
                     fd.dismiss();
@@ -148,14 +134,14 @@ public class DreamJournalView extends Fragment {
     }
 
     private void setupSortButton() {
-        sortEntries.setOnClickListener(e -> {
+        binding.btnSort.setOnClickListener(e -> {
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog);
             builder.setTitle("Sort entries by");
             String[] entries = sortEntryValues.stream().map(SortEntry::sortText).toArray(String[]::new);
             builder.setSingleChoiceItems(entries, sortBy, (dialog, which) -> {
                 sortBy = which;
                 SortEntry sortEntry = sortEntryValues.get(sortBy);
-                recyclerViewAdapterDreamJournal.submitSortedEntries(sortEntry.sortBy(), sortEntry.isDescending(), () -> recyclerView.scrollToPosition(0));
+                recyclerViewAdapterDreamJournal.submitSortedEntries(sortEntry.sortBy(), sortEntry.isDescending(), () -> binding.recyclerView.scrollToPosition(0));
                 dialog.dismiss();
             });
             AlertDialog dialog = builder.create();
@@ -164,13 +150,13 @@ public class DreamJournalView extends Fragment {
     }
 
     private void setupFAB() {
-        fabAdd.setOnClickListener(e -> animateFab());
-        fabText.setOnClickListener(e -> showJournalCreator(DreamJournalEntry.EntryType.PLAIN_TEXT));
-        fabForms.setOnClickListener(e -> showJournalCreator(DreamJournalEntry.EntryType.FORMS_TEXT));
+        binding.btnAddJournalEntry.setOnClickListener(e -> animateFab());
+        binding.fabText.setOnClickListener(e -> showJournalCreator(DreamJournalEntry.EntryType.PLAIN_TEXT));
+        binding.fabForms.setOnClickListener(e -> showJournalCreator(DreamJournalEntry.EntryType.FORMS_TEXT));
     }
 
     private void handleItemCount(int itemCount) {
-        noEntryFound.setVisibility(itemCount == 0 ? View.VISIBLE : View.GONE);
+        binding.txtNoEntries.setVisibility(itemCount == 0 ? View.VISIBLE : View.GONE);
     }
 
     public void showJournalCreator(DreamJournalEntry.EntryType type) {
@@ -187,25 +173,24 @@ public class DreamJournalView extends Fragment {
         @ColorInt int colorOpenBackground = Tools.getAttrColor(R.attr.colorSurfaceContainerHigh, getContext().getTheme());
         @ColorInt int colorOnOpenBackground = Tools.getAttrColor(R.attr.colorOnSurface, getContext().getTheme());
 
-        if (fabAdd == null) { return; }
         if (isOpen) {
-            fabAdd.startAnimation(rotateForward);
-            fabText.startAnimation(fabClose);
-            fabForms.startAnimation(fabClose);
-            Tools.animateBackgroundTint(fabAdd, colorOpenBackground, colorClosedBackground, 300);
-            Tools.animateImageTint(fabAdd, colorOnOpenBackground, colorOnClosedBackground, 300);
-            fabText.setClickable(false);
-            fabForms.setClickable(false);
+            binding.btnAddJournalEntry.startAnimation(rotateForward);
+            binding.fabText.startAnimation(fabClose);
+            binding.fabForms.startAnimation(fabClose);
+            Tools.animateBackgroundTint(binding.btnAddJournalEntry, colorOpenBackground, colorClosedBackground, 300);
+            Tools.animateImageTint(binding.btnAddJournalEntry, colorOnOpenBackground, colorOnClosedBackground, 300);
+            binding.fabText.setClickable(false);
+            binding.fabForms.setClickable(false);
             isOpen=false;
         }
         else {
-            fabAdd.startAnimation(rotateBackward);
-            fabText.startAnimation(fabOpen);
-            fabForms.startAnimation(fabOpen);
-            Tools.animateBackgroundTint(fabAdd, colorClosedBackground, colorOpenBackground, 300);
-            Tools.animateImageTint(fabAdd, colorOnClosedBackground, colorOnOpenBackground, 300);
-            fabText.setClickable(true);
-            fabForms.setClickable(true);
+            binding.btnAddJournalEntry.startAnimation(rotateBackward);
+            binding.fabText.startAnimation(fabOpen);
+            binding.fabForms.startAnimation(fabOpen);
+            Tools.animateBackgroundTint(binding.btnAddJournalEntry, colorClosedBackground, colorOpenBackground, 300);
+            Tools.animateImageTint(binding.btnAddJournalEntry, colorOnClosedBackground, colorOnOpenBackground, 300);
+            binding.fabText.setClickable(true);
+            binding.fabForms.setClickable(true);
             isOpen=true;
         }
     }
@@ -228,7 +213,7 @@ public class DreamJournalView extends Fragment {
         DreamJournalEntry entry = db.getJournalEntryDao().getEntryDataById(entryId).blockingGet();
         recyclerViewAdapterDreamJournal.updateDataForEntry(entry, insertedIndex -> {
             if (insertedIndex != -1) {
-                recyclerView.scrollToPosition(insertedIndex);
+                binding.recyclerView.scrollToPosition(insertedIndex);
             }
         });
     }

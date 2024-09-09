@@ -8,12 +8,12 @@ import android.view.Window;
 
 import androidx.annotation.NonNull;
 
-import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
-import com.google.android.material.button.MaterialButton;
+import com.bitflaker.lucidsourcekit.databinding.DialogJournalTypeBinding;
 
 public class DreamJournalEntryTypeDialog extends Dialog implements View.OnClickListener {
     private OnEntryTypeSelected mListener;
+    private DialogJournalTypeBinding binding;
 
     public DreamJournalEntryTypeDialog(@NonNull Context context) {
         super(context);
@@ -23,16 +23,15 @@ public class DreamJournalEntryTypeDialog extends Dialog implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_journal_type);
-        MaterialButton textEntry = findViewById(R.id.btn_text_entry);
-        MaterialButton formsEntry = findViewById(R.id.btn_forms_entry);
-        textEntry.setOnClickListener(e -> {
+        binding = DialogJournalTypeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        binding.btnTextEntry.setOnClickListener(e -> {
             if (mListener != null) {
                 mListener.onEvent(DreamJournalEntry.EntryType.PLAIN_TEXT);
             }
             dismiss();
         });
-        formsEntry.setOnClickListener(e -> {
+        binding.btnFormsEntry.setOnClickListener(e -> {
             if (mListener != null) {
                 mListener.onEvent(DreamJournalEntry.EntryType.FORMS_TEXT);
             }

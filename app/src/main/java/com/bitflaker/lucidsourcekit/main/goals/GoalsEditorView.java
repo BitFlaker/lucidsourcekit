@@ -3,85 +3,77 @@ package com.bitflaker.lucidsourcekit.main.goals;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
+import com.bitflaker.lucidsourcekit.databinding.ActivityGoalsEditorBinding;
+import com.bitflaker.lucidsourcekit.databinding.SheetGoalsEditorBinding;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.slider.Slider;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+
 public class GoalsEditorView extends AppCompatActivity {
-    private RecyclerView editGoals;
-    private FloatingActionButton addGoal;
+    private boolean isInSelectionMode;
     private RecyclerViewAdapterEditGoals editGoalsAdapter;
     private MainDatabase db;
-    private boolean isInSelectionMode;
+    private ActivityGoalsEditorBinding binding;
+    private CompositeDisposable compositeDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_goals_editor);
-        Tools.makeStatusBarTransparent(GoalsEditorView.this);
-        findViewById(R.id.txt_edit_goals_heading).setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(GoalsEditorView.this));
-        db = MainDatabase.getInstance(this);
+        binding = ActivityGoalsEditorBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        editGoals = findViewById(R.id.rcv_edit_goals);
-        addGoal = findViewById(R.id.btn_add_goal);
+        compositeDisposable = new CompositeDisposable();
+        Tools.makeStatusBarTransparent(GoalsEditorView.this);
+        binding.txtEditGoalsHeading.setLayoutParams(Tools.getRelativeLayoutParamsTopStatusbar(GoalsEditorView.this));
+        db = MainDatabase.getInstance(this);
 
         setupRecycleView();
 
-        addGoal.setOnClickListener(e -> {
+        binding.btnAddGoal.setOnClickListener(e -> {
             if(!isInSelectionMode) {
                 final BottomSheetDialog addGoalSheet = new BottomSheetDialog(GoalsEditorView.this, R.style.BottomSheetDialogStyle);
-                addGoalSheet.setContentView(R.layout.sheet_goals_editor);
-                MaterialButton deleteButton = addGoalSheet.findViewById(R.id.btn_delete_goal);
-                MaterialButton saveButton = addGoalSheet.findViewById(R.id.btn_save_goal);
-                EditText goalDescription = addGoalSheet.findViewById(R.id.txt_goal_description);
-                Slider goalDifficultySlider = addGoalSheet.findViewById(R.id.sld_goal_difficulty);
-                ImageButton toggleLockDifficulty = addGoalSheet.findViewById(R.id.btn_toggle_lock_difficulty);
-                TextView goalEditorTitle = addGoalSheet.findViewById(R.id.txt_goal_editor_title);
-                ImageButton goalInfo = addGoalSheet.findViewById(R.id.btn_show_goal_details);
+                SheetGoalsEditorBinding sheetBinding = SheetGoalsEditorBinding.inflate(getLayoutInflater());
+                addGoalSheet.setContentView(sheetBinding.getRoot());
                 AtomicBoolean isLocked = new AtomicBoolean(false);
 
-                changeSliderColor(goalDifficultySlider, goalDifficultySlider.getValue(), false);
-                goalDifficultySlider.addOnChangeListener(this::changeSliderColor);
-                goalDifficultySlider.setValue(1);
-                goalInfo.setVisibility(View.GONE);
-                deleteButton.setVisibility(View.GONE);
-                goalEditorTitle.setText("Add goal");  // TODO extract string resource
-                setLockIconAccordingly(toggleLockDifficulty, isLocked);
+                changeSliderColor(sheetBinding.sldGoalDifficulty, sheetBinding.sldGoalDifficulty.getValue(), false);
+                sheetBinding.sldGoalDifficulty.addOnChangeListener(this::changeSliderColor);
+                sheetBinding.sldGoalDifficulty.setValue(1);
+                sheetBinding.btnShowGoalDetails.setVisibility(View.GONE);
+                sheetBinding.btnDeleteGoal.setVisibility(View.GONE);
+                sheetBinding.txtGoalEditorTitle.setText("Add goal");  // TODO extract string resource
+                setLockIconAccordingly(sheetBinding.btnToggleLockDifficulty, isLocked);
 
-                toggleLockDifficulty.setOnClickListener(view -> {
+                sheetBinding.btnToggleLockDifficulty.setOnClickListener(view -> {
                     isLocked.set(!isLocked.get());
-                    setLockIconAccordingly(toggleLockDifficulty, isLocked);
+                    setLockIconAccordingly(sheetBinding.btnToggleLockDifficulty, isLocked);
                 });
 
-                saveButton.setOnClickListener(view -> {
-                    if(goalDescription.getText().toString().length() == 0) { return; }
-                    Goal newGoal = new Goal(goalDescription.getText().toString(), goalDifficultySlider.getValue(), isLocked.get());
-                    db.getGoalDao().insert(newGoal).subscribe(() -> {
-                        goalDifficultySlider.clearOnChangeListeners();
+                sheetBinding.btnSaveGoal.setOnClickListener(view -> {
+                    if(sheetBinding.txtGoalDescription.getText().toString().isEmpty()) { return; }
+                    Goal newGoal = new Goal(sheetBinding.txtGoalDescription.getText().toString(), sheetBinding.sldGoalDifficulty.getValue(), isLocked.get());
+                    compositeDisposable.add(db.getGoalDao().insert(newGoal).subscribe(() -> {
+                        sheetBinding.sldGoalDifficulty.clearOnChangeListeners();
                         addGoalSheet.dismiss();
-                    });
+                    }));
                 });
 
                 addGoalSheet.show();
@@ -101,7 +93,7 @@ public class GoalsEditorView extends AppCompatActivity {
 
     private void setupRecycleView() {
         // TODO make flowable so added/changes goals are reloaded
-        db.getGoalDao().getAll().subscribe((goals) -> {
+        compositeDisposable.add(db.getGoalDao().getAll().subscribe((goals) -> {
             runOnUiThread(() -> {
                 if(editGoalsAdapter == null) {
                     setupEditGoalsAdapter(goals);
@@ -110,42 +102,35 @@ public class GoalsEditorView extends AppCompatActivity {
                     editGoalsAdapter.setEntries(goals);
                 }
             });
-        });
+        }));
     }
 
     private void setupEditGoalsAdapter(java.util.List<Goal> goals) {
         editGoalsAdapter = new RecyclerViewAdapterEditGoals(GoalsEditorView.this, goals);
-        editGoals.setAdapter(editGoalsAdapter);
-        editGoals.setLayoutManager(new LinearLayoutManager(GoalsEditorView.this));
+        binding.rcvEditGoals.setAdapter(editGoalsAdapter);
+        binding.rcvEditGoals.setLayoutManager(new LinearLayoutManager(GoalsEditorView.this));
         // TODO: animate change
         editGoalsAdapter.setOnMultiselectEntered(() -> {
-            addGoal.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorErrorContainer, getTheme()));
-            addGoal.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_delete_24, getTheme()));
-            addGoal.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnErrorContainer, getTheme()));
+            binding.btnAddGoal.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorErrorContainer, getTheme()));
+            binding.btnAddGoal.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_delete_24, getTheme()));
+            binding.btnAddGoal.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnErrorContainer, getTheme()));
             isInSelectionMode = true;
         });
         editGoalsAdapter.setOnMultiselectExited(() -> {
-            addGoal.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimaryContainer, getTheme()));
-            addGoal.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_add_24, getTheme()));
-            addGoal.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimaryContainer, getTheme()));
+            binding.btnAddGoal.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimaryContainer, getTheme()));
+            binding.btnAddGoal.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_round_add_24, getTheme()));
+            binding.btnAddGoal.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimaryContainer, getTheme()));
             isInSelectionMode = false;
         });
         editGoalsAdapter.setOnEntryClickedListener((goal, position) -> {
             final BottomSheetDialog editGoalSheet = new BottomSheetDialog(GoalsEditorView.this, R.style.BottomSheetDialogStyle);
-            editGoalSheet.setContentView(R.layout.sheet_goals_editor);
-            MaterialButton deleteButton = editGoalSheet.findViewById(R.id.btn_delete_goal);
-            MaterialButton saveButton = editGoalSheet.findViewById(R.id.btn_save_goal);
-            EditText goalDescription = editGoalSheet.findViewById(R.id.txt_goal_description);
-            Slider goalDifficultySlider = editGoalSheet.findViewById(R.id.sld_goal_difficulty);
-            ImageButton toggleLockDifficulty = editGoalSheet.findViewById(R.id.btn_toggle_lock_difficulty);
-            TextView goalEditorTitle = editGoalSheet.findViewById(R.id.txt_goal_editor_title);
-            ImageButton goalInfo = editGoalSheet.findViewById(R.id.btn_show_goal_details);
-//            TextView successRateInfo = editGoalSheet.findViewById(R.id.txt_success_rate_info);
+            SheetGoalsEditorBinding sheetBinding = SheetGoalsEditorBinding.inflate(getLayoutInflater());
+            editGoalSheet.setContentView(sheetBinding.getRoot());
             AtomicBoolean isLocked = new AtomicBoolean(goal.difficultyLocked);
 
             // TODO: check if this goal was on schedule at all
-            goalInfo.setVisibility(View.VISIBLE);
-            goalInfo.setOnClickListener(e -> {
+            sheetBinding.btnShowGoalDetails.setVisibility(View.VISIBLE);
+            sheetBinding.btnShowGoalDetails.setOnClickListener(e -> {
                 db.getShuffleHasGoalDao().getAchieveStatsOfGoal(goal.goalId).subscribe((goalStats, throwable) -> {
                     String message;
                     if(goalStats.totalCount == 0) {
@@ -163,36 +148,34 @@ public class GoalsEditorView extends AppCompatActivity {
                 }).dispose();
             });
 
-            goalEditorTitle.setText("Edit goal");
-            goalDescription.setText(goal.description);
-            changeSliderColor(goalDifficultySlider, goalDifficultySlider.getValue(), false);
-            goalDifficultySlider.addOnChangeListener(this::changeSliderColor);
-            goalDifficultySlider.setValue(goal.difficulty);
-            setLockIconAccordingly(toggleLockDifficulty, isLocked);
+            sheetBinding.txtGoalEditorTitle.setText("Edit goal");
+            sheetBinding.txtGoalDescription.setText(goal.description);
+            changeSliderColor(sheetBinding.sldGoalDifficulty, sheetBinding.sldGoalDifficulty.getValue(), false);
+            sheetBinding.sldGoalDifficulty.addOnChangeListener(this::changeSliderColor);
+            sheetBinding.sldGoalDifficulty.setValue(goal.difficulty);
+            setLockIconAccordingly(sheetBinding.btnToggleLockDifficulty, isLocked);
 
-            toggleLockDifficulty.setOnClickListener(view -> {
+            sheetBinding.btnToggleLockDifficulty.setOnClickListener(view -> {
                 isLocked.set(!isLocked.get());
-                setLockIconAccordingly(toggleLockDifficulty, isLocked);
+                setLockIconAccordingly(sheetBinding.btnToggleLockDifficulty, isLocked);
             });
 
-            saveButton.setOnClickListener(view -> {
-                if (goalDescription.getText().toString().length() == 0) {
+            sheetBinding.btnSaveGoal.setOnClickListener(view -> {
+                if (sheetBinding.txtGoalDescription.getText().toString().isEmpty()) {
                     return;
                 }
-                goal.description = goalDescription.getText().toString();
-                goal.difficulty = goalDifficultySlider.getValue();
+                goal.description = sheetBinding.txtGoalDescription.getText().toString();
+                goal.difficulty = sheetBinding.sldGoalDifficulty.getValue();
                 goal.difficultyLocked = isLocked.get();
-                db.getGoalDao().update(goal).subscribe(() -> {
-                    goalDifficultySlider.clearOnChangeListeners();
+                compositeDisposable.add(db.getGoalDao().update(goal).subscribe(() -> {
+                    sheetBinding.sldGoalDifficulty.clearOnChangeListeners();
                     editGoalSheet.dismiss();
-                });
+                }));
             });
 
-            deleteButton.setOnClickListener(view -> {
+            sheetBinding.btnDeleteGoal.setOnClickListener(view -> {
                 new MaterialAlertDialogBuilder(GoalsEditorView.this, R.style.Theme_LucidSourceKit_ThemedDialog).setTitle("Delete goal").setMessage("Do you really want to delete this goal?") // TODO: extract string resources
-                        .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-                            db.getGoalDao().delete(goal).subscribe(editGoalSheet::dismiss);
-                        })
+                        .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> compositeDisposable.add(db.getGoalDao().delete(goal).subscribe(editGoalSheet::dismiss)))
                         .setNegativeButton(getResources().getString(R.string.no), null)
                         .show();
             });
@@ -227,5 +210,11 @@ public class GoalsEditorView extends AppCompatActivity {
         slider.setTrackInactiveTintList(inactiveTrackColor);
         slider.setTrackActiveTintList(activeTrackColor);
         slider.setThumbTintList(activeTrackColor);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        compositeDisposable.dispose();
     }
 }

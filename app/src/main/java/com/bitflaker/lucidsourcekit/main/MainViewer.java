@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -19,13 +18,14 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
-import com.bitflaker.lucidsourcekit.utils.Tools;
+import com.bitflaker.lucidsourcekit.databinding.ActivityMainViewerBinding;
 import com.bitflaker.lucidsourcekit.main.binauralbeats.BinauralBeatsView;
 import com.bitflaker.lucidsourcekit.main.dreamjournal.DreamJournalView;
 import com.bitflaker.lucidsourcekit.main.goals.GoalsView;
 import com.bitflaker.lucidsourcekit.main.overview.MainOverviewView;
 import com.bitflaker.lucidsourcekit.main.statistics.StatisticsView;
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter;
+import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.google.android.material.tabs.TabLayout;
 
@@ -39,9 +39,6 @@ public class MainViewer extends AppCompatActivity {
     private ActivityResultLauncher<Intent> backupSaveDialogLauncher;
     private ActivityResultLauncher<Intent> backupLoadDialogLauncher;
 
-    private TabLayout tabLayout;
-    private ViewPager2 viewPager2;
-    private ImageButton moreOptions;
     private ViewPagerAdapter vpAdapter;
 
     private MainOverviewView vwOverview;
@@ -50,11 +47,13 @@ public class MainViewer extends AppCompatActivity {
     private GoalsView vwPageGoals;
     private BinauralBeatsView vwPageBinauralBeats;
 
+    private ActivityMainViewerBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_viewer);
+        binding = ActivityMainViewerBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         Tools.makeStatusBarTransparent(this);
         initVars();
 
@@ -66,13 +65,13 @@ public class MainViewer extends AppCompatActivity {
         vpAdapter.addFragment(vwPageGoals, PAGE_GOALS);
         vpAdapter.addFragment(vwPageBinauralBeats, PAGE_BINAURAL_BEATS);
         vpAdapter.addFragment(vwPageStats, PAGE_STATS);
-        viewPager2.setAdapter(vpAdapter);
-        viewPager2.setOffscreenPageLimit(6);
+        binding.viewpager.setAdapter(vpAdapter);
+        binding.viewpager.setOffscreenPageLimit(6);
 
-        tabLayout.addOnTabSelectedListener(tabSelected());
-        viewPager2.registerOnPageChangeCallback(changeTab());
-        moreOptions.setOnClickListener(e -> {
-            androidx.appcompat.widget.PopupMenu popup = new androidx.appcompat.widget.PopupMenu(new ContextThemeWrapper(this, R.style.Theme_LucidSourceKit_PopupMenu), moreOptions);
+        binding.tablayout.addOnTabSelectedListener(tabSelected());
+        binding.viewpager.registerOnPageChangeCallback(changeTab());
+        binding.btnMoreOptions.setOnClickListener(e -> {
+            androidx.appcompat.widget.PopupMenu popup = new androidx.appcompat.widget.PopupMenu(new ContextThemeWrapper(this, R.style.Theme_LucidSourceKit_PopupMenu), binding.btnMoreOptions);
             popup.getMenuInflater().inflate(R.menu.more_options_popup_menu, popup.getMenu());
             popup.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.itm_third_party) {
@@ -99,8 +98,8 @@ public class MainViewer extends AppCompatActivity {
         if(getIntent().hasExtra("INITIAL_PAGE")) {
             String title = getIntent().getStringExtra("INITIAL_PAGE");
             int position = vpAdapter.getTabIndex(title);
-            tabLayout.selectTab(tabLayout.getTabAt(position));
-            viewPager2.setCurrentItem(position);
+            binding.tablayout.selectTab(binding.tablayout.getTabAt(position));
+            binding.viewpager.setCurrentItem(position);
             if(title != null && title.equalsIgnoreCase(PAGE_LOGGING)) {
                 int ordinal = getIntent().getIntExtra("DREAM_JOURNAL_TYPE", -1);
                 if(ordinal >= 0 && ordinal < DreamJournalEntry.EntryType.values().length) {
@@ -155,7 +154,7 @@ public class MainViewer extends AppCompatActivity {
         return new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                tabLayout.selectTab(tabLayout.getTabAt(position));
+                binding.tablayout.selectTab(binding.tablayout.getTabAt(position));
             }
         };
     }
@@ -165,7 +164,7 @@ public class MainViewer extends AppCompatActivity {
         return new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager2.setCurrentItem(tab.getPosition());
+                binding.viewpager.setCurrentItem(tab.getPosition());
                 vwLogging.pageChanged();
             }
 
@@ -178,10 +177,6 @@ public class MainViewer extends AppCompatActivity {
     }
 
     private void initVars() {
-        tabLayout = findViewById(R.id.tablayout);
-        viewPager2 = findViewById(R.id.viewpager);
-        moreOptions = findViewById(R.id.btn_more_options);
-
         vpAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
         vwOverview = new MainOverviewView();
         vwLogging = new DreamJournalView();

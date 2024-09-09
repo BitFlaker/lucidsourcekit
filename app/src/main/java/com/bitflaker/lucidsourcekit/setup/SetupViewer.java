@@ -6,7 +6,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -15,12 +14,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.data.enums.AuthTypes;
-import com.bitflaker.lucidsourcekit.utils.Crypt;
-import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys;
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager;
-import com.google.android.material.button.MaterialButton;
+import com.bitflaker.lucidsourcekit.data.enums.AuthTypes;
+import com.bitflaker.lucidsourcekit.databinding.ActivitySetupViewerBinding;
+import com.bitflaker.lucidsourcekit.utils.Crypt;
+import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.material.tabs.TabLayout;
 
 import java.security.NoSuchAlgorithmException;
@@ -30,10 +29,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SetupViewer extends AppCompatActivity {
-
-    private TabLayout tabLayout;
-    private ViewPager2 viewPager2;
-    private LinearLayout pageDotContainer;
     private final ArrayList<ImageView> pageDots = new ArrayList<>();
     private AuthTypes selectedAuthType = AuthTypes.Pin;
 
@@ -56,18 +51,14 @@ public class SetupViewer extends AppCompatActivity {
     private final AtomicReference<TabLayout.Tab> tabPrivacy = new AtomicReference<>();
     private final AtomicReference<TabLayout.Tab> tabAuthData = new AtomicReference<>();
 
+    private ActivitySetupViewerBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setup_viewer);
+        binding = ActivitySetupViewerBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         Tools.makeStatusBarTransparent(this);
-
-        tabLayout = findViewById(R.id.tablayout);
-        viewPager2 = findViewById(R.id.viewpager);
-        MaterialButton btnNext = findViewById(R.id.btn_next);
-        pageDotContainer = findViewById(R.id.page_dot_container);
 
         setPrivacy.setOnAuthTypeChangedListener(authType -> {
             selectedAuthType = authType;
@@ -80,33 +71,35 @@ public class SetupViewer extends AppCompatActivity {
         vpAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
         vpAdapter.addFragment(setLang, pageLang);
         vpAdapter.addFragment(setConsent, pageConsent);
-        viewPager2.setAdapter(vpAdapter);
+        binding.viewpager.setAdapter(vpAdapter);
 
-        tabLayout.addTab(tabLayout.newTab().setText(pageLang));
-        tabLayout.addTab(tabLayout.newTab().setText(pageConsent));
+        binding.tablayout.addTab(binding.tablayout.newTab().setText(pageLang));
+        binding.tablayout.addTab(binding.tablayout.newTab().setText(pageConsent));
 
         addProgressDots();
 
-        tabLayout.addOnTabSelectedListener(tabSelected());
-        viewPager2.registerOnPageChangeCallback(changeTab());
-        btnNext.setOnClickListener(this::progressToNextPage);
+        binding.tablayout.addOnTabSelectedListener(tabSelected());
+        binding.viewpager.registerOnPageChangeCallback(changeTab());
+        binding.btnNext.setOnClickListener(this::progressToNextPage);
     }
 
     private void progressToNextPage(View view) {
         // Invalid pages
-        if (tabLayout.getSelectedTabPosition() < 0 || tabLayout.getSelectedTabPosition() >= vpAdapter.getItemCount()) {
-            Log.e("SetupViewer", "Invalid tab position \"" + tabLayout.getSelectedTabPosition() + "\" on item count \"" + vpAdapter.getItemCount() + "\"");
+        if (binding.tablayout.getSelectedTabPosition() < 0 || binding.tablayout.getSelectedTabPosition() >= vpAdapter.getItemCount()) {
+            Log.e("SetupViewer", "Invalid tab position \"" + binding.tablayout.getSelectedTabPosition() + "\" on item count \"" + vpAdapter.getItemCount() + "\"");
             return;
         }
 
-        // Handle every page except the last one
-        if (tabLayout.getSelectedTabPosition() + 1 < vpAdapter.getItemCount()) {
-            tabLayout.selectTab(tabLayout.getTabAt(tabLayout.getSelectedTabPosition() + 1));
-            return;
+        // Handle every page except the AuthData page
+        if (!vpAdapter.isCurrentPage(pageAuthData, binding.tablayout.getSelectedTabPosition())) {
+            int nextPagePosition = binding.tablayout.getSelectedTabPosition() + 1;
+            if (nextPagePosition < vpAdapter.getItemCount()) {
+                binding.tablayout.selectTab(binding.tablayout.getTabAt(nextPagePosition));
+            }
         }
-
-        // Handle the last page
-        handleAuthenticationPage();
+        else {
+            handleAuthenticationPage();
+        }
     }
 
     private void handleAuthenticationPage() {
@@ -128,7 +121,7 @@ public class SetupViewer extends AppCompatActivity {
     }
 
     private void storePIN() throws NoSuchAlgorithmException {
-        if (setAuthData.getPin().length() == 0) {
+        if (setAuthData.getPin().isEmpty()) {
             Toast.makeText(SetupViewer.this, getResources().getString(R.string.pin_too_short), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -142,7 +135,7 @@ public class SetupViewer extends AppCompatActivity {
     }
 
     private void storePassword() throws NoSuchAlgorithmException, InvalidKeySpecException {
-        if (setAuthData.getPassword().length() == 0) {
+        if (setAuthData.getPassword().isEmpty()) {
             Toast.makeText(SetupViewer.this, getResources().getString(R.string.password_too_short), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -160,7 +153,7 @@ public class SetupViewer extends AppCompatActivity {
         return new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                tabLayout.selectTab(tabLayout.getTabAt(position));
+                binding.tablayout.selectTab(binding.tablayout.getTabAt(position));
             }
         };
     }
@@ -170,16 +163,16 @@ public class SetupViewer extends AppCompatActivity {
         return new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager2.setCurrentItem(tab.getPosition());
+                binding.viewpager.setCurrentItem(tab.getPosition());
                 pageDots.get(tab.getPosition()).setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimary, getTheme()));
 
-                if (tabLayout.getSelectedTabPosition() + 1 == pageCount) {
-                    ((MaterialButton) findViewById(R.id.btn_next)).setText(R.string.setup_next_finish);
-                    ((MaterialButton) findViewById(R.id.btn_next)).setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                if (binding.tablayout.getSelectedTabPosition() + 1 == pageCount) {
+                    binding.btnNext.setText(R.string.setup_next_finish);
+                    binding.btnNext.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 }
                 else {
-                    ((MaterialButton) findViewById(R.id.btn_next)).setText(R.string.setup_next);
-                    ((MaterialButton) findViewById(R.id.btn_next)).setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_arrow_forward_24, 0);
+                    binding.btnNext.setText(R.string.setup_next);
+                    binding.btnNext.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_arrow_forward_24, 0);
                 }
             }
 
@@ -201,7 +194,7 @@ public class SetupViewer extends AppCompatActivity {
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Tools.dpToPx(this, 8), Tools.dpToPx(this, 8));
             lp.setMargins(Tools.dpToPx(this, 2), 0, Tools.dpToPx(this, 2), 0);
             dotPage.setBackgroundTintList(Tools.getAttrColorStateList(i == 0 ? R.attr.colorPrimary : R.attr.colorSurfaceContainerLow, getTheme()));
-            pageDotContainer.addView(dotPage, lp);
+            binding.pageDotContainer.addView(dotPage, lp);
             pageDots.add(dotPage);
         }
     }
@@ -212,13 +205,13 @@ public class SetupViewer extends AppCompatActivity {
             vpAdapter.addFragment(setPrivacy, pagePrivacy);
             vpAdapter.addFragment(setAuthData, pageAuthData);
 
-            tabOpenSource.set(tabLayout.newTab().setText(pageOpenSource));
-            tabPrivacy.set(tabLayout.newTab().setText(pagePrivacy));
-            tabAuthData.set(tabLayout.newTab().setText(pageAuthData));
+            tabOpenSource.set(binding.tablayout.newTab().setText(pageOpenSource));
+            tabPrivacy.set(binding.tablayout.newTab().setText(pagePrivacy));
+            tabAuthData.set(binding.tablayout.newTab().setText(pageAuthData));
 
-            tabLayout.addTab(tabOpenSource.get());
-            tabLayout.addTab(tabPrivacy.get());
-            tabLayout.addTab(tabAuthData.get());
+            binding.tablayout.addTab(tabOpenSource.get());
+            binding.tablayout.addTab(tabPrivacy.get());
+            binding.tablayout.addTab(tabAuthData.get());
 
             consented.set(true);
         }
@@ -227,16 +220,16 @@ public class SetupViewer extends AppCompatActivity {
             vpAdapter.removeFragment(setPrivacy, pagePrivacy);
             vpAdapter.removeFragment(setAuthData, pageAuthData);
 
-            tabLayout.removeTab(tabOpenSource.get());
-            tabLayout.removeTab(tabPrivacy.get());
-            tabLayout.removeTab(tabAuthData.get());
+            binding.tablayout.removeTab(tabOpenSource.get());
+            binding.tablayout.removeTab(tabPrivacy.get());
+            binding.tablayout.removeTab(tabAuthData.get());
 
             consented.set(false);
         }
     }
 
     private void languageChanged(String langCode) {
-        ((MaterialButton) findViewById(R.id.btn_next)).setText(getResources().getString(R.string.setup_next));
+        binding.btnNext.setText(getResources().getString(R.string.setup_next));
         ((SetupLanguageView) vpAdapter.getFragment(pageLang)).updateLanguages();
         ((SetupConsentView) vpAdapter.getFragment(pageConsent)).updateLanguages();
         if (consented.get()) {

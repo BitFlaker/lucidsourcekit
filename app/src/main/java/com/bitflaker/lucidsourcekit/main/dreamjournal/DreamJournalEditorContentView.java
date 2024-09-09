@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -40,6 +41,10 @@ import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryTag;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
+import com.bitflaker.lucidsourcekit.databinding.FragmentJournalEditorContentBinding;
+import com.bitflaker.lucidsourcekit.databinding.SheetJournalRecordingBinding;
+import com.bitflaker.lucidsourcekit.databinding.SheetJournalTagsEditorBinding;
+import com.bitflaker.lucidsourcekit.databinding.SheetJournalTimestampBinding;
 import com.bitflaker.lucidsourcekit.utils.RecordingObjectTools;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.flexbox.FlexboxLayout;
@@ -61,10 +66,6 @@ public class DreamJournalEditorContentView extends Fragment {
     public static final int REQUEST_AUDIO_PERMISSION_CODE = 1;
     private OnContinueButtonClicked mContinueButtonClicked;
     private OnCloseButtonClicked mCloseButtonClicked;
-    private EditText title, description;
-    private FlexboxLayout formsContainer;
-    private MaterialButton continueButton, addRecording, closeEditor, addTags;
-    private MaterialButton dateTime;
     private ImageButton currentPlayingImageButton;
     private boolean isRecordingRunning;
     private MediaRecorder mRecorder;
@@ -77,32 +78,25 @@ public class DreamJournalEditorContentView extends Fragment {
     private DreamJournalEntry entry;
     private CompositeDisposable compositeDisposable;
     private RecordingObjectTools rot;
+    private FragmentJournalEditorContentBinding binding;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_journal_editor_content, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentJournalEditorContentBinding.inflate(inflater, container, false);
 
         rot = new RecordingObjectTools(getContext());
         db = MainDatabase.getInstance(getContext());
         compositeDisposable = new CompositeDisposable();
-        title = view.findViewById(R.id.txt_dj_title_dream);
-        description = view.findViewById(R.id.txt_dj_description_dream);
-        continueButton = view.findViewById(R.id.btn_dj_continue_to_ratings);
-        dateTime = view.findViewById(R.id.btn_dj_date);
-        addRecording = view.findViewById(R.id.btn_dj_add_recording);
-        addTags = view.findViewById(R.id.btn_dj_add_tag);
-        formsContainer = view.findViewById(R.id.flx_dj_form_dream);
-        closeEditor = view.findViewById(R.id.btn_dj_close_editor);
 
         DateFormat mediumDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
         DateFormat shortDateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
         DateFormat shortTimeFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
 
-        dateTime.setText(shortDateTimeFormat.format(Tools.calendarFromMillis(entry.journalEntry.timeStamp).getTime()));
+        binding.btnDjDate.setText(shortDateTimeFormat.format(Tools.calendarFromMillis(entry.journalEntry.timeStamp).getTime()));
 
         if(entryType == DreamJournalEntry.EntryType.FORMS_TEXT) {
-            formsContainer.setVisibility(View.VISIBLE);
-            description.setVisibility(View.GONE);
+            binding.flxDjFormDream.setVisibility(View.VISIBLE);
+            binding.txtDjDescriptionDream.setVisibility(View.GONE);
             setupForms();
         }
 
@@ -112,8 +106,8 @@ public class DreamJournalEditorContentView extends Fragment {
         setupRecordingsEditor();
         setupContinueButton();
 
-        title.setText(entry.journalEntry.title);
-        title.addTextChangedListener(new TextWatcher() {
+        binding.txtDjTitleDream.setText(entry.journalEntry.title);
+        binding.txtDjTitleDream.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override public void afterTextChanged(Editable s) { }
 
@@ -122,8 +116,8 @@ public class DreamJournalEditorContentView extends Fragment {
                 entry.journalEntry.title = s.toString();
             }
         });
-        description.setText(entry.journalEntry.description);
-        description.addTextChangedListener(new TextWatcher() {
+        binding.txtDjDescriptionDream.setText(entry.journalEntry.description);
+        binding.txtDjDescriptionDream.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override public void afterTextChanged(Editable s) { }
 
@@ -134,12 +128,12 @@ public class DreamJournalEditorContentView extends Fragment {
         });
         if(TextUtils.isEmpty(entry.journalEntry.title)) {
             new Handler().postDelayed(() -> {
-                title.requestFocus();
+                binding.txtDjTitleDream.requestFocus();
                 InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                mgr.showSoftInput(title, InputMethodManager.SHOW_IMPLICIT);
+                mgr.showSoftInput(binding.txtDjTitleDream, InputMethodManager.SHOW_IMPLICIT);
             }, 100);
         }
-        return view;
+        return binding.getRoot();
     }
 
     private void setupForms() {
@@ -151,10 +145,10 @@ public class DreamJournalEditorContentView extends Fragment {
                 sentences = separateAtSentenceEnd(formsTemplateSplit[i]);
             }
             for (String sentence : sentences) {
-                formsContainer.addView(generateTextView(sentence));
+                binding.flxDjFormDream.addView(generateTextView(sentence));
             }
             if(i < formsTemplateSplit.length - 1) {
-                formsContainer.addView(generateEditText());
+                binding.flxDjFormDream.addView(generateEditText());
             }
         }
     }
@@ -231,9 +225,9 @@ public class DreamJournalEditorContentView extends Fragment {
 
     public String getFormResult() {
         StringBuilder sb = new StringBuilder();
-        int count = formsContainer.getChildCount();
+        int count = binding.flxDjFormDream.getChildCount();
         for (int i = 0; i < count; i++) {
-            View view = formsContainer.getChildAt(i);
+            View view = binding.flxDjFormDream.getChildAt(i);
             if (view instanceof EditText editText) {
                 sb.append(editText.getText());
             }
@@ -245,7 +239,7 @@ public class DreamJournalEditorContentView extends Fragment {
     }
 
     private void setupContinueButton() {
-        continueButton.setOnClickListener(e -> {
+        binding.btnDjContinueToRatings.setOnClickListener(e -> {
             InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
             if(mContinueButtonClicked != null) {
@@ -255,7 +249,7 @@ public class DreamJournalEditorContentView extends Fragment {
     }
 
     private void setupCloseButton() {
-        closeEditor.setOnClickListener(e -> new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog)
+        binding.btnDjCloseEditor.setOnClickListener(e -> new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog)
                 .setTitle("Discard changes")
                 .setMessage("Do you really want to discard all changes")
                 .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
@@ -269,27 +263,19 @@ public class DreamJournalEditorContentView extends Fragment {
     }
 
     private void setupRecordingsEditor() {
-        addRecording.setOnClickListener(e -> {
+        binding.btnDjAddRecording.setOnClickListener(e -> {
             final BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
-            bsd.setContentView(R.layout.sheet_journal_recording);
+            SheetJournalRecordingBinding sBinding = SheetJournalRecordingBinding.inflate(getLayoutInflater());
+            bsd.setContentView(sBinding.getRoot());
 
-            ImageButton recordAudio = bsd.findViewById(R.id.btn_dj_record_audio);
-            LinearLayout recsList = bsd.findViewById(R.id.ll_dj_recs_list);
-            LinearLayout recsEntryList = bsd.findViewById(R.id.ll_dj_recs_entry_list);
-            RelativeLayout recNow = bsd.findViewById(R.id.rl_dj_recording_audio);
-            TextView noRecordingsFound = bsd.findViewById(R.id.txt_dj_no_recs_found);
-            TextView recordingText = bsd.findViewById(R.id.txt_dj_recording);
-            ImageButton recContinuePause = bsd.findViewById(R.id.btn_dj_pause_continue_recording);
-            ImageButton recStop = bsd.findViewById(R.id.btn_dj_stop_recording);
-
-            showStoredRecordings(recsEntryList, noRecordingsFound);
-            setupStartRecordingButton(recordAudio, recsList, recNow, recordingText, recContinuePause);
-            setupStopRecordingButton(recsList, recsEntryList, recNow, noRecordingsFound, recStop);
-            setupPauseContinueRecordingButton(recordingText, recContinuePause);
+            showStoredRecordings(sBinding.llDjRecsEntryList, sBinding.txtDjNoRecsFound);
+            setupStartRecordingButton(sBinding.btnDjRecordAudio, sBinding.llDjRecsList, sBinding.rlDjRecordingAudio, sBinding.txtDjRecording, sBinding.btnDjPauseContinueRecording);
+            setupStopRecordingButton(sBinding.llDjRecsList, sBinding.llDjRecsEntryList, sBinding.rlDjRecordingAudio, sBinding.txtDjNoRecsFound, sBinding.btnDjStopRecording);
+            setupPauseContinueRecordingButton(sBinding.txtDjRecording, sBinding.btnDjPauseContinueRecording);
 
             bsd.setOnDismissListener(e1 -> {
                 if(isRecordingRunning) {
-                    storeRecording(recsEntryList, recsList, recNow, noRecordingsFound);
+                    storeRecording(sBinding.llDjRecsEntryList, sBinding.llDjRecsList, sBinding.rlDjRecordingAudio, sBinding.txtDjNoRecsFound);
                     isRecordingRunning = false;
                 }
                 if(mPlayer != null && mPlayer.isPlaying()) {
@@ -351,19 +337,17 @@ public class DreamJournalEditorContentView extends Fragment {
     }
 
     private void setupDateTimePicker(DateFormat df, DateFormat dtf, DateFormat tf) {
-        dateTime.setOnClickListener(e -> {
+        binding.btnDjDate.setOnClickListener(e -> {
             final BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
-            bsd.setContentView(R.layout.sheet_journal_timestamp);
-
-            MaterialButton changeDate = bsd.findViewById(R.id.btn_dj_change_date);
-            MaterialButton changeTime = bsd.findViewById(R.id.btn_dj_change_time);
+            SheetJournalTimestampBinding sBinding = SheetJournalTimestampBinding.inflate(getLayoutInflater());
+            bsd.setContentView(sBinding.getRoot());
 
             Date date = Tools.calendarFromMillis(entry.journalEntry.timeStamp).getTime();
-            changeDate.setText(df.format(date));
-            changeTime.setText(tf.format(date));
+            sBinding.btnDjChangeDate.setText(df.format(date));
+            sBinding.btnDjChangeTime.setText(tf.format(date));
 
-            setupChangeDateButton(df, dtf, changeDate);
-            setupChangeTimeButton(dtf, tf, changeTime);
+            setupChangeDateButton(df, dtf, sBinding.btnDjChangeDate);
+            setupChangeTimeButton(dtf, tf, sBinding.btnDjChangeTime);
 
             bsd.show();
         });
@@ -377,7 +361,7 @@ public class DreamJournalEditorContentView extends Fragment {
                 time.set(Calendar.MINUTE, minuteFrom);
                 entry.journalEntry.timeStamp = time.getTimeInMillis();
                 changeTime.setText(tf.format(time.getTime()));
-                dateTime.setText(dtf.format(time.getTime()));
+                binding.btnDjDate.setText(dtf.format(time.getTime()));
             }, time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), true).show();
         });
     }
@@ -391,24 +375,22 @@ public class DreamJournalEditorContentView extends Fragment {
                 date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 entry.journalEntry.timeStamp = date.getTimeInMillis();
                 changeDate.setText(df.format(date.getTime()));
-                dateTime.setText(dtf.format(date.getTime()));
+                binding.btnDjDate.setText(dtf.format(date.getTime()));
             }, date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH)).show();
         });
     }
 
     private void setupTagsEditor() {
         compositeDisposable.add(db.getJournalEntryTagDao().getAllTagTexts().subscribe((tagsTexts, throwable) -> allAvailableTags = tagsTexts));
-        addTags.setOnClickListener(e -> {
+        binding.btnDjAddTag.setOnClickListener(e -> {
             final BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
-            bsd.setContentView(R.layout.sheet_journal_tags_editor);
+            SheetJournalTagsEditorBinding sBinding = SheetJournalTagsEditorBinding.inflate(getLayoutInflater());
+            bsd.setContentView(sBinding.getRoot());
 
-            FlexboxLayout tagsContainer = bsd.findViewById(R.id.flx_dj_tags_to_add);
-            AutoCompleteTextView tagAddBox = bsd.findViewById(R.id.txt_dj_tags_enter);
-
-            showAllSetTags(tagsContainer);
-            tagAddBox.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, allAvailableTags));
-            setupTagEditorEditText(tagsContainer, tagAddBox);
-            setupTagEditorSelection(tagsContainer, tagAddBox);
+            showAllSetTags(sBinding.flxDjTagsToAdd);
+            sBinding.txtDjTagsEnter.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, allAvailableTags));
+            setupTagEditorEditText(sBinding.flxDjTagsToAdd, sBinding.txtDjTagsEnter);
+            setupTagEditorSelection(sBinding.flxDjTagsToAdd, sBinding.txtDjTagsEnter);
 
             bsd.show();
         });

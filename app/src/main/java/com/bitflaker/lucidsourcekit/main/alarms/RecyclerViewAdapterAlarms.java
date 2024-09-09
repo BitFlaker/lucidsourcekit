@@ -5,7 +5,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
+import com.bitflaker.lucidsourcekit.databinding.EntryAlarmBinding;
 import com.bitflaker.lucidsourcekit.utils.Tools;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.materialswitch.MaterialSwitch;
 
 import java.text.SimpleDateFormat;
@@ -56,23 +55,22 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     @Override
     public MainViewHolderAlarms onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.entry_alarm, parent, false);
-        return new MainViewHolderAlarms(view);
+        return new MainViewHolderAlarms(EntryAlarmBinding.inflate(inflater, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull MainViewHolderAlarms holder, int position) {
-        if(!controlsVisible){
+        if (!controlsVisible) {
             holder.hideControls();
         }
         StoredAlarm alarm = storedAlarms.get(position);
         loadedItems.add(holder);
         loadedPositions.add(position);
-        holder.title.setText(alarm.title);
+        holder.binding.txtAlarmsTitle.setText(alarm.title);
 
         long alarmHours = TimeUnit.MILLISECONDS.toHours(alarm.alarmTimestamp);
         long alarmMinutes = TimeUnit.MILLISECONDS.toMinutes(alarm.alarmTimestamp) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(alarm.alarmTimestamp));
-        boolean isPmAm = !android.text.format.DateFormat.is24HourFormat(context);//tString.toUpperCase().contains("PM") || tString.toUpperCase().contains("AM");
+        boolean isPmAm = !android.text.format.DateFormat.is24HourFormat(context);
         String alarmTime = alarmHours + ":" + alarmMinutes;
         SimpleDateFormat clock24H = new SimpleDateFormat("HH:mm");
         SimpleDateFormat clock12H = new SimpleDateFormat("hh:mm");
@@ -84,15 +82,14 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
             ex.printStackTrace();
         }
 
-        holder.timePrimary.setText(alarmTime);
-        holder.timeSecondary.setText(isPmAm ? (alarmHours < 12 ? " AM" : " PM") : "");
+        holder.binding.txtAlarmsTimePrim.setText(alarmTime);
+        holder.binding.txtAlarmsTimeSec.setText(isPmAm ? (alarmHours < 12 ? " AM" : " PM") : "");
 
-//        holder.active.setOnCheckedChangeListener(null);
         if(alarm.isAlarmActive && alarm.requestCodeActiveAlarm == -1){
             System.out.println("INCONSISTENCY DETECTED! ALARM IS ACTIVE BUT REQCODEACTIVEALARM => -1");
         }
-        holder.active.setChecked(alarm.isAlarmActive && alarm.requestCodeActiveAlarm != -1);
-        holder.active.setOnClickListener(e -> {
+        holder.binding.swtAlarmActive.setChecked(alarm.isAlarmActive && alarm.requestCodeActiveAlarm != -1);
+        holder.binding.swtAlarmActive.setOnClickListener(e -> {
             MaterialSwitch currSwitch = ((MaterialSwitch) e);
             alarm.isAlarmActive = currSwitch.isChecked();
             if(currSwitch.isChecked()){
@@ -135,47 +132,47 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
                 joiner.add(weekdayShorts[i]);
             }
         }
-        holder.activeDays.setText(joiner.toString());
+        holder.binding.txtAlarmsWeekdaysActive.setText(joiner.toString());
         holder.setSelectionModeActive(isInSelectionMode && selectionModeEnabled);
-        holder.chkChecked.setOnTouchListener((v, event) -> {
+        holder.binding.chkAlarmSelected.setOnTouchListener((v, event) -> {
             View par = ((View) v.getParent().getParent());
             event.setLocation(par.getWidth(), 0);
             par.onTouchEvent(event);
             return true;
         });
-        holder.chkChecked.setChecked(selectedAlarmIds.contains(alarm.alarmId));
-        holder.card.setOnClickListener(e -> {
-            if(isInSelectionMode && selectionModeEnabled){
-                holder.chkChecked.setChecked(!holder.chkChecked.isChecked());
-                if(holder.chkChecked.isChecked()){
+        holder.binding.chkAlarmSelected.setChecked(selectedAlarmIds.contains(alarm.alarmId));
+        holder.binding.crdAlarm.setOnClickListener(e -> {
+            if (isInSelectionMode && selectionModeEnabled) {
+                holder.binding.chkAlarmSelected.setChecked(!holder.binding.chkAlarmSelected.isChecked());
+                if (holder.binding.chkAlarmSelected.isChecked()) {
                     selectedIndexes.add(position);
                     selectedAlarmIds.add(alarm.alarmId);
                     return;
                 }
                 selectedIndexes.remove(position);
                 selectedAlarmIds.remove(alarm.alarmId);
-                if(selectedIndexes.size() == 0){
+                if(selectedIndexes.isEmpty()){
                     setIsInSelectionMode(false);
                 }
                 return;
             }
-            if(mOnEntryClickedListener != null){
+            if (mOnEntryClickedListener != null) {
                 mOnEntryClickedListener.onEvent(storedAlarms.get(position));
             }
         });
-        if(selectionModeEnabled){
-            holder.card.setOnLongClickListener(e -> {
+        if (selectionModeEnabled) {
+            holder.binding.crdAlarm.setOnLongClickListener(e -> {
                 if(!isInSelectionMode){
                     setIsInSelectionMode(true);
-                    holder.chkChecked.setChecked(true);
+                    holder.binding.chkAlarmSelected.setChecked(true);
                     selectedIndexes.add(position);
                     selectedAlarmIds.add(alarm.alarmId);
                 }
                 return true;
             });
         }
-        if(elevatedBackground){
-            holder.card.setCardBackgroundColor(Tools.getAttrColorStateList(R.attr.colorSurfaceContainer, context.getTheme()));
+        if (elevatedBackground) {
+            holder.binding.crdAlarm.setCardBackgroundColor(Tools.getAttrColorStateList(R.attr.colorSurfaceContainer, context.getTheme()));
         }
     }
 
@@ -183,10 +180,6 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         MainDatabase.getInstance(context).getStoredAlarmDao().getById(alarm.alarmId).subscribe(storedAlarm -> {
             storedAlarms.set(position, storedAlarm);
         }).dispose();
-    }
-
-    private long getMillisSinceMidnight() {
-        return Calendar.getInstance().getTimeInMillis() - getMillisUntilMidnight();
     }
 
     private long getMillisUntilMidnight() {
@@ -305,71 +298,50 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         selectionModeEnabled = enabled;
     }
 
-    public boolean isSelectionModeEnabled() {
-        return selectionModeEnabled;
-    }
-
     public void setControlsVisible(boolean visible) {
         controlsVisible = visible;
-    }
-
-    public boolean isControlsVisible() {
-        return controlsVisible;
     }
 
     public void setElevatedBackground(boolean elevatedBackground) {
         this.elevatedBackground = elevatedBackground;
     }
 
-    public boolean isElevatedBackground() {
-        return elevatedBackground;
-    }
-
     public static class MainViewHolderAlarms extends RecyclerView.ViewHolder {
-        TextView title, timePrimary, timeSecondary, activeDays;
-        TextView dayMo, dayTu, dayWe, dayTh, dayFr, daySa, daySu;
-        MaterialCardView card;
-        MaterialSwitch active;
         List<TextView> weekdays;
-        CheckBox chkChecked;
+        EntryAlarmBinding binding;
         boolean controlsHidden;
 
-        public MainViewHolderAlarms(@NonNull View itemView) {
-            super(itemView);
+        public MainViewHolderAlarms(@NonNull EntryAlarmBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
             controlsHidden = false;
-            card = itemView.findViewById(R.id.crd_alarm);
-            title = itemView.findViewById(R.id.txt_alarms_title);
-            timePrimary = itemView.findViewById(R.id.txt_alarms_time_prim);
-            timeSecondary = itemView.findViewById(R.id.txt_alarms_time_sec);
-            active = itemView.findViewById(R.id.swt_alarm_active);
-            activeDays = itemView.findViewById(R.id.txt_alarms_weekdays_active);
-            dayMo = itemView.findViewById(R.id.txt_alarms_week_mo);
-            dayTu = itemView.findViewById(R.id.txt_alarms_week_tu);
-            dayWe = itemView.findViewById(R.id.txt_alarms_week_we);
-            dayTh = itemView.findViewById(R.id.txt_alarms_week_th);
-            dayFr = itemView.findViewById(R.id.txt_alarms_week_fr);
-            daySa = itemView.findViewById(R.id.txt_alarms_week_sa);
-            daySu = itemView.findViewById(R.id.txt_alarms_week_su);
-            chkChecked = itemView.findViewById(R.id.chk_alarm_selected);
-            weekdays = Arrays.asList(dayMo, dayTu, dayWe, dayTh, dayFr, daySa, daySu);
+            weekdays = Arrays.asList(
+                    binding.txtAlarmsWeekMo,
+                    binding.txtAlarmsWeekTu,
+                    binding.txtAlarmsWeekWe,
+                    binding.txtAlarmsWeekTh,
+                    binding.txtAlarmsWeekFr,
+                    binding.txtAlarmsWeekSa,
+                    binding.txtAlarmsWeekSu
+            );
         }
 
         public void hideControls(){
-            chkChecked.setVisibility(View.GONE);
-            active.setVisibility(View.GONE);
+            binding.chkAlarmSelected.setVisibility(View.GONE);
+            binding.swtAlarmActive.setVisibility(View.GONE);
             controlsHidden = true;
         }
 
         public void setSelectionModeActive(boolean isInSelectionMode) {
             if(!controlsHidden){
                 if(isInSelectionMode){
-                    chkChecked.setVisibility(View.VISIBLE);
-                    active.setVisibility(View.GONE);
+                    binding.chkAlarmSelected.setVisibility(View.VISIBLE);
+                    binding.swtAlarmActive.setVisibility(View.GONE);
                 }
                 else {
-                    chkChecked.setChecked(false);
-                    chkChecked.setVisibility(View.GONE);
-                    active.setVisibility(View.VISIBLE);
+                    binding.chkAlarmSelected.setChecked(false);
+                    binding.chkAlarmSelected.setVisibility(View.GONE);
+                    binding.swtAlarmActive.setVisibility(View.VISIBLE);
                 }
             }
         }

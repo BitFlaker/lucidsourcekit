@@ -23,9 +23,6 @@ import android.os.Vibrator;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -35,10 +32,8 @@ import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
+import com.bitflaker.lucidsourcekit.databinding.ActivityAlarmViewerBinding;
 import com.bitflaker.lucidsourcekit.utils.Tools;
-import com.bitflaker.lucidsourcekit.views.OutsideSlider;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -46,33 +41,26 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class AlarmViewer extends AppCompatActivity {
-    private AlarmManager alarmManager;
-    private PendingIntent alarmIntent;
-    private OutsideSlider alarmSlider;
-//    private RecyclerView quickAccessActionsView;
-    private ImageButton closeViewer, openJournal, openBinauralBeatsPlayer, openApp;
-    private TextView currentTimeView, currentDateView, alarmName;
-    private boolean isSnoozing = false;
     private StoredAlarm storedAlarm;
-    private MediaPlayer mediaPlayer;
+    private AlarmManager alarmManager;
     private Timer vibrationTimer;
     private Timer flashlightTimer;
     private Vibrator vib;
     private String cameraId;
-    private CameraManager camManager;
     private ValueAnimator volumeIncreaseAnimation;
-    private MaterialButton snoozeAlarmButton, stopAlarmButton;
-    private LinearLayout buttonContainer, quickAccessActionsContainer;
-    private MaterialCardView sliderContainer;
+    private CameraManager camManager;
+    private MediaPlayer mediaPlayer;
+    private boolean isSnoozing = false;
     private final AlarmStopByMode alarmStopByMode = AlarmStopByMode.SWIPE;
     private final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
     private final DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
+    private ActivityAlarmViewerBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_alarm_viewer);
+        binding = ActivityAlarmViewerBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true);
@@ -85,24 +73,11 @@ public class AlarmViewer extends AppCompatActivity {
         }
 
         Tools.makeStatusBarTransparent(this);
-        alarmSlider = findViewById(R.id.oss_alarm_slider);
-        closeViewer = findViewById(R.id.btn_close_viewer);
-        currentTimeView = findViewById(R.id.txt_current_time);
-        currentDateView = findViewById(R.id.txt_current_date);
-        alarmName = findViewById(R.id.txt_alarm_name);
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         mediaPlayer = new MediaPlayer();
         vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        snoozeAlarmButton = findViewById(R.id.btn_snooze);
-        stopAlarmButton = findViewById(R.id.btn_stop_alarm);
-        buttonContainer = findViewById(R.id.ll_alarm_stop_button_container);
-        sliderContainer = findViewById(R.id.crd_alarm_slider_container);
-        quickAccessActionsContainer = findViewById(R.id.ll_quick_access_actions);
-        openJournal = findViewById(R.id.btn_open_journal);
-        openBinauralBeatsPlayer = findViewById(R.id.btn_open_binaural_player);
-        openApp = findViewById(R.id.btn_open_app);
 
-        alarmSlider.setData(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_check_24, getTheme()), ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_snooze_24, getTheme()));
+        binding.ossAlarmSlider.setData(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_check_24, getTheme()), ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_snooze_24, getTheme()));
 
         // The alarm id is missing, which should not be possible when the alarm was triggered from the alarm receiver
         if(!getIntent().hasExtra("STORED_ALARM_ID")) { finish(); }
@@ -111,60 +86,60 @@ public class AlarmViewer extends AppCompatActivity {
         // TODO: ERROR: returned empty result!!
         MainDatabase.getInstance(this).getStoredAlarmDao().getById(id).subscribe(alarm -> {
             storedAlarm = alarm;
-            alarmName.setText(alarm.title);
+            binding.txtAlarmName.setText(alarm.title);
         }).dispose();
 
-        quickAccessActionsContainer.setVisibility(View.GONE);
-        quickAccessActionsContainer.setAlpha(0.0f);
+        binding.llQuickAccessActions.setVisibility(View.GONE);
+        binding.llQuickAccessActions.setAlpha(0.0f);
 
         if(alarmStopByMode == AlarmStopByMode.BUTTON){
-            buttonContainer.setVisibility(View.VISIBLE);
-            sliderContainer.setVisibility(View.GONE);
-            stopAlarmButton.setOnClickListener(e -> {
+            binding.llAlarmStopButtonContainer.setVisibility(View.VISIBLE);
+            binding.crdAlarmSliderContainer.setVisibility(View.GONE);
+            binding.btnStopAlarm.setOnClickListener(e -> {
                 stopAlarmSelected();
-                buttonContainer.setVisibility(View.GONE);
+                binding.llAlarmStopButtonContainer.setVisibility(View.GONE);
                 showAfterAlarmStopControls();
             });
-            snoozeAlarmButton.setOnClickListener(e -> snoozeAlarmSelected());
+            binding.btnSnooze.setOnClickListener(e -> snoozeAlarmSelected());
         }
         else if (alarmStopByMode == AlarmStopByMode.SWIPE){
-            sliderContainer.setVisibility(View.VISIBLE);
-            buttonContainer.setVisibility(View.GONE);
-            alarmSlider.setOnLeftSideSelectedListener(this::stopAlarmSelected);
-            alarmSlider.setOnRightSideSelectedListener(this::snoozeAlarmSelected);
+            binding.crdAlarmSliderContainer.setVisibility(View.VISIBLE);
+            binding.llAlarmStopButtonContainer.setVisibility(View.GONE);
+            binding.ossAlarmSlider.setOnLeftSideSelectedListener(this::stopAlarmSelected);
+            binding.ossAlarmSlider.setOnRightSideSelectedListener(this::snoozeAlarmSelected);
         }
 
-        alarmSlider.setOnFadedAwayListener(() -> {
-            sliderContainer.setVisibility(View.GONE);
+        binding.ossAlarmSlider.setOnFadedAwayListener(() -> {
+            binding.crdAlarmSliderContainer.setVisibility(View.GONE);
             showAfterAlarmStopControls();
         });
 
-        openBinauralBeatsPlayer.setOnClickListener(e -> {
+        binding.btnOpenBinauralPlayer.setOnClickListener(e -> {
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("INITIAL_PAGE", "binaural");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finishAffinity();
         });
-        openJournal.setOnClickListener(e -> {
+        binding.btnOpenJournal.setOnClickListener(e -> {
             DreamJournalEntryTypeDialog dialog = new DreamJournalEntryTypeDialog(this);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.setOnEntryTypeSelected(this::showJournalCreator);
             dialog.show();
             dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         });
-        openApp.setOnClickListener(e -> {
+        binding.btnOpenApp.setOnClickListener(e -> {
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finishAffinity();
         });
 
-        closeViewer.setOnClickListener(e -> finishAndRemoveTask());
+        binding.btnCloseViewer.setOnClickListener(e -> finishAndRemoveTask());
 
         Calendar cal = Calendar.getInstance();
-        currentTimeView.setText(timeFormat.format(cal.getTime()));
-        currentDateView.setText(dateFormat.format(cal.getTime()));
+        binding.txtCurrentTime.setText(timeFormat.format(cal.getTime()));
+        binding.txtCurrentDate.setText(dateFormat.format(cal.getTime()));
         cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) + 1);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
@@ -175,8 +150,8 @@ public class AlarmViewer extends AppCompatActivity {
             public void run() {
                 Calendar cal = Calendar.getInstance();
                 runOnUiThread(() -> {
-                    currentTimeView.setText(timeFormat.format(cal.getTime()));
-                    currentDateView.setText(dateFormat.format(cal.getTime()));
+                    binding.txtCurrentTime.setText(timeFormat.format(cal.getTime()));
+                    binding.txtCurrentDate.setText(dateFormat.format(cal.getTime()));
                 });
             }
         }, cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 60*1000);
@@ -256,14 +231,12 @@ public class AlarmViewer extends AppCompatActivity {
     private void showAfterAlarmStopControls() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if(!isSnoozing){
-//            quickAccessActionsView.setVisibility(View.VISIBLE);
-            quickAccessActionsContainer.setVisibility(View.VISIBLE);
+            binding.llQuickAccessActions.setVisibility(View.VISIBLE);
             ValueAnimator opacityAnim = ValueAnimator.ofFloat(0, 1);
             opacityAnim.setDuration(300);
             opacityAnim.setInterpolator(new LinearInterpolator());
             opacityAnim.addUpdateListener((valueAnimator) -> {
-//                quickAccessActionsView.setAlpha((float)valueAnimator.getAnimatedValue());
-                quickAccessActionsContainer.setAlpha((float)valueAnimator.getAnimatedValue());
+                binding.llQuickAccessActions.setAlpha((float)valueAnimator.getAnimatedValue());
             });
             opacityAnim.start();
         }
@@ -277,7 +250,7 @@ public class AlarmViewer extends AppCompatActivity {
         resetAlarmActivity();
         Intent intent = new Intent(this, AlarmReceiver.class);
         intent.putExtra("SNOOZING_STORED_ALARM_ID", storedAlarm.alarmId);
-        alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), AlarmHandler.SNOOZING_ALARM_REQUEST_CODE_START_VALUE + (int)storedAlarm.alarmId, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), AlarmHandler.SNOOZING_ALARM_REQUEST_CODE_START_VALUE + (int) storedAlarm.alarmId, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (5*60*1000), alarmIntent); // TODO make snooze delay changeable
         finish();
     }

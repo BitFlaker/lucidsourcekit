@@ -45,4 +45,8 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     public int getTabIndex(String title) {
         return fragmentTitle.indexOf(title);
     }
+
+    public boolean isCurrentPage(String title, int position) {
+        return fragmentTitle.size() > position && fragmentTitle.get(position).equals(title);
+    }
 }

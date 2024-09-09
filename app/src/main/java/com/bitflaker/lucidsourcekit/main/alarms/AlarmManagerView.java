@@ -3,9 +3,7 @@ package com.bitflaker.lucidsourcekit.main.alarms;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -13,15 +11,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.views.SleepClock;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
+import com.bitflaker.lucidsourcekit.databinding.ActivityAlarmManagerBinding;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -33,10 +29,10 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class AlarmManagerView extends AppCompatActivity {
-    private TextView time, date, nAlarmTime, nAlarmTimeTo;
     private RecyclerViewAdapterAlarms adapterAlarms;
     private boolean isInSelectionMode = false;
     private long nextAlarmTimeStamp;
+    private ActivityAlarmManagerBinding binding;
 
     private final ActivityResultCallback<ActivityResult> alarmCreationOrModificationCallback = result -> {
         if(result.getResultCode() == RESULT_OK){
@@ -57,18 +53,16 @@ public class AlarmManagerView extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_alarm_manager);
+
+        binding = ActivityAlarmManagerBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         Tools.makeStatusBarTransparent(AlarmManagerView.this);
-        LinearLayout topContainer = findViewById(R.id.ll_top_heading);
-        SleepClock clock = findViewById(R.id.slp_clock);
-        FloatingActionButton addAlarm = findViewById(R.id.fab_add_alarm);
-        topContainer.setLayoutParams(Tools.addRelativeLayoutParamsTopStatusbarSpacing(AlarmManagerView.this, ((RelativeLayout.LayoutParams) topContainer.getLayoutParams())));
+        binding.llTopHeading.setLayoutParams(Tools.addRelativeLayoutParamsTopStatusbarSpacing(AlarmManagerView.this, ((RelativeLayout.LayoutParams) binding.llTopHeading.getLayoutParams())));
 
-        clock.startClock();
-        addAlarm.setOnClickListener(e -> {
+        binding.slpClock.startClock();
+        binding.fabAddAlarm.setOnClickListener(e -> {
             if(!isInSelectionMode){
                 alarmInteractionLauncher.launch(new Intent(this, AlarmEditorView.class));
             }
@@ -96,16 +90,10 @@ public class AlarmManagerView extends AppCompatActivity {
             }
         });
 
-        RecyclerView recyclerView = findViewById(R.id.rcv_list_alarms);
-        time = findViewById(R.id.txt_current_time);
-        date = findViewById(R.id.txt_current_date);
-        nAlarmTime = findViewById(R.id.txt_next_alarm_time);
-        nAlarmTimeTo = findViewById(R.id.txt_next_alarm_time_to);
-
         DateFormat tf = DateFormat.getTimeInstance(DateFormat.MEDIUM);
         DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
-        time.setText(tf.format(Calendar.getInstance().getTime()));
-        date.setText(df.format(Calendar.getInstance().getTime()));
+        binding.txtCurrentTime.setText(tf.format(Calendar.getInstance().getTime()));
+        binding.txtCurrentDate.setText(df.format(Calendar.getInstance().getTime()));
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.SECOND, cal.get(Calendar.SECOND) + 1);
@@ -120,8 +108,8 @@ public class AlarmManagerView extends AppCompatActivity {
                 String dateS = df.format(curr.getTime());
 
                 runOnUiThread(() -> {
-                    time.setText(timeS);
-                    date.setText(dateS);
+                    binding.txtCurrentTime.setText(timeS);
+                    binding.txtCurrentDate.setText(dateS);
                 });
             }
         }, cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 1000);
@@ -130,17 +118,17 @@ public class AlarmManagerView extends AppCompatActivity {
         adapterAlarms.setOnSelectionModeStateChangedListener(new RecyclerViewAdapterAlarms.OnSelectionModeStateChanged() {
             @Override
             public void onSelectionModeEntered() {
-                addAlarm.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorErrorContainer, getTheme()));
-                addAlarm.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnErrorContainer, getTheme()));
-                addAlarm.setImageResource(R.drawable.ic_baseline_delete_24);
+                binding.fabAddAlarm.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorErrorContainer, getTheme()));
+                binding.fabAddAlarm.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnErrorContainer, getTheme()));
+                binding.fabAddAlarm.setImageResource(R.drawable.ic_baseline_delete_24);
                 isInSelectionMode = true;
             }
 
             @Override
             public void onSelectionModeLeft() {
-                addAlarm.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimaryContainer, getTheme()));
-                addAlarm.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimaryContainer, getTheme()));
-                addAlarm.setImageResource(R.drawable.ic_round_add_24);
+                binding.fabAddAlarm.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorPrimaryContainer, getTheme()));
+                binding.fabAddAlarm.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimaryContainer, getTheme()));
+                binding.fabAddAlarm.setImageResource(R.drawable.ic_round_add_24);
                 isInSelectionMode = false;
             }
         });
@@ -150,8 +138,8 @@ public class AlarmManagerView extends AppCompatActivity {
             alarmInteractionLauncher.launch(editor);
         });
         adapterAlarms.setOnEntryActiveStateChangedListener((alarmData, checked) -> fetchNextAlarmAndDisplay(false));
-        recyclerView.setAdapter(adapterAlarms);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.rcvListAlarms.setAdapter(adapterAlarms);
+        binding.rcvListAlarms.setLayoutManager(new LinearLayoutManager(this));
         MainDatabase db = MainDatabase.getInstance(AlarmManagerView.this);
         db.getStoredAlarmDao().getAll().subscribe(storedAlarms -> {
             adapterAlarms.setData(storedAlarms);
@@ -174,7 +162,7 @@ public class AlarmManagerView extends AppCompatActivity {
                     }
                     Calendar calAlarm = Calendar.getInstance();
                     calAlarm.setTimeInMillis(nextAlarmTimeStamp);
-                    nAlarmTime.setText(String.format(Locale.ENGLISH, "%02d:%02d", calAlarm.get(Calendar.HOUR_OF_DAY), calAlarm.get(Calendar.MINUTE)));
+                    binding.txtNextAlarmTimeTo.setText(String.format(Locale.ENGLISH, "%02d:%02d", calAlarm.get(Calendar.HOUR_OF_DAY), calAlarm.get(Calendar.MINUTE)));
                     setNextTimeTo(nextAlarmTimeStamp);
                 }
                 else {
@@ -182,8 +170,8 @@ public class AlarmManagerView extends AppCompatActivity {
                         nextTimeToCalcTask.cancel();
                         nextTimeToCalcTask = null;
                     }
-                    nAlarmTime.setText("--");
-                    nAlarmTimeTo.setText("--");
+                    binding.txtNextAlarmTime.setText("--");
+                    binding.txtNextAlarmTimeTo.setText("--");
                 }
             });
         });
@@ -214,7 +202,7 @@ public class AlarmManagerView extends AppCompatActivity {
         long hours = TimeUnit.MILLISECONDS.toHours(diff) - TimeUnit.DAYS.toHours(days);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(diff) - TimeUnit.DAYS.toMinutes(days) - TimeUnit.HOURS.toMinutes(hours);
         runOnUiThread(() -> {
-            nAlarmTimeTo.setText(String.format(Locale.ENGLISH, "%02d:%02d:%02d", (int)days, (int)hours, (int)minutes));
+            binding.txtNextAlarmTimeTo.setText(String.format(Locale.ENGLISH, "%02d:%02d:%02d", (int)days, (int)hours, (int)minutes));
             if(days == 0 && hours == 0 && minutes == 0) {
                 // Fetching time of next alarm with a delay of 20ms as the rescheduling takes some time
                 // and the fetched data might still be the same

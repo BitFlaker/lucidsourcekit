@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Space;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,7 +20,9 @@ import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
-import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler;
+import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys;
+import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager;
+import com.bitflaker.lucidsourcekit.data.datastore.DataStoreMigrator;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.entities.AlarmToneTypes;
 import com.bitflaker.lucidsourcekit.database.alarms.entities.Weekdays;
@@ -37,13 +38,12 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.defaults.DefaultGoals;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationObfuscations;
+import com.bitflaker.lucidsourcekit.databinding.ActivityMainBinding;
+import com.bitflaker.lucidsourcekit.main.MainViewer;
+import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler;
+import com.bitflaker.lucidsourcekit.setup.SetupViewer;
 import com.bitflaker.lucidsourcekit.utils.Crypt;
 import com.bitflaker.lucidsourcekit.utils.Tools;
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys;
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager;
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreMigrator;
-import com.bitflaker.lucidsourcekit.main.MainViewer;
-import com.bitflaker.lucidsourcekit.setup.SetupViewer;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.button.MaterialButton;
@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private String storedHash = "";
     private byte[] storedSalt;
     private int pinButtonSize = 68;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
         }
 //        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         DataStoreManager.initialize(this);
         DataStoreMigrator.migrateSharedPreferencesToDataStore(this);
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         Tools.loadLanguage(MainActivity.this);
         Tools.makeStatusBarTransparent(MainActivity.this);
 
-        findViewById(R.id.btn_fingerprint_unlock).setOnClickListener(e -> startBiometricAuthentication());
+        binding.btnFingerprintUnlock.setOnClickListener(e -> startBiometricAuthentication());
         pinButtonSize = getResources().getBoolean(R.bool.is_h720dp) ? 68 : 54;
 
         // TODO: set language of controls
@@ -237,12 +239,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupPasswordAuthentication() {
-        findViewById(R.id.ll_pw_auth_container).setVisibility(View.VISIBLE);
-        findViewById(R.id.ll_pin_auth_container).setVisibility(View.GONE);
-        MaterialButton unlockButton = findViewById(R.id.btn_unlock);
-        unlockButton.setOnClickListener(e -> {
+        binding.llPwAuthContainer.setVisibility(View.VISIBLE);
+        binding.llPinAuthContainer.setVisibility(View.GONE);
+        binding.btnUnlock.setOnClickListener(e -> {
             try {
-                String hash = Crypt.encryptString(String.valueOf(((TextView) findViewById(R.id.txt_password)).getText()), storedSalt);
+                String hash = Crypt.encryptString(String.valueOf((binding.txtPassword).getText()), storedSalt);
                 runOnUiThread(() -> {
                     if(hash.equals(storedHash)) {
                         startLoadingAnimation();
@@ -262,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
         BiometricManager biometricManager = BiometricManager.from(this);
         switch (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
             case BiometricManager.BIOMETRIC_SUCCESS:
-                findViewById(R.id.btn_fingerprint_unlock).setVisibility(View.VISIBLE);
+                binding.btnFingerprintUnlock.setVisibility(View.VISIBLE);
                 startBiometricAuthentication();
                 break;
             case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
@@ -305,9 +306,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupPinAuthentication() {
-        findViewById(R.id.ll_pw_auth_container).setVisibility(View.GONE);
-        findViewById(R.id.ll_pin_auth_container).setVisibility(View.VISIBLE);
-        LinearLayout pinLayout = findViewById(R.id.ll_pinLayout);
+        binding.llPwAuthContainer.setVisibility(View.GONE);
+        binding.llPinAuthContainer.setVisibility(View.VISIBLE);
         for (int y = 0; y < 4; y++) {
             FlexboxLayout hFlxBx = new FlexboxLayout(this);
             hFlxBx.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -315,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
             for (int x = 0; x < 3; x++) {
                 hFlxBx.addView(generatePinButton(y*3+x));
             }
-            pinLayout.addView(hFlxBx);
+            binding.llPinLayout.addView(hFlxBx);
         }
     }
 
@@ -334,12 +334,11 @@ public class MainActivity extends AppCompatActivity {
         pinButton.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, getTheme()));
         pinButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
         pinButton.setBackgroundResource(R.drawable.ripple_round_clear);
-        TextView txtEnteredPin = findViewById(R.id.txt_enteredPin);
         if (Character.isDigit(currentType)) {
             pinButton.setText(Character.toString(currentType));
             int buttonVal = Integer.parseInt(Character.toString(currentType));
             pinButton.setOnClickListener(e -> {
-                txtEnteredPin.setText(txtEnteredPin.getText() + "\u2022");
+                binding.txtEnteredPin.setText(binding.txtEnteredPin.getText() + "•");
                 enteredPin.append(buttonVal);
                 new Thread(() -> {
                     boolean success = isPinSuccess();
@@ -351,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             else {
                                 enteredPin.delete(0, enteredPin.length());
-                                txtEnteredPin.setText("");
+                                binding.txtEnteredPin.setText("");
                                 Toast.makeText(MainActivity.this, "Invalid PIN entered!", Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -361,13 +360,13 @@ public class MainActivity extends AppCompatActivity {
             return pinButton;
         }
         else if (currentType == '<') {
-            pinButton.setText("\u232B");
+            pinButton.setText("⌫");
             pinButton.setOnClickListener(e -> {
                 if(enteredPin.length() > 0) {
                     enteredPin.deleteCharAt(enteredPin.length()-1);
                     StringBuilder pinText = new StringBuilder();
                     for(int i = 0; i < enteredPin.length(); i++) { pinText.append("\u2022"); }
-                    txtEnteredPin.setText(pinText.toString());
+                    binding.txtEnteredPin.setText(pinText.toString());
                 }
             });
             return pinButton;
@@ -376,10 +375,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startLoadingAnimation() {
-        findViewById(R.id.ll_pw_auth_container).setVisibility(View.GONE);
-        findViewById(R.id.ll_pin_auth_container).setVisibility(View.GONE);
-        findViewById(R.id.btn_fingerprint_unlock).setVisibility(View.GONE);
-        findViewById(R.id.clpb_start_app).setVisibility(View.VISIBLE);
+        binding.llPwAuthContainer.setVisibility(View.GONE);
+        binding.llPinAuthContainer.setVisibility(View.GONE);
+        binding.btnFingerprintUnlock.setVisibility(View.GONE);
+        binding.clpbStartApp.setVisibility(View.VISIBLE);
     }
 
     private Space generateSpace() {

@@ -17,8 +17,6 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -34,15 +32,11 @@ import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.data.enums.AlarmToneType;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
+import com.bitflaker.lucidsourcekit.databinding.ActivityAlarmEditorBinding;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.bitflaker.lucidsourcekit.views.SleepClock;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.materialswitch.MaterialSwitch;
-import com.google.android.material.slider.Slider;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -53,16 +47,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class AlarmEditorView extends AppCompatActivity {
-    private MaterialButton setAlarm;
-    private MaterialCardView tone, volume, volumeIncrease, alarmTimeCard, bedtimeTimeCard;
-    private ChipGroup alarmToneGroup;
-    private Chip ringtoneChip, customFileChip, binauralBeatsChip;
-    private TextView selectedToneText, incVolumeFor, currAlarmVolume, repeatPatternText;
-    private Slider alarmVolume;
-    private MaterialSwitch vibrateAlarm, useFlashlight;
-    private LinearLayout weekdaysContainer;
-    private EditText alarmTitle;
-    private SleepClock sleepClock;
+    private ActivityAlarmEditorBinding binding;
 
     private final static int PERMISSION_REQUEST_CODE = 776;
     private final static boolean[] noRepeatPattern = new boolean[] { false, false, false, false, false, false, false };
@@ -80,7 +65,7 @@ public class AlarmEditorView extends AppCompatActivity {
                 ringtoneUri = result.getData() != null ? result.getData().getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI) : RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_ALARM);
                 Ringtone ringtone = RingtoneManager.getRingtone(this, ringtoneUri);
                 String title = ringtone.getTitle(this);
-                selectedToneText.setText(title);
+                binding.txtToneSelected.setText(title);
                 storedAlarm.alarmUri = ringtoneUri.toString();
             });
     ActivityResultLauncher<Intent> customFileSelectorLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -92,23 +77,8 @@ public class AlarmEditorView extends AppCompatActivity {
                     if(Arrays.asList(supportedAudioFiles).contains(extension)){
                         ringtoneUri = uri;
                         String title = filename.substring(0, filename.lastIndexOf("."));
-                        selectedToneText.setText(title);
+                        binding.txtToneSelected.setText(title);
                         storedAlarm.alarmUri = ringtoneUri.toString();
-//                        MediaPlayer mediaPlayer = new MediaPlayer();
-//                        mediaPlayer.setAudioAttributes(
-//                                new AudioAttributes.Builder()
-//                                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-//                                        .setUsage(AudioAttributes.USAGE_ALARM)
-//                                        .build()
-//                        );
-//                        mediaPlayer.setLooping(true);
-//                        try {
-//                            mediaPlayer.setDataSource(this, uri);
-//                            mediaPlayer.prepare();
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                        mediaPlayer.start();
                     }
                     else {
                         Toast.makeText(this, "Unsupported audio file type", Toast.LENGTH_LONG).show();
@@ -133,45 +103,22 @@ public class AlarmEditorView extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        setTheme(Tools.getTheme());
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_alarm_editor);
+        binding = ActivityAlarmEditorBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         Tools.makeStatusBarTransparent(this);
-        findViewById(R.id.ll_alarm_creator_heading).setLayoutParams(Tools.addLinearLayoutParamsTopStatusbarSpacing(this, ((LinearLayout.LayoutParams) findViewById(R.id.ll_alarm_creator_heading).getLayoutParams())));
+        binding.llAlarmCreatorHeading.setLayoutParams(Tools.addLinearLayoutParamsTopStatusbarSpacing(this, ((LinearLayout.LayoutParams) binding.llAlarmCreatorHeading.getLayoutParams())));
 
-        sleepClock = findViewById(R.id.slp_clk_set_time);
-        TextView bedtime = findViewById(R.id.txt_time_bedtime);
-        TextView alarmTime = findViewById(R.id.txt_time_alarm);
-        ImageButton closeCreator = findViewById(R.id.btn_close_alarm_creator);
-        tone = findViewById(R.id.crd_alarm_tone);
-        volume = findViewById(R.id.crd_alarm_volume);
-        volumeIncrease = findViewById(R.id.crd_alarm_volume_increase);
-        alarmToneGroup = findViewById(R.id.chp_grp_alarm_tone);
-        customFileChip = findViewById(R.id.chp_custom_file);
-        binauralBeatsChip = findViewById(R.id.chp_binaural_beats);
-        ringtoneChip = findViewById(R.id.chp_ringtone);
-        selectedToneText = findViewById(R.id.txt_tone_selected);
-        incVolumeFor = findViewById(R.id.txt_inc_volume_for);
-        alarmVolume = findViewById(R.id.sld_alarm_volume);
-        currAlarmVolume = findViewById(R.id.txt_curr_alarm_volume);
-        vibrateAlarm = findViewById(R.id.swt_vibrate_alarm);
-        useFlashlight = findViewById(R.id.swt_alarm_use_flashlight);
-        setAlarm = findViewById(R.id.btn_create_alarm);
-        weekdaysContainer = findViewById(R.id.ll_weekdays_container);
-        bedtimeTimeCard = findViewById(R.id.crd_bedtime_time);
-        alarmTimeCard = findViewById(R.id.crd_alarm_time);
-        repeatPatternText = findViewById(R.id.txt_repeat_pattern_text);
-        alarmTitle = findViewById(R.id.txt_alarm_name);
         db = MainDatabase.getInstance(this);
 
         weekdayChips = new Chip[] {
-                findViewById(R.id.chp_sunday),
-                findViewById(R.id.chp_monday),
-                findViewById(R.id.chp_tuesday),
-                findViewById(R.id.chp_wednesday),
-                findViewById(R.id.chp_thursday),
-                findViewById(R.id.chp_friday),
-                findViewById(R.id.chp_saturday)
+                binding.chpSunday,
+                binding.chpMonday,
+                binding.chpTuesday,
+                binding.chpWednesday,
+                binding.chpThursday,
+                binding.chpFriday,
+                binding.chpSaturday
         };
 
         if (!Settings.canDrawOverlays(this)) {
@@ -191,21 +138,21 @@ public class AlarmEditorView extends AppCompatActivity {
         ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_ALARM);
         Ringtone ringtone = RingtoneManager.getRingtone(this, ringtoneUri);
         String title = ringtone.getTitle(this);
-        selectedToneText.setText(title);
+        binding.txtToneSelected.setText(title);
 
         if(getIntent().hasExtra("ALARM_ID")){
             long alarmId = getIntent().getLongExtra("ALARM_ID", -1);
             db.getStoredAlarmDao().getById(alarmId).subscribe(loadedStoredAlarm -> {
                 storedAlarm = loadedStoredAlarm;
                 setEditValuesFromItem();
-                sleepClock.setOnFirstDrawFinishedListener(() -> {
+                binding.slpClkSetTime.setOnFirstDrawFinishedListener(() -> {
                     long alarmHours = TimeUnit.MILLISECONDS.toHours(storedAlarm.alarmTimestamp);
                     long alarmMinutes = TimeUnit.MILLISECONDS.toMinutes(storedAlarm.alarmTimestamp) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(storedAlarm.alarmTimestamp));
                     long bedtimeHours = TimeUnit.MILLISECONDS.toHours(storedAlarm.bedtimeTimestamp);
                     long bedtimeMinutes = TimeUnit.MILLISECONDS.toMinutes(storedAlarm.bedtimeTimestamp) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(storedAlarm.bedtimeTimestamp));
-                    sleepClock.setAlarmTime((int)alarmHours, (int)alarmMinutes);
-                    sleepClock.setBedTime((int)bedtimeHours, (int)bedtimeMinutes);
-                    setTimeChangedListeners(bedtime, alarmTime);
+                    binding.slpClkSetTime.setAlarmTime((int)alarmHours, (int)alarmMinutes);
+                    binding.slpClkSetTime.setBedTime((int)bedtimeHours, (int)bedtimeMinutes);
+                    setTimeChangedListeners(binding.txtTimeBedtime, binding.txtTimeAlarm);
                 });
             }).dispose();
         }
@@ -214,40 +161,40 @@ public class AlarmEditorView extends AppCompatActivity {
             storedAlarm.alarmId = 0;
             storedAlarm.requestCodeActiveAlarm = -1;
             storedAlarm.pattern = Arrays.copyOf(noRepeatPattern, noRepeatPattern.length);
-            setCurrentAlarmValues(sleepClock);
-            setTimeChangedListeners(bedtime, alarmTime);
+            setCurrentAlarmValues(binding.slpClkSetTime);
+            setTimeChangedListeners(binding.txtTimeBedtime, binding.txtTimeAlarm);
         }
 
-        bedtimeTimeCard.setOnClickListener((view) -> new TimePickerDialog(this, (timePickerFrom, hourFrom, minuteFrom) -> sleepClock.setBedTime(hourFrom, minuteFrom), sleepClock.getHoursToBedTime(), sleepClock.getMinutesToBedTime(), true).show());
-        alarmTimeCard.setOnClickListener((view) -> new TimePickerDialog(this, (timePickerFrom, hourFrom, minuteFrom) -> sleepClock.setAlarmTime(hourFrom, minuteFrom), sleepClock.getHoursToAlarm(), sleepClock.getMinutesToAlarm(), true).show());
-        sleepClock.setDrawHours(true);
-        sleepClock.setDrawTimeSetterButtons(true);
+        binding.crdBedtimeTime.setOnClickListener((view) -> new TimePickerDialog(this, (timePickerFrom, hourFrom, minuteFrom) -> binding.slpClkSetTime.setBedTime(hourFrom, minuteFrom), binding.slpClkSetTime.getHoursToBedTime(), binding.slpClkSetTime.getMinutesToBedTime(), true).show());
+        binding.crdAlarmTime.setOnClickListener((view) -> new TimePickerDialog(this, (timePickerFrom, hourFrom, minuteFrom) -> binding.slpClkSetTime.setAlarmTime(hourFrom, minuteFrom), binding.slpClkSetTime.getHoursToAlarm(), binding.slpClkSetTime.getMinutesToAlarm(), true).show());
+        binding.slpClkSetTime.setDrawHours(true);
+        binding.slpClkSetTime.setDrawTimeSetterButtons(true);
 
-        closeCreator.setOnClickListener(e -> finish());
+        binding.btnCloseAlarmCreator.setOnClickListener(e -> finish());
 
-        alarmToneGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            if(ringtoneChip.isChecked()) {
+        binding.chpGrpAlarmTone.setOnCheckedChangeListener((group, checkedId) -> {
+            if(binding.chpRingtone.isChecked()) {
                 storedAlarm.alarmToneTypeId = AlarmToneType.RINGTONE.ordinal();
-                selectedToneText.setText(RingtoneManager.getRingtone(this, ringtoneUri).getTitle(this));
+                binding.txtToneSelected.setText(RingtoneManager.getRingtone(this, ringtoneUri).getTitle(this));
                 storedAlarm.alarmUri = ringtoneUri.toString();
             }
-            else if (binauralBeatsChip.isChecked()){
+            else if (binding.chpBinauralBeats.isChecked()){
                 // TODO: binaural beats selection visible
                 storedAlarm.alarmToneTypeId = AlarmToneType.BINAURAL_BEAT.ordinal();
-                selectedToneText.setText("- NONE -");
+                binding.txtToneSelected.setText("- NONE -");
                 storedAlarm.alarmUri = Uri.EMPTY.toString();
             }
-            else if (customFileChip.isChecked()) {
+            else if (binding.chpCustomFile.isChecked()) {
                 if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_EXTERNAL_STORAGE }, PERMISSION_REQUEST_CODE);
                 }
                 storedAlarm.alarmToneTypeId = AlarmToneType.CUSTOM_FILE.ordinal();
-                selectedToneText.setText("- NONE -");
+                binding.txtToneSelected.setText("- NONE -");
                 storedAlarm.alarmUri = Uri.EMPTY.toString();
             }
         });
-        tone.setOnClickListener(e -> {
-            if(ringtoneChip.isChecked()){
+        binding.crdAlarmTone.setOnClickListener(e -> {
+            if(binding.chpRingtone.isChecked()){
                 final Uri currentTone =  ringtoneUri != null ? ringtoneUri : RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_ALARM);//RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_ALARM);
                 Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);
@@ -257,19 +204,19 @@ public class AlarmEditorView extends AppCompatActivity {
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
                 ringtoneSelectorLauncher.launch(intent);
             }
-            else if(binauralBeatsChip.isChecked()){
+            else if(binding.chpBinauralBeats.isChecked()){
                 // TODO: open binaural beats selector
             }
-            else if(customFileChip.isChecked()) {
+            else if(binding.chpCustomFile.isChecked()) {
                 Intent audioPicker = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.INTERNAL_CONTENT_URI);
                 customFileSelectorLauncher.launch(audioPicker);
             }
         });
-        alarmVolume.addOnChangeListener((slider, value, fromUser) -> {
-            currAlarmVolume.setText(String.format(Locale.ENGLISH, "%d%%", (int)Math.round(value * 100)));
+        binding.sldAlarmVolume.addOnChangeListener((slider, value, fromUser) -> {
+            binding.txtCurrAlarmVolume.setText(String.format(Locale.ENGLISH, "%d%%", Math.round(value * 100)));
             storedAlarm.alarmVolume = value;
         });
-        volumeIncrease.setOnClickListener(e -> {
+        binding.crdAlarmVolumeIncrease.setOnClickListener(e -> {
             final LinearLayout container = new LinearLayout(this);
             LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             container.setLayoutParams(lParams);
@@ -301,12 +248,12 @@ public class AlarmEditorView extends AppCompatActivity {
             builder.create();
             builder.show();
         });
-        vibrateAlarm.setOnCheckedChangeListener((view, checked) -> storedAlarm.isVibrationActive = checked);
-        useFlashlight.setOnCheckedChangeListener((view, checked) -> storedAlarm.isFlashlightActive = checked);
+        binding.swtVibrateAlarm.setOnCheckedChangeListener((view, checked) -> storedAlarm.isVibrationActive = checked);
+        binding.swtAlarmUseFlashlight.setOnCheckedChangeListener((view, checked) -> storedAlarm.isFlashlightActive = checked);
 
-        setAlarm.setOnClickListener(e -> {
+        binding.btnCreateAlarm.setOnClickListener(e -> {
             // TODO: make checks (like no tone selected with custom file)
-            storedAlarm.title = alarmTitle.getText().toString();
+            storedAlarm.title = binding.txtAlarmName.getText().toString();
             storedAlarm.isAlarmActive = true;
             // TODO: make this work with one time only alarms as well
             if(storedAlarm.alarmId == 0) {
@@ -365,50 +312,50 @@ public class AlarmEditorView extends AppCompatActivity {
     }
 
     private void setTimeChangedListeners(TextView bedtime, TextView alarmTime) {
-        bedtime.setText(String.format(Locale.ENGLISH, "%02d:%02d", sleepClock.getHoursToBedTime(), sleepClock.getMinutesToBedTime()));
-        alarmTime.setText(String.format(Locale.ENGLISH, "%02d:%02d", sleepClock.getHoursToAlarm(), sleepClock.getMinutesToAlarm()));
-        sleepClock.setOnBedtimeChangedListener((hours, minutes) -> {
+        bedtime.setText(String.format(Locale.ENGLISH, "%02d:%02d", binding.slpClkSetTime.getHoursToBedTime(), binding.slpClkSetTime.getMinutesToBedTime()));
+        alarmTime.setText(String.format(Locale.ENGLISH, "%02d:%02d", binding.slpClkSetTime.getHoursToAlarm(), binding.slpClkSetTime.getMinutesToAlarm()));
+        binding.slpClkSetTime.setOnBedtimeChangedListener((hours, minutes) -> {
             storedAlarm.bedtimeTimestamp = (long) hours * 60L * 60L * 1000L + (long) minutes * 60L * 1000L;
             bedtime.setText(String.format(Locale.ENGLISH, "%02d:%02d", hours, minutes));
         });
-        sleepClock.setOnAlarmTimeChangedListener((hours, minutes) -> {
+        binding.slpClkSetTime.setOnAlarmTimeChangedListener((hours, minutes) -> {
             storedAlarm.alarmTimestamp = (long) hours * 60L * 60L * 1000L + (long) minutes * 60L * 1000L;
             alarmTime.setText(String.format(Locale.ENGLISH, "%02d:%02d", hours, minutes));
         });
     }
 
     private void setEditValuesFromItem() {
-        ringtoneChip.setChecked(storedAlarm.alarmToneTypeId == AlarmToneType.RINGTONE.ordinal());
-        binauralBeatsChip.setChecked(storedAlarm.alarmToneTypeId == AlarmToneType.BINAURAL_BEAT.ordinal());
-        customFileChip.setChecked(storedAlarm.alarmToneTypeId == AlarmToneType.CUSTOM_FILE.ordinal());
+        binding.chpRingtone.setChecked(storedAlarm.alarmToneTypeId == AlarmToneType.RINGTONE.ordinal());
+        binding.chpBinauralBeats.setChecked(storedAlarm.alarmToneTypeId == AlarmToneType.BINAURAL_BEAT.ordinal());
+        binding.chpCustomFile.setChecked(storedAlarm.alarmToneTypeId == AlarmToneType.CUSTOM_FILE.ordinal());
         ringtoneUri = Uri.parse(storedAlarm.alarmUri);
         String title;
         switch(AlarmToneType.values()[storedAlarm.alarmToneTypeId]){
             case RINGTONE:
                 Ringtone ringtone = RingtoneManager.getRingtone(this, ringtoneUri);
                 title = ringtone.getTitle(this);
-                selectedToneText.setText(title);
+                binding.txtToneSelected.setText(title);
                 break;
             case CUSTOM_FILE:
                 File file = new File(ringtoneUri.getPath());
                 String filename = file.getName();
                 title = filename.substring(0, filename.lastIndexOf("."));
-                selectedToneText.setText(title);
+                binding.txtToneSelected.setText(title);
                 break;
             case BINAURAL_BEAT:
                 // TODO: Get selected binaural beat and display it appropriately
                 break;
         }
-        alarmVolume.setValue(storedAlarm.alarmVolume);
-        currAlarmVolume.setText(String.format(Locale.ENGLISH, "%d%%", (int)Math.round(alarmVolume.getValue() * 100)));
+        binding.sldAlarmVolume.setValue(storedAlarm.alarmVolume);
+        binding.txtCurrAlarmVolume.setText(String.format(Locale.ENGLISH, "%d%%", Math.round(binding.sldAlarmVolume.getValue() * 100)));
         long volIncMinutes = TimeUnit.MILLISECONDS.toMinutes(storedAlarm.alarmVolumeIncreaseTimestamp);
         long volIncSeconds = TimeUnit.MILLISECONDS.toSeconds(storedAlarm.alarmVolumeIncreaseTimestamp) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(storedAlarm.alarmVolumeIncreaseTimestamp));
         currentVolIncMin = (int)volIncMinutes;
         currentVolIncSec = (int)volIncSeconds;
-        incVolumeFor.setText(String.format(Locale.ENGLISH, "%dm %ds", currentVolIncMin, currentVolIncSec));
-        useFlashlight.setChecked(storedAlarm.isFlashlightActive);
-        vibrateAlarm.setChecked(storedAlarm.isVibrationActive);
-        alarmTitle.setText(storedAlarm.title);
+        binding.txtIncVolumeFor.setText(String.format(Locale.ENGLISH, "%dm %ds", currentVolIncMin, currentVolIncSec));
+        binding.swtAlarmUseFlashlight.setChecked(storedAlarm.isFlashlightActive);
+        binding.swtVibrateAlarm.setChecked(storedAlarm.isVibrationActive);
+        binding.txtAlarmName.setText(storedAlarm.title);
         for (int i = 0; i < storedAlarm.pattern.length; i++) {
             weekdayChips[i].setChecked(storedAlarm.pattern[i]);
         }
@@ -420,7 +367,7 @@ public class AlarmEditorView extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                ringtoneChip.setChecked(true);
+                binding.chpRingtone.setChecked(true);
             }
         }
     }
@@ -428,25 +375,25 @@ public class AlarmEditorView extends AppCompatActivity {
     private void updateAlarmRepeatText() {
         boolean[] activePattern = getCurrentRepeatPattern();
         if (Arrays.equals(activePattern, everydayRepeatPattern)) {
-            repeatPatternText.setText("Repeat every day");
+            binding.txtRepeatPatternText.setText("Repeat every day");
         }
         else if (Arrays.equals(activePattern, allWeekdaysRepeatPattern)) {
-            repeatPatternText.setText("Repeat every weekday");
+            binding.txtRepeatPatternText.setText("Repeat every weekday");
         }
         else if (Arrays.equals(activePattern, allWeekendsRepeatPattern)) {
-            repeatPatternText.setText("Repeat every weekend");
+            binding.txtRepeatPatternText.setText("Repeat every weekend");
         }
         else if (Arrays.equals(activePattern, noRepeatPattern)) {
-            repeatPatternText.setText("Repeat only once");
+            binding.txtRepeatPatternText.setText("Repeat only once");
         }
         else {
             List<String> activeWeekdays = new ArrayList<>();
             for (int i = 0; i < activePattern.length; i++) {
-                if(activePattern[i] == true){
+                if(activePattern[i]) {
                     activeWeekdays.add(weekdayShorts[i]);
                 }
             }
-            repeatPatternText.setText(String.format(Locale.ENGLISH, "Repeat every %s", String.join(", ", activeWeekdays)));
+            binding.txtRepeatPatternText.setText(String.format(Locale.ENGLISH, "Repeat every %s", String.join(", ", activeWeekdays)));
         }
     }
 
@@ -461,19 +408,19 @@ public class AlarmEditorView extends AppCompatActivity {
     private void setCurrentAlarmValues(SleepClock sleepClock) {
         storedAlarm.bedtimeTimestamp = (long) sleepClock.getHoursToBedTime() * 60L * 60L * 1000L + (long) sleepClock.getMinutesToBedTime() * 60L * 1000L;
         storedAlarm.alarmTimestamp = (long) sleepClock.getHoursToAlarm() * 60L * 60L * 1000L + (long) sleepClock.getMinutesToAlarm() * 60L * 1000L;
-        storedAlarm.alarmToneTypeId = ringtoneChip.isChecked() ? AlarmToneType.RINGTONE.ordinal() : (customFileChip.isChecked() ? AlarmToneType.CUSTOM_FILE.ordinal() : (binauralBeatsChip.isChecked() ? AlarmToneType.BINAURAL_BEAT.ordinal() : -1));
+        storedAlarm.alarmToneTypeId = binding.chpRingtone.isChecked() ? AlarmToneType.RINGTONE.ordinal() : (binding.chpCustomFile.isChecked() ? AlarmToneType.CUSTOM_FILE.ordinal() : (binding.chpBinauralBeats.isChecked() ? AlarmToneType.BINAURAL_BEAT.ordinal() : -1));
         storedAlarm.alarmUri = ringtoneUri.toString();
-        storedAlarm.alarmVolume = alarmVolume.getValue();
+        storedAlarm.alarmVolume = binding.sldAlarmVolume.getValue();
         storedAlarm.alarmVolumeIncreaseTimestamp = (long) currentVolIncMin * 60L * 1000L + (long) currentVolIncSec * 1000L;
-        storedAlarm.isFlashlightActive = useFlashlight.isChecked();
-        storedAlarm.isVibrationActive = vibrateAlarm.isChecked();
+        storedAlarm.isFlashlightActive = binding.swtAlarmUseFlashlight.isChecked();
+        storedAlarm.isVibrationActive = binding.swtVibrateAlarm.isChecked();
         storedAlarm.title = "";
     }
 
     private void setVolumeIncreaseTime(int minutes, int seconds) {
         currentVolIncMin = minutes;
         currentVolIncSec = seconds;
-        incVolumeFor.setText(String.format(Locale.ENGLISH, "%dm %ds", currentVolIncMin, currentVolIncSec));
+        binding.txtIncVolumeFor.setText(String.format(Locale.ENGLISH, "%dm %ds", currentVolIncMin, currentVolIncSec));
         storedAlarm.alarmVolumeIncreaseTimestamp = (long) currentVolIncMin * 60L * 1000L + (long) currentVolIncSec * 1000L;
     }
 }

@@ -15,12 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,16 +27,16 @@ import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.data.records.AppliedFilter;
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamType;
-import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamClarity;
 import com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamMoods;
 import com.bitflaker.lucidsourcekit.data.enums.journalratings.SleepQuality;
+import com.bitflaker.lucidsourcekit.data.records.AppliedFilter;
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamType;
+import com.bitflaker.lucidsourcekit.databinding.DialogFilterBinding;
+import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.radiobutton.MaterialRadioButton;
 
@@ -50,22 +48,15 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class FilterDialog extends DialogFragment implements DialogInterface.OnClickListener {
-    private MaterialButton filterDreamMoodCat, filterDreamClarityCat, filterSleepQualityCat, filterDreamTypeCat, filterEntryTagsCat;
-    private AutoCompleteTextView filterTags;
     private final String[] tags;
-    private DialogInterface.OnClickListener okClickListener;
-    private List<String> filterTagsList;
-    private List<String> filterDreamTypes;
-    private AppliedFilter currentFilter;
-    private RadioGroup filterDreamMoodRadioGroup, filterDreamClarityRadioGroup, filterSleepQualityRadioGroup;
-    private LinearLayout filterDreamType, filterEntryTag;
-    private Context context;
-    private HashMap<View, MaterialButton> titleButtonMap = new HashMap<>();
+    private final List<String> filterTagsList;
+    private final List<String> filterDreamTypes;
+    private final AppliedFilter currentFilter;
+    private final Context context;
+    private final HashMap<View, MaterialButton> titleButtonMap = new HashMap<>();
     private HashMap<MaterialButton, View> optionsEntryMap = new HashMap<>();
-    private ChipGroup tagFilterGroupTitle;
-    private TextView noTagsInFilter, filterTagCount, tagFilterInfo;
-    private LinearLayout contentDreamMood, contentDreamType, contentDreamClarity, contentSleepQuality, dreamTypeCheckboxContainer;
-    private MaterialButton titleDreamType, titleDreamMood, titleDreamClarity, titleSleepQuality;
+    private DialogInterface.OnClickListener okClickListener;
+    private DialogFilterBinding binding;
 
     public FilterDialog(Context context, String[] tags, AppliedFilter currentFilter) {
         this.tags = tags;
@@ -78,25 +69,28 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        View view = getLayoutInflater().inflate(R.layout.dialog_filter, null);
+        binding = DialogFilterBinding.inflate(getLayoutInflater());
 
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
-        builder.setView(view);
+        builder.setView(binding.getRoot());
         builder.setPositiveButton(R.string.ok, okClickListener).setNegativeButton(R.string.cancel, this);
-        setData(view);
 
-        titleButtonMap.put(contentDreamType, titleDreamType);
-        titleButtonMap.put(contentDreamMood, titleDreamMood);
-        titleButtonMap.put(contentDreamClarity, titleDreamClarity);
-        titleButtonMap.put(contentSleepQuality, titleSleepQuality);
-        optionsEntryMap = new HashMap<>(titleButtonMap.keySet().stream().collect(Collectors.toMap(k -> titleButtonMap.get(k), k -> k)));
+        binding.chpGrpFilterTags.removeAllViews();
+        binding.txtTagFilterInfo.setVisibility(View.GONE);
+        TextViewCompat.setCompoundDrawableTintList(binding.btnFilterEntryTags, Tools.getAttrColorStateList(R.attr.colorOutlineVariant, context.getTheme()));
+
+        titleButtonMap.put(binding.llContentDt, binding.imgTitleImageDreamType);
+        titleButtonMap.put(binding.llContentDm, binding.imgTitleImageDreamMood);
+        titleButtonMap.put(binding.llContentDc, binding.imgTitleImageDreamClarity);
+        titleButtonMap.put(binding.llContentSq, binding.imgTitleImageSleepQuality);
+        optionsEntryMap = new HashMap<>(titleButtonMap.keySet().stream().collect(Collectors.toMap(titleButtonMap::get, k -> k)));
         optionsEntryMap.keySet().forEach(b -> b.setOnClickListener(this::openFilterFromTitle));
 
         setupSimpleCategoryListeners();
         setupTagsCategoryListener();
         for (String filterTag : currentFilter.filterTagsList()) { addTagFilterEntry(filterTag); }
         setupRadioChangedListeners();
-        updateStatesWhenLoaded(view);
+        updateStatesWhenLoaded();
 
         return builder.create();
     }
@@ -106,17 +100,17 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
         optionsEntryMap.get(view).setVisibility(View.VISIBLE);
     }
 
-    private void setCurrentFilterCategoryStates(View view) {
-        checkboxSelectionChanged(filterDreamTypeCat, dreamTypeCheckboxContainer, contentDreamType);
-        radioSelectionChanged(view.findViewById(filterDreamMoodRadioGroup.getCheckedRadioButtonId()), filterDreamMoodCat, filterDreamMoodRadioGroup, contentDreamMood);
-        radioSelectionChanged(view.findViewById(filterDreamClarityRadioGroup.getCheckedRadioButtonId()), filterDreamClarityCat, filterDreamClarityRadioGroup, contentDreamClarity);
-        radioSelectionChanged(view.findViewById(filterSleepQualityRadioGroup.getCheckedRadioButtonId()), filterSleepQualityCat, filterSleepQualityRadioGroup, contentSleepQuality);
+    private void setCurrentFilterCategoryStates() {
+        checkboxSelectionChanged(binding.btnFilterDreamType, binding.llDt, binding.llContentDt);
+        radioSelectionChanged(binding.btnFilterDreamMood, binding.rdgDm, binding.llContentDm);
+        radioSelectionChanged(binding.btnFilterDreamClarity, binding.rdgDc, binding.llContentDc);
+        radioSelectionChanged(binding.btnFilterSleepQuality, binding.rdgSq, binding.llContentSq);
     }
 
     private void setupRadioChangedListeners() {
-        setupRadioSelectionChangedListeners(filterDreamMoodRadioGroup, filterDreamMoodCat, contentDreamMood);
-        setupRadioSelectionChangedListeners(filterDreamClarityRadioGroup, filterDreamClarityCat, contentDreamClarity);
-        setupRadioSelectionChangedListeners(filterSleepQualityRadioGroup, filterSleepQualityCat, contentSleepQuality);
+        setupRadioSelectionChangedListeners(binding.rdgDm, binding.btnFilterDreamMood, binding.llContentDm);
+        setupRadioSelectionChangedListeners(binding.rdgDc, binding.btnFilterDreamClarity, binding.llContentDc);
+        setupRadioSelectionChangedListeners(binding.rdgSq, binding.btnFilterSleepQuality, binding.llContentSq);
     }
 
     private void setupRadioSelectionChangedListeners(RadioGroup group, MaterialButton category, LinearLayout content) {
@@ -124,7 +118,7 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
             if (group.getChildAt(i) instanceof MaterialRadioButton button) {
                 button.setOnCheckedChangeListener((compoundButton, isSelected) -> {
                     if (isSelected) {
-                        radioSelectionChanged(compoundButton, category, group, content);
+                        radioSelectionChanged(category, group, content);
                     }
                 });
             }
@@ -132,71 +126,39 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
     }
 
     private void setupTagsCategoryListener() {
-        filterTags.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, tags));
-        filterTags.setOnItemClickListener((adapterView, view, i, l) -> addTagToFilter());
-        filterTags.setOnEditorActionListener((textView, i, keyEvent) -> {
+        binding.actvFilterTags.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, tags));
+        binding.actvFilterTags.setOnItemClickListener((adapterView, view, i, l) -> addTagToFilter());
+        binding.actvFilterTags.setOnEditorActionListener((textView, i, keyEvent) -> {
             if(i == IME_ACTION_DONE) addTagToFilter();
             return true;
         });
     }
 
     private void addTagToFilter() {
-        String enteredTag = filterTags.getText().toString();
+        String enteredTag = binding.actvFilterTags.getText().toString();
         if(Arrays.asList(tags).contains(enteredTag) && !filterTagsList.contains(enteredTag)){
             addTagFilterEntry(enteredTag);
         }
     }
 
     private void setupSimpleCategoryListeners() {
-        filterDreamMoodCat.setOnClickListener(e -> openCloseExpander(contentDreamMood));
-        filterDreamClarityCat.setOnClickListener(e -> openCloseExpander(contentDreamClarity));
-        filterSleepQualityCat.setOnClickListener(e -> openCloseExpander(contentSleepQuality));
-        filterDreamTypeCat.setOnClickListener(e -> openCloseExpander(contentDreamType));
-        filterEntryTagsCat.setOnClickListener(e -> openCloseExpander(filterEntryTag));
+        binding.btnFilterDreamMood.setOnClickListener(e -> openCloseExpander(binding.llContentDm));
+        binding.btnFilterDreamClarity.setOnClickListener(e -> openCloseExpander(binding.llContentDc));
+        binding.btnFilterSleepQuality.setOnClickListener(e -> openCloseExpander(binding.llContentSq));
+        binding.btnFilterDreamType.setOnClickListener(e -> openCloseExpander(binding.llContentDt));
+        binding.btnFilterEntryTags.setOnClickListener(e -> openCloseExpander(binding.llContentTags));
 
         // Setting default values
-        ((MaterialRadioButton) filterDreamMoodRadioGroup.getChildAt((currentFilter.dreamMood().ordinal() + 1) % DreamMoods.values().length)).setChecked(true);
-        ((MaterialRadioButton) filterDreamClarityRadioGroup.getChildAt((currentFilter.dreamClarity().ordinal() + 1) % DreamClarity.values().length)).setChecked(true);
-        ((MaterialRadioButton) filterSleepQualityRadioGroup.getChildAt((currentFilter.sleepQuality().ordinal() + 1) % SleepQuality.values().length)).setChecked(true);
-        setCheckedStateInList(dreamTypeCheckboxContainer, Arrays.stream(DreamType.populateData()).map(x -> x.typeId).collect(Collectors.toList()));
+        ((MaterialRadioButton) binding.rdgDm.getChildAt((currentFilter.dreamMood().ordinal() + 1) % DreamMoods.values().length)).setChecked(true);
+        ((MaterialRadioButton) binding.rdgDc.getChildAt((currentFilter.dreamClarity().ordinal() + 1) % DreamClarity.values().length)).setChecked(true);
+        ((MaterialRadioButton) binding.rdgSq.getChildAt((currentFilter.sleepQuality().ordinal() + 1) % SleepQuality.values().length)).setChecked(true);
+        setCheckedStateInList(binding.llDt, Arrays.stream(DreamType.populateData()).map(x -> x.typeId).collect(Collectors.toList()));
     }
 
-    private void setData(View view) {
-        tagFilterInfo = view.findViewById(R.id.txt_tag_filter_info);
-        filterTagCount = view.findViewById(R.id.txt_filter_tag_count);
-        noTagsInFilter = view.findViewById(R.id.txt_no_tags_filtered);
-        filterTags = view.findViewById(R.id.actv_filter_tags);
-        tagFilterGroupTitle = view.findViewById(R.id.chp_grp_filter_tags);
-        filterDreamMoodCat = view.findViewById(R.id.btn_filter_dream_mood);
-        filterDreamMoodRadioGroup = view.findViewById(R.id.rdg_dm);
-        filterDreamClarityCat = view.findViewById(R.id.btn_filter_dream_clarity);
-        filterDreamClarityRadioGroup = view.findViewById(R.id.rdg_dc);
-        filterSleepQualityCat = view.findViewById(R.id.btn_filter_sleep_quality);
-        filterSleepQualityRadioGroup = view.findViewById(R.id.rdg_sq);
-        filterDreamTypeCat = view.findViewById(R.id.btn_filter_dream_type);
-        filterDreamType = view.findViewById(R.id.ll_content_dt);
-        filterEntryTag = view.findViewById(R.id.ll_content_tags);
-        filterEntryTagsCat = view.findViewById(R.id.btn_filter_entry_tags);
-        dreamTypeCheckboxContainer = view.findViewById(R.id.ll_dt);
-
-        contentDreamType = view.findViewById(R.id.ll_content_dt);
-        titleDreamType = view.findViewById(R.id.img_title_image_dream_type);
-        contentDreamMood = view.findViewById(R.id.ll_content_dm);
-        titleDreamMood = view.findViewById(R.id.img_title_image_dream_mood);
-        contentDreamClarity = view.findViewById(R.id.ll_content_dc);
-        titleDreamClarity = view.findViewById(R.id.img_title_image_dream_clarity);
-        contentSleepQuality = view.findViewById(R.id.ll_content_sq);
-        titleSleepQuality = view.findViewById(R.id.img_title_image_sleep_quality);
-
-        tagFilterGroupTitle.removeAllViews();
-        tagFilterInfo.setVisibility(View.GONE);
-        TextViewCompat.setCompoundDrawableTintList(filterEntryTagsCat, Tools.getAttrColorStateList(R.attr.colorOutlineVariant, context.getTheme()));
-    }
-
-    private void radioSelectionChanged(View checked, MaterialButton categoryButton, RadioGroup radioGroup, LinearLayout container) {
-        filterTags.clearFocus();
+    private void radioSelectionChanged(MaterialButton categoryButton, RadioGroup radioGroup, LinearLayout container) {
+        binding.actvFilterTags.clearFocus();
         MaterialRadioButton doNotFilterOption = (MaterialRadioButton) radioGroup.getChildAt(0);
-        MaterialRadioButton selected = (MaterialRadioButton) checked;
+        MaterialRadioButton selected = binding.getRoot().findViewById(radioGroup.getCheckedRadioButtonId());
         setIcons(categoryButton, container, List.of(selected), selected.isChecked() && selected == doNotFilterOption);
     }
 
@@ -229,7 +191,7 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
     }
 
     private void checkboxSelectionChanged(MaterialButton categoryButton, LinearLayout container, LinearLayout content) {
-        filterTags.clearFocus();
+        binding.actvFilterTags.clearFocus();
         List<MaterialCheckBox> checkedItems = new ArrayList<>();
         for (int i = 0; i < container.getChildCount(); i++) {
             if (container.getChildAt(i) instanceof MaterialCheckBox chk && chk.isChecked()){
@@ -283,7 +245,7 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
                 else {
                     filterDreamTypes.remove(dreamTypeId);
                 }
-                checkboxSelectionChanged(filterDreamTypeCat, dreamTypeCheckboxContainer, contentDreamType);
+                checkboxSelectionChanged(binding.btnFilterDreamType, binding.llDt, binding.llContentDt);
             });
         }
     }
@@ -298,7 +260,7 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
     }
 
     private void openCloseExpander(View expanderContent) {
-        filterTags.clearFocus();
+        binding.actvFilterTags.clearFocus();
         if (expanderContent.getVisibility() == View.GONE) {
             expanderContent.setVisibility(View.VISIBLE);
         } else {
@@ -308,11 +270,11 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
 
     private void addTagFilterEntry(String enteredTag) {
         Chip titleChip = generateTagFilterChip(enteredTag, true);
-        tagFilterGroupTitle.addView(titleChip);
+        binding.chpGrpFilterTags.addView(titleChip);
         filterTagsList.add(enteredTag);
-        filterTags.setText("");
-        if (noTagsInFilter.getVisibility() == View.VISIBLE) {
-            noTagsInFilter.setVisibility(View.GONE);
+        binding.actvFilterTags.setText("");
+        if (binding.txtNoTagsFiltered.getVisibility() == View.VISIBLE) {
+            binding.txtNoTagsFiltered.setVisibility(View.GONE);
         }
         updateTagFilterCount();
     }
@@ -335,7 +297,7 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
             filterTagsList.remove(enteredTag);
             ((ViewGroup) e.getParent()).removeView(e);
             if (filterTagsList.isEmpty()) {
-                noTagsInFilter.setVisibility(View.VISIBLE);
+                binding.txtNoTagsFiltered.setVisibility(View.VISIBLE);
             }
             updateTagFilterCount();
         });
@@ -344,26 +306,26 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
 
     private void updateTagFilterCount() {
         int tagFilterCount = filterTagsList.size();
-        filterTagCount.setText(String.format(Locale.getDefault(), "%d %s", tagFilterCount, (tagFilterCount == 1 ? "tag" : "tags")));
-        tagFilterInfo.setText(String.format(Locale.getDefault(), "%d %s in filter", tagFilterCount, (tagFilterCount == 1 ? "tag" : "tags")));
+        binding.txtFilterTagCount.setText(String.format(Locale.getDefault(), "%d %s", tagFilterCount, (tagFilterCount == 1 ? "tag" : "tags")));
+        binding.txtTagFilterInfo.setText(String.format(Locale.getDefault(), "%d %s in filter", tagFilterCount, (tagFilterCount == 1 ? "tag" : "tags")));
         if (tagFilterCount == 0) {
             Drawable icon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.rounded_add_24, context.getTheme());
             icon.setBounds(0, 0, Tools.dpToPx(context, 24), Tools.dpToPx(context, 24));
-            filterEntryTagsCat.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
-            filterTagCount.setVisibility(View.GONE);
-            tagFilterInfo.setVisibility(View.GONE);
+            binding.btnFilterEntryTags.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
+            binding.txtFilterTagCount.setVisibility(View.GONE);
+            binding.txtTagFilterInfo.setVisibility(View.GONE);
         }
         else {
-            filterEntryTagsCat.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-            filterTagCount.setVisibility(View.VISIBLE);
-            tagFilterInfo.setVisibility(View.VISIBLE);
+            binding.btnFilterEntryTags.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+            binding.txtFilterTagCount.setVisibility(View.VISIBLE);
+            binding.txtTagFilterInfo.setVisibility(View.VISIBLE);
         }
     }
 
     public AppliedFilter getFilters() {
-        int moodIndex = getSelectedRadio(filterDreamMoodRadioGroup)-1;
-        int clarityIndex = getSelectedRadio(filterDreamClarityRadioGroup)-1;
-        int qualityIndex = getSelectedRadio(filterSleepQualityRadioGroup)-1;
+        int moodIndex = getSelectedRadio(binding.rdgDm) - 1;
+        int clarityIndex = getSelectedRadio(binding.rdgDc) - 1;
+        int qualityIndex = getSelectedRadio(binding.rdgSq) - 1;
         DreamMoods mood = moodIndex >= 0 ? DreamMoods.values()[moodIndex] : DreamMoods.None;
         DreamClarity clarity = clarityIndex >= 0 ? DreamClarity.values()[clarityIndex] : DreamClarity.None;
         SleepQuality quality = qualityIndex >= 0 ? SleepQuality.values()[qualityIndex] : SleepQuality.None;
@@ -383,14 +345,14 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
         okClickListener = listener;
     }
 
-    private void updateStatesWhenLoaded(View view) {
-        ViewTreeObserver viewTreeObserver = view.getViewTreeObserver();
+    private void updateStatesWhenLoaded() {
+        ViewTreeObserver viewTreeObserver = binding.getRoot().getViewTreeObserver();
         if (viewTreeObserver.isAlive()) {
             viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    setCurrentFilterCategoryStates(view);
+                    binding.getRoot().getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    setCurrentFilterCategoryStates();
                 }
             });
         }

@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.AsyncListDiffer;
@@ -26,8 +25,10 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.data.enums.SortBy;
+import com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamMoods;
+import com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamTypes;
 import com.bitflaker.lucidsourcekit.data.records.AppliedFilter;
-import com.bitflaker.lucidsourcekit.views.RangeProgress;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamClarity;
@@ -35,13 +36,11 @@ import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.SleepQuality;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
+import com.bitflaker.lucidsourcekit.databinding.EntryJournalBinding;
+import com.bitflaker.lucidsourcekit.databinding.SheetJournalEntryBinding;
 import com.bitflaker.lucidsourcekit.utils.RecordingObjectTools;
-import com.bitflaker.lucidsourcekit.data.enums.SortBy;
 import com.bitflaker.lucidsourcekit.utils.Tools;
-import com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamTypes;
-import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.IOException;
@@ -104,8 +103,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     @Override
     public MainViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.entry_journal, parent, false);
-        return new MainViewHolder(view, context);
+        return new MainViewHolder(EntryJournalBinding.inflate(inflater, parent, false), context);
     }
 
     @Override
@@ -136,13 +134,13 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         List<String> tagItems = current.getStringTags();
         holder.setTagList(tagItems, activity);
 
-        holder.entryCard.setOnClickListener(e -> viewDreamJournalEntry(current));
+        holder.binding.crdJournalEntryCard.setOnClickListener(e -> viewDreamJournalEntry(current));
     }
 
     public void setTopEntryMargin(@NonNull MainViewHolder holder) {
-        LinearLayout.LayoutParams lParams = ((LinearLayout.LayoutParams) holder.firstDateIndicatorDate.getLayoutParams());
+        LinearLayout.LayoutParams lParams = ((LinearLayout.LayoutParams) holder.binding.txtJournalEntryFirstDateIndicatorDate.getLayoutParams());
         lParams.topMargin = 0;
-        holder.firstDateIndicatorDate.setLayoutParams(lParams);
+        holder.binding.txtJournalEntryFirstDateIndicatorDate.setLayoutParams(lParams);
     }
 
     private static boolean isFirstEntryOfDay(int position, List<DreamJournalEntry> currentList, Calendar cCurrent) {
@@ -158,55 +156,41 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
 
     private void viewDreamJournalEntry(DreamJournalEntry current) {
         final BottomSheetDialog bsd = new BottomSheetDialog(context, R.style.BottomSheetDialogStyle);
-        bsd.setContentView(R.layout.sheet_journal_entry);
+        SheetJournalEntryBinding binding = SheetJournalEntryBinding.inflate(LayoutInflater.from(context));
+        bsd.setContentView(binding.getRoot());
 
-        TextView timestamp = bsd.findViewById(R.id.txt_entry_timestamp);
-        ImageButton deleteEntry = bsd.findViewById(R.id.btn_delete_entry);
-        ImageButton editEntry = bsd.findViewById(R.id.btn_edit_entry);
-        TextView title = bsd.findViewById(R.id.txt_entry_title);
-        TextView content = bsd.findViewById(R.id.txt_entry_dream_content);
-        FlexboxLayout tagsLayout = bsd.findViewById(R.id.fbl_tags);
-        LinearLayout recordingsLayout = bsd.findViewById(R.id.ll_recordings_container);
-        ImageButton iconRecurring = bsd.findViewById(R.id.btn_icon_recurring);
-        ImageButton iconLucid = bsd.findViewById(R.id.btn_icon_lucid);
-        ImageButton iconSleepParalysis = bsd.findViewById(R.id.btn_icon_sleep_paralysis);
-        ImageButton iconFalseAwakening = bsd.findViewById(R.id.btn_icon_false_awakening);
-        ImageButton iconNightmare = bsd.findViewById(R.id.btn_icon_nightmare);
-        RangeProgress dreamMood = bsd.findViewById(R.id.rp_dream_mood);
-        RangeProgress dreamClarity = bsd.findViewById(R.id.rp_dream_clarity);
-        RangeProgress sleepQuality = bsd.findViewById(R.id.rp_sleep_quality);
         DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
         DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
 
         Date entryDate = Tools.calendarFromMillis(current.journalEntry.timeStamp).getTime();
-        timestamp.setText(String.format(Locale.getDefault(), "%s • %s", df.format(entryDate), tf.format(entryDate.getTime())));
-        title.setText(current.journalEntry.title);
-        content.setText(current.journalEntry.description);
-        iconRecurring.setVisibility(current.hasSpecialType("REC") ? View.VISIBLE : View.GONE);
-        iconLucid.setVisibility(current.hasSpecialType("LCD") ? View.VISIBLE : View.GONE);
-        iconSleepParalysis.setVisibility(current.hasSpecialType("SPL") ? View.VISIBLE : View.GONE);
-        iconFalseAwakening.setVisibility(current.hasSpecialType("FAW") ? View.VISIBLE : View.GONE);
-        iconNightmare.setVisibility(current.hasSpecialType("NTM") ? View.VISIBLE : View.GONE);
+        binding.txtEntryTimestamp.setText(String.format(Locale.getDefault(), "%s • %s", df.format(entryDate), tf.format(entryDate.getTime())));
+        binding.txtEntryTitle.setText(current.journalEntry.title);
+        binding.txtEntryDreamContent.setText(current.journalEntry.description);
+        binding.btnIconRecurring.setVisibility(current.hasSpecialType("REC") ? View.VISIBLE : View.GONE);
+        binding.btnIconLucid.setVisibility(current.hasSpecialType("LCD") ? View.VISIBLE : View.GONE);
+        binding.btnIconSleepParalysis.setVisibility(current.hasSpecialType("SPL") ? View.VISIBLE : View.GONE);
+        binding.btnIconFalseAwakening.setVisibility(current.hasSpecialType("FAW") ? View.VISIBLE : View.GONE);
+        binding.btnIconNightmare.setVisibility(current.hasSpecialType("NTM") ? View.VISIBLE : View.GONE);
 
-        if (current.audioLocations.isEmpty()) { recordingsLayout.setVisibility(View.GONE); }
+        if (current.audioLocations.isEmpty()) { binding.llRecordingsContainer.setVisibility(View.GONE); }
         for (AudioLocation recData : current.audioLocations) {
-            recordingsLayout.addView(generateRecordingsPlayer(recData));
+            binding.llRecordingsContainer.addView(generateRecordingsPlayer(recData));
         }
 
-        if (current.journalEntryTags.isEmpty()) { tagsLayout.setVisibility(View.GONE); }
+        if (current.journalEntryTags.isEmpty()) { binding.fblTags.setVisibility(View.GONE); }
         for (String tag : current.getStringTags()) {
-            tagsLayout.addView(generateTagView(tag));
+            binding.fblTags.addView(generateTagView(tag));
         }
 
-        dreamMood.setBackgroundAttrColor(R.attr.colorSurfaceContainerHigh);
-        dreamClarity.setBackgroundAttrColor(R.attr.colorSurfaceContainerHigh);
-        sleepQuality.setBackgroundAttrColor(R.attr.colorSurfaceContainerHigh);
+        binding.rpDreamMood.setBackgroundAttrColor(R.attr.colorSurfaceContainerHigh);
+        binding.rpDreamClarity.setBackgroundAttrColor(R.attr.colorSurfaceContainerHigh);
+        binding.rpSleepQuality.setBackgroundAttrColor(R.attr.colorSurfaceContainerHigh);
 
-        dreamMood.setData(4, DreamMood.valueOf(current.journalEntry.moodId), "DREAM MOOD", Tools.resolveIconDreamMood(context, current.journalEntry.moodId), null);
-        dreamClarity.setData(3, DreamClarity.valueOf(current.journalEntry.clarityId), "DREAM CLARITY", Tools.resolveIconDreamClarity(context, current.journalEntry.clarityId), null);
-        sleepQuality.setData(3, SleepQuality.valueOf(current.journalEntry.qualityId), "SLEEP QUALITY", Tools.resolveIconSleepQuality(context, current.journalEntry.qualityId), null);
+        binding.rpDreamMood.setData(4, DreamMood.valueOf(current.journalEntry.moodId), "DREAM MOOD", Tools.resolveIconDreamMood(context, current.journalEntry.moodId), null);
+        binding.rpDreamClarity.setData(3, DreamClarity.valueOf(current.journalEntry.clarityId), "DREAM CLARITY", Tools.resolveIconDreamClarity(context, current.journalEntry.clarityId), null);
+        binding.rpSleepQuality.setData(3, SleepQuality.valueOf(current.journalEntry.qualityId), "SLEEP QUALITY", Tools.resolveIconSleepQuality(context, current.journalEntry.qualityId), null);
 
-        deleteEntry.setOnClickListener(e1 -> new MaterialAlertDialogBuilder(context, R.style.Theme_LucidSourceKit_ThemedDialog)
+        binding.btnDeleteEntry.setOnClickListener(e1 -> new MaterialAlertDialogBuilder(context, R.style.Theme_LucidSourceKit_ThemedDialog)
                 .setTitle(context.getResources().getString(R.string.entry_delete_header))
                 .setMessage(context.getResources().getString(R.string.entry_delete_message))
                 .setPositiveButton(context.getResources().getString(R.string.yes), (dialog, which) -> {
@@ -217,7 +201,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
                 .show()
         );
 
-        editEntry.setOnClickListener(e1 -> {
+        binding.btnEditEntry.setOnClickListener(e1 -> {
             Intent intent = new Intent(context, DreamJournalEditorView.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("JOURNAL_ENTRY_ID", current.journalEntry.entryId);
@@ -373,7 +357,13 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
 
     public AppliedFilter getCurrentFilter() {
         if (currentFilter == null) {
-            return AppliedFilter.DEFAULT;
+            return new AppliedFilter(
+                    new ArrayList<>(),
+                    new ArrayList<>(),
+                    DreamMoods.None,
+                    com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamClarity.None,
+                    com.bitflaker.lucidsourcekit.data.enums.journalratings.SleepQuality.None
+            );
         }
         return currentFilter;
     }
@@ -451,86 +441,75 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     }
 
     public static class MainViewHolder extends RecyclerView.ViewHolder {
-        TextView title, description, firstDateIndicatorName, firstDateIndicatorDate, recordingsCount;
-        LinearLayout titleIcons, tagsHolder;
-        MaterialCardView entryCard;
-        ConstraintLayout mainContent;
-        float descriptionLineHeight;
         private final DateFormat fullDayInWeekNameFormatter;
         private final DateFormat dateFormat;
         private final Context context;
+        public EntryJournalBinding binding;
+        float descriptionLineHeight;
 
-        public MainViewHolder(@NonNull View itemView, Context context) {
-            super(itemView);
+        public MainViewHolder(@NonNull EntryJournalBinding binding, Context context) {
+            super(binding.getRoot());
             this.context = context;
+            this.binding = binding;
             fullDayInWeekNameFormatter = new SimpleDateFormat("EEEE");
             dateFormat = android.text.format.DateFormat.getDateFormat(context);
-            title = itemView.findViewById(R.id.txt_title);
-            description = itemView.findViewById(R.id.txt_description);
-            titleIcons = itemView.findViewById(R.id.ll_title_icons);
-            tagsHolder = itemView.findViewById(R.id.ll_tags_holder);
-            entryCard = itemView.findViewById(R.id.crd_journal_entry_card);
-            mainContent = itemView.findViewById(R.id.cl_main_content);
-            firstDateIndicatorName = itemView.findViewById(R.id.txt_journal_entry_first_date_indicator_name);
-            firstDateIndicatorDate = itemView.findViewById(R.id.txt_journal_entry_first_date_indicator_date);
-            recordingsCount = itemView.findViewById(R.id.txt_recordings_count);
 
-            descriptionLineHeight = description.getLineHeight();
+            descriptionLineHeight = binding.txtDescription.getLineHeight();
             ConstraintSet cs = new ConstraintSet();
-            cs.clone(mainContent);
-            cs.constrainMinHeight(description.getId(), (int) descriptionLineHeight * 2);
-            cs.applyTo(mainContent);
+            cs.clone(binding.clMainContent);
+            cs.constrainMinHeight(binding.txtDescription.getId(), (int) descriptionLineHeight * 2);
+            cs.applyTo(binding.clMainContent);
 
-            this.description.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-                int maxLines = (int) (description.getHeight() / descriptionLineHeight);
-                if (description.getLineCount() != maxLines) {
-                    description.setLines(maxLines);
-                    description.setText(description.getText());
+            binding.txtDescription.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+                int maxLines = (int) (binding.txtDescription.getHeight() / descriptionLineHeight);
+                if (binding.txtDescription.getLineCount() != maxLines) {
+                    binding.txtDescription.setLines(maxLines);
+                    binding.txtDescription.setText(binding.txtDescription.getText());
                 }
             });
         }
 
         public void resetEntry() {
-            LinearLayout.LayoutParams lParams = ((LinearLayout.LayoutParams) firstDateIndicatorDate.getLayoutParams());
+            LinearLayout.LayoutParams lParams = ((LinearLayout.LayoutParams) binding.txtJournalEntryFirstDateIndicatorDate.getLayoutParams());
             lParams.topMargin = Tools.dpToPx(context, 14);
-            firstDateIndicatorDate.setLayoutParams(lParams);
-            firstDateIndicatorName.setVisibility(View.GONE);
-            firstDateIndicatorDate.setVisibility(View.GONE);
-            tagsHolder.removeAllViews();
-            titleIcons.removeAllViews();
+            binding.txtJournalEntryFirstDateIndicatorDate.setLayoutParams(lParams);
+            binding.txtJournalEntryFirstDateIndicatorDate.setVisibility(View.GONE);
+            binding.txtJournalEntryFirstDateIndicatorName.setVisibility(View.GONE);
+            binding.llTagsHolder.removeAllViews();
+            binding.llTitleIcons.removeAllViews();
         }
 
         public void setDreamTimeHeading(Calendar currentEntryTime) {
-            firstDateIndicatorName.setVisibility(View.VISIBLE);
-            firstDateIndicatorName.setText(fullDayInWeekNameFormatter.format(currentEntryTime.getTime()));
-            firstDateIndicatorDate.setVisibility(View.VISIBLE);
-            firstDateIndicatorDate.setText(dateFormat.format(currentEntryTime.getTime()));
+            binding.txtJournalEntryFirstDateIndicatorName.setVisibility(View.VISIBLE);
+            binding.txtJournalEntryFirstDateIndicatorName.setText(fullDayInWeekNameFormatter.format(currentEntryTime.getTime()));
+            binding.txtJournalEntryFirstDateIndicatorDate.setVisibility(View.VISIBLE);
+            binding.txtJournalEntryFirstDateIndicatorDate.setText(dateFormat.format(currentEntryTime.getTime()));
         }
 
         public void setSpecialDreamIcons(List<DreamTypes> dreamTypes) {
             for (DreamTypes type : dreamTypes) {
-                titleIcons.addView(getSpecialTypeIcon(type));
+                binding.llTitleIcons.addView(getSpecialTypeIcon(type));
             }
-            titleIcons.setVisibility(dreamTypes.isEmpty() ? View.GONE : View.VISIBLE);
+            binding.llTitleIcons.setVisibility(dreamTypes.isEmpty() ? View.GONE : View.VISIBLE);
         }
 
         public void setTitleAndTextContent(String title, String textContent) {
-            this.title.setText(title);
+            this.binding.txtTitle.setText(title);
             boolean hasTextContent = !textContent.isEmpty();
-            description.setText(hasTextContent ? textContent : "This dream journal entry contains no text. How about adding some content now?");
-            description.setTypeface(null, hasTextContent ? Typeface.NORMAL : Typeface.ITALIC);
-            description.setTextColor(Tools.getAttrColor(hasTextContent ? R.attr.secondaryTextColor : R.attr.tertiaryTextColor, context.getTheme()));
+            binding.txtDescription.setText(hasTextContent ? textContent : "This dream journal entry contains no text. How about adding some content now?");
+            binding.txtDescription.setTypeface(null, hasTextContent ? Typeface.NORMAL : Typeface.ITALIC);
+            binding.txtDescription.setTextColor(Tools.getAttrColor(hasTextContent ? R.attr.secondaryTextColor : R.attr.tertiaryTextColor, context.getTheme()));
         }
 
         public void setRecordingsCount(int audioCount) {
-            recordingsCount.setText(String.format(Locale.getDefault(), "%d", audioCount));
-            recordingsCount.setVisibility(audioCount == 0 ? View.GONE : View.VISIBLE);
+            binding.txtRecordingsCount.setText(String.format(Locale.getDefault(), "%d", audioCount));
+            binding.txtRecordingsCount.setVisibility(audioCount == 0 ? View.GONE : View.VISIBLE);
         }
 
         public void setTagList(List<String> tagItems, Activity activity) {
             int layoutWidth = calculateTagsContainerWidth(activity);
             if (tagItems.isEmpty()) {
-                tagsHolder.addView(generateTagInfo("no tags available"));
+                binding.llTagsHolder.addView(generateTagInfo("no tags available"));
                 return;
             }
             int dividerSpacing = Tools.dpToPx(context, 4);
@@ -540,7 +519,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
                 int currentTagWidth = getViewWidth(tag);
                 int currentMargin = i == 0 ? 0 : dividerSpacing;
                 if (totalTagsWidth + currentTagWidth + currentMargin <= layoutWidth) {
-                    tagsHolder.addView(tag);
+                    binding.llTagsHolder.addView(tag);
                     totalTagsWidth += currentTagWidth + currentMargin;
                 }
                 else {
@@ -548,15 +527,15 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
                     TextView collapsedTagCount = generateCollapsedTagCountView(tagItems.size() - i);
                     while (totalTagsWidth + getViewWidth(collapsedTagCount) + dividerSpacing > layoutWidth) {
                         removeCount++;
-                        int index = tagsHolder.getChildCount() - 1;
-                        View lastView = tagsHolder.getChildAt(index);
-                        tagsHolder.removeViewAt(index);
+                        int index = binding.llTagsHolder.getChildCount() - 1;
+                        View lastView = binding.llTagsHolder.getChildAt(index);
+                        binding.llTagsHolder.removeViewAt(index);
                         int marginToRemove = index == 0 ? 0 : dividerSpacing;
                         int viewToRemoveWidth = getViewWidth(lastView);
                         totalTagsWidth -= viewToRemoveWidth + marginToRemove;
                         collapsedTagCount = generateCollapsedTagCountView(tagItems.size() - i + removeCount);
                     }
-                    tagsHolder.addView(collapsedTagCount);
+                    binding.llTagsHolder.addView(collapsedTagCount);
                     break;
                 }
             }
@@ -564,17 +543,17 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
 
         private int calculateTagsContainerWidth(Activity activity) {
             int totalWidth = activity.getWindow().getDecorView().getMeasuredWidth();
-            int totalHorizontalMargins = getHorizontalSpacing(tagsHolder);
-            ViewParent viewParent = tagsHolder;
+            int totalHorizontalMargins = getHorizontalSpacing(binding.llTagsHolder);
+            ViewParent viewParent = binding.llTagsHolder;
             while ((viewParent = viewParent.getParent()) instanceof View) {
                 View view = (View) viewParent;
                 totalHorizontalMargins += getHorizontalSpacing(view);
             }
-            int recordingsWidth = getViewWidth(recordingsCount);    // Seems to ignore the compound drawable at the start, therefore manually add it below
-            if (recordingsCount.getVisibility() != View.GONE) {
+            int recordingsWidth = getViewWidth(binding.txtRecordingsCount);    // Seems to ignore the compound drawable at the start, therefore manually add it below
+            if (binding.txtRecordingsCount.getVisibility() != View.GONE) {
                 recordingsWidth += Tools.dpToPx(context, 20);   // TODO: find a way not to hardcode this: get the sum of all horizontal compound drawable widths (.intrinsicWidth(), .bounds().width() are all 0 at this point)
             }
-            int specialIconContainerWidth = getViewWidth(titleIcons);
+            int specialIconContainerWidth = getViewWidth(binding.llTitleIcons);
             return totalWidth - totalHorizontalMargins - recordingsWidth - specialIconContainerWidth;
         }
 

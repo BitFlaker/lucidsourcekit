@@ -34,31 +34,26 @@
             app:tabRippleColor="@null">
 
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/ti_overview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/ic_round_dashboard_24" />
 
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/ti_logging"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/ic_round_book_24" />
 
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/ti_goals"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/ic_baseline_bookmark_added_24" />
 
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/ti_events"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/frequency_symbol" />
 
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/ti_stats"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/ic_round_insert_chart_24" />

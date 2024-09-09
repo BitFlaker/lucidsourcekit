@@ -4,7 +4,6 @@ import com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamClarity;
 import com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamMoods;
 import com.bitflaker.lucidsourcekit.data.enums.journalratings.SleepQuality;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public record AppliedFilter(
@@ -13,14 +12,6 @@ public record AppliedFilter(
         DreamMoods dreamMood,
         DreamClarity dreamClarity,
         SleepQuality sleepQuality) {
-
-    public static final AppliedFilter DEFAULT = new AppliedFilter(
-            new ArrayList<>(),
-            new ArrayList<>(),
-            DreamMoods.None,
-            DreamClarity.None,
-            SleepQuality.None
-    );
 
     public static boolean isEmptyFilter(AppliedFilter filter) {
         return filter.filterTagsList.isEmpty() &&

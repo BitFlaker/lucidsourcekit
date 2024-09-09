@@ -6,20 +6,18 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.widget.TextViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
-import com.bitflaker.lucidsourcekit.utils.Tools;
+import com.bitflaker.lucidsourcekit.databinding.EntryGoalBinding;
 import com.bitflaker.lucidsourcekit.main.dreamjournal.RecyclerViewAdapterDreamJournal;
+import com.bitflaker.lucidsourcekit.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,35 +41,37 @@ public class RecyclerViewAdapterEditGoals extends RecyclerView.Adapter<RecyclerV
     @Override
     public MainViewHolderGoals onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.entry_goal, parent, false);
-        return new MainViewHolderGoals(view);
+        return new MainViewHolderGoals(EntryGoalBinding.inflate(inflater, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull MainViewHolderGoals holder, int position) {
-        holder.goalText.setText(goals.get(position).description);
-        if(goals.get(position).isSelected && !holder.isSelected) {
+        Goal currentGoal = goals.get(position);
+        holder.binding.txtGoalText.setText(currentGoal.description);
+
+        if(currentGoal.isSelected && !holder.isSelected) {
             holder.select();
         }
-        else if(!goals.get(position).isSelected && holder.isSelected) {
+        else if(!currentGoal.isSelected && holder.isSelected) {
             holder.unselect();
         }
-        @ColorInt int difficultyColor = Tools.getColorAtGradientPosition(goals.get(position).difficulty, 1, 3, Tools.getAttrColor(R.attr.colorSuccess, context.getTheme()), Tools.getAttrColor(R.attr.colorWarning, context.getTheme()), Tools.getAttrColor(R.attr.colorError, context.getTheme()));
-        TextViewCompat.setCompoundDrawableTintList(holder.goalText, ColorStateList.valueOf(difficultyColor));
-        holder.container.setOnClickListener(e -> {
+
+        @ColorInt int difficultyColor = Tools.getColorAtGradientPosition(currentGoal.difficulty, 1, 3, Tools.getAttrColor(R.attr.colorSuccess, context.getTheme()), Tools.getAttrColor(R.attr.colorWarning, context.getTheme()), Tools.getAttrColor(R.attr.colorError, context.getTheme()));
+        TextViewCompat.setCompoundDrawableTintList(holder.binding.txtGoalText, ColorStateList.valueOf(difficultyColor));
+        holder.binding.clGoalContainer.setOnClickListener(e -> {
             if(!isInSelectionMode){
                 if(mListener != null) {
-                    mListener.onEvent(goals.get(position), position);
+                    mListener.onEvent(currentGoal, position);
                 }
             }
             else {
                 if(!holder.isSelected) {
-                    goals.get(position).isSelected = true;
+                    currentGoal.isSelected = true;
                     holder.select();
                     selectionCount++;
                 }
                 else {
-                    goals.get(position).isSelected = false;
+                    currentGoal.isSelected = false;
                     holder.unselect();
                     selectionCount--;
                     if(selectionCount == 0) {
@@ -81,23 +81,20 @@ public class RecyclerViewAdapterEditGoals extends RecyclerView.Adapter<RecyclerV
                 }
             }
         });
-        holder.container.setOnLongClickListener(view -> {
+
+        holder.binding.clGoalContainer.setOnLongClickListener(view -> {
             if(!holder.isSelected) {
                 // TODO: raise event so in lister the add button can be exchanged to a delete button (and colored red)
                 isInSelectionMode = true;
-                goals.get(position).isSelected = true;
+                currentGoal.isSelected = true;
                 holder.select();
                 selectionCount++;
                 if(mListenerMultiSelectEnter != null) { mListenerMultiSelectEnter.onEvent(); }
             }
             return true;
         });
-        if(goals.get(position).difficultyLocked){
-            holder.difficultyLocked.setVisibility(View.VISIBLE);
-        }
-        else {
-            holder.difficultyLocked.setVisibility(View.GONE);
-        }
+
+        holder.binding.imgDifficultyLocked.setVisibility(currentGoal.difficultyLocked ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -121,7 +118,7 @@ public class RecyclerViewAdapterEditGoals extends RecyclerView.Adapter<RecyclerV
         List<Integer> removedIndexes = getAllRemovedIndexes(goals);
         this.goals = goals;
         int index;
-        switch (changes.first){
+        switch (changes.first) {
             case ADDED:
                 index = changes.second;
                 mRecyclerView.scrollToPosition(index);
@@ -223,28 +220,24 @@ public class RecyclerViewAdapterEditGoals extends RecyclerView.Adapter<RecyclerV
     }
 
     public class MainViewHolderGoals extends RecyclerView.ViewHolder {
-        TextView goalText;
-        ConstraintLayout container;
-        ImageView difficultyLocked;
+        EntryGoalBinding binding;
         boolean isSelected = false;
 
-        public MainViewHolderGoals(@NonNull View itemView) {
-            super(itemView);
-            goalText = itemView.findViewById(R.id.txt_goal_text);
-            container = itemView.findViewById(R.id.cl_goal_container);
-            difficultyLocked = itemView.findViewById(R.id.img_difficulty_locked);
+        public MainViewHolderGoals(@NonNull EntryGoalBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
 
         public void select() {
             isSelected = true;
-            container.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurfaceContainer, context.getTheme()));
-            goalText.setCompoundDrawablesWithIntrinsicBounds(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_baseline_check_24, context.getTheme()), null, null, null);
+            binding.clGoalContainer.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurfaceContainer, context.getTheme()));
+            binding.txtGoalText.setCompoundDrawablesWithIntrinsicBounds(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_baseline_check_24, context.getTheme()), null, null, null);
         }
 
         public void unselect() {
             isSelected = false;
-            container.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurface, context.getTheme()));
-            goalText.setCompoundDrawablesWithIntrinsicBounds(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_baseline_circle_24, context.getTheme()), null, null, null);
+            binding.clGoalContainer.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurface, context.getTheme()));
+            binding.txtGoalText.setCompoundDrawablesWithIntrinsicBounds(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_baseline_circle_24, context.getTheme()), null, null, null);
         }
     }
 

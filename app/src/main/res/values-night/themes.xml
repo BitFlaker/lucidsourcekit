@@ -161,7 +161,7 @@
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
-        <item name="theme">@style/Theme.LucidSourceKit.Default</item>
+        <item name="android:theme">@style/Theme.LucidSourceKit.Default</item>
     </style>
 
     <style name="LSK.Persistent.BottomSheet" parent="Theme.Material3.Dark.BottomSheetDialog">

@@ -59,7 +59,7 @@ public class NotificationOrderManager {
             long markerStart = markers.get(markerIndex);
             long markerEnd = markers.get(markerIndex  + 1);
             long markerDuration = markerEnd - markerStart;
-            long inMarkerDelay = markerItems.size() == 0 ? 0 : (markerDuration / markerItems.size());
+            long inMarkerDelay = markerItems.isEmpty() ? 0 : (markerDuration / markerItems.size());
 
             for (int i = 0; i < markerItems.size(); i++) {
                 long time = markerStart + (inMarkerDelay * i) + (inMarkerDelay / 2);
@@ -98,7 +98,7 @@ public class NotificationOrderManager {
 
     public NotificationScheduleData getNextNotification() {
         List<NotificationScheduleData> data = getScheduledData();
-        if(data.size() == 0) {
+        if(data.isEmpty()) {
             return null;
         }
 
