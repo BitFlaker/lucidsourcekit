@@ -33,179 +33,186 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.google.android.material.card.MaterialCardView
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                app:contentPadding="0dp"
-                app:strokeWidth="0dp"
-                style="@style/LSK.MaterialCardView.Outlined">
+                android:layout_height="wrap_content">
 
-                <LinearLayout
+                <com.bitflaker.lucidsourcekit.views.Speedometer
+                    android:id="@+id/som_difficulty"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="125dp"
+                    android:layout_marginHorizontal="56dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.bitflaker.lucidsourcekit.views.Speedometer
-                        android:id="@+id/som_difficulty"
-                        android:layout_width="match_parent"
-                        android:layout_height="125dp"
-                        android:layout_marginHorizontal="24dp"
-                        android:layout_marginTop="24dp"/>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_occurrence"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    app:layout_constraintEnd_toStartOf="@+id/cl_frequency"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/som_difficulty">
+
+                    <ImageView
+                        android:id="@+id/img_selection_diff_comparison"
+                        android:layout_width="12dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="4dp"
+                        android:src="@drawable/ic_round_arrow_downward_24"
+                        app:layout_constraintBottom_toBottomOf="@+id/ll_selection_diff_comparison"
+                        app:layout_constraintEnd_toStartOf="@+id/ll_selection_diff_comparison"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/ll_selection_diff_comparison"
+                        app:tint="?attr/colorTertiary" />
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/ll_selection_diff_comparison"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="48dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/txt_selection_diff_desc"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/img_selection_diff_comparison"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                        <RelativeLayout
-                            android:layout_width="0dp"
+                        <TextView
+                            android:id="@+id/txt_current_selection_diff_full"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1">
+                            android:fontFamily="sans-serif"
+                            android:textStyle="bold"
+                            android:text="165.5"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="16sp" />
 
-                            <ImageView
-                                android:id="@+id/img_selection_diff_comparison"
-                                android:layout_width="20dp"
-                                android:layout_height="wrap_content"
-                                android:layout_above="@+id/txt_selection_diff_desc"
-                                android:layout_alignParentTop="true"
-                                android:layout_marginEnd="3dp"
-                                android:layout_marginBottom="-6dp"
-                                android:layout_toStartOf="@+id/ll_selection_diff_comparison"
-                                android:src="@drawable/ic_round_arrow_downward_24"
-                                app:tint="?attr/colorTertiary" />
-
-                            <LinearLayout
-                                android:id="@+id/ll_selection_diff_comparison"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/txt_current_selection_diff_full"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif"
-                                    android:text="165"
-                                    android:textColor="?attr/primaryTextColor"
-                                    android:textSize="26sp" />
-
-                                <TextView
-                                    android:id="@+id/txt_current_selection_diff_part"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text=".5 %"
-                                    android:textColor="?attr/secondaryTextColor"
-                                    android:textSize="16sp" />
-                            </LinearLayout>
-
-                            <TextView
-                                android:id="@+id/txt_selection_diff_desc"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/ll_selection_diff_comparison"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginTop="8dp"
-                                android:text="Shuffle occurrence rating"
-                                android:textAlignment="center"
-                                android:textColor="?attr/secondaryTextColor"
-                                android:textSize="12sp" />
-                        </RelativeLayout>
-
-                        <Space
-                            android:layout_width="48dp"
-                            android:layout_height="wrap_content" />
-
-                        <RelativeLayout
-                            android:layout_width="0dp"
+                        <TextView
+                            android:id="@+id/txt_current_selection_diff_part"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1">
-
-                            <ImageView
-                                android:id="@+id/img_occ_freq_comparison"
-                                android:layout_width="20dp"
-                                android:layout_height="wrap_content"
-                                android:layout_above="@+id/txt_occurrence_freq_description"
-                                android:layout_alignBottom="@+id/ll_occurrence_freq_comparison"
-                                android:layout_alignParentTop="true"
-                                android:layout_marginEnd="3dp"
-                                android:layout_marginBottom="-6dp"
-                                android:layout_toStartOf="@+id/ll_occurrence_freq_comparison"
-                                android:src="@drawable/ic_round_arrow_downward_24"
-                                app:tint="?attr/colorTertiary" />
-
-                            <LinearLayout
-                                android:id="@+id/ll_occurrence_freq_comparison"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/txt_occurrence_freq_full"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="8"
-                                    android:textColor="?attr/primaryTextColor"
-                                    android:textSize="26sp" />
-
-                                <TextView
-                                    android:id="@+id/txt_occurrence_freq_part"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text=".46 %"
-                                    android:textColor="?attr/secondaryTextColor"
-                                    android:textSize="16sp" />
-                            </LinearLayout>
-
-                            <TextView
-                                android:id="@+id/txt_occurrence_freq_description"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/ll_occurrence_freq_comparison"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginTop="8dp"
-                                android:text="Goal recurrence frequency"
-                                android:textAlignment="center"
-                                android:textColor="?attr/secondaryTextColor"
-                                android:textSize="12sp" />
-                        </RelativeLayout>
+                            android:layout_marginStart="2dp"
+                            android:text="%"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="12sp" />
                     </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
-            <RelativeLayout
+                    <TextView
+                        android:id="@+id/txt_selection_diff_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Occurrence"
+                        android:textAlignment="center"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/ll_selection_diff_comparison"
+                        app:layout_constraintStart_toStartOf="@+id/img_selection_diff_comparison"
+                        app:layout_constraintTop_toBottomOf="@+id/ll_selection_diff_comparison" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_frequency"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/som_difficulty"
+                    app:layout_constraintStart_toEndOf="@+id/cl_occurrence">
+
+                    <ImageView
+                        android:id="@+id/img_occ_freq_comparison"
+                        android:layout_width="12dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="4dp"
+                        android:src="@drawable/ic_round_arrow_downward_24"
+                        app:layout_constraintBottom_toBottomOf="@+id/ll_occurrence_freq_comparison"
+                        app:layout_constraintEnd_toStartOf="@+id/ll_occurrence_freq_comparison"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/ll_occurrence_freq_comparison"
+                        app:tint="?attr/colorTertiary" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_occurrence_freq_comparison"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/txt_occurrence_freq_description"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/img_occ_freq_comparison"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_chainStyle="packed">
+
+                        <TextView
+                            android:id="@+id/txt_occurrence_freq_full"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:text="98.6"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/txt_occurrence_freq_unit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:text="%"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txt_occurrence_freq_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Frequency"
+                        android:textAlignment="center"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/ll_occurrence_freq_comparison"
+                        app:layout_constraintStart_toStartOf="@+id/img_occ_freq_comparison"
+                        app:layout_constraintTop_toBottomOf="@+id/ll_occurrence_freq_comparison" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.card.MaterialCardView
+                    style="@style/LSK.MaterialCardView.Filled"
+                    android:id="@+id/crd_goals_today"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="40dp"
                     android:layout_marginHorizontal="24dp"
-                    android:layout_marginBottom="24dp"
                     app:contentPadding="8dp"
-                    style="@style/LSK.MaterialCardView.Filled">
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="28dp">
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="32dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginTop="16dp"
                             android:layout_marginStart="16dp"
-                            android:textAllCaps="true"
+                            android:layout_marginTop="16dp"
                             android:text="Goals today"
+                            android:textAllCaps="true"
                             android:textColor="?attr/tertiaryTextColor"
                             android:textSize="11sp" />
+
+<!--                        TODO: The "more options" button should be removed as soon as the
+                                  quick action buttons at the button of the page are working -->
 
                         <ImageButton
                             android:id="@+id/btn_reshuffle_goals"
@@ -215,6 +222,7 @@
                             android:layout_gravity="end"
                             android:background="@drawable/ripple_round"
                             android:src="@drawable/rounded_more_horiz_24"
+                            android:visibility="visible"
                             app:backgroundTint="?attr/colorSurfaceContainer"
                             app:tint="?attr/secondaryTextColor" />
 
@@ -229,8 +237,8 @@
                             <com.google.android.material.checkbox.MaterialCheckBox
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:button="@drawable/checkbox_button_round"
                                 android:layout_weight="1"
+                                android:button="@drawable/checkbox_button_round"
                                 android:drawableLeft="@color/transparent"
                                 android:drawablePadding="15dp"
                                 android:drawableTint="@color/transparent"
@@ -243,10 +251,10 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:button="@drawable/checkbox_button_round"
-                                android:text="I turn off a light"
                                 android:drawableLeft="@android:color/transparent"
                                 android:drawablePadding="15dp"
                                 android:drawableTint="@color/transparent"
+                                android:text="I turn off a light"
                                 android:textColor="@color/checkbox_text_check_change"
                                 android:textSize="17sp"
                                 app:buttonTint="@color/checkbox_icon_check_change" />
@@ -254,11 +262,11 @@
                             <com.google.android.material.checkbox.MaterialCheckBox
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="I feel tired"
                                 android:button="@drawable/checkbox_button_round"
                                 android:drawableLeft="@android:color/transparent"
                                 android:drawablePadding="15dp"
                                 android:drawableTint="@color/transparent"
+                                android:text="I feel tired"
                                 android:textColor="@color/checkbox_text_check_change"
                                 android:textSize="17sp"
                                 app:buttonTint="@color/checkbox_icon_check_change" />
@@ -268,388 +276,68 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_adjust_algorithm"
+                    style="@style/Widget.Material3.Button.IconButton.Filled"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_centerHorizontal="true"
+                    android:text="Personalize"
+                    android:textColor="?attr/colorPrimary"
                     android:translationZ="6dp"
+                    android:layout_marginTop="-24dp"
                     app:backgroundTint="?attr/colorPrimaryContainer"
-                    app:iconTint="?attr/colorPrimary"
                     app:icon="@drawable/ic_baseline_auto_graph_24"
-                    app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
-                    style="@style/Widget.Material3.Button.IconButton.Filled" />
-            </RelativeLayout>
-
-            <!-- TODO: probably hide if it's the first day of using this tool -->
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="30dp"
-                android:text="Yesterday's Stats"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="23sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:text="The statistics about your goals yesterday"
-                android:textColor="?attr/secondaryTextColor"
-                android:textSize="14sp" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/crd_past_goals_achieved"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="12dp"
-                style="@style/LSK.MaterialCardView.Filled">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginTop="6dp"
-                        android:src="@drawable/ic_baseline_check_24"
-                        app:tint="?attr/tertiaryTextColor" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-medium"
-                            android:text="Goals Achieved"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="18sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:fontFamily="sans-serif"
-                            android:text="The percentage of goals you successfully achieved yesterday. The higher the percentage, the better your awareness. You have successfully achieved 2 out of 3 goals that day."
-                            android:textColor="?attr/secondaryTextColor"
-                            android:textSize="14sp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/txt_ygoals_achieved"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif"
-                                android:text="66"
-                                android:textColor="?attr/primaryTextColor"
-                                android:textSize="28sp" />
-
-                            <TextView
-                                android:id="@+id/txt_ygoals_achieved_part"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="2dp"
-                                android:fontFamily="sans-serif"
-                                android:text="%"
-                                android:textColor="?attr/secondaryTextColor"
-                                android:textSize="16sp" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/crd_past_goals_occurrence_rating"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginHorizontal="24dp"
-                style="@style/LSK.MaterialCardView.Filled">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginTop="6dp"
-                        android:src="@drawable/ic_round_bolt_24"
-                        app:tint="?attr/tertiaryTextColor" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-medium"
-                            android:text="Average occurrence rating"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="18sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:fontFamily="sans-serif"
-                            android:text="The average difficulty of all yesterday's targets. The higher the value, the more difficult it might have been to encounter or perceive the targets throughout the day."
-                            android:textColor="?attr/secondaryTextColor"
-                            android:textSize="14sp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/txt_ygoals_difficulty"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif"
-                                android:text="2.8"
-                                android:textColor="?attr/primaryTextColor"
-                                android:textSize="28sp" />
-
-                            <TextView
-                                android:id="@+id/txt_ygoals_difficulty_part"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="2dp"
-                                android:fontFamily="sans-serif"
-                                android:text="/3"
-                                android:textColor="?attr/secondaryTextColor"
-                                android:textSize="16sp" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                    app:iconPadding="8dp"
+                    app:iconTint="?attr/colorPrimary"
+                    app:layout_constraintTop_toBottomOf="@+id/crd_goals_today"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:shapeAppearance="@style/FloatingShapeAppearanceOverlay" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
-                android:id="@+id/ll_past_goals_ratings"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginHorizontal="24dp"
-                android:divider="@drawable/divider_large"
-                android:orientation="horizontal"
-                android:showDividers="middle">
+                android:layout_marginTop="48dp"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    style="@style/LSK.MaterialCardView.Filled">
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="4dp"
+                    android:tooltipText="Shuffle goals"
+                    app:icon="@drawable/ic_baseline_shuffle_24"
+                    app:iconTint="?attr/secondaryTextColor"
+                    app:backgroundTint="?attr/colorSurface"
+                    style="@style/Widget.Material3.Button.IconButton.Filled" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="4dp"
+                    android:tooltipText="Edit goals"
+                    app:icon="@drawable/ic_round_mode_edit_24"
+                    app:iconTint="?attr/secondaryTextColor"
+                    app:backgroundTint="?attr/colorSurface"
+                    style="@style/Widget.Material3.Button.IconButton.Filled" />
 
-                        <RelativeLayout
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:padding="2dp">
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/ic_round_bolt_24"
-                                app:tint="?attr/tertiaryTextColor" />
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_alignParentBottom="true"
-                                android:src="@drawable/ic_round_compare_arrows_24"
-                                app:tint="?attr/tertiaryTextColor" />
-                        </RelativeLayout>
-
-                        <androidx.legacy.widget.Space
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_weight="1" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/txt_ygoals_sel_difficulty"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif"
-                                android:text="138"
-                                android:textColor="?attr/primaryTextColor"
-                                android:textSize="28sp" />
-
-                            <TextView
-                                android:id="@+id/txt_ygoals_sel_difficulty_part"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="2dp"
-                                android:fontFamily="sans-serif"
-                                android:text=".5 %"
-                                android:textColor="?attr/secondaryTextColor"
-                                android:textSize="16sp" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Shuffle occurrence rating"
-                            android:textColor="?attr/secondaryTextColor"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    style="@style/LSK.MaterialCardView.Filled">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:padding="4dp"
-                            android:src="@drawable/ic_round_bar_chart_24"
-                            app:tint="?attr/tertiaryTextColor" />
-
-
-                        <androidx.legacy.widget.Space
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_weight="1" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/txt_ygoals_occ_freq"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif"
-                                android:text="100"
-                                android:textColor="?attr/primaryTextColor"
-                                android:textSize="28sp" />
-
-                            <TextView
-                                android:id="@+id/txt_ygoals_occ_freq_part"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="2dp"
-                                android:fontFamily="sans-serif"
-                                android:text=".00 %"
-                                android:textColor="?attr/secondaryTextColor"
-                                android:textSize="16sp" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Goal recurrence frequency"
-                            android:textColor="?attr/secondaryTextColor"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="4dp"
+                    android:tooltipText="Learn more"
+                    app:icon="@drawable/rounded_info_24"
+                    app:iconTint="?attr/secondaryTextColor"
+                    app:backgroundTint="?attr/colorSurface"
+                    style="@style/Widget.Material3.Button.IconButton.Filled" />
             </LinearLayout>
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/crd_no_data_past_goals"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="12dp"
-                android:layout_marginHorizontal="24dp"
-                android:visibility="gone"
-                style="@style/LSK.MaterialCardView.Filled">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="10dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="No data available. No goals were provided yesterday as the app was either not opened or the data is unavailable."
-                    android:textAlignment="center"
-                    android:textColor="?attr/secondaryTextColor"
-                    android:textSize="14sp" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="30dp"
-                android:text="Advice"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="23sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:text="Suggestions for improving your performance"
-                android:textColor="?attr/secondaryTextColor"
-                android:textSize="14sp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcv_goal_advices"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="30dp"
-                android:overScrollMode="never"
-                android:nestedScrollingEnabled="false"/>
-
-            <!-- TODO: make adaptive: (or not)
-
-                        if reached no or very few goals:
-                            advice to be more aware and maybe turn on notification (or reduce count if more than 3 goals) and advice to shuffle again if goals are not good for that day and also to probably edit or add some new ones and if the difficulty level is just to high, advice to lower it
-                    => As you only got 0/3 you might want to turn on a permanent notification to remind you of the goals to look out for. <TEXT FOR REDUCTION OF GOALS HERE OR BLANK>. <TEXT FOR REDUCTION DIFFICULTY LEVEL HERE OR BLANK>. You can also reshuffle them if they do not suit for the current day. By clicking the Pen-Button at the bottom right corner, you can also add/edit goals.
-
-                        if reached about all goals:
-                            advice to increase goal count to challenge you more, raise the average difficulty goal
-                    => As you got 3/3 you might want to increase the current amount of goals to be a greater challenge for you. How does that sound to you?
-
-                        => all with quick access buttons, so you do not have to go to settings
-                        -->
+<!--        NOTE:
+              * Removed "yesterday's statistics" section so they can be moved to the statistics fragment
+              * Removed the "advice" section as it does not seem to make a lot of sense to keep it here
+                as adjustments can be made manually and there will just be a "Learn more" button to inform the user
+-->
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

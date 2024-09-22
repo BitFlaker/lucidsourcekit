@@ -20,7 +20,6 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys;
@@ -78,8 +77,8 @@ public class GoalsView extends Fragment {
         advices.add(new GoalAdvice("DIFFICULTY", "Increase goals difficulty", "Increase the target goal difficulty to 2.3 for a bigger challenge", R.drawable.ic_baseline_vertical_align_top_24, Color.TRANSPARENT, advice -> {}));
         RecyclerViewAdapterGoalAdvice goalAdvice = new RecyclerViewAdapterGoalAdvice(getContext(), advices);
 
-        binding.rcvGoalAdvices.setAdapter(goalAdvice);
-        binding.rcvGoalAdvices.setLayoutManager(new LinearLayoutManager(getContext()));
+//        binding.rcvGoalAdvices.setAdapter(goalAdvice);
+//        binding.rcvGoalAdvices.setLayoutManager(new LinearLayoutManager(getContext()));
 
         db = MainDatabase.getInstance(getContext());
         binding.btnAdjustAlgorithm.setOnClickListener(e -> setupAdjustAlgorithmSheet());
@@ -205,36 +204,36 @@ public class GoalsView extends Fragment {
                 (statsToday, statsYesterday) -> new GoalStatisticsCalculator[] { statsToday, statsYesterday })
                 .subscribeOn(Schedulers.io())
                 .subscribe(calculatedStatistics -> getActivity().runOnUiThread(() -> {
-                    updateGoalStatsYesterdayUI(calculatedStatistics[1]);
+//                    updateGoalStatsYesterdayUI(calculatedStatistics[1]);
                     updateGoalStatsTodayUI(calculatedStatistics[0], calculatedStatistics[1]);
                 })));
     }
 
-    private void updateGoalStatsYesterdayUI(GoalStatisticsCalculator statsCalculator) {
-        if(setPastGoalsVisibility(statsCalculator.hasGoals())) {
-            binding.txtYgoalsDifficulty.setText(String.format(Locale.getDefault(), "%.1f", statsCalculator.getDifficulty()));
-
-            String[] numParts = getDecimalNumParts(100 * statsCalculator.getRatioAchieved(), 2);
-            binding.txtYgoalsAchieved.setText(numParts[0]);
-            binding.txtYgoalsAchievedPart.setText(String.format(Locale.getDefault(), "%s%%", numParts[1]));
-
-            numParts = getDecimalNumParts(100 * statsCalculator.getShuffleOccurrenceRating(), 1);
-            binding.txtYgoalsSelDifficulty.setText(numParts[0]);
-            binding.txtYgoalsSelDifficultyPart.setText(String.format(Locale.getDefault(), "%s%%", numParts[1]));
-
-            numParts = getDecimalNumParts(statsCalculator.getRecurrenceFrequency(), 2);
-            binding.txtYgoalsOccFreq.setText(numParts[0]);
-            binding.txtYgoalsOccFreqPart.setText(String.format(Locale.getDefault(), "%s%%", numParts[1]));
-        }
-    }
-
-    private boolean setPastGoalsVisibility(boolean hasGoals) {
-        binding.llPastGoalsRatings.setVisibility(hasGoals ? View.VISIBLE : View.GONE);
-        binding.crdPastGoalsAchieved.setVisibility(hasGoals ? View.VISIBLE : View.GONE);
-        binding.crdPastGoalsOccurrenceRating.setVisibility(hasGoals ? View.VISIBLE : View.GONE);
-        binding.crdNoDataPastGoals.setVisibility(hasGoals ? View.GONE : View.VISIBLE);
-        return hasGoals;
-    }
+//    private void updateGoalStatsYesterdayUI(GoalStatisticsCalculator statsCalculator) {
+//        if(setPastGoalsVisibility(statsCalculator.hasGoals())) {
+//            binding.txtYgoalsDifficulty.setText(String.format(Locale.getDefault(), "%.1f", statsCalculator.getDifficulty()));
+//
+//            String[] numParts = getDecimalNumParts(100 * statsCalculator.getRatioAchieved(), 2);
+//            binding.txtYgoalsAchieved.setText(numParts[0]);
+//            binding.txtYgoalsAchievedPart.setText(String.format(Locale.getDefault(), "%s%%", numParts[1]));
+//
+//            numParts = getDecimalNumParts(100 * statsCalculator.getShuffleOccurrenceRating(), 1);
+//            binding.txtYgoalsSelDifficulty.setText(numParts[0]);
+//            binding.txtYgoalsSelDifficultyPart.setText(String.format(Locale.getDefault(), "%s%%", numParts[1]));
+//
+//            numParts = getDecimalNumParts(statsCalculator.getRecurrenceFrequency(), 2);
+//            binding.txtYgoalsOccFreq.setText(numParts[0]);
+//            binding.txtYgoalsOccFreqPart.setText(String.format(Locale.getDefault(), "%s%%", numParts[1]));
+//        }
+//    }
+//
+//    private boolean setPastGoalsVisibility(boolean hasGoals) {
+//        binding.llPastGoalsRatings.setVisibility(hasGoals ? View.VISIBLE : View.GONE);
+//        binding.crdPastGoalsAchieved.setVisibility(hasGoals ? View.VISIBLE : View.GONE);
+//        binding.crdPastGoalsOccurrenceRating.setVisibility(hasGoals ? View.VISIBLE : View.GONE);
+//        binding.crdNoDataPastGoals.setVisibility(hasGoals ? View.GONE : View.VISIBLE);
+//        return hasGoals;
+//    }
 
     private void updateGoalStatsTodayUI(GoalStatisticsCalculator current, GoalStatisticsCalculator comparedTo) {
         binding.somDifficulty.setData(25, current.getDifficulty(), 3);
@@ -242,14 +241,12 @@ public class GoalsView extends Fragment {
         binding.llCurrentGoalsContainer.removeAllViews();
         current.getGoals().forEach(goal -> binding.llCurrentGoalsContainer.addView(generateGoalCheckbox(goal)));
 
-        String[] numParts = getDecimalNumParts(100 * current.getShuffleOccurrenceRating(), 1);
-        binding.txtCurrentSelectionDiffFull.setText(numParts[0]);
-        binding.txtCurrentSelectionDiffPart.setText(String.format(Locale.getDefault(), "%s%%", numParts[1]));
+        String numParts = getDecimalNumParts(100 * current.getShuffleOccurrenceRating(), 1);
+        binding.txtCurrentSelectionDiffFull.setText(numParts);
         binding.imgSelectionDiffComparison.setImageDrawable(getDiffIndicator(current.getDifficulty(), comparedTo.getDifficulty(), comparedTo.hasGoals()));
 
-        numParts = getDecimalNumParts(current.getRecurrenceFrequency(), 2);
-        binding.txtOccurrenceFreqFull.setText(numParts[0]);
-        binding.txtOccurrenceFreqPart.setText(String.format(Locale.getDefault(), "%s%%", numParts[1]));
+        numParts = getDecimalNumParts(current.getRecurrenceFrequency(), 1);
+        binding.txtOccurrenceFreqFull.setText(numParts);
         binding.imgOccFreqComparison.setImageDrawable(getDiffIndicator(current.getRecurrenceFrequency(), comparedTo.getRecurrenceFrequency(), comparedTo.hasGoals()));
     }
 
@@ -280,7 +277,7 @@ public class GoalsView extends Fragment {
         chk.setChecked(detailedShuffleHasGoal.achieved);
         chk.setTextColor(Tools.getAttrColor(detailedShuffleHasGoal.achieved ? R.attr.tertiaryTextColor : R.attr.primaryTextColor, getContext().getTheme()));
         chk.setTypeface(Typeface.create(chk.getTypeface(), detailedShuffleHasGoal.achieved ? Typeface.NORMAL : Typeface.BOLD));
-        chk.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        chk.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         chk.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             db.getShuffleHasGoalDao().setAchievedState(detailedShuffleHasGoal.shuffleId, detailedShuffleHasGoal.goalId, isChecked);
             chk.setTextColor(Tools.getAttrColor(isChecked ? R.attr.tertiaryTextColor : R.attr.primaryTextColor, getContext().getTheme()));
@@ -291,13 +288,9 @@ public class GoalsView extends Fragment {
         return chk;
     }
 
-    private String[] getDecimalNumParts(float value, int decimals) {
-        String[] numParts = new String[2];
-        int fullSelDiff = (int) value;
+    private String getDecimalNumParts(float value, int decimals) {
         String decimalsFormat = "%." + decimals + "f";
-        numParts[0] = String.format(Locale.getDefault(), "%d", fullSelDiff);
-        numParts[1] = Float.isNaN(value % fullSelDiff) ? "" : String.format(Locale.getDefault(), decimalsFormat, value % fullSelDiff).substring(1);
-        return numParts;
+        return Float.isNaN(value) ? "0" : String.format(Locale.getDefault(), decimalsFormat, value);
     }
 
     private void storeNewShuffle() {

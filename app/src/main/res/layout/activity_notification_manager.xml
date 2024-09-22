@@ -14,7 +14,7 @@
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         android:minHeight="48dp"
-        android:text="Notification Manager"
+        android:text="Notifications"
         android:textColor="?attr/primaryTextColor"
         android:textSize="20sp"
         android:textStyle="bold"

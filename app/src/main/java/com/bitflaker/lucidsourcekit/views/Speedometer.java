@@ -64,9 +64,9 @@ public class Speedometer extends View {
         secondaryTextColor = Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme());
         trackColor = Tools.getAttrColor(R.attr.colorSurfaceContainer, getContext().getTheme());
         dataLinePaintCap.setColor(Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme()));
-        fontSizeLarge = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 28, getResources().getDisplayMetrics());
-        fontSizeMedium = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 16, getResources().getDisplayMetrics());
-        fontSizeSmall = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics());
+        fontSizeLarge = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 24, getResources().getDisplayMetrics());
+        fontSizeMedium = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14, getResources().getDisplayMetrics());
+        fontSizeSmall = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 11, getResources().getDisplayMetrics());
         dataLabelPaint.setColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
         dataLabelPaint.setTextSize(fontSizeLarge);
         dataLabelPaint.setTextAlign(Paint.Align.LEFT);
