@@ -10,8 +10,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/img_top_graphic"
@@ -46,133 +45,137 @@
                 android:layout_marginTop="-2dp"
                 android:text="@string/active_events"
                 android:textColor="?attr/secondaryTextColor"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
-            <GridLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="20dp"
-                android:columnCount="2"
-                android:useDefaultMargins="true">
+                android:layout_marginTop="16dp"
+                android:layout_marginHorizontal="16dp"
+                android:paddingVertical="12dp">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/crd_reality_check_reminder_state"
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_columnWeight="1"
-                    android:layout_gravity="fill"
-                    android:gravity="center_vertical"
-                    app:cardBackgroundColor="?attr/colorSurfaceContainer"
-                    app:strokeWidth="0dp"
-                    app:cardCornerRadius="@dimen/cardRadius"
-                    app:cardElevation="@dimen/cardElevationRegular">
+<!--                    TODO: perform 'click' action on materialbutton when linear layout was pressed -->
 
-                    <TextView
-                        android:id="@+id/txt_reality_check_reminder_state"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:drawablePadding="8dp"
-                        android:gravity="center_vertical"
-                        android:paddingStart="10dp"
-                        android:paddingTop="5dp"
-                        android:paddingEnd="10dp"
-                        android:paddingBottom="5dp"
-                        android:text="@string/reality_check_reminder"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="14sp"
-                        app:drawableStartCompat="@drawable/rounded_close_24"
-                        app:drawableTint="?attr/tertiaryTextColor" />
-                </com.google.android.material.card.MaterialCardView>
+                <LinearLayout
+                    android:id="@+id/ll_qa_notifications"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/ll_qa_rc_reminder">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/crd_permanent_notification_state"
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_columnWeight="1"
-                    android:layout_gravity="fill"
-                    android:gravity="center_vertical"
-                    app:cardBackgroundColor="?attr/colorSurfaceContainer"
-                    app:strokeWidth="0dp"
-                    app:cardCornerRadius="@dimen/cardRadius"
-                    app:cardElevation="@dimen/cardElevationRegular">
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Widget.Material3.Button.IconButton.Filled"
+                        android:id="@+id/btn_qa_notifications"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="14dp"
+                        app:icon="@drawable/round_notifications_24"
+                        app:backgroundTint="?attr/colorSurfaceContainer"
+                        app:rippleColor="?attr/colorOutlineVariant"
+                        app:iconTint="?attr/colorOnSurfaceVariant"/>
 
                     <TextView
-                        android:id="@+id/txt_permanent_notification_state"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:drawablePadding="8dp"
-                        android:gravity="center_vertical"
-                        android:paddingStart="10dp"
-                        android:paddingTop="5dp"
-                        android:paddingEnd="10dp"
-                        android:paddingBottom="5dp"
-                        android:text="Pinned notification"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="14sp"
-                        app:drawableStartCompat="@drawable/rounded_close_24"
-                        app:drawableTint="?attr/tertiaryTextColor" />
-                </com.google.android.material.card.MaterialCardView>
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textSize="12sp"
+                        android:text="Notifications"
+                        android:textColor="?attr/secondaryTextColor" />
+                </LinearLayout>
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/crd_lockscreen_writer_state"
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_columnWeight="1"
-                    android:layout_gravity="fill"
-                    android:gravity="center_vertical"
-                    app:cardBackgroundColor="?attr/colorSurfaceContainer"
-                    app:strokeWidth="0dp"
-                    app:cardCornerRadius="@dimen/cardRadius"
-                    app:cardElevation="@dimen/cardElevationRegular">
+                <LinearLayout
+                    android:id="@+id/ll_qa_rc_reminder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toStartOf="@+id/ll_qa_lockscreen"
+                    app:layout_constraintStart_toEndOf="@+id/ll_qa_notifications"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
-                        android:id="@+id/txt_lockscreen_writer_state"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:drawablePadding="8dp"
-                        android:gravity="center_vertical"
-                        android:paddingStart="10dp"
-                        android:paddingTop="5dp"
-                        android:paddingEnd="10dp"
-                        android:paddingBottom="5dp"
-                        android:text="Lockscreen launcher"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="14sp"
-                        app:drawableStartCompat="@drawable/rounded_close_24"
-                        app:drawableTint="?attr/tertiaryTextColor" />
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/crd_task_reminder_state"
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_columnWeight="1"
-                    android:layout_gravity="fill"
-                    android:gravity="center_vertical"
-                    app:cardBackgroundColor="?attr/colorSurfaceContainer"
-                    app:strokeWidth="0dp"
-                    app:cardCornerRadius="@dimen/cardRadius"
-                    app:cardElevation="@dimen/cardElevationRegular">
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Widget.Material3.Button.IconButton.Filled"
+                        android:id="@+id/btn_qa_rc_reminder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="14dp"
+                        app:icon="@drawable/round_model_training_24"
+                        app:backgroundTint="?attr/colorSurfaceContainer"
+                        app:rippleColor="?attr/colorOutlineVariant"
+                        app:iconTint="?attr/colorOnSurfaceVariant" />
 
                     <TextView
-                        android:id="@+id/txt_task_reminder_state"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:drawablePadding="8dp"
-                        android:gravity="center_vertical"
-                        android:paddingStart="10dp"
-                        android:paddingTop="5dp"
-                        android:paddingEnd="10dp"
-                        android:paddingBottom="5dp"
-                        android:text="Goals reminder"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="14sp"
-                        app:drawableStartCompat="@drawable/rounded_close_24"
-                        app:drawableTint="?attr/tertiaryTextColor" />
-                </com.google.android.material.card.MaterialCardView>
-            </GridLayout>
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="RC Reminder"
+                        android:textSize="12sp"
+                        android:textColor="?attr/secondaryTextColor" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_qa_lockscreen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toStartOf="@+id/ll_qa_more"
+                    app:layout_constraintStart_toEndOf="@+id/ll_qa_rc_reminder"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Widget.Material3.Button.IconButton.Filled"
+                        android:id="@+id/btn_qa_lockscreen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="14dp"
+                        app:backgroundTint="?attr/colorSurfaceContainer"
+                        app:icon="@drawable/rounded_screen_lock_portrait_24"
+                        app:rippleColor="?attr/colorOutlineVariant"
+                        app:iconTint="?attr/colorOnSurfaceVariant" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Lockscreen"
+                        android:textSize="12sp"
+                        android:textColor="?attr/secondaryTextColor" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_qa_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/ll_qa_lockscreen"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Widget.Material3.Button.IconButton.Filled"
+                        android:id="@+id/btn_qa_more"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="14dp"
+                        app:backgroundTint="?attr/colorSurfaceContainer"
+                        app:icon="@drawable/rounded_more_horiz_24"
+                        app:rippleColor="?attr/colorOutlineVariant"
+                        app:iconTint="?attr/colorOnSurfaceVariant" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="More"
+                        android:textSize="12sp"
+                        android:textColor="?attr/secondaryTextColor" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/txt_alarms_title"
@@ -194,23 +197,26 @@
                 android:layout_marginTop="-2dp"
                 android:text="Alarms to wake you during REM"
                 android:textColor="?attr/secondaryTextColor"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.card.MaterialCardView
+                    style="@style/LSK.MaterialCardView.Filled"
+                    android:id="@+id/crd_manage_alarms"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginBottom="24dp"
-                    android:backgroundTint="?attr/colorSurfaceContainer"
                     app:strokeWidth="0dp"
+                    app:contentPadding="0dp"
                     app:cardCornerRadius="@dimen/cardRadius"
-                    app:cardElevation="@dimen/cardElevationRegular">
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
                         android:id="@+id/txt_no_alarms_set"
@@ -220,6 +226,7 @@
                         android:layout_marginBottom="48dp"
                         android:text="No active alarms set"
                         android:textColor="?attr/tertiaryTextColor"
+                        android:textSize="12sp"
                         android:textAlignment="center"
                         android:visibility="gone"/>
 
@@ -236,17 +243,19 @@
                     android:id="@+id/btn_manage_alarms"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:text="Manage"
+                    android:textColor="?attr/colorPrimary"
                     android:translationZ="6dp"
+                    android:layout_marginTop="-24dp"
                     app:backgroundTint="?attr/colorPrimaryContainer"
-                    app:iconTint="?attr/colorPrimary"
                     app:icon="@drawable/ic_baseline_access_alarm_24"
-                    app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
-                    style="@style/Widget.Material3.Button.IconButton.Filled" />
-            </RelativeLayout>
+                    app:iconPadding="8dp"
+                    app:iconTint="?attr/colorPrimary"
+                    app:layout_constraintTop_toBottomOf="@+id/crd_manage_alarms"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:shapeAppearance="@style/FloatingShapeAppearanceOverlay" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/txt_journal_title"
@@ -267,7 +276,7 @@
                 android:layout_marginTop="-2dp"
                 android:text="@string/remember_description"
                 android:textColor="?attr/secondaryTextColor"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
             <include
                 android:id="@+id/dje_remember_dream"

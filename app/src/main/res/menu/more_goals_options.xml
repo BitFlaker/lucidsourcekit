@@ -6,4 +6,7 @@
     <item
         android:id="@+id/itm_edit_goals"
         android:title="Edit goals"/>
+    <item
+        android:id="@+id/itm_about_goals"
+        android:title="About goals"/>
 </menu>

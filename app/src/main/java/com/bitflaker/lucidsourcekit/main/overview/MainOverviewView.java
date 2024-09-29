@@ -14,14 +14,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
-import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
 import com.bitflaker.lucidsourcekit.databinding.EntryJournalBinding;
 import com.bitflaker.lucidsourcekit.databinding.FragmentMainOverviewBinding;
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmEditorView;
@@ -29,10 +26,8 @@ import com.bitflaker.lucidsourcekit.main.alarms.AlarmManagerView;
 import com.bitflaker.lucidsourcekit.main.alarms.RecyclerViewAdapterAlarms;
 import com.bitflaker.lucidsourcekit.main.dreamjournal.RecyclerViewAdapterDreamJournal;
 import com.bitflaker.lucidsourcekit.main.notification.NotificationManagerView;
-import com.bitflaker.lucidsourcekit.utils.Tools;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
@@ -56,7 +51,6 @@ public class MainOverviewView extends Fragment {
     };
     private final ActivityResultLauncher<Intent> alarmInteractionLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), alarmCreationOrModificationCallback);
     private final ActivityResultLauncher<Intent> alarmManagerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), alarmManagerCallback);
-    private final ActivityResultLauncher<Intent> activeEventsReloadLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> reloadActiveEventsStates());
     public CompositeDisposable disposables = new CompositeDisposable();
     private MainDatabase db;
     private FragmentMainOverviewBinding binding;
@@ -109,10 +103,11 @@ public class MainOverviewView extends Fragment {
             alarmManagerLauncher.launch(new Intent(getContext(), AlarmManagerView.class));
         });
 
-        reloadActiveEventsStates();
-        binding.crdRealityCheckReminderState.setOnClickListener(e -> openNotificationSettingsWithId("RCR"));
-        binding.crdTaskReminderState.setOnClickListener(e -> openNotificationSettingsWithId("DGR"));
-        binding.crdPermanentNotificationState.setOnClickListener(e -> openNotificationSettingsWithId("PN"));
+        // Quick action button click
+        binding.btnQaNotifications.setOnClickListener(e -> startActivity(new Intent(getContext(), NotificationManagerView.class)));
+
+        // Quick action container click forwarding
+        binding.llQaNotifications.setOnClickListener(e -> binding.btnQaNotifications.performClick());
     }
 
     private void generateRememberEntry(EntryJournalBinding binding, DreamJournalEntry entry) {
@@ -122,32 +117,6 @@ public class MainOverviewView extends Fragment {
         rememberDreamHolder.setTitleAndTextContent(entry.journalEntry.title, entry.journalEntry.description);
         rememberDreamHolder.setRecordingsCount(entry.audioLocations.size());
         rememberDreamHolder.setTagList(entry.getStringTags(), getActivity());
-    }
-
-    private void reloadActiveEventsStates() {
-        List<NotificationCategory> categories = db.getNotificationCategoryDao().getAll().blockingGet();
-        for (NotificationCategory category : categories) {
-            switch(category.getId()){
-                case "RCR":
-                    binding.txtRealityCheckReminderState.setCompoundDrawablesWithIntrinsicBounds(category.isEnabled() ? R.drawable.rounded_check_24 : R.drawable.rounded_close_24, 0, 0, 0);
-                    TextViewCompat.setCompoundDrawableTintList(binding.txtRealityCheckReminderState, Tools.getAttrColorStateList(category.isEnabled() ? R.attr.secondaryTextColor : R.attr.tertiaryTextColor, getContext().getTheme()));
-                    break;
-                case "DGR":
-                    binding.txtTaskReminderState.setCompoundDrawablesWithIntrinsicBounds(category.isEnabled() ? R.drawable.rounded_check_24 : R.drawable.rounded_close_24, 0, 0, 0);
-                    TextViewCompat.setCompoundDrawableTintList(binding.txtTaskReminderState, Tools.getAttrColorStateList(category.isEnabled() ? R.attr.secondaryTextColor : R.attr.tertiaryTextColor, getContext().getTheme()));
-                    break;
-                case "PN":
-                    binding.txtPermanentNotificationState.setCompoundDrawablesWithIntrinsicBounds(category.isEnabled() ? R.drawable.rounded_check_24 : R.drawable.rounded_close_24, 0, 0, 0);
-                    TextViewCompat.setCompoundDrawableTintList(binding.txtPermanentNotificationState, Tools.getAttrColorStateList(category.isEnabled() ? R.attr.secondaryTextColor : R.attr.tertiaryTextColor, getContext().getTheme()));
-                    break;
-            }
-        }
-    }
-
-    private void openNotificationSettingsWithId(String RCR) {
-        Intent intent = new Intent(getContext(), NotificationManagerView.class);
-        intent.putExtra("AUTO_OPEN_ID", RCR);
-        activeEventsReloadLauncher.launch(intent);
     }
 
     private void setNoActiveAlarmsMessageVisible(boolean visible) {

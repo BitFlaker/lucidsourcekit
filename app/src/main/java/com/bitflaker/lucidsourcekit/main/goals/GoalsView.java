@@ -1,7 +1,6 @@
 package com.bitflaker.lucidsourcekit.main.goals;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -24,7 +23,6 @@ import androidx.fragment.app.Fragment;
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys;
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager;
-import com.bitflaker.lucidsourcekit.data.records.GoalAdvice;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Shuffle;
@@ -32,7 +30,6 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.resulttables.DetailedShuffleHasGoal;
 import com.bitflaker.lucidsourcekit.databinding.FragmentMainGoalsBinding;
 import com.bitflaker.lucidsourcekit.databinding.SheetGoalsAlgorithmEditorBinding;
-import com.bitflaker.lucidsourcekit.main.notification.NotificationManagerView;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.checkbox.MaterialCheckBox;
@@ -68,25 +65,13 @@ public class GoalsView extends Fragment {
         compositeDisposable = new CompositeDisposable();
         binding.somDifficulty.setDescription("Today's goals average\noccurrence rating");
 
-        List<GoalAdvice> advices = new ArrayList<>();
-        advices.add(new GoalAdvice("NOTIFICATIONS", "Configure notifications", "Configure notifications to remind you to look out for the targets", R.drawable.ic_baseline_notifications_active_24, Color.TRANSPARENT, advice -> {
-            startActivity(new Intent(getContext(), NotificationManagerView.class));
-        }));
-        advices.add(new GoalAdvice("GOAL COUNT", "Increase goal count", "Increase the goal count to 4 for more difficulty", R.drawable.ic_round_plus_one_24, Color.TRANSPARENT, advice -> {}));
-        advices.add(new GoalAdvice("SHUFFLE", "Shuffle goals", "Shuffle the goals again to get new and possibly better ones", R.drawable.ic_baseline_shuffle_24, Color.TRANSPARENT, advice -> {}));
-        advices.add(new GoalAdvice("DIFFICULTY", "Increase goals difficulty", "Increase the target goal difficulty to 2.3 for a bigger challenge", R.drawable.ic_baseline_vertical_align_top_24, Color.TRANSPARENT, advice -> {}));
-        RecyclerViewAdapterGoalAdvice goalAdvice = new RecyclerViewAdapterGoalAdvice(getContext(), advices);
-
-//        binding.rcvGoalAdvices.setAdapter(goalAdvice);
-//        binding.rcvGoalAdvices.setLayoutManager(new LinearLayoutManager(getContext()));
-
         db = MainDatabase.getInstance(getContext());
         binding.btnAdjustAlgorithm.setOnClickListener(e -> setupAdjustAlgorithmSheet());
 
         updateStats();
 
-        binding.btnReshuffleGoals.setOnClickListener(e -> {
-            PopupMenu popup = new PopupMenu(new ContextThemeWrapper(getContext(), R.style.Theme_LucidSourceKit_PopupMenu), binding.btnReshuffleGoals);
+        binding.btnMoreOptions.setOnClickListener(e -> {
+            PopupMenu popup = new PopupMenu(new ContextThemeWrapper(getContext(), R.style.Theme_LucidSourceKit_PopupMenu), binding.btnMoreOptions);
             popup.getMenuInflater().inflate(R.menu.more_goals_options, popup.getMenu());
             popup.setOnMenuItemClickListener(item -> {
                 if(item.getItemId() == R.id.itm_shuffle) {
@@ -94,6 +79,9 @@ public class GoalsView extends Fragment {
                 }
                 else if (item.getItemId() == R.id.itm_edit_goals) {
                     startActivity(new Intent(getContext(), GoalsEditorView.class));
+                }
+                else if (item.getItemId() == R.id.itm_about_goals) {
+                    // TODO: show page with details about what goals are and what they are supposed to achieve
                 }
                 return true;
             });

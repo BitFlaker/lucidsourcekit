@@ -181,19 +181,31 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="42dp">
 
                 <com.google.android.material.card.MaterialCardView
                     style="@style/LSK.MaterialCardView.Filled"
                     android:id="@+id/crd_goals_today"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
                     android:layout_marginHorizontal="24dp"
                     app:contentPadding="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageButton
+                        android:id="@+id/btn_more_options"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="end"
+                        android:background="@drawable/ripple_round"
+                        android:src="@drawable/rounded_more_horiz_24"
+                        android:visibility="visible"
+                        app:backgroundTint="?attr/colorSurfaceContainer"
+                        app:tint="?attr/secondaryTextColor" />
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
@@ -210,21 +222,6 @@
                             android:textAllCaps="true"
                             android:textColor="?attr/tertiaryTextColor"
                             android:textSize="11sp" />
-
-<!--                        TODO: The "more options" button should be removed as soon as the
-                                  quick action buttons at the button of the page are working -->
-
-                        <ImageButton
-                            android:id="@+id/btn_reshuffle_goals"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_gravity="end"
-                            android:background="@drawable/ripple_round"
-                            android:src="@drawable/rounded_more_horiz_24"
-                            android:visibility="visible"
-                            app:backgroundTint="?attr/colorSurfaceContainer"
-                            app:tint="?attr/secondaryTextColor" />
 
                         <LinearLayout
                             android:id="@+id/ll_current_goals_container"
@@ -276,11 +273,8 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_adjust_algorithm"
-                    style="@style/Widget.Material3.Button.IconButton.Filled"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
                     android:text="Personalize"
                     android:textColor="?attr/colorPrimary"
                     android:translationZ="6dp"
@@ -295,43 +289,68 @@
                     app:shapeAppearance="@style/FloatingShapeAppearanceOverlay" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/txt_top_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
-                android:layout_gravity="center_horizontal"
-                android:orientation="horizontal">
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="24dp"
+                android:text="Daily achievements"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="21sp"
+                android:textStyle="bold" />
 
-                <com.google.android.material.button.MaterialButton
+            <TextView
+                android:id="@+id/txt_events_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="-2dp"
+                android:text="Some fun facts about today's progress"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="12sp" />
+
+<!--
+            TODO: List some fun facts related to achieved goals here (in the order
+                  newest to oldest in which they were achieved)
+
+            Examples:
+                * First goal achieved at 08:14: This is also the time <SOME FACT ABOUT THIS TIMESTAMP>
+                * Goal counter reached 10: The <SOMETHING> also has <SOMETHING>
+-->
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/LSK.MaterialCardView.Filled"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="4dp"
-                    android:tooltipText="Shuffle goals"
-                    app:icon="@drawable/ic_baseline_shuffle_24"
-                    app:iconTint="?attr/secondaryTextColor"
-                    app:backgroundTint="?attr/colorSurface"
-                    style="@style/Widget.Material3.Button.IconButton.Filled" />
+                    android:orientation="vertical">
 
-                <com.google.android.material.button.MaterialButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="4dp"
-                    android:tooltipText="Edit goals"
-                    app:icon="@drawable/ic_round_mode_edit_24"
-                    app:iconTint="?attr/secondaryTextColor"
-                    app:backgroundTint="?attr/colorSurface"
-                    style="@style/Widget.Material3.Button.IconButton.Filled" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="First goal achieved at 00:00"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="16sp" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="4dp"
-                    android:tooltipText="Learn more"
-                    app:icon="@drawable/rounded_info_24"
-                    app:iconTint="?attr/secondaryTextColor"
-                    app:backgroundTint="?attr/colorSurface"
-                    style="@style/Widget.Material3.Button.IconButton.Filled" />
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="This is also the time &lt;ADD SOME FACT ABOUT THIS TIMESTAMP HERE&gt;"
+                        android:textColor="?attr/secondaryTextColor"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
 <!--        NOTE:
               * Removed "yesterday's statistics" section so they can be moved to the statistics fragment
