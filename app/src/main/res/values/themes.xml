@@ -1,6 +1,6 @@
 <resources>
     <style name="Theme.LucidSourceKit.Default" parent="Theme.Material3.Light.NoActionBar">
-        <item name="main_overview_graphic">@drawable/deep_night_mountains_new_dark</item>
+        <item name="main_overview_graphic">@drawable/deep_night_new</item>
         <item name="primaryTextColor">@color/white</item>
         <item name="secondaryTextColor">@color/white_60p</item>
         <item name="tertiaryTextColor">@color/white_50p</item>

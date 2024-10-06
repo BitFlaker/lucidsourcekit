@@ -79,3 +79,6 @@ lint/tmp/
 
 # Android Profiling
 *.hprof
+
+# Other
+values-classic/
