@@ -1,5 +1,6 @@
 package com.bitflaker.lucidsourcekit.utils;
 
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -15,6 +16,8 @@ import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import dalvik.system.ZipPathValidator;
 
 public class Zipper {
     private static final int BUFFER_SIZE = 2048;
@@ -62,6 +65,11 @@ public class Zipper {
     }
 
     public static boolean unzipFile(InputStream zipFile, String extractPath) {
+        // TODO: Fix the weird ZIP output structure with the recordings folder,
+        //       so the `ZipPathValidator.clearCallback()` workaround can be removed
+        if (Build.VERSION.SDK_INT >= 34) {
+            ZipPathValidator.clearCallback();
+        }
         byte[] data = new byte[BUFFER_SIZE];
         try {
             // Make sure extractPath ends with `File.separator` to make sure it is a directory and

@@ -190,6 +190,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
+                    app:strokeWidth="2dp"
+                    app:strokeColor="?attr/colorSurfaceContainer"
                     app:contentPadding="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -203,8 +205,8 @@
                         android:layout_gravity="end"
                         android:background="@drawable/ripple_round"
                         android:src="@drawable/rounded_more_horiz_24"
-                        android:visibility="visible"
-                        app:backgroundTint="?attr/colorSurfaceContainer"
+                        android:visibility="gone"
+                        app:backgroundTint="?attr/colorSurface"
                         app:tint="?attr/secondaryTextColor" />
 
                     <RelativeLayout
@@ -223,51 +225,14 @@
                             android:textColor="?attr/tertiaryTextColor"
                             android:textSize="11sp" />
 
-                        <LinearLayout
-                            android:id="@+id/ll_current_goals_container"
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rcv_current_goals"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="16dp"
+                            android:layout_marginHorizontal="8dp"
                             android:layout_marginTop="48dp"
-                            android:orientation="vertical">
+                            android:overScrollMode="never" />
 
-                            <com.google.android.material.checkbox.MaterialCheckBox
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:button="@drawable/checkbox_button_round"
-                                android:drawableLeft="@color/transparent"
-                                android:drawablePadding="15dp"
-                                android:drawableTint="@color/transparent"
-                                android:text="I see a yellow car"
-                                android:textColor="@color/checkbox_text_check_change"
-                                android:textSize="17sp"
-                                app:buttonTint="@color/checkbox_icon_check_change" />
-
-                            <com.google.android.material.checkbox.MaterialCheckBox
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:button="@drawable/checkbox_button_round"
-                                android:drawableLeft="@android:color/transparent"
-                                android:drawablePadding="15dp"
-                                android:drawableTint="@color/transparent"
-                                android:text="I turn off a light"
-                                android:textColor="@color/checkbox_text_check_change"
-                                android:textSize="17sp"
-                                app:buttonTint="@color/checkbox_icon_check_change" />
-
-                            <com.google.android.material.checkbox.MaterialCheckBox
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:button="@drawable/checkbox_button_round"
-                                android:drawableLeft="@android:color/transparent"
-                                android:drawablePadding="15dp"
-                                android:drawableTint="@color/transparent"
-                                android:text="I feel tired"
-                                android:textColor="@color/checkbox_text_check_change"
-                                android:textSize="17sp"
-                                app:buttonTint="@color/checkbox_icon_check_change" />
-                        </LinearLayout>
                     </RelativeLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -295,7 +260,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:layout_marginStart="24dp"
-                android:text="Daily achievements"
+                android:text="Timeline"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="21sp"
                 android:textStyle="bold" />
@@ -306,51 +271,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="-2dp"
-                android:text="Some fun facts about today's progress"
+                android:text="Goal history today"
                 android:textColor="?attr/secondaryTextColor"
                 android:textSize="12sp" />
 
 <!--
-            TODO: List some fun facts related to achieved goals here (in the order
-                  newest to oldest in which they were achieved)
-
-            Examples:
-                * First goal achieved at 08:14: This is also the time <SOME FACT ABOUT THIS TIMESTAMP>
-                * Goal counter reached 10: The <SOMETHING> also has <SOMETHING>
+            TODO: Show a timeline view here which has the starting point at the time you first
+                  went to this fragment and then a line downward with a point at every timestamp
+                  until midnight where a goal was achieved (with a note which goal and how often)
 -->
 
-            <com.google.android.material.card.MaterialCardView
-                style="@style/LSK.MaterialCardView.Filled"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="First goal achieved at 00:00"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="This is also the time &lt;ADD SOME FACT ABOUT THIS TIMESTAMP HERE&gt;"
-                        android:textColor="?attr/secondaryTextColor"/>
-
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                android:layout_gravity="center"
+                android:text="Here will be a timeline of achieved goals soon"
+                android:layout_marginVertical="32dp"
+                android:textColor="?attr/tertiaryTextColor" />
 
 <!--        NOTE:
               * Removed "yesterday's statistics" section so they can be moved to the statistics fragment

@@ -192,4 +192,30 @@ public class MainDatabaseMigrations {
             database.execSQL("CREATE INDEX index_NotificationMessage_obfuscationTypeId ON NotificationMessage (obfuscationTypeId);");
         }
     };
+
+    public static final Migration MIGRATION_14_15 = new Migration(14, 15) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE ShuffleTransaction (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "shuffleId INTEGER NOT NULL," +
+                    "goalId INTEGER NOT NULL," +
+                    "achievedAt INTEGER NOT NULL, " +
+                    "FOREIGN KEY (shuffleId)" +
+                    "REFERENCES Shuffle (shuffleId)" +
+                    "ON DELETE CASCADE " +
+                    "ON UPDATE NO ACTION," +
+                    "FOREIGN KEY (goalId)" +
+                    "REFERENCES Goal (goalId)" +
+                    "ON DELETE CASCADE " +
+                    "ON UPDATE NO ACTION);");
+
+            database.execSQL("CREATE INDEX index_ShuffleTransaction_shuffleId ON ShuffleTransaction (shuffleId);");
+            database.execSQL("CREATE INDEX index_ShuffleTransaction_goalId ON ShuffleTransaction (goalId);");
+            database.execSQL("INSERT INTO ShuffleTransaction " +
+                    "SELECT null AS id, shg.shuffleId, shg.goalId, s.dayStartTimestamp as achievedAt FROM ShuffleHasGoal shg " +
+                    "LEFT JOIN Shuffle s ON shg.shuffleId = s.shuffleId " +
+                    "WHERE shg.achieved = 1");
+        }
+    };
 }

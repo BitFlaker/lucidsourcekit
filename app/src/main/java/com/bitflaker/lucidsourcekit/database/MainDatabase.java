@@ -12,6 +12,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
+import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager;
 import com.bitflaker.lucidsourcekit.database.alarms.daos.AlarmDao;
 import com.bitflaker.lucidsourcekit.database.alarms.daos.AlarmIsOnWeekdayDao;
 import com.bitflaker.lucidsourcekit.database.alarms.daos.AlarmToneTypesDao;
@@ -45,9 +46,11 @@ import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.SleepQuality;
 import com.bitflaker.lucidsourcekit.database.goals.daos.GoalDao;
 import com.bitflaker.lucidsourcekit.database.goals.daos.ShuffleDao;
 import com.bitflaker.lucidsourcekit.database.goals.daos.ShuffleHasGoalDao;
+import com.bitflaker.lucidsourcekit.database.goals.daos.ShuffleTransactionDao;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Shuffle;
 import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal;
+import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleTransaction;
 import com.bitflaker.lucidsourcekit.database.notifications.daos.NotificationCategoryDao;
 import com.bitflaker.lucidsourcekit.database.notifications.daos.NotificationMessageDao;
 import com.bitflaker.lucidsourcekit.database.notifications.daos.NotificationObfuscationDao;
@@ -56,7 +59,6 @@ import com.bitflaker.lucidsourcekit.database.notifications.entities.Notification
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationObfuscations;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.bitflaker.lucidsourcekit.utils.Zipper;
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager;
 
 import org.json.JSONObject;
 
@@ -72,7 +74,7 @@ import java.util.Map;
         JournalEntryHasTag.class, JournalEntryHasType.class, Goal.class, Shuffle.class,
         ShuffleHasGoal.class, Alarm.class, AlarmIsOnWeekday.class, AlarmToneTypes.class,
         Weekdays.class, ActiveAlarm.class, StoredAlarm.class, NotificationObfuscations.class,
-        NotificationMessage.class, NotificationCategory.class}, version = 14, exportSchema = false)
+        NotificationMessage.class, NotificationCategory.class, ShuffleTransaction.class}, version = 15, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class MainDatabase extends RoomDatabase {
 
@@ -93,6 +95,7 @@ public abstract class MainDatabase extends RoomDatabase {
     public abstract GoalDao getGoalDao();
     public abstract ShuffleDao getShuffleDao();
     public abstract ShuffleHasGoalDao getShuffleHasGoalDao();
+    public abstract ShuffleTransactionDao getShuffleTransactionDao();
 
     // Alarm tables
     public abstract AlarmDao getAlarmDao();
@@ -139,6 +142,7 @@ public abstract class MainDatabase extends RoomDatabase {
                 .addMigrations(MainDatabaseMigrations.MIGRATION_11_12)
                 .addMigrations(MainDatabaseMigrations.MIGRATION_12_13)
                 .addMigrations(MainDatabaseMigrations.MIGRATION_13_14)
+                .addMigrations(MainDatabaseMigrations.MIGRATION_14_15)
                 .build();
     }
 

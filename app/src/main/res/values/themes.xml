@@ -99,11 +99,17 @@
         <item name="alertDialogStyle">@style/MaterialAlertDialog.App</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButton</item>
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButton</item>
+        <item name="android:backgroundDimAmount">0.72</item>
+    </style>
+
+    <style name="Theme.LucidSourceKit.TimePickerDialog" parent="ThemeOverlay.Material3.MaterialTimePicker">
+        <item name="android:backgroundDimAmount">0.72</item>
     </style>
 
     <style name="MaterialAlertDialog.App" parent="MaterialAlertDialog.Material3">
         <item name="shapeAppearance">@style/ShapeAppearance.App.MediumComponent</item>
         <item name="shapeAppearanceOverlay">@null</item>
+        <item name="android:backgroundDimAmount">0.72</item>
     </style>
 
     <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
@@ -154,6 +160,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
         <item name="android:theme">@style/Theme.LucidSourceKit.Default</item>
+        <item name="android:backgroundDimAmount">0.72</item>
     </style>
 
     <style name="LSK.Persistent.BottomSheet" parent="Theme.Material3.Dark.BottomSheetDialog">

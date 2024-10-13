@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/crd_current_goal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="0dp"
+    android:layout_marginVertical="2dp"
+    app:cardCornerRadius="@dimen/cardRadius"
+    app:strokeWidth="0dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="?attr/colorSurfaceContainer">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="54dp">
+
+        <ImageView
+            android:id="@+id/img_achieved_counter_background"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="12dp"
+            android:src="@drawable/circle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?attr/colorTertiary" />
+
+        <TextView
+            android:id="@+id/txt_achieved_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="26"
+            android:textColor="?attr/colorOnTertiary"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/img_achieved_counter_background"
+            app:layout_constraintEnd_toEndOf="@+id/img_achieved_counter_background"
+            app:layout_constraintStart_toStartOf="@+id/img_achieved_counter_background"
+            app:layout_constraintTop_toTopOf="@+id/img_achieved_counter_background" />
+
+        <TextView
+            android:id="@+id/txt_goal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="12dp"
+            android:text="I achieved this goal"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="?attr/primaryTextColor"
+            app:layout_constraintBottom_toBottomOf="@+id/img_achieved_counter_background"
+            app:layout_constraintStart_toEndOf="@+id/img_achieved_counter_background"
+            app:layout_constraintTop_toTopOf="@+id/img_achieved_counter_background" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

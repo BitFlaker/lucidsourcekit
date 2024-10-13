@@ -5,6 +5,8 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.transition.ChangeBounds;
+import android.transition.TransitionManager;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -19,6 +21,7 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys;
@@ -33,7 +36,6 @@ import com.bitflaker.lucidsourcekit.databinding.SheetGoalsAlgorithmEditorBinding
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.checkbox.MaterialCheckBox;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.slider.Slider;
 
 import java.util.ArrayList;
@@ -93,6 +95,43 @@ public class GoalsView extends Fragment {
         BottomSheetDialog bsdAdjustAlgorithm = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
         SheetGoalsAlgorithmEditorBinding sBinding = SheetGoalsAlgorithmEditorBinding.inflate(getLayoutInflater());
         bsdAdjustAlgorithm.setContentView(sBinding.getRoot());
+        final ChangeBounds transition = new ChangeBounds();
+        transition.excludeTarget(sBinding.txtTitleGoalAlgorithm, true);
+        transition.setDuration(300L);
+
+        sBinding.btnShuffle.setOnClickListener(e -> new Thread(this::storeNewShuffle).start());
+        sBinding.crdEditGoals.setOnClickListener(e -> startActivity(new Intent(getContext(), GoalsEditorView.class)));
+        sBinding.crdEditWeights.setOnClickListener(e -> {
+            TransitionManager.beginDelayedTransition(bsdAdjustAlgorithm.findViewById(com.google.android.material.R.id.design_bottom_sheet), transition);
+            sBinding.btnBack.setVisibility(View.VISIBLE);
+            sBinding.btnShuffle.setVisibility(View.GONE);
+            sBinding.clMainSettings.setVisibility(View.GONE);
+            sBinding.clWeightEditor.setVisibility(View.VISIBLE);
+            sBinding.txtTitleGoalAlgorithm.setText("Edit weights");
+        });
+        sBinding.crdEditGoalCount.setOnClickListener(e -> {
+            TransitionManager.beginDelayedTransition(bsdAdjustAlgorithm.findViewById(com.google.android.material.R.id.design_bottom_sheet), transition);
+            sBinding.btnBack.setVisibility(View.VISIBLE);
+            sBinding.clMainSettings.setVisibility(View.GONE);
+            sBinding.btnShuffle.setVisibility(View.GONE);
+            sBinding.clGoalCountEditor.setVisibility(View.VISIBLE);
+            sBinding.txtTitleGoalAlgorithm.setText("Edit goal count");
+        });
+        sBinding.crdDynamicRating.setOnClickListener(e -> {
+            sBinding.swtDynamicRating.setChecked(!sBinding.swtDynamicRating.isChecked());
+        });
+        sBinding.crdDynamicShuffleCount.setOnClickListener(e -> {
+            sBinding.swtDynamicShuffleCount.setChecked(!sBinding.swtDynamicShuffleCount.isChecked());
+        });
+        sBinding.btnBack.setOnClickListener(e -> {
+            TransitionManager.beginDelayedTransition(bsdAdjustAlgorithm.findViewById(com.google.android.material.R.id.design_bottom_sheet), transition);
+            sBinding.btnBack.setVisibility(View.GONE);
+            sBinding.clMainSettings.setVisibility(View.VISIBLE);
+            sBinding.clWeightEditor.setVisibility(View.GONE);
+            sBinding.clGoalCountEditor.setVisibility(View.GONE);
+            sBinding.btnShuffle.setVisibility(View.VISIBLE);
+            sBinding.txtTitleGoalAlgorithm.setText("Personalize goals");
+        });
 
         Slider[] weightSliders = new Slider[] { sBinding.sldAlgoDiffCommon, sBinding.sldAlgoDiffUncommon, sBinding.sldAlgoDiffRare };
 
@@ -117,23 +156,11 @@ public class GoalsView extends Fragment {
         sBinding.sldAlgoDiffUncommon.setValue(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_UNCOMMON).blockingFirst());
         sBinding.sldAlgoDiffRare.setValue(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_VALUE_RARE).blockingFirst());
         sBinding.sldGoalCount.setValue(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_COUNT).blockingFirst());
-        sBinding.swtAutoAdjustGoalDifficulty.setChecked(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_AUTO_ADJUST).blockingFirst());
+        sBinding.swtDynamicRating.setChecked(dsManager.getSetting(DataStoreKeys.GOAL_DIFFICULTY_AUTO_ADJUST).blockingFirst());
 
-        sBinding.btnSaveAlgoAdjust.setOnClickListener(e2 -> {
-            saveGoalAlgorithm(sBinding.sldAlgoDiffCommon.getValue(), sBinding.sldAlgoDiffUncommon.getValue(), sBinding.sldAlgoDiffRare.getValue(), (int) sBinding.sldGoalCount.getValue(), sBinding.swtAutoAdjustGoalDifficulty.isChecked());
-            bsdAdjustAlgorithm.dismiss();
+        bsdAdjustAlgorithm.setOnDismissListener(e -> {
+            saveGoalAlgorithm(sBinding.sldAlgoDiffCommon.getValue(), sBinding.sldAlgoDiffUncommon.getValue(), sBinding.sldAlgoDiffRare.getValue(), (int) sBinding.sldGoalCount.getValue(), sBinding.swtDynamicRating.isChecked());
         });
-
-        // TODO only ask whether or not to save changes if actual changes were made
-        bsdAdjustAlgorithm.setOnCancelListener(e -> {
-            new MaterialAlertDialogBuilder(getContext()).setTitle("Save changes").setMessage("Do you want to save all changes made to the goal algorithm?")
-                    .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-                        saveGoalAlgorithm(sBinding.sldAlgoDiffCommon.getValue(), sBinding.sldAlgoDiffUncommon.getValue(), sBinding.sldAlgoDiffRare.getValue(), (int) sBinding.sldGoalCount.getValue(), sBinding.swtAutoAdjustGoalDifficulty.isChecked());
-                    })
-                    .setNegativeButton(getResources().getString(R.string.no), null)
-                    .show();
-        });
-
         bsdAdjustAlgorithm.show();
     }
 
@@ -226,8 +253,11 @@ public class GoalsView extends Fragment {
     private void updateGoalStatsTodayUI(GoalStatisticsCalculator current, GoalStatisticsCalculator comparedTo) {
         binding.somDifficulty.setData(25, current.getDifficulty(), 3);
 
-        binding.llCurrentGoalsContainer.removeAllViews();
-        current.getGoals().forEach(goal -> binding.llCurrentGoalsContainer.addView(generateGoalCheckbox(goal)));
+        RecyclerViewAdapterCurrentGoals adapterCurrentGoals = new RecyclerViewAdapterCurrentGoals(getContext(), current.getGoals(), current.getShuffleId());
+        binding.rcvCurrentGoals.setAdapter(adapterCurrentGoals);
+        binding.rcvCurrentGoals.setLayoutManager(new LinearLayoutManager(getContext()));
+//        binding.llCurrentGoalsContainer.removeAllViews();
+//        current.getDetailedGoals().forEach(goal -> binding.llCurrentGoalsContainer.addView(generateGoalCheckbox(goal)));
 
         String numParts = getDecimalNumParts(100 * current.getShuffleOccurrenceRating(), 1);
         binding.txtCurrentSelectionDiffFull.setText(numParts);
@@ -260,14 +290,15 @@ public class GoalsView extends Fragment {
         chk.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
         chk.setHighlightColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
         chk.setPadding(dp12, 0, 0, 0);
-        chk.setPaintFlags(detailedShuffleHasGoal.achieved ? chk.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG : chk.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+        chk.setPaintFlags(false /* TODO: REMOVE OLD GOAL ACHIEVED APPROACH*/ ? chk.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG : chk.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         chk.setText(detailedShuffleHasGoal.description);
-        chk.setChecked(detailedShuffleHasGoal.achieved);
-        chk.setTextColor(Tools.getAttrColor(detailedShuffleHasGoal.achieved ? R.attr.tertiaryTextColor : R.attr.primaryTextColor, getContext().getTheme()));
-        chk.setTypeface(Typeface.create(chk.getTypeface(), detailedShuffleHasGoal.achieved ? Typeface.NORMAL : Typeface.BOLD));
+        chk.setChecked(false /* TODO: REMOVE OLD GOAL ACHIEVED APPROACH*/);
+        chk.setTextColor(Tools.getAttrColor(false /* TODO: REMOVE OLD GOAL ACHIEVED APPROACH*/ ? R.attr.tertiaryTextColor : R.attr.primaryTextColor, getContext().getTheme()));
+        chk.setTypeface(Typeface.create(chk.getTypeface(), false /* TODO: REMOVE OLD GOAL ACHIEVED APPROACH*/ ? Typeface.NORMAL : Typeface.BOLD));
         chk.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         chk.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            db.getShuffleHasGoalDao().setAchievedState(detailedShuffleHasGoal.shuffleId, detailedShuffleHasGoal.goalId, isChecked);
+            // TODO: MOVE TO NEW GOAL ACHIEVED APPROACH
+//            db.getShuffleHasGoalDao().setAchievedState(detailedShuffleHasGoal.shuffleId, detailedShuffleHasGoal.goalId, isChecked);
             chk.setTextColor(Tools.getAttrColor(isChecked ? R.attr.tertiaryTextColor : R.attr.primaryTextColor, getContext().getTheme()));
             chk.setTypeface(Typeface.create(chk.getTypeface(), isChecked ? Typeface.NORMAL : Typeface.BOLD));
             chk.setPaintFlags(isChecked ? chk.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG : chk.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));

@@ -1,11 +1,13 @@
 package com.bitflaker.lucidsourcekit.main.goals;
 
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
+import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.resulttables.DetailedShuffleHasGoal;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
@@ -48,7 +50,7 @@ public class GoalStatisticsCalculator {
                 int countAchieved = 0;
                 float difficultySum = 0;
                 for (DetailedShuffleHasGoal goal : goals) {
-                    if(isDayDone && goal.achieved) {
+                    if(isDayDone && false /* TODO: REMOVE OLD GOAL ACHIEVED APPROACH*/) {
                         countAchieved++;
                     }
                     difficultySum += goal.difficulty;
@@ -87,8 +89,21 @@ public class GoalStatisticsCalculator {
         return shuffleOccurrenceRating;
     }
 
-    public List<DetailedShuffleHasGoal> getGoals() {
+    public List<DetailedShuffleHasGoal> getDetailedGoals() {
         return goals;
+    }
+
+    public List<Goal> getGoals() {
+        return goals.stream()
+                .map(x -> new Goal(x.goalId, x.description, x.difficulty, x.difficultyLocked))
+                .collect(Collectors.toList());
+    }
+
+    public int getShuffleId() {
+        if (goals.isEmpty()) {
+            return 0;
+        }
+        return goals.get(0).shuffleId;
     }
 
     public float getRatioAchieved() {
