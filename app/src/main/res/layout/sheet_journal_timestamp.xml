@@ -7,18 +7,18 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:backgroundTint="?attr/colorSurface"
-    android:paddingBottom="50dp"
-    android:paddingTop="15dp">
+    android:paddingBottom="50dp">
 
     <TextView
         android:id="@+id/txt_recordings_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="32dp"
         android:textAlignment="center"
-        android:text="When did the dream occur?"
-        android:textColor="?attr/primaryTextColor"
-        android:textSize="22sp" />
+        android:text="Dream timestamp"
+        android:textColor="?attr/tertiaryTextColor"
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:id="@+id/ll_dj_recs_entry_list"

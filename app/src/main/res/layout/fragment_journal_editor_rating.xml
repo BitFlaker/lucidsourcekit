@@ -4,272 +4,607 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".main.dreamjournal.DreamJournalEditorRatingView">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_dj_close_editor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="4dp"
+        app:backgroundTint="?attr/colorSurface"
+        app:iconTint="?attr/colorOnSurface"
+        app:icon="@drawable/rounded_arrow_back_ios_new_24"
+        app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/Widget.Material3.Button.IconButton.Filled" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_dj_close_editor">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_rating_heading"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="21dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_dj_close_editor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="4dp"
-                    android:minWidth="48dp"
-                    android:minHeight="48dp"
-                    android:layout_marginStart="4dp"
-                    app:backgroundTint="?attr/colorSurface"
-                    app:iconTint="?attr/colorOnSurface"
-                    app:icon="@drawable/ic_round_close_24"
-                    app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    style="@style/Widget.Material3.Button.IconButton.Filled" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-thin"
-                    android:text="Rate your dream"
-                    android:textAlignment="center"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            android:paddingBottom="90dp">
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/mcv_dream_rating_preview"
+                android:id="@+id/crd_rating_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginHorizontal="20dp"
-                app:contentPaddingLeft="24dp"
-                app:contentPaddingTop="12dp"
-                app:contentPaddingRight="24dp"
-                app:contentPaddingBottom="12dp"
-                style="@style/LSK.MaterialCardView.Filled">
+                android:layout_marginTop="16dp"
+                android:layout_marginHorizontal="24dp"
+                app:strokeWidth="1dp"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:id="@+id/ll_special_dream_icons"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        app:layout_constraintVertical_chainStyle="packed"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toEndOf="@+id/txt_special_dream_heading"
-                        app:layout_constraintStart_toStartOf="@+id/txt_special_dream_heading"
-                        app:layout_constraintBottom_toTopOf="@+id/txt_special_dream_heading">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/rounded_eco_24"
-                            app:tint="?attr/secondaryTextColor" />
-                    </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:minHeight="128dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="16dp">
 
                     <TextView
-                        android:id="@+id/txt_special_dream_heading"
-                        android:layout_width="0dp"
+                        android:id="@+id/txt_journal_title"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="Regular dream"
-                        android:textAllCaps="true"
-                        android:textColor="?attr/primaryTextColor"
+                        android:text="This is some entry title"
                         android:textStyle="bold"
-                        android:textAlignment="center"
-                        app:layout_constraintEnd_toEndOf="@+id/txt_special_dream_description"
-                        app:layout_constraintStart_toStartOf="@+id/txt_special_dream_description"
-                        app:layout_constraintTop_toBottomOf="@+id/ll_special_dream_icons"
-                        app:layout_constraintBottom_toTopOf="@+id/txt_special_dream_description"/>
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textSize="18sp"
+                        android:textColor="?attr/primaryTextColor"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/txt_special_dream_description"
-                        android:layout_width="0dp"
+                        android:id="@+id/txt_journal_description"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="This is a normal dream without any special types"
+                        android:layout_marginTop="4dp"
+                        android:text="This helps dreams longer i type out this really long texts"
                         android:textColor="?attr/secondaryTextColor"
-                        android:textAlignment="center"
-                        app:layout_constraintEnd_toStartOf="@+id/ll_dream_ratings"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/txt_special_dream_heading"
-                        app:layout_constraintBottom_toTopOf="@+id/ll_special_dream_names"/>
+                        android:maxLines="5"
+                        android:ellipsize="end"
+                        app:layout_constraintTop_toBottomOf="@+id/txt_journal_title" />
 
                     <LinearLayout
-                        android:id="@+id/ll_special_dream_names"
-                        android:layout_width="0dp"
+                        android:id="@+id/ll_tags_holder"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:divider="@drawable/divider_x_small"
+                        android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:layout_marginTop="12dp"
-                        android:visibility="gone"
-                        app:layout_constraintTop_toBottomOf="@+id/txt_special_dream_description"
-                        app:layout_constraintEnd_toEndOf="@+id/txt_special_dream_heading"
-                        app:layout_constraintStart_toStartOf="@+id/txt_special_dream_heading"
-                        app:layout_constraintBottom_toBottomOf="parent">
-
-                        <com.google.android.material.chip.Chip
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="recurring"
-                            android:textSize="12sp"
-                            android:clickable="false"
-                            app:ensureMinTouchTargetSize="false"
-                            app:chipMinHeight="24dp"
-                            app:chipStartPadding="4dp"
-                            app:chipEndPadding="4dp"
-                            style="@style/Widget.Material3.Chip.Assist"/>
-
-                        <com.google.android.material.chip.Chip
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="recurring"
-                            android:textSize="12sp"
-                            android:clickable="false"
-                            app:ensureMinTouchTargetSize="false"
-                            app:chipMinHeight="24dp"
-                            app:chipStartPadding="4dp"
-                            app:chipEndPadding="4dp"
-                            style="@style/Widget.Material3.Chip.Assist"/>
-
-                        <com.google.android.material.chip.Chip
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="recurring"
-                            android:textSize="12sp"
-                            android:clickable="false"
-                            app:ensureMinTouchTargetSize="false"
-                            app:chipMinHeight="24dp"
-                            app:chipStartPadding="4dp"
-                            app:chipEndPadding="4dp"
-                            style="@style/Widget.Material3.Chip.Assist"/>
-
-                        <com.google.android.material.chip.Chip
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="recurring"
-                            android:textSize="12sp"
-                            android:clickable="false"
-                            app:ensureMinTouchTargetSize="false"
-                            app:chipMinHeight="24dp"
-                            app:chipStartPadding="4dp"
-                            app:chipEndPadding="4dp"
-                            style="@style/Widget.Material3.Chip.Assist"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_dream_ratings"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minHeight="184dp"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal"
-                        android:layout_marginStart="12dp"
                         android:showDividers="middle"
-                        android:divider="@drawable/divider_visible"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"
+                        app:layout_constraintVertical_bias="1"
+                        app:layout_constrainedWidth="true"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/txt_special_dream_description">
+                        app:layout_constraintTop_toBottomOf="@+id/txt_journal_description">
 
-                        <LinearLayout
+                        <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="8dp"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="start|center_vertical">
-
-                            <ImageView
-                                android:id="@+id/img_preview_dream_mood"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ic_baseline_sentiment_satisfied_24"
-                                app:tint="?attr/primaryTextColor" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Dream mood"
-                                android:textColor="?attr/secondaryTextColor"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="8dp"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="start|center_vertical">
-
-                            <ImageView
-                                android:id="@+id/img_preview_sleep_quality"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ic_baseline_star_half_24"
-                                app:tint="?attr/primaryTextColor" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Sleep quality"
-                                android:textColor="?attr/secondaryTextColor"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="8dp"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="start|center_vertical">
-
-                            <ImageView
-                                android:id="@+id/img_preview_dream_clarity"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ic_baseline_brightness_7_24"
-                                app:tint="?attr/primaryTextColor" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Dream clarity"
-                                android:textColor="?attr/secondaryTextColor"
-                                android:textSize="12sp" />
-                        </LinearLayout>
+                            android:layout_height="match_parent"
+                            android:background="@drawable/round_border_dashed_surface"
+                            android:gravity="center"
+                            android:paddingHorizontal="8dp"
+                            android:text="no tags available"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="11sp" />
                     </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
+
+            <TextView
+                android:id="@+id/txt_rating_dream_mood_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp"
+                android:layout_marginStart="32dp"
+                android:text="Dream mood"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/crd_rating_info" />
+
+            <!--
+            Help text:
+            Rate your mood within the dream. Think about how you felt throughout your entire journey, then set your overall feeling about it
+            -->
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/btn_info_dream_mood"-->
+<!--                style="@style/Widget.Material3.Button.IconButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:icon="@drawable/rounded_info_24"-->
+<!--                app:iconSize="18dp"-->
+<!--                app:iconTint="?attr/secondaryTextColor"-->
+<!--                app:layout_constraintBottom_toBottomOf="@+id/txt_rating_dream_mood_heading"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/txt_rating_dream_mood_heading"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/txt_rating_dream_mood_heading"-->
+<!--                app:rippleColor="?attr/colorOutlineVariant" />-->
+
+            <LinearLayout
+                android:id="@+id/ll_dream_rating_dream_mood"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_rating_dream_mood_heading">
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sld_dj_dream_mood"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-4dp"
+                    android:stepSize="1"
+                    android:valueTo="4"
+                    app:trackColorActive="?attr/colorSurfaceContainerHighest"
+                    app:tickColor="?attr/colorSurfaceContainerHighest"
+                    app:trackColor="?attr/colorSurfaceContainerHighest"
+                    app:haloColor="@android:color/transparent"
+                    app:trackInsideCornerSize="4dp"
+                    app:trackHeight="4dp"
+                    app:thumbWidth="20dp"
+                    app:thumbHeight="20dp"
+                    app:thumbTrackGapSize="16dp"
+                    app:trackStopIndicatorSize="12dp"
+                    app:tickVisible="true"
+                    app:labelBehavior="floating"
+                    app:labelStyle="@style/Tooltip.Dark" />
+
+                <LinearLayout
+                    android:id="@+id/ll_dj_dream_mood"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-8dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:id="@+id/img_very_dissatisfied"
+                        android:layout_width="wrap_content"
+                        android:layout_height="24dp"
+                        android:layout_gravity="top"
+                        android:layout_marginTop="4dp"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/alt_very_dissatisfied_smiley_rating"
+                        android:src="@drawable/ic_baseline_sentiment_very_dissatisfied_24"
+                        app:tint="?attr/primaryTextColor" />
+
+                    <ImageView
+                        android:id="@+id/img_dissatisfied"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:layout_gravity="top"
+                        android:layout_weight="10"
+                        android:contentDescription="@string/alt_dissatisfied_smiley_rating"
+                        android:src="@drawable/ic_baseline_sentiment_dissatisfied_24"
+                        app:tint="?attr/tertiaryTextColor" />
+
+                    <ImageView
+                        android:id="@+id/img_neutral_satisfied"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:layout_gravity="top"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/alt_neutral_smiley_rating"
+                        android:src="@drawable/ic_baseline_sentiment_neutral_24"
+                        app:tint="?attr/tertiaryTextColor" />
+
+                    <ImageView
+                        android:id="@+id/img_satisfied"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:layout_gravity="top"
+                        android:layout_weight="10"
+                        android:contentDescription="@string/alt_satisfied_smiley_rating"
+                        android:src="@drawable/ic_baseline_sentiment_satisfied_24"
+                        app:tint="?attr/tertiaryTextColor" />
+
+                    <ImageView
+                        android:id="@+id/img_very_satisfied"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:layout_gravity="top"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/alt_very_satisfied_smiley_rating"
+                        android:src="@drawable/ic_baseline_sentiment_very_satisfied_24"
+                        app:tint="?attr/tertiaryTextColor" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txt_rating_sleep_quality_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="28dp"
+                android:text="Sleep quality"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_dream_rating_dream_mood" />
+
+            <!--
+            Help text:
+            Rate the quality of your sleep. Think about the following: Did you sleep as long as you expected? Did you wake up more than usual? Do you feel rested now?
+            -->
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/btn_info_sleep_quality"-->
+<!--                style="@style/Widget.Material3.Button.IconButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:icon="@drawable/rounded_info_24"-->
+<!--                app:iconSize="18dp"-->
+<!--                app:iconTint="?attr/secondaryTextColor"-->
+<!--                app:layout_constraintBottom_toBottomOf="@+id/txt_rating_sleep_quality_heading"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/txt_rating_sleep_quality_heading"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/txt_rating_sleep_quality_heading"-->
+<!--                app:rippleColor="?attr/colorOutlineVariant" />-->
+
+            <LinearLayout
+                android:id="@+id/ll_dream_rating_sleep_quality"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_rating_sleep_quality_heading">
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sld_dj_sleep_quality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-4dp"
+                    android:stepSize="1"
+                    android:valueTo="3"
+                    app:trackColorActive="?attr/colorSurfaceContainerHighest"
+                    app:tickColor="?attr/colorSurfaceContainerHighest"
+                    app:trackColor="?attr/colorSurfaceContainerHighest"
+                    app:haloColor="@android:color/transparent"
+                    app:trackInsideCornerSize="4dp"
+                    app:trackHeight="4dp"
+                    app:thumbWidth="20dp"
+                    app:thumbHeight="20dp"
+                    app:thumbTrackGapSize="16dp"
+                    app:trackStopIndicatorSize="12dp"
+                    app:tickVisible="true"
+                    app:labelBehavior="floating"
+                    app:labelStyle="@style/Tooltip.Dark" />
+
+                <LinearLayout
+                    android:id="@+id/ll_dj_sleep_quality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-8dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:id="@+id/img_very_bad_quality"
+                        android:layout_width="wrap_content"
+                        android:layout_height="24dp"
+                        android:layout_gravity="top"
+                        android:layout_marginTop="4dp"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/alt_very_bad_quality"
+                        android:src="@drawable/ic_baseline_star_border_24"
+                        app:tint="?attr/primaryTextColor" />
+
+                    <androidx.legacy.widget.Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5" />
+
+                    <ImageView
+                        android:id="@+id/img_bad_quality"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:layout_gravity="top"
+                        android:layout_weight="10"
+                        android:contentDescription="@string/alt_bad_quality"
+                        android:src="@drawable/ic_baseline_star_half_24"
+                        app:tint="?attr/tertiaryTextColor" />
+
+                    <ImageView
+                        android:id="@+id/img_good_quality"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:layout_gravity="top"
+                        android:layout_weight="10"
+                        android:contentDescription="@string/alt_good_quality"
+                        android:src="@drawable/ic_baseline_star_24"
+                        app:tint="?attr/tertiaryTextColor" />
+
+                    <androidx.legacy.widget.Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5" />
+
+                    <ImageView
+                        android:id="@+id/img_very_good_quality"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:layout_gravity="top"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/alt_very_good_quality"
+                        android:src="@drawable/ic_baseline_stars_24"
+                        app:tint="?attr/tertiaryTextColor" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txt_rating_dream_clarity_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="28dp"
+                android:text="Dream clarity"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_dream_rating_sleep_quality" />
+
+            <!--
+            Help text:
+            Rate the clarity of your dream. Try to relive the dream in front of your closed eyes. Do you remember all kinds of details or is your memory of the dream cloudy?
+            -->
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/btn_info_dream_clarity"-->
+<!--                style="@style/Widget.Material3.Button.IconButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:icon="@drawable/rounded_info_24"-->
+<!--                app:iconSize="18dp"-->
+<!--                app:iconTint="?attr/secondaryTextColor"-->
+<!--                app:layout_constraintBottom_toBottomOf="@+id/txt_rating_dream_clarity_heading"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/txt_rating_dream_clarity_heading"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/txt_rating_dream_clarity_heading"-->
+<!--                app:rippleColor="?attr/colorOutlineVariant" />-->
+
+            <LinearLayout
+                android:id="@+id/ll_dream_rating_dream_clarity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_rating_dream_clarity_heading">
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sld_dj_dream_clarity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-4dp"
+                    android:stepSize="1"
+                    android:valueTo="3"
+                    app:trackColorActive="?attr/colorSurfaceContainerHighest"
+                    app:tickColor="?attr/colorSurfaceContainerHighest"
+                    app:trackColor="?attr/colorSurfaceContainerHighest"
+                    app:haloColor="@android:color/transparent"
+                    app:trackInsideCornerSize="4dp"
+                    app:trackHeight="4dp"
+                    app:thumbWidth="20dp"
+                    app:thumbHeight="20dp"
+                    app:thumbTrackGapSize="16dp"
+                    app:trackStopIndicatorSize="12dp"
+                    app:tickVisible="true"
+                    app:labelBehavior="floating"
+                    app:labelStyle="@style/Tooltip.Dark" />
+
+                <LinearLayout
+                    android:id="@+id/ll_dj_dream_clarity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-8dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/sld_clarity">
+
+                    <ImageView
+                        android:id="@+id/img_very_unclear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="24dp"
+                        android:layout_gravity="top"
+                        android:layout_marginTop="4dp"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/alt_very_unclear"
+                        android:src="@drawable/ic_baseline_brightness_4_24"
+                        app:tint="?attr/primaryTextColor" />
+
+                    <androidx.legacy.widget.Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5" />
+
+                    <ImageView
+                        android:id="@+id/img_unclear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:layout_gravity="top"
+                        android:layout_weight="10"
+                        android:contentDescription="@string/alt_unclear"
+                        android:src="@drawable/ic_baseline_brightness_5_24"
+                        app:tint="?attr/tertiaryTextColor" />
+
+                    <ImageView
+                        android:id="@+id/img_clear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:layout_gravity="top"
+                        android:layout_weight="10"
+                        android:contentDescription="@string/alt_clear"
+                        android:src="@drawable/ic_baseline_brightness_6_24"
+                        app:tint="?attr/tertiaryTextColor" />
+
+                    <androidx.legacy.widget.Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5" />
+
+                    <ImageView
+                        android:id="@+id/img_very_clear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:layout_gravity="top"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/alt_very_clear"
+                        android:src="@drawable/ic_baseline_brightness_7_24"
+                        app:tint="?attr/tertiaryTextColor" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txt_rating_special_dream_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="28dp"
+                android:text="Special dream"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_dream_rating_dream_clarity" />
+
+            <!--
+            Help text:
+            Select applying characteristics of your dream. Did anything special or unusual occur or was it a regular dream?
+            -->
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/btn_info_special_dream"-->
+<!--                style="@style/Widget.Material3.Button.IconButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:icon="@drawable/rounded_info_24"-->
+<!--                app:iconSize="18dp"-->
+<!--                app:iconTint="?attr/secondaryTextColor"-->
+<!--                app:layout_constraintBottom_toBottomOf="@+id/txt_rating_special_dream_heading"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/txt_rating_special_dream_heading"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/txt_rating_special_dream_heading"-->
+<!--                app:rippleColor="?attr/colorOutlineVariant" />-->
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                android:columnCount="2"
+                android:useDefaultMargins="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_rating_special_dream_heading">
+
+                <ToggleButton
+                    android:id="@+id/tgl_dj_nightmare"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:background="@drawable/toggle_button"
+                    android:drawableTop="@drawable/rounded_sentiment_stressed_24"
+                    android:drawableTint="@drawable/toggle_button_color"
+                    android:drawablePadding="4dp"
+                    android:textAllCaps="false"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:textColor="@drawable/toggle_button_color"
+                    android:textOff="@string/dream_nightmare"
+                    android:textOn="@string/dream_nightmare" />
+
+                <ToggleButton
+                    android:id="@+id/tgl_dj_paralysis"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:background="@drawable/toggle_button"
+                    android:drawableTop="@drawable/ic_baseline_accessibility_new_24"
+                    android:drawableTint="@drawable/toggle_button_color"
+                    android:drawablePadding="4dp"
+                    android:textAllCaps="false"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:textColor="@drawable/toggle_button_color"
+                    android:textOff="@string/dream_paralysis"
+                    android:textOn="@string/dream_paralysis" />
+
+                <ToggleButton
+                    android:id="@+id/tgl_dj_recurring"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:background="@drawable/toggle_button"
+                    android:drawableTop="@drawable/ic_round_loop_24"
+                    android:drawableTint="@drawable/toggle_button_color"
+                    android:drawablePadding="4dp"
+                    android:textAllCaps="false"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:textColor="@drawable/toggle_button_color"
+                    android:textOff="@string/recurring"
+                    android:textOn="@string/recurring" />
+
+                <ToggleButton
+                    android:id="@+id/tgl_dj_false_awakening"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:background="@drawable/toggle_button"
+                    android:drawableTop="@drawable/rounded_cinematic_blur_24"
+                    android:drawableTint="@drawable/toggle_button_color"
+                    android:drawablePadding="4dp"
+                    android:textAllCaps="false"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:textColor="@drawable/toggle_button_color"
+                    android:textOff="@string/dream_false_awakening"
+                    android:textOn="@string/dream_false_awakening" />
+
+                <ToggleButton
+                    android:id="@+id/tgl_dj_lucid"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnSpan="2"
+                    android:layout_columnWeight="1"
+                    android:background="@drawable/toggle_button"
+                    android:drawableTop="@drawable/rounded_award_star_24"
+                    android:drawableTint="@drawable/toggle_button_color"
+                    android:drawablePadding="4dp"
+                    android:textAllCaps="false"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:textColor="@drawable/toggle_button_color"
+                    android:textOff="@string/dream_lucid"
+                    android:textOn="@string/dream_lucid" />
+            </GridLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <include android:id="@+id/sheet_rating" layout="@layout/sheet_journal_rating_persistent" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <ImageView
         android:layout_width="match_parent"

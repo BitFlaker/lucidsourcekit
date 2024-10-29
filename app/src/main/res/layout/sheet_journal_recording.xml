@@ -7,8 +7,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:backgroundTint="?attr/colorSurface"
-    android:paddingBottom="50dp"
-    android:paddingTop="15dp">
+    android:paddingBottom="50dp">
 
     <LinearLayout
         android:id="@+id/ll_dj_recs_list"
@@ -20,11 +19,12 @@
             android:id="@+id/txt_recordings_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="32dp"
             android:textAlignment="center"
             android:text="Recordings"
-            android:textColor="?attr/primaryTextColor"
-            android:textSize="22sp" />
+            android:textColor="?attr/tertiaryTextColor"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/txt_dj_no_recs_found"

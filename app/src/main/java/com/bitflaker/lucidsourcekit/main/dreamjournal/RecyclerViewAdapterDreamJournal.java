@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.AttrRes;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.res.ResourcesCompat;
@@ -132,7 +134,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         holder.setRecordingsCount(audioCount);
 
         List<String> tagItems = current.getStringTags();
-        holder.setTagList(tagItems, activity);
+        RecyclerViewAdapterDreamJournal.MainViewHolder.setTagList(holder.binding.llTagsHolder, holder.calculateAdditionalContainerPadding(), 1, tagItems, activity);
 
         holder.binding.crdJournalEntryCard.setOnClickListener(e -> viewDreamJournalEntry(current));
     }
@@ -506,76 +508,84 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             binding.txtRecordingsCount.setVisibility(audioCount == 0 ? View.GONE : View.VISIBLE);
         }
 
-        public void setTagList(List<String> tagItems, Activity activity) {
-            int layoutWidth = calculateTagsContainerWidth(activity);
+        public static void setTagList(ViewGroup container, int additionalPadding, int elevationLevel, List<String> tagItems, Activity activity) {
+            Context context = container.getContext();
+            int layoutWidth = calculateTagsContainerWidth(container, activity, additionalPadding);
             if (tagItems.isEmpty()) {
-                binding.llTagsHolder.addView(generateTagInfo("no tags available"));
+                container.addView(generateTagInfo(context, "no tags available", elevationLevel));
                 return;
             }
             int dividerSpacing = Tools.dpToPx(context, 4);
             int totalTagsWidth = 0;
             for (int i = 0; i < tagItems.size(); i++) {
-                TextView tag = generateTagView(tagItems.get(i), R.attr.colorSurfaceContainerHigh, false);
+                @AttrRes int color = elevationLevel == 0 ? R.attr.colorSurfaceContainer : R.attr.colorSurfaceContainerHigh;
+                TextView tag = generateTagView(context, tagItems.get(i), color, false, elevationLevel);
                 int currentTagWidth = getViewWidth(tag);
                 int currentMargin = i == 0 ? 0 : dividerSpacing;
                 if (totalTagsWidth + currentTagWidth + currentMargin <= layoutWidth) {
-                    binding.llTagsHolder.addView(tag);
+                    container.addView(tag);
                     totalTagsWidth += currentTagWidth + currentMargin;
                 }
                 else {
                     int removeCount = 0;
-                    TextView collapsedTagCount = generateCollapsedTagCountView(tagItems.size() - i);
+                    TextView collapsedTagCount = generateCollapsedTagCountView(context, tagItems.size() - i, elevationLevel);
                     while (totalTagsWidth + getViewWidth(collapsedTagCount) + dividerSpacing > layoutWidth) {
                         removeCount++;
-                        int index = binding.llTagsHolder.getChildCount() - 1;
-                        View lastView = binding.llTagsHolder.getChildAt(index);
-                        binding.llTagsHolder.removeViewAt(index);
+                        int index = container.getChildCount() - 1;
+                        View lastView = container.getChildAt(index);
+                        container.removeViewAt(index);
                         int marginToRemove = index == 0 ? 0 : dividerSpacing;
                         int viewToRemoveWidth = getViewWidth(lastView);
                         totalTagsWidth -= viewToRemoveWidth + marginToRemove;
-                        collapsedTagCount = generateCollapsedTagCountView(tagItems.size() - i + removeCount);
+                        collapsedTagCount = generateCollapsedTagCountView(context, tagItems.size() - i + removeCount, elevationLevel);
                     }
-                    binding.llTagsHolder.addView(collapsedTagCount);
+                    container.addView(collapsedTagCount);
                     break;
                 }
             }
         }
 
-        private int calculateTagsContainerWidth(Activity activity) {
+        public int calculateAdditionalContainerPadding() {
+            int recordingsWidth = MainViewHolder.getViewWidth(binding.txtRecordingsCount);    // Seems to ignore the compound drawable at the start, therefore manually add it below
+            if (binding.txtRecordingsCount.getVisibility() != View.GONE) {
+                recordingsWidth += Tools.dpToPx(binding.getRoot().getContext(), 20);   // TODO: find a way not to hardcode this: get the sum of all horizontal compound drawable widths (.intrinsicWidth(), .bounds().width() are all 0 at this point)
+            }
+            int specialIconContainerWidth = MainViewHolder.getViewWidth(binding.llTitleIcons);
+            return recordingsWidth + specialIconContainerWidth;
+        }
+
+        private static int calculateTagsContainerWidth(ViewGroup container, Activity activity, int additionalPadding) {
             int totalWidth = activity.getWindow().getDecorView().getMeasuredWidth();
-            int totalHorizontalMargins = getHorizontalSpacing(binding.llTagsHolder);
-            ViewParent viewParent = binding.llTagsHolder;
+            int totalHorizontalMargins = getHorizontalSpacing(container);
+            ViewParent viewParent = container;
             while ((viewParent = viewParent.getParent()) instanceof View) {
                 View view = (View) viewParent;
                 totalHorizontalMargins += getHorizontalSpacing(view);
             }
-            int recordingsWidth = getViewWidth(binding.txtRecordingsCount);    // Seems to ignore the compound drawable at the start, therefore manually add it below
-            if (binding.txtRecordingsCount.getVisibility() != View.GONE) {
-                recordingsWidth += Tools.dpToPx(context, 20);   // TODO: find a way not to hardcode this: get the sum of all horizontal compound drawable widths (.intrinsicWidth(), .bounds().width() are all 0 at this point)
-            }
-            int specialIconContainerWidth = getViewWidth(binding.llTitleIcons);
-            return totalWidth - totalHorizontalMargins - recordingsWidth - specialIconContainerWidth;
+            return totalWidth - totalHorizontalMargins - additionalPadding;
         }
 
-        private TextView generateCollapsedTagCountView(int count) {
-            return generateTagInfo(String.format(Locale.getDefault(), "+ %d", count));
+        private static TextView generateCollapsedTagCountView(Context context, int count, int elevationLevel) {
+            return generateTagInfo(context, String.format(Locale.getDefault(), "+ %d", count), elevationLevel);
         }
 
         @NonNull
-        private TextView generateTagInfo(String text) {
+        private static TextView generateTagInfo(Context context, String text, int elevationLevel) {
             int dp8 = Tools.dpToPx(context, 8);
             TextView countViewer = new TextView(context);
-            countViewer.setBackgroundResource(R.drawable.round_border_dashed);
+            @DrawableRes int background = elevationLevel == 0 ? R.drawable.round_border_dashed_surface : R.drawable.round_border_dashed;
+            @AttrRes int foreground = elevationLevel == 0 ? R.attr.tertiaryTextColor : R.attr.secondaryTextColor;
+            countViewer.setBackgroundResource(background);
             countViewer.setPadding(dp8, dp8 / 2, dp8, dp8 / 2);
             countViewer.setText(text);
             countViewer.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             countViewer.setGravity(Gravity.CENTER_VERTICAL);
-            countViewer.setTextColor(Tools.getAttrColor(R.attr.secondaryTextColor, context.getTheme()));
+            countViewer.setTextColor(Tools.getAttrColor(foreground, context.getTheme()));
             countViewer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
             return countViewer;
         }
 
-        private int getViewWidth(View view) {
+        private static int getViewWidth(View view) {
             if (view.getVisibility() == View.GONE) {
                 return 0;
             }
@@ -584,12 +594,13 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         }
 
         @NonNull
-        private TextView generateTagView(String text, int color, boolean addMargins) {
+        private static TextView generateTagView(Context context, String text, int color, boolean addMargins, int elevationLevel) {
             int dp8 = Tools.dpToPx(context, 8);
+            @AttrRes int textColor = elevationLevel == 0 ? R.attr.secondaryTextColor : R.attr.primaryTextColor;
             TextView tag = new TextView(context);
             tag.setSingleLine(true);
             tag.setText(text);
-            tag.setTextColor(Tools.getAttrColorStateList(R.attr.primaryTextColor, context.getTheme()));
+            tag.setTextColor(Tools.getAttrColorStateList(textColor, context.getTheme()));
             tag.setPadding(dp8, dp8 / 2, dp8, dp8 / 2);
             tag.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
             tag.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.small_rounded_rectangle, context.getTheme()));

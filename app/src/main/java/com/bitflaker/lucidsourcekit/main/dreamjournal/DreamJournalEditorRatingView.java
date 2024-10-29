@@ -4,20 +4,15 @@ import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
 import com.bitflaker.lucidsourcekit.R;
@@ -27,12 +22,8 @@ import com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamTypes;
 import com.bitflaker.lucidsourcekit.data.enums.journalratings.SleepQuality;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
 import com.bitflaker.lucidsourcekit.databinding.FragmentJournalEditorRatingBinding;
-import com.bitflaker.lucidsourcekit.databinding.SheetJournalRatingPersistentBinding;
 import com.bitflaker.lucidsourcekit.utils.Tools;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
-import java.util.HashMap;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
@@ -43,92 +34,78 @@ public class DreamJournalEditorRatingView extends Fragment {
     private ImageView[] dreamMoods = new ImageView[5];
     private ImageView[] sleepQualities = new ImageView[4];
     private ImageView[] dreamClarities = new ImageView[4];
-    private HashMap<ToggleButton, ImageView> toggleButtonIcons;
     private ColorStateList unselectedIconColor;
     private ColorStateList selectedIconColor;
-    private BottomSheetBehavior<NestedScrollView> bottomSheetBehavior;
     private CompositeDisposable compositeDisposable;
     private DreamJournalEntry entry;
-    private OnCloseButtonClicked mCloseButtonClicked;
     private OnBackButtonClicked mBackButtonListener;
     private OnDoneButtonClicked mDoneButtonListener;
     private FragmentJournalEditorRatingBinding binding;
-    private SheetJournalRatingPersistentBinding sheetBinding;
+    private OnCloseButtonClicked mCloseButtonClicked;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentJournalEditorRatingBinding.inflate(inflater, container, false);
-        sheetBinding = binding.sheetRating;
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setAdjustedStatusBarMargin(binding.clRatingHeading);
 
         compositeDisposable = new CompositeDisposable();
-        toggleButtonIcons = new HashMap<>();
         unselectedIconColor = Tools.getAttrColorStateList(R.attr.colorSurfaceContainerHigh, getContext().getTheme());
-        selectedIconColor = Tools.getAttrColorStateList(R.attr.colorPrimary, getContext().getTheme());
-
-        bottomSheetBehavior = BottomSheetBehavior.from(sheetBinding.nsvDreamRatingBottomSheet);
+        selectedIconColor = Tools.getAttrColorStateList(R.attr.colorOnSurface, getContext().getTheme());
 
         dreamMoods = new ImageView[] {
-                sheetBinding.imgVeryDissatisfied,
-                sheetBinding.imgDissatisfied,
-                sheetBinding.imgNeutralSatisfied,
-                sheetBinding.imgSatisfied,
-                sheetBinding.imgVerySatisfied
+                binding.imgVeryDissatisfied,
+                binding.imgDissatisfied,
+                binding.imgNeutralSatisfied,
+                binding.imgSatisfied,
+                binding.imgVerySatisfied
         };
         sleepQualities = new ImageView[] {
-                sheetBinding.imgVeryBadQuality,
-                sheetBinding.imgBadQuality,
-                sheetBinding.imgGoodQuality,
-                sheetBinding.imgVeryGoodQuality
+                binding.imgVeryBadQuality,
+                binding.imgBadQuality,
+                binding.imgGoodQuality,
+                binding.imgVeryGoodQuality
         };
         dreamClarities = new ImageView[] {
-                sheetBinding.imgVeryUnclear,
-                sheetBinding.imgUnclear,
-                sheetBinding.imgClear,
-                sheetBinding.imgVeryClear
+                binding.imgVeryUnclear,
+                binding.imgUnclear,
+                binding.imgClear,
+                binding.imgVeryClear
         };
         restoreStoredEntry();
 
-        sheetBinding.tglDjNightmare.setOnClickListener(e -> toggleSpecialDreamType((ToggleButton) e, DreamTypes.Nightmare.getId()));
-        sheetBinding.tglDjParalysis.setOnClickListener(e -> toggleSpecialDreamType((ToggleButton) e, DreamTypes.SleepParalysis.getId()));
-        sheetBinding.tglDjLucid.setOnClickListener(e -> toggleSpecialDreamType((ToggleButton) e, DreamTypes.Lucid.getId()));
-        sheetBinding.tglDjRecurring.setOnClickListener(e -> toggleSpecialDreamType((ToggleButton) e, DreamTypes.Recurring.getId()));
-        sheetBinding.tglDjFalseAwakening.setOnClickListener(e -> toggleSpecialDreamType((ToggleButton) e, DreamTypes.FalseAwakening.getId()));
+        binding.tglDjNightmare.setOnClickListener(e -> toggleSpecialDreamType((ToggleButton) e, DreamTypes.Nightmare.getId()));
+        binding.tglDjParalysis.setOnClickListener(e -> toggleSpecialDreamType((ToggleButton) e, DreamTypes.SleepParalysis.getId()));
+        binding.tglDjLucid.setOnClickListener(e -> toggleSpecialDreamType((ToggleButton) e, DreamTypes.Lucid.getId()));
+        binding.tglDjRecurring.setOnClickListener(e -> toggleSpecialDreamType((ToggleButton) e, DreamTypes.Recurring.getId()));
+        binding.tglDjFalseAwakening.setOnClickListener(e -> toggleSpecialDreamType((ToggleButton) e, DreamTypes.FalseAwakening.getId()));
 
-        sheetBinding.sldDjDreamMood.setLabelFormatter(value -> dreamMoodLabels[(int)value]);
-        sheetBinding.sldDjSleepQuality.setLabelFormatter(value -> sleepQualityLabels[(int)value]);
-        sheetBinding.sldDjDreamClarity.setLabelFormatter(value -> dreamClarityLabels[(int)value]);
+        binding.sldDjDreamMood.setLabelFormatter(value -> dreamMoodLabels[(int) value]);
+        binding.sldDjSleepQuality.setLabelFormatter(value -> sleepQualityLabels[(int) value]);
+        binding.sldDjDreamClarity.setLabelFormatter(value -> dreamClarityLabels[(int) value]);
 
-        sheetBinding.sldDjDreamMood.addOnChangeListener((slider, value, fromUser) -> {
-            handleIconSlider((int) value, dreamMoods, binding.imgPreviewDreamMood);
+        binding.sldDjDreamMood.addOnChangeListener((slider, value, fromUser) -> {
+            handleIconSlider((int) value, dreamMoods);
             entry.journalEntry.moodId = DreamMoods.values()[(int) value].getId();
         });
-        sheetBinding.sldDjSleepQuality.addOnChangeListener((slider, value, fromUser) -> {
-            handleIconSlider((int) value, sleepQualities, binding.imgPreviewSleepQuality);
+        binding.sldDjSleepQuality.addOnChangeListener((slider, value, fromUser) -> {
+            handleIconSlider((int) value, sleepQualities);
             entry.journalEntry.qualityId = SleepQuality.values()[(int) value].getId();
         });
-        sheetBinding.sldDjDreamClarity.addOnChangeListener((slider, value, fromUser) -> {
-            handleIconSlider((int) value, dreamClarities, binding.imgPreviewDreamClarity);
+        binding.sldDjDreamClarity.addOnChangeListener((slider, value, fromUser) -> {
+            handleIconSlider((int) value, dreamClarities);
             entry.journalEntry.clarityId = DreamClarity.values()[(int) value].getId();
         });
 
-        binding.btnDjCloseEditor.setOnClickListener(e -> new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog)
-                .setTitle("Discard changes")
-                .setMessage("Do you really want to discard all changes")
-                .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
-                    entry.removeAllAddedRecordings();
-                    if(mCloseButtonClicked != null) {
-                        mCloseButtonClicked.onEvent();
-                    }
-                })
-                .setNegativeButton(getResources().getString(R.string.no), null)
-                .show());
+        binding.btnDjCloseEditor.setOnClickListener(e -> {
+            if (mBackButtonListener != null) {
+                mBackButtonListener.onEvent();
+            }
+        });
 
         binding.btnDjBackToText.setOnClickListener(e -> {
             if(mBackButtonListener != null) {
@@ -150,141 +127,50 @@ public class DreamJournalEditorRatingView extends Fragment {
                 mDoneButtonListener.onEvent();
             }
         });
-
-        binding.mcvDreamRatingPreview.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                binding.mcvDreamRatingPreview.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int screenTopToCardBottom = binding.mcvDreamRatingPreview.getBottom();
-                int marginBelowCard = Tools.dpToPx(getContext(), 20);
-                int height = getAppHeight();
-                bottomSheetBehavior.setPeekHeight(height - (screenTopToCardBottom + marginBelowCard));
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            }
-        });
-
-        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                sheetBinding.imgDragHandle.setVisibility(newState == BottomSheetBehavior.STATE_EXPANDED ? View.INVISIBLE : View.VISIBLE);
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) { }
-        });
-    }
-
-    private void setAdjustedStatusBarMargin(ConstraintLayout heading) {
-        // As the content editor's margin top is automatically adjusted because of the 'fitsSystemWindows' flag
-        // we have to adjust the heading's margin top to be at the same height as the content editor's
-        // heading height. Those values vary from device to device
-
-        int insetTop = getActivity().getWindow().getDecorView().getRootWindowInsets().getStableInsetTop();
-        int statusBarHeight = Tools.getStatusBarHeight(getContext());
-        int marginTop = insetTop - statusBarHeight;
-
-        LinearLayout.LayoutParams lParams = (LinearLayout.LayoutParams) heading.getLayoutParams();
-        lParams.topMargin = marginTop;
-        heading.setLayoutParams(Tools.addLinearLayoutParamsTopStatusbarSpacing(getContext(), lParams));
     }
 
     private void toggleSpecialDreamType(ToggleButton button, String dreamType) {
-        @DrawableRes int iconId = getSpecialDreamTypeIcon(dreamType);
-        if(button.isChecked()) {
-            setSpecialDreamNoticeIfFirst();
-            ImageView icon = generateIcon(iconId);
-            toggleButtonIcons.put(button, icon);
-            binding.llSpecialDreamIcons.addView(icon);
+        if (button.isChecked()) {
             entry.addDreamType(dreamType);
         }
         else {
-            setRegularDreamNoticeIfLast(button);
-            ImageView icon = toggleButtonIcons.get(button);
-            toggleButtonIcons.remove(button);
-            binding.llSpecialDreamIcons.removeView(icon);
             entry.removeDreamType(dreamType);
         }
     }
 
-    private static int getSpecialDreamTypeIcon(String dreamType) {
-        @DrawableRes int icon = switch (DreamTypes.getEnum(dreamType)) {
-            case Nightmare -> R.drawable.rounded_sentiment_stressed_24;
-            case SleepParalysis -> R.drawable.ic_baseline_accessibility_new_24;
-            case Lucid -> R.drawable.rounded_award_star_24;
-            case Recurring -> R.drawable.ic_round_loop_24;
-            case FalseAwakening -> R.drawable.rounded_cinematic_blur_24;
-            default -> -1;
-        };
-        return icon;
-    }
-
-    private void setRegularDreamNoticeIfLast(ToggleButton button) {
-        if (toggleButtonIcons.size() == 1 && toggleButtonIcons.containsKey(button)) {
-            binding.llSpecialDreamIcons.addView(generateIcon(R.drawable.rounded_eco_24));
-            binding.txtSpecialDreamHeading.setText("Regular dream");
-            binding.txtSpecialDreamDescription.setText("This is a normal dream without any special types");
-        }
-    }
-
-    private void setSpecialDreamNoticeIfFirst() {
-        if (toggleButtonIcons.isEmpty()) {
-            binding.llSpecialDreamIcons.removeAllViews();
-            binding.txtSpecialDreamHeading.setText("Special dream");
-            binding.txtSpecialDreamDescription.setText("This is a special dream with at least one special type");
-        }
-    }
-
-    private ImageView generateIcon(@DrawableRes int icon) {
-        ImageView img = new ImageView(getContext());
-        img.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        img.setImageResource(icon);
-        img.setImageTintList(Tools.getAttrColorStateList(R.attr.secondaryTextColor, getContext().getTheme()));
-        return img;
-    }
-
-    private void handleIconSlider(int value, ImageView[] icons, ImageView previewIcon) {
-        if(value < icons.length && previewIcon != null) {
+    private void handleIconSlider(int value, ImageView[] icons) {
+        if(value < icons.length) {
             for (int i = 0; i < icons.length; i++) {
                 if(icons[i] != null) {
                     icons[i].setImageTintList(i == value ? selectedIconColor : unselectedIconColor);
                     LinearLayout.LayoutParams lParams = (LinearLayout.LayoutParams) icons[i].getLayoutParams();
-                    lParams.topMargin = i == value ? Tools.dpToPx(getContext(), 6) : 0;
-                    lParams.height = i == value ? Tools.dpToPx(getContext(), 24) : Tools.dpToPx(getContext(), 16);
+                    lParams.topMargin = i == value ? Tools.dpToPx(getContext(), 4) : 0;
+                    lParams.height = i == value ? Tools.dpToPx(getContext(), 20) : Tools.dpToPx(getContext(), 16);
                     icons[i].setLayoutParams(lParams);
                     icons[i].invalidate();
                 }
             }
-            previewIcon.setImageDrawable(icons[value].getDrawable());
         }
     }
 
-    private int getAppHeight() {
-        // TODO: check on phones without (navbar / gesture inset) if inset is 0, apparently might have higher value even without visible inset
-        int insetBottom = getActivity().getWindow().getDecorView().getRootWindowInsets().getStableInsetBottom();
-        DisplayMetrics metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
-        int deviceHeight = metrics.heightPixels;
-        return deviceHeight - insetBottom;
-    }
-
     private void restoreStoredEntry() {
-        sheetBinding.sldDjDreamMood.setValue(DreamMoods.getEnum(entry.journalEntry.moodId).ordinal());
-        handleIconSlider((int) sheetBinding.sldDjDreamMood.getValue(), dreamMoods, binding.imgPreviewDreamMood);
-        sheetBinding.sldDjDreamClarity.setValue(DreamClarity.getEnum(entry.journalEntry.clarityId).ordinal());
-        handleIconSlider((int) sheetBinding.sldDjDreamClarity.getValue(), dreamClarities, binding.imgPreviewDreamClarity);
-        sheetBinding.sldDjSleepQuality.setValue(SleepQuality.getEnum(entry.journalEntry.qualityId).ordinal());
-        handleIconSlider((int) sheetBinding.sldDjSleepQuality.getValue(), sleepQualities, binding.imgPreviewSleepQuality);
+        binding.sldDjDreamMood.setValue(DreamMoods.getEnum(entry.journalEntry.moodId).ordinal());
+        handleIconSlider((int) binding.sldDjDreamMood.getValue(), dreamMoods);
+        binding.sldDjDreamClarity.setValue(DreamClarity.getEnum(entry.journalEntry.clarityId).ordinal());
+        handleIconSlider((int) binding.sldDjDreamClarity.getValue(), dreamClarities);
+        binding.sldDjSleepQuality.setValue(SleepQuality.getEnum(entry.journalEntry.qualityId).ordinal());
+        handleIconSlider((int) binding.sldDjSleepQuality.getValue(), sleepQualities);
 
-        sheetBinding.tglDjNightmare.setChecked(entry.hasSpecialType(DreamTypes.Nightmare.getId()));
-        toggleSpecialDreamType(sheetBinding.tglDjNightmare, DreamTypes.Nightmare.getId());
-        sheetBinding.tglDjParalysis.setChecked(entry.hasSpecialType(DreamTypes.SleepParalysis.getId()));
-        toggleSpecialDreamType(sheetBinding.tglDjParalysis, DreamTypes.SleepParalysis.getId());
-        sheetBinding.tglDjLucid.setChecked(entry.hasSpecialType(DreamTypes.Lucid.getId()));
-        toggleSpecialDreamType(sheetBinding.tglDjLucid, DreamTypes.Lucid.getId());
-        sheetBinding.tglDjRecurring.setChecked(entry.hasSpecialType(DreamTypes.Recurring.getId()));
-        toggleSpecialDreamType(sheetBinding.tglDjRecurring, DreamTypes.Recurring.getId());
-        sheetBinding.tglDjFalseAwakening.setChecked(entry.hasSpecialType(DreamTypes.FalseAwakening.getId()));
-        toggleSpecialDreamType(sheetBinding.tglDjFalseAwakening, DreamTypes.FalseAwakening.getId());
+        binding.tglDjNightmare.setChecked(entry.hasSpecialType(DreamTypes.Nightmare.getId()));
+        toggleSpecialDreamType(binding.tglDjNightmare, DreamTypes.Nightmare.getId());
+        binding.tglDjParalysis.setChecked(entry.hasSpecialType(DreamTypes.SleepParalysis.getId()));
+        toggleSpecialDreamType(binding.tglDjParalysis, DreamTypes.SleepParalysis.getId());
+        binding.tglDjLucid.setChecked(entry.hasSpecialType(DreamTypes.Lucid.getId()));
+        toggleSpecialDreamType(binding.tglDjLucid, DreamTypes.Lucid.getId());
+        binding.tglDjRecurring.setChecked(entry.hasSpecialType(DreamTypes.Recurring.getId()));
+        toggleSpecialDreamType(binding.tglDjRecurring, DreamTypes.Recurring.getId());
+        binding.tglDjFalseAwakening.setChecked(entry.hasSpecialType(DreamTypes.FalseAwakening.getId()));
+        toggleSpecialDreamType(binding.tglDjFalseAwakening, DreamTypes.FalseAwakening.getId());
     }
 
     @Override
@@ -303,6 +189,22 @@ public class DreamJournalEditorRatingView extends Fragment {
     public void onDestroyView() {
         compositeDisposable.clear();
         super.onDestroyView();
+    }
+
+    public void updatePreview() {
+        String title = entry.journalEntry.title;
+        String description = entry.journalEntry.description;
+        boolean emptyTitle = title == null || title.isEmpty();
+        boolean emptyDescription = description == null || description.isEmpty();
+
+        binding.txtJournalTitle.setTextColor(Tools.getAttrColor(emptyTitle ? R.attr.tertiaryTextColor : R.attr.primaryTextColor, getContext().getTheme()));
+        binding.txtJournalDescription.setTextColor(Tools.getAttrColor(emptyDescription ? R.attr.tertiaryTextColor : R.attr.secondaryTextColor, getContext().getTheme()));
+
+        binding.txtJournalTitle.setText(emptyTitle ? "No title provided" : title);
+        binding.txtJournalDescription.setText(emptyDescription ? "No description provided. Try to write the dream down to better memorize them." : description);
+
+        binding.llTagsHolder.removeAllViews();
+        RecyclerViewAdapterDreamJournal.MainViewHolder.setTagList(binding.llTagsHolder, 0, 0, entry.getStringTags(), getActivity());
     }
 
     public interface OnDreamJournalEntrySaved {

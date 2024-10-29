@@ -118,7 +118,7 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
             if (group.getChildAt(i) instanceof MaterialRadioButton button) {
                 button.setOnCheckedChangeListener((compoundButton, isSelected) -> {
                     if (isSelected) {
-                        radioSelectionChanged(category, group, content);
+                        radioSelectionChanged(category, group, content, button);
                     }
                 });
             }
@@ -156,9 +156,13 @@ public class FilterDialog extends DialogFragment implements DialogInterface.OnCl
     }
 
     private void radioSelectionChanged(MaterialButton categoryButton, RadioGroup radioGroup, LinearLayout container) {
+        MaterialRadioButton selected = binding.getRoot().findViewById(radioGroup.getCheckedRadioButtonId());
+        radioSelectionChanged(categoryButton, radioGroup, container, selected);
+    }
+
+    private void radioSelectionChanged(MaterialButton categoryButton, RadioGroup radioGroup, LinearLayout container, MaterialRadioButton selected) {
         binding.actvFilterTags.clearFocus();
         MaterialRadioButton doNotFilterOption = (MaterialRadioButton) radioGroup.getChildAt(0);
-        MaterialRadioButton selected = binding.getRoot().findViewById(radioGroup.getCheckedRadioButtonId());
         setIcons(categoryButton, container, List.of(selected), selected.isChecked() && selected == doNotFilterOption);
     }
 

@@ -262,18 +262,11 @@ public class Tools {
 
         RandomGoalPicker randomGoalPicker = new RandomGoalPicker();
         for (Goal goal : goals.blockingGet()) {
-            int occurrenceLevel = (int) goal.difficulty;
-            float higherPercentage = goal.difficulty - occurrenceLevel;
-            float lowerPercentage = 1 - higherPercentage;
+            float weight = calculateGoalWeight(goal, weights);
 
-            float weight = weights[weights.length - 1];
-            if(occurrenceLevel < weights.length) {
-                float lowerWeight = weights[occurrenceLevel - 1];
-                float higherWeight = weights[occurrenceLevel];
-                weight = lowerPercentage * lowerWeight + higherPercentage * higherWeight;
+            if (weight > 0.0f) {
+                randomGoalPicker.add(weight, goal);
             }
-
-            randomGoalPicker.add(weight, goal);
         }
 
         List<Goal> shuffledGoals = new ArrayList<>();
@@ -282,6 +275,20 @@ public class Tools {
         }
 
         return shuffledGoals;
+    }
+
+    private static float calculateGoalWeight(Goal goal, float[] weights) {
+        int occurrenceLevel = (int) goal.difficulty;
+        float higherPercentage = goal.difficulty - occurrenceLevel;
+        float lowerPercentage = 1 - higherPercentage;
+
+        float weight = weights[weights.length - 1];
+        if(occurrenceLevel < weights.length) {
+            float lowerWeight = weights[occurrenceLevel - 1];
+            float higherWeight = weights[occurrenceLevel];
+            weight = lowerPercentage * lowerWeight + higherPercentage * higherWeight;
+        }
+        return weight;
     }
 
     public static boolean hasNoData(List<Double> data) {

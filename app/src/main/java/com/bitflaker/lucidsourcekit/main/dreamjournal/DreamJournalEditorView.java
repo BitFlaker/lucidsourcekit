@@ -61,12 +61,16 @@ public class DreamJournalEditorView extends AppCompatActivity {
         }
 
         DreamJournalEditorContentView vwDreamContentEditor = new DreamJournalEditorContentView();
+        DreamJournalEditorRatingView vwDreamRatingsEditor = new DreamJournalEditorRatingView();
+
         vwDreamContentEditor.setJournalEntryId(entry);
         vwDreamContentEditor.setJournalEntryType(type);
-        vwDreamContentEditor.setOnContinueButtonClicked(() -> binding.tlDjEditorLayout.selectTab(binding.tlDjEditorLayout.getTabAt(1)));
+        vwDreamContentEditor.setOnContinueButtonClicked(() -> {
+            binding.tlDjEditorLayout.selectTab(binding.tlDjEditorLayout.getTabAt(1));
+            vwDreamRatingsEditor.updatePreview();
+        });
         vwDreamContentEditor.setOnCloseButtonClicked(this::finish);
 
-        DreamJournalEditorRatingView vwDreamRatingsEditor = new DreamJournalEditorRatingView();
         vwDreamRatingsEditor.setJournalEntryId(entry);
         vwDreamRatingsEditor.setOnBackButtonClicked(() -> binding.tlDjEditorLayout.selectTab(binding.tlDjEditorLayout.getTabAt(0)));
         vwDreamRatingsEditor.setOnDoneButtonClicked(() -> compositeDisposable.add(storeEntry().subscribeOn(Schedulers.io()).subscribe()));

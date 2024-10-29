@@ -36,7 +36,7 @@
     <string name="days_opening_streak">Tage Streak</string>
     <string name="dream_journal">Traumtagebuch</string>
     <string name="empty_dream_journal">Sieht ziemlich leer aus hier. Drücke den \'+\'-Knopf unten rechts um einen neuen Eintrag hinzuzufügen.</string>
-    <string name="dream_title_hint">Gib deinem Traum einen Titel</string>
+    <string name="dream_title_hint">Traum Titel</string>
     <string name="dream_story_hint">Beschreibe den Traum so genau wie möglich</string>
     <string name="alt_very_dissatisfied_smiley_rating">sehr unzufrieden smiley</string>
     <string name="alt_dissatisfied_smiley_rating">unzufrieden smiley</string>

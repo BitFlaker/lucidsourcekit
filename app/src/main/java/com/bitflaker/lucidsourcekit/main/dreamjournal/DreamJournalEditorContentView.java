@@ -94,7 +94,7 @@ public class DreamJournalEditorContentView extends Fragment {
 
         binding.btnDjDate.setText(shortDateTimeFormat.format(Tools.calendarFromMillis(entry.journalEntry.timeStamp).getTime()));
 
-        if(entryType == DreamJournalEntry.EntryType.FORMS_TEXT) {
+        if (entryType == DreamJournalEntry.EntryType.FORMS_TEXT) {
             binding.flxDjFormDream.setVisibility(View.VISIBLE);
             binding.txtDjDescriptionDream.setVisibility(View.GONE);
             setupForms();
@@ -242,7 +242,7 @@ public class DreamJournalEditorContentView extends Fragment {
         binding.btnDjContinueToRatings.setOnClickListener(e -> {
             InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-            if(mContinueButtonClicked != null) {
+            if (mContinueButtonClicked != null) {
                 mContinueButtonClicked.onEvent();
             }
         });

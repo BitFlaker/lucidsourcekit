@@ -35,7 +35,7 @@
     <string name="days_opening_streak">days streak opening the app</string>
     <string name="dream_journal">Dream journal</string>
     <string name="empty_dream_journal">Looks pretty empty here. Press the \'+\'-Button at bottom to add a new entry.</string>
-    <string name="dream_title_hint">Enter a dream title</string>
+    <string name="dream_title_hint">Dream title</string>
     <string name="dream_story_hint">Describe your dream as detailed as possible</string>
     <string name="alt_very_dissatisfied_smiley_rating">very dissatisfied smiley</string>
     <string name="alt_dissatisfied_smiley_rating">dissatisfied smiley</string>
