@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="24dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="24dp">
+
+    <TextView
+        android:id="@+id/txt_progress_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:ellipsize="middle"
+        android:lines="1"
+        android:text="Exporting_some2398hr98h98dhf98wsdhf98hdw89fhsd98fh98shd9f8.aac"
+        android:textSize="11sp"
+        app:layout_constraintEnd_toEndOf="@+id/prg_progress"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/prg_progress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:progress="10"
+        app:layout_constraintEnd_toStartOf="@+id/txt_progress_percentage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_progress_text"
+        app:trackStopIndicatorSize="0dp" />
+
+    <TextView
+        android:id="@+id/txt_progress_percentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:minWidth="26dp"
+        android:text="10%"
+        android:textAlignment="textEnd"
+        android:textSize="11sp"
+        app:layout_constraintStart_toEndOf="@+id/prg_progress"
+        app:layout_constraintBottom_toBottomOf="@+id/prg_progress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/prg_progress" />
+</androidx.constraintlayout.widget.ConstraintLayout>

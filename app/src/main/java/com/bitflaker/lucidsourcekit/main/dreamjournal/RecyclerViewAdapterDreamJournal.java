@@ -497,7 +497,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
 
         public void setTitleAndTextContent(String title, String textContent) {
             this.binding.txtTitle.setText(title);
-            boolean hasTextContent = !textContent.isEmpty();
+            boolean hasTextContent = textContent != null && !textContent.isBlank();
             binding.txtDescription.setText(hasTextContent ? textContent : "This dream journal entry contains no text. How about adding some content now?");
             binding.txtDescription.setTypeface(null, hasTextContent ? Typeface.NORMAL : Typeface.ITALIC);
             binding.txtDescription.setTextColor(Tools.getAttrColor(hasTextContent ? R.attr.secondaryTextColor : R.attr.tertiaryTextColor, context.getTheme()));

@@ -1,33 +1,42 @@
 package com.bitflaker.lucidsourcekit.main;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
 import com.bitflaker.lucidsourcekit.databinding.ActivityMainViewerBinding;
+import com.bitflaker.lucidsourcekit.databinding.DialogProgressBinding;
 import com.bitflaker.lucidsourcekit.main.binauralbeats.BinauralBeatsView;
 import com.bitflaker.lucidsourcekit.main.dreamjournal.DreamJournalView;
 import com.bitflaker.lucidsourcekit.main.goals.GoalsView;
 import com.bitflaker.lucidsourcekit.main.overview.MainOverviewView;
 import com.bitflaker.lucidsourcekit.main.statistics.StatisticsView;
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter;
+import com.bitflaker.lucidsourcekit.utils.BackupTask;
+import com.bitflaker.lucidsourcekit.utils.BackupTaskCallback;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.Locale;
 
 public class MainViewer extends AppCompatActivity {
     private static final String PAGE_OVERVIEW = "overview";
@@ -95,7 +104,7 @@ public class MainViewer extends AppCompatActivity {
             popup.show();
         });
 
-        if(getIntent().hasExtra("INITIAL_PAGE")) {
+        if (getIntent().hasExtra("INITIAL_PAGE")) {
             String title = getIntent().getStringExtra("INITIAL_PAGE");
             int position = vpAdapter.getTabIndex(title);
             binding.tablayout.selectTab(binding.tablayout.getTabAt(position));
@@ -107,46 +116,108 @@ public class MainViewer extends AppCompatActivity {
                 }
             }
         }
+
+        // Remove the old application data backup only if the app is stable for at least 5 seconds
+        new Handler().postDelayed(() -> {
+            BackupTask.Companion.deleteOldBeforeImportBackup(this);
+            Log.i("BackupCleaner", "Deleted old application data backup from before last import as the application has been running for at least 5 seconds");
+        }, 5000);
     }
 
     private void backupSaveDialogResult(ActivityResult result) {
-        if(result.getResultCode() == Activity.RESULT_OK) {
-            Intent data = result.getData();
-            Uri uri;
-            if(data != null && (uri = data.getData()) != null) {
-                if(!MainDatabase.getInstance(this).backupDatabase(this, uri)) {
-                    Toast.makeText(this, "Backup failed!", Toast.LENGTH_SHORT).show();
-                }
-                return;
-            }
+        Intent data;
+        Uri uri;
+
+        // Try to get the Uri to the backup path
+        if (result.getResultCode() != Activity.RESULT_OK || (data = result.getData()) == null || (uri = data.getData()) == null) {
+            Toast.makeText(this, "Failed to get backup file path", Toast.LENGTH_SHORT).show();
+            return;
         }
-        Toast.makeText(this, "Failed to get backup file path", Toast.LENGTH_SHORT).show();
+
+        // Create the export progress dialog
+        DialogProgressBinding dBinding = DialogProgressBinding.inflate(getLayoutInflater(), null, false);
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this, R.style.Theme_LucidSourceKit_ThemedDialog)
+                .setTitle("Exporting")
+                .setCancelable(false)
+                .setView(dBinding.getRoot())
+                .create();
+        dialog.show();
+
+        // Try to start the backup
+        Context context = this;
+        BackupTask.Companion.startBackup(this, uri, new BackupTaskCallback() {
+            @Override
+            public void onCompleted() {
+                runOnUiThread(() -> Toast.makeText(context, "Backup done", Toast.LENGTH_LONG).show());
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onError(@NonNull Throwable cause) {
+                runOnUiThread(() -> Toast.makeText(context, "Backup failed: " + cause.getMessage(), Toast.LENGTH_LONG).show());
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onProgress(@NonNull String fileName, int finished, int total) {
+                int progress = 100 * finished / total;
+                runOnUiThread(() -> {
+                    dBinding.txtProgressText.setText(fileName);
+                    dBinding.txtProgressPercentage.setText(String.format(Locale.getDefault(), "%d %%", progress));
+                    dBinding.prgProgress.setProgress(progress);
+                });
+            }
+        });
     }
 
     private void backupLoadDialogResult(ActivityResult result) {
-        if(result.getResultCode() == Activity.RESULT_OK) {
-            Intent data = result.getData();
-            Uri uri;
-            if(data != null && (uri = data.getData()) != null) {
-                if(!MainDatabase.getInstance(this).restoreDatabase(this, uri)) {
-                    Toast.makeText(this, "Backup restore failed!", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageName());
-                    if(intent != null) {
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                    }
-                    else {
-                        Log.w("MainViewer_Backup_Restore", "Unable to restart app after successful backup restore. Intent was null");
-                        Toast.makeText(this, "Unable to restart app. Open it again manually", Toast.LENGTH_LONG).show();
-                    }
-                    System.exit(0);
-                }
-                return;
-            }
+        Intent data;
+        Uri uri;
+
+        // Try to get the Uri to the backup path
+        if (result.getResultCode() != Activity.RESULT_OK || (data = result.getData()) == null || (uri = data.getData()) == null) {
+            Toast.makeText(this, "Failed to get backup file path", Toast.LENGTH_SHORT).show();
+            return;
         }
-        Toast.makeText(this, "Failed to get backup file path", Toast.LENGTH_SHORT).show();
+
+        // Create the import progress dialog
+        DialogProgressBinding dBinding = DialogProgressBinding.inflate(getLayoutInflater(), null, false);
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this, R.style.Theme_LucidSourceKit_ThemedDialog)
+                .setTitle("Importing")
+                .setCancelable(false)
+                .setView(dBinding.getRoot())
+                .create();
+        dialog.show();
+
+        dBinding.txtProgressPercentage.setVisibility(View.GONE);
+        dBinding.prgProgress.setIndeterminate(true);
+
+        Context context = this;
+        Handler restartHandler = new Handler();
+        BackupTask.Companion.startRestore(this, uri, new BackupTaskCallback() {
+            @Override
+            public void onCompleted() {
+                runOnUiThread(() -> {
+                    dBinding.txtProgressText.setText("Done! Restarting...");
+                    dBinding.prgProgress.setIndeterminate(false);
+                    dBinding.prgProgress.setProgress(100);
+                });
+
+                // Restart app after 2 seconds to apply changes
+                restartHandler.postDelayed(() -> Tools.restartApp(context), 2000);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable cause) {
+                runOnUiThread(() -> Toast.makeText(context, "Import failed: " + cause.getMessage(), Toast.LENGTH_LONG).show());
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onProgress(@NonNull String fileName, int finished, int total) {
+                runOnUiThread(() -> dBinding.txtProgressText.setText(fileName));
+            }
+        });
     }
 
     @NonNull

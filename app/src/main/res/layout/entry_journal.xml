@@ -58,7 +58,7 @@
                 android:layout_gravity="center_vertical"
                 android:text="Some quite long title for some entry to the journal that is more descriptive than it should probably be"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:maxLines="2"
                 android:ellipsize="end"

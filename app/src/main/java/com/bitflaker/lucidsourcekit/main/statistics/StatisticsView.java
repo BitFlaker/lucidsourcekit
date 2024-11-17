@@ -259,10 +259,10 @@ public class StatisticsView extends Fragment {
             List<TagCount> tagCounts = db.getJournalEntryHasTagDao().getMostUsedTagsList(timeSpan.first, timeSpan.second, 10).blockingGet();
 
             boolean hasJournalEntries = totalEntriesCount != 0;
-            boolean hasAvgMoodsData = !Tools.hasNoData(avgMoods);
-            boolean hasAvgDreamClarityData = !Tools.hasNoData(avgClarities);
-            boolean hasAvgSleepQualityData = !Tools.hasNoData(avgQualities);
-            boolean hasAvgJournalRatings = !Tools.hasNoData(avgMoods) && !Tools.hasNoData(avgClarities) && !Tools.hasNoData(avgQualities) && !Tools.hasNoData(dreamCounts);
+            boolean hasAvgMoodsData = Tools.hasData(avgMoods);
+            boolean hasAvgDreamClarityData = Tools.hasData(avgClarities);
+            boolean hasAvgSleepQualityData = Tools.hasData(avgQualities);
+            boolean hasAvgJournalRatings = Tools.hasData(avgMoods) && Tools.hasData(avgClarities) && Tools.hasData(avgQualities) && Tools.hasData(dreamCounts);
             boolean hasTagData = !tagCounts.isEmpty();
 
             getActivity().runOnUiThread(() -> {

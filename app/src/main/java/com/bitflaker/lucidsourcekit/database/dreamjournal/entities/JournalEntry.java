@@ -68,7 +68,7 @@ public class JournalEntry {
                 entryId == entry.entryId &&
                 timeStamp == entry.timeStamp &&
                 title.equals(entry.title) &&
-                description.equals(entry.description) &&
+                ((description == null && entry.description == null) || (description != null && description.equals(entry.description))) &&
                 qualityId.equals(entry.qualityId) &&
                 clarityId.equals(entry.clarityId) &&
                 moodId.equals(entry.moodId);

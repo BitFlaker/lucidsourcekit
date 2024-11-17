@@ -4,6 +4,7 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -28,19 +29,15 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys;
+import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamClarity;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.SleepQuality;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys;
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager;
 import com.bitflaker.lucidsourcekit.main.goals.RandomGoalPicker;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -49,8 +46,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
 import java.util.TimeZone;
 
 import io.reactivex.rxjava3.core.Maybe;
@@ -291,13 +286,13 @@ public class Tools {
         return weight;
     }
 
-    public static boolean hasNoData(List<Double> data) {
+    public static boolean hasData(List<Double> data) {
         for (Double dataPoint : data) {
-            if (dataPoint.doubleValue() != -1.0) {
-                return false;
+            if (dataPoint != -1.0) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     public static Drawable[] getIconsDreamMood(Context context) {
@@ -424,10 +419,6 @@ public class Tools {
         return bitmap;
     }
 
-    public static float roundToDigits(float value, int digits) {
-        return (float)(Math.round(value * Math.pow(10, digits)) / Math.pow(10, digits));
-    }
-
     @ColorInt
     public static int manipulateAlpha(@ColorInt int color, float factor) {
         int alpha = Math.round(Color.alpha(color) * factor);
@@ -480,60 +471,12 @@ public class Tools {
         return cal.getTimeInMillis();
     }
 
-    public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
-        for (Map.Entry<T, E> entry : map.entrySet()) {
-            if (Objects.equals(value, entry.getValue())) {
-                return entry.getKey();
-            }
-        }
-        return null;
-    }
-
     public static int getUniqueNotificationId(String notificationCategoryId) {
         Integer val = notificationIdMap.get(notificationCategoryId);
         if(val != null) {
             return val;
         }
         return -1;
-    }
-
-    public static boolean deleteFile(File file) {
-        if (file.isDirectory()) {
-            File[] files = file.listFiles();
-            if(files != null) {
-                for (File child : files) {
-                    deleteFile(child);
-                }
-            }
-        }
-        return file.delete();
-    }
-
-    public static void copyFile(File src, File dest) throws IOException {
-        try (FileInputStream inputStream = new FileInputStream(src)) {
-            try (FileOutputStream outputStream = new FileOutputStream(dest)) {
-                byte[] buffer = new byte[2048];
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                }
-            }
-        }
-    }
-
-    public static void copyDir(File src, File dest) throws IOException {
-        dest.mkdirs();
-        File[] content = src.listFiles();
-        if(content != null) {
-            for (File file : content) {
-                if(file.isFile()) {
-                    copyFile(file, new File(dest, file.getName()));
-                }
-                else {
-                    copyDir(file, new File(dest, file.getName()));
-                }
-            }
-        }
     }
 
     public static Drawable resizeDrawable(Resources resources, Drawable drawable, int width, int height) {
@@ -581,5 +524,14 @@ public class Tools {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(milliseconds);
         return cal;
+    }
+
+    public static void restartApp(Context context) {
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            context.startActivity(intent);
+        }
+        System.exit(0);
     }
 }

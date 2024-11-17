@@ -14,6 +14,14 @@ buildscript {
     }
 }
 
+// TODO: fix deprecations and unchecked warnings
+//allprojects {
+//    tasks.withType(JavaCompile::class.java) {
+//        options.compilerArgs.add("-Xlint:unchecked")
+//        options.compilerArgs.add("-Xlint:deprecation")
+//    }
+//}
+
 tasks.create<Delete>("clean") {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
 }
