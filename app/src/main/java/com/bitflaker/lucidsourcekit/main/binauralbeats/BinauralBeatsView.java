@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -84,6 +85,8 @@ public class BinauralBeatsView extends Fragment {
                 binding.txtBinauralBeatsTimeline.setText(getTimeStringFromSeconds(0));
                 binding.txtCurrentBinauralFrequency.setText("0.00");
                 binding.txtCarrierFrequency.setText(String.format(Locale.ENGLISH, "%.0f Hz", binauralBeat.baseFrequency()));
+                binding.txtCarrierFrequency.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
+                TextViewCompat.setCompoundDrawableTintList(binding.txtCarrierFrequency, Tools.getAttrColorStateList(R.attr.secondaryTextColor, getContext().getTheme()));
                 binding.btnPlayTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
                 setDataForProgress(binauralBeat, 0);
                 if (binBeatPlayer != null) {

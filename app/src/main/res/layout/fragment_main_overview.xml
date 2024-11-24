@@ -18,13 +18,15 @@
             android:layout_height="250dp"
             android:contentDescription="@string/main_image_description"
             android:scaleType="centerCrop"
-            app:srcCompat="?attr/main_overview_graphic" />
+            android:tintMode="multiply"
+            app:srcCompat="?attr/main_overview_graphic"
+            app:tint="#afb0b2" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/img_top_graphic"
-            android:layout_marginTop="-44dp"
+            android:layout_marginTop="-36dp"
             android:orientation="vertical">
 
             <TextView
@@ -45,7 +47,8 @@
                 android:layout_marginTop="-2dp"
                 android:text="@string/active_events"
                 android:textColor="?attr/secondaryTextColor"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -67,15 +70,15 @@
                     app:layout_constraintEnd_toStartOf="@+id/ll_qa_rc_reminder">
 
                     <com.google.android.material.button.MaterialButton
-                        style="@style/Widget.Material3.Button.IconButton.Filled"
+                        style="@style/Widget.Material3.Button.IconButton.Outlined"
                         android:id="@+id/btn_qa_notifications"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:padding="18dp"
                         app:cornerRadius="16dp"
                         app:icon="@drawable/round_notifications_24"
-                        app:backgroundTint="?attr/colorSurfaceContainer"
-                        app:rippleColor="?attr/colorOutlineVariant"
+                        app:rippleColor="?attr/colorSurfaceContainerHighest"
+                        app:strokeColor="?attr/colorOutlineVariant"
                         app:iconTint="?attr/colorOnSurfaceVariant"/>
 
                     <TextView
@@ -98,15 +101,15 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.button.MaterialButton
-                        style="@style/Widget.Material3.Button.IconButton.Filled"
+                        style="@style/Widget.Material3.Button.IconButton.Outlined"
                         android:id="@+id/btn_qa_rc_reminder"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:padding="18dp"
                         app:cornerRadius="16dp"
                         app:icon="@drawable/round_model_training_24"
-                        app:backgroundTint="?attr/colorSurfaceContainer"
-                        app:rippleColor="?attr/colorOutlineVariant"
+                        app:rippleColor="?attr/colorSurfaceContainerHighest"
+                        app:strokeColor="?attr/colorOutlineVariant"
                         app:iconTint="?attr/colorOnSurfaceVariant" />
 
                     <TextView
@@ -129,15 +132,15 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.button.MaterialButton
-                        style="@style/Widget.Material3.Button.IconButton.Filled"
+                        style="@style/Widget.Material3.Button.IconButton.Outlined"
                         android:id="@+id/btn_qa_lockscreen"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:padding="18dp"
                         app:cornerRadius="16dp"
-                        app:backgroundTint="?attr/colorSurfaceContainer"
                         app:icon="@drawable/rounded_screen_lock_portrait_24"
-                        app:rippleColor="?attr/colorOutlineVariant"
+                        app:strokeColor="?attr/colorOutlineVariant"
+                        app:rippleColor="?attr/colorSurfaceContainerHighest"
                         app:iconTint="?attr/colorOnSurfaceVariant" />
 
                     <TextView
@@ -160,15 +163,15 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.button.MaterialButton
-                        style="@style/Widget.Material3.Button.IconButton.Filled"
+                        style="@style/Widget.Material3.Button.IconButton.Outlined"
                         android:id="@+id/btn_qa_more"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:padding="18dp"
                         app:cornerRadius="16dp"
-                        app:backgroundTint="?attr/colorSurfaceContainer"
                         app:icon="@drawable/rounded_more_horiz_24"
-                        app:rippleColor="?attr/colorOutlineVariant"
+                        app:rippleColor="?attr/colorSurfaceContainerHighest"
+                        app:strokeColor="?attr/colorOutlineVariant"
                         app:iconTint="?attr/colorOnSurfaceVariant" />
 
                     <TextView
@@ -201,21 +204,22 @@
                 android:layout_marginTop="-2dp"
                 android:text="Alarms to wake you during REM"
                 android:textColor="?attr/secondaryTextColor"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.card.MaterialCardView
-                    style="@style/LSK.MaterialCardView.Filled"
+                    style="@style/LSK.MaterialCardView.Outlined"
                     android:id="@+id/crd_manage_alarms"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="24dp"
-                    app:strokeWidth="0dp"
+                    app:strokeColor="?attr/colorOutlineVariant"
                     app:contentPadding="0dp"
                     app:cardCornerRadius="@dimen/cardRadius"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -280,7 +284,8 @@
                 android:layout_marginTop="-2dp"
                 android:text="@string/remember_description"
                 android:textColor="?attr/secondaryTextColor"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone" />
 
             <include
                 android:id="@+id/dje_remember_dream"

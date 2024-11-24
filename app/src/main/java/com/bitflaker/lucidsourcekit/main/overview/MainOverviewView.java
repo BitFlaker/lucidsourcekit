@@ -86,7 +86,6 @@ public class MainOverviewView extends Fragment {
         adapterAlarms = new RecyclerViewAdapterAlarms(getContext(), new ArrayList<>());
         adapterAlarms.setSelectionModeEnabled(false);
         adapterAlarms.setControlsVisible(false);
-        adapterAlarms.setElevatedBackground(true);
         adapterAlarms.setOnEntryClickedListener(storedAlarm -> {
             Intent editor = new Intent(getContext(), AlarmEditorView.class);
             editor.putExtra("ALARM_ID", storedAlarm.alarmId);

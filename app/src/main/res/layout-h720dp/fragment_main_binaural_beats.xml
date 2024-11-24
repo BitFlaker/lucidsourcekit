@@ -133,8 +133,7 @@
             android:layout_marginBottom="55dp"
             android:layout_above="@+id/ll_binaural_controls_container"
             android:layout_below="@+id/ll_current_binaural_freq"
-            app:strokeWidth="2dp"
-            app:strokeColor="?attr/colorSurfaceContainerLow"
+            app:strokeColor="?attr/colorOutlineVariant"
             app:cardElevation="@dimen/cardElevationOutline"
             app:cardBackgroundColor="?attr/colorSurface"
             app:cardCornerRadius="@dimen/cardRadius">
@@ -158,11 +157,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawableTop="@drawable/frequency_symbol"
-                        android:drawablePadding="8dp"
+                        android:drawablePadding="4dp"
+                        android:drawableTint="?attr/tertiaryTextColor"
                         android:textSize="18sp"
                         android:text="No beat selected"
                         android:fontFamily="sans-serif-medium"
-                        android:textColor="?attr/primaryTextColor"/>
+                        android:textColor="?attr/tertiaryTextColor"/>
 
                     <TextView
                         android:id="@+id/txt_bbp_carrier_freq_heading"

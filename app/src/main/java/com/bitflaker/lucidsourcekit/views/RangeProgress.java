@@ -15,6 +15,8 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 
@@ -52,7 +54,7 @@ public class RangeProgress extends View {
     }
 
     private void setup() {
-        dataLinePaintBackground.setColor(Tools.getAttrColor(R.attr.colorSurface, getContext().getTheme()));
+        dataLinePaintBackground.setColor(Tools.getAttrColor(R.attr.colorSurfaceContainer, getContext().getTheme()));
         dataLinePaintBackground.setStrokeCap(Paint.Cap.ROUND);
         dataLinePaintBackground.setAntiAlias(true);
         dataLinePaintBackground.setStrokeWidth(0);
@@ -65,12 +67,12 @@ public class RangeProgress extends View {
         dataLabelPaint.setTextAlign(Paint.Align.LEFT);
         dataLabelPaint.setFakeBoldText(true);
         dataLabelPaint.setAntiAlias(true);
-        progressColors = new int[] {Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme()), Tools.getAttrColor(R.attr.colorSurface, getContext().getTheme())};
+        progressColors = new int[] {Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme()), Tools.getAttrColor(R.attr.colorSurfaceContainer, getContext().getTheme())};
         textColors = new int[] { Tools.getAttrColor(R.attr.colorOnTertiary, getContext().getTheme()), Tools.manipulateAlpha(Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme()), 0.7f) };
         positions = new float[] { 0f, 0f };
     }
 
-    public void setBackgroundAttrColor(int color){
+    public void setBackgroundAttrColor(int color) {
         dataLinePaintBackground.setColor(Tools.getAttrColor(color, getContext().getTheme()));
         progressColors = new int[] {Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme()), Tools.getAttrColor(color, getContext().getTheme())};
         invalidate();
@@ -80,7 +82,7 @@ public class RangeProgress extends View {
         this.value = value;
         this.label = label;
         this.text = text;
-        if(this.text != null && this.text.equals("NaN")){
+        if(this.text != null && this.text.equals("NaN")) {
             this.text = "-";
         }
         this.xMax = maxValue;
@@ -100,7 +102,7 @@ public class RangeProgress extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
         float minRadMargin = getHeight() / 2.0f;
         float textMargin = 27;
@@ -128,7 +130,7 @@ public class RangeProgress extends View {
         dataLinePaintBackground.setShader(lineShader);
         canvas.drawLine(minRadMargin, getHeight() / 2.0f, getWidth()-minRadMargin, getHeight() / 2.0f, dataLinePaintBackground);
 
-        if(label != null && label.length() > 0) {
+        if(label != null && !label.isEmpty()) {
             dataLabelPaint.getTextBounds(label, 0, label.length(), textBounds);
             dataLabelPaint.setShader(textShader);
             canvas.drawText(label, textMargin, getHeight() / 2.0f - textBounds.exactCenterY(), dataLabelPaint);
@@ -148,7 +150,7 @@ public class RangeProgress extends View {
             }
             canvas.drawBitmap(addGradient(icon, iconSize, iconFillPercentage), begin, getHeight()/2.0f-iconSize/2.0f, dataLabelPaint);
         }
-        else if(text != null && text.length() > 0) {
+        else if(text != null && !text.isEmpty()) {
             dataLabelPaint.getTextBounds(text, 0, text.length(), textBounds);
             canvas.drawText(text, getWidth() - textMargin - textBounds.width(), getHeight()/2.0f - textBounds.exactCenterY(), dataLabelPaint);
         }

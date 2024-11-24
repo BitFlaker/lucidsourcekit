@@ -181,7 +181,7 @@ public class StatisticsView extends Fragment {
                 .average()
                 .orElse(0);
         long averageSessionLengthMin = TimeUnit.MILLISECONDS.toMinutes(averageSessionLengthMs);
-        binding.txtAverageSessionCount.setText(df.format(averageDailyAppOpens));
+        binding.txtAverageSessionCount.setText(String.format(Locale.getDefault(), "%s x", df.format(averageDailyAppOpens)));
         binding.txtAverageSessionLength.setText(String.format(Locale.getDefault(), "%d min", averageSessionLengthMin));
         binding.ichSessionHeatmap.setTimestamps(appOpenTimes.stream()
                 .map(x -> x.getOpenedAt() - Tools.getMidnightTime(x.getOpenedAt()))
@@ -240,6 +240,8 @@ public class StatisticsView extends Fragment {
 
             getActivity().runOnUiThread(() -> {
                 if (hasGoalShuffleData) {
+                    binding.rpGoalsReached.setBackgroundAttrColor(R.attr.colorSurfaceContainer);
+                    binding.rpAvgGoalDiff.setBackgroundAttrColor(R.attr.colorSurfaceContainer);
                     binding.rpGoalsReached.setData(goalShuffleData.goalCount, goalShuffleData.achievedCount, "ACHIEVED", null, String.format(Locale.ENGLISH, "%d/%d", goalShuffleData.achievedCount, goalShuffleData.goalCount));
                     binding.rpAvgGoalDiff.setData(3, (float) goalShuffleData.avgDifficulty, "AVERAGE DIFFICULTY LEVEL", null, String.format(Locale.ENGLISH, "%.2f", goalShuffleData.avgDifficulty));
                     binding.llGoalsReached.setVisibility(View.VISIBLE);
@@ -312,6 +314,7 @@ public class StatisticsView extends Fragment {
         int maxCount = tagCounts.get(0).count();
         for (TagCount p : tagCounts) {
             RangeProgress rngProg = new RangeProgress(getContext());
+            rngProg.setBackgroundAttrColor(R.attr.colorSurfaceContainer);
             LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Tools.dpToPx(getContext(), 25));
             int margin = Tools.dpToPx(getContext(), 5);
             llParams.setMargins(0, margin, 0, margin);

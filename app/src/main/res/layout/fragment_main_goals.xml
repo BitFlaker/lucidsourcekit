@@ -185,13 +185,12 @@
                 android:layout_marginTop="42dp">
 
                 <com.google.android.material.card.MaterialCardView
-                    style="@style/LSK.MaterialCardView.Filled"
+                    style="@style/LSK.MaterialCardView.Outlined"
                     android:id="@+id/crd_goals_today"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
-                    app:strokeWidth="2dp"
-                    app:strokeColor="?attr/colorSurfaceContainer"
+                    app:strokeColor="?attr/colorOutlineVariant"
                     app:contentPadding="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

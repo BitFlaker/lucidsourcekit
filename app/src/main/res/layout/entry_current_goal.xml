@@ -10,7 +10,7 @@
     app:cardCornerRadius="@dimen/cardRadius"
     app:strokeWidth="0dp"
     app:cardElevation="0dp"
-    app:cardBackgroundColor="?attr/colorSurfaceContainer">
+    app:cardBackgroundColor="?attr/colorSurface">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
