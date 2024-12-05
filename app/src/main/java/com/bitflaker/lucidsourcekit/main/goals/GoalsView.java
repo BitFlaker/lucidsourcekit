@@ -30,6 +30,7 @@ import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Shuffle;
 import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal;
+import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleTransaction;
 import com.bitflaker.lucidsourcekit.database.goals.entities.resulttables.DetailedShuffleHasGoal;
 import com.bitflaker.lucidsourcekit.databinding.FragmentMainGoalsBinding;
 import com.bitflaker.lucidsourcekit.databinding.SheetGoalsAlgorithmEditorBinding;
@@ -40,6 +41,7 @@ import com.google.android.material.slider.Slider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -66,6 +68,12 @@ public class GoalsView extends Fragment {
 
         compositeDisposable = new CompositeDisposable();
         binding.somDifficulty.setDescription("Today's goals average\noccurrence rating");
+
+        DataStoreManager dsManager = DataStoreManager.getInstance();
+
+        // Start the graph from the time the app was first opened today
+        long firstOpenToday = dsManager.getSetting(DataStoreKeys.FIRST_OPEN_TIME_TODAY_DAY).blockingFirst();
+        binding.gtlAchieved.setShuffleInitTime(firstOpenToday);
 
         db = MainDatabase.getInstance(getContext());
         binding.btnAdjustAlgorithm.setOnClickListener(e -> setupAdjustAlgorithmSheet());
@@ -256,8 +264,10 @@ public class GoalsView extends Fragment {
         RecyclerViewAdapterCurrentGoals adapterCurrentGoals = new RecyclerViewAdapterCurrentGoals(getContext(), current.getGoals(), current.getShuffleId());
         binding.rcvCurrentGoals.setAdapter(adapterCurrentGoals);
         binding.rcvCurrentGoals.setLayoutManager(new LinearLayoutManager(getContext()));
-//        binding.llCurrentGoalsContainer.removeAllViews();
-//        current.getDetailedGoals().forEach(goal -> binding.llCurrentGoalsContainer.addView(generateGoalCheckbox(goal)));
+
+        // Highlight all achieved timestamps on graph
+        ArrayList<Long> achievedTimes = new ArrayList<>(db.getShuffleTransactionDao().getAchievedTimes(current.getShuffleId()).blockingGet());
+        binding.gtlAchieved.setAchieved(achievedTimes);
 
         String numParts = getDecimalNumParts(100 * current.getShuffleOccurrenceRating(), 1);
         binding.txtCurrentSelectionDiffFull.setText(numParts);

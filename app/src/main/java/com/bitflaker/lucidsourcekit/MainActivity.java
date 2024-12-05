@@ -108,8 +108,9 @@ public class MainActivity extends AppCompatActivity {
 
         DataStoreManager dsManager = DataStoreManager.getInstance();
         long storedTime = dsManager.getSetting(DataStoreKeys.FIRST_OPEN_LATEST_DAY).blockingFirst();
-        if(storedTime == 0) {
+        if (storedTime == 0) {
             dsManager.updateSetting(DataStoreKeys.FIRST_OPEN_LATEST_DAY, cldrNow.getTimeInMillis()).blockingSubscribe();
+            dsManager.updateSetting(DataStoreKeys.FIRST_OPEN_TIME_TODAY_DAY, Calendar.getInstance().getTimeInMillis()).blockingSubscribe();
             dsManager.updateSetting(DataStoreKeys.APP_OPEN_STREAK, 0L).blockingSubscribe();
             dsManager.updateSetting(DataStoreKeys.APP_OPEN_STREAK_LONGEST, 0L).blockingSubscribe();
         }

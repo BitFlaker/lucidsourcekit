@@ -58,7 +58,7 @@ public class IconCircleHeatmap extends View {
         @ColorInt int trackColor = Tools.getAttrColor(R.attr.colorSurfaceContainer, getContext().getTheme());
         textColorSecondary = Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme());
         textColorTertiary = Tools.getAttrColor(R.attr.tertiaryTextColor, getContext().getTheme());
-        lineColor = Tools.getAttrColor(R.attr.colorPrimary, getContext().getTheme());
+        lineColor = Tools.getAttrColor(R.attr.colorSecondary, getContext().getTheme());
         int trackWidth = Tools.dpToPx(getContext(), 12);
         labelTextSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 11, getResources().getDisplayMetrics());
         initColors(4);

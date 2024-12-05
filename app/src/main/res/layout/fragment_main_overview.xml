@@ -107,7 +107,7 @@
                         android:layout_height="64dp"
                         android:padding="18dp"
                         app:cornerRadius="16dp"
-                        app:icon="@drawable/round_model_training_24"
+                        app:icon="@drawable/round_history_edu_24"
                         app:rippleColor="?attr/colorSurfaceContainerHighest"
                         app:strokeColor="?attr/colorOutlineVariant"
                         app:iconTint="?attr/colorOnSurfaceVariant" />
@@ -116,7 +116,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="RC Reminder"
+                        android:text="Questionnaire"
                         android:textSize="12sp"
                         android:textColor="?attr/secondaryTextColor" />
                 </LinearLayout>

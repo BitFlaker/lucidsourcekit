@@ -283,10 +283,27 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Here will be a timeline of achieved goals soon"
-                android:layout_marginVertical="32dp"
-                android:textColor="?attr/tertiaryTextColor" />
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="8dp"
+                android:text="Goals generated"
+                android:textSize="11sp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="?attr/secondaryTextColor" />
+
+            <com.bitflaker.lucidsourcekit.views.GoalTimeline
+                android:id="@+id/gtl_achieved"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="32dp"
+                android:text="End of day"
+                android:textSize="11sp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="?attr/secondaryTextColor" />
 
 <!--        NOTE:
               * Removed "yesterday's statistics" section so they can be moved to the statistics fragment

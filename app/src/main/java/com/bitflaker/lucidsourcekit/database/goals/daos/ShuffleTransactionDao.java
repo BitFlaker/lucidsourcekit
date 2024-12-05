@@ -29,6 +29,9 @@ public interface ShuffleTransactionDao {
     @Query("SELECT * FROM ShuffleTransaction WHERE shuffleId = :shuffleId AND goalId = :goalId ORDER BY achievedAt ASC")
     Single<List<ShuffleTransaction>> getAllFromShuffleGoal(int shuffleId, int goalId);
 
+    @Query("SELECT achievedAt FROM ShuffleTransaction WHERE shuffleId = :shuffleId ORDER BY achievedAt ASC")
+    Single<List<Long>> getAchievedTimes(int shuffleId);
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     Completable insertAll(List<ShuffleTransaction> shuffleTransactions);
 

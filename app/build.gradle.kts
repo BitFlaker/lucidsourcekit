@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.flexbox)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.rxjava3)
+    implementation(libs.androidx.activity)
     annotationProcessor(libs.androidx.room.compiler)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

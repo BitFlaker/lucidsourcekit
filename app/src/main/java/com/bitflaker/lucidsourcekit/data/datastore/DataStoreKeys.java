@@ -10,6 +10,7 @@ public class DataStoreKeys {
     public static final Preferences.Key<String> LANGUAGE = PreferencesKeys.stringKey("LANGUAGE");
 
     // App open streak
+    public static final Preferences.Key<Long> FIRST_OPEN_TIME_TODAY_DAY = PreferencesKeys.longKey("FIRST_OPEN_TIME_TODAY_DAY");
     public static final Preferences.Key<Long> FIRST_OPEN_LATEST_DAY = PreferencesKeys.longKey("FIRST_OPEN_LATEST_DAY");
     public static final Preferences.Key<Long> APP_OPEN_STREAK = PreferencesKeys.longKey("APP_OPEN_STREAK");
     public static final Preferences.Key<Long> APP_OPEN_STREAK_LONGEST = PreferencesKeys.longKey("APP_OPEN_STREAK_LONGEST");

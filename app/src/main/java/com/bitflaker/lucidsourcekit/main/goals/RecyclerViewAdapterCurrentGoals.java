@@ -31,7 +31,7 @@ public class RecyclerViewAdapterCurrentGoals extends RecyclerView.Adapter<Recycl
     private final int shuffleId;
     private final MainDatabase db;
     private final HashMap<Integer, Integer> goalAchievedCount;
-    private final ColorStateList colorNoneAchieved, colorAchieved;
+    private final ColorStateList colorNotAchieved, colorAchieved;
 
     public RecyclerViewAdapterCurrentGoals(Context context, List<Goal> goals, int shuffleId) {
         this.context = context;
@@ -42,7 +42,7 @@ public class RecyclerViewAdapterCurrentGoals extends RecyclerView.Adapter<Recycl
                 .blockingGet()
                 .stream()
                 .collect(Collectors.toMap(x -> x.goalId, x -> x.count, (prev, next) -> next, HashMap::new));
-        colorNoneAchieved = Tools.getAttrColorStateList(R.attr.colorPrimary, context.getTheme());
+        colorNotAchieved = Tools.getAttrColorStateList(R.attr.colorSurfaceContainer, context.getTheme());
         colorAchieved = Tools.getAttrColorStateList(R.attr.colorTertiary, context.getTheme());
     }
 
@@ -59,7 +59,7 @@ public class RecyclerViewAdapterCurrentGoals extends RecyclerView.Adapter<Recycl
         holder.binding.txtGoal.setText(currentGoal.description);
 
         int achievedCount = goalAchievedCount.getOrDefault(currentGoal.goalId, 0);
-        holder.binding.imgAchievedCounterBackground.setImageTintList(achievedCount == 0 ? colorNoneAchieved : colorAchieved);
+        holder.binding.imgAchievedCounterBackground.setImageTintList(achievedCount == 0 ? colorNotAchieved : colorAchieved);
         holder.binding.txtAchievedCounter.setVisibility(achievedCount == 0 ? View.GONE : View.VISIBLE);
         holder.binding.txtAchievedCounter.setText(String.format(Locale.getDefault(), "%d", achievedCount));
         holder.binding.crdCurrentGoal.setOnClickListener(e -> {
