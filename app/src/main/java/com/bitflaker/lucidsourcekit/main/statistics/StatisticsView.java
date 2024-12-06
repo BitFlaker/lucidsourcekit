@@ -84,7 +84,7 @@ public class StatisticsView extends Fragment {
             popup.setForceShowIcon(true);
             popup.getMenuInflater().inflate(R.menu.dream_frequency_types, popup.getMenu());
             popup.setOnMenuItemClickListener(item -> {
-                binding.btnDreamFrequencyFilter.setText(item.getTitle());
+                binding.btnDreamFrequencyFilter.setText(item.getTitle() + " Frequency");
                 return true;
             });
             popup.setOnDismissListener(menu -> {

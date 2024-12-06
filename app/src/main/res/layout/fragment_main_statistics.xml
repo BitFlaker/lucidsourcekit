@@ -33,23 +33,68 @@
             android:orientation="vertical"
             android:paddingBottom="48dp">
 
-            <ImageView
-                android:id="@+id/img_badge_main"
-                android:layout_width="144dp"
-                android:layout_height="144dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/moon_badge"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginHorizontal="20dp"
+                android:paddingVertical="24dp"
                 app:layout_constraintEnd_toStartOf="@+id/txt_description_s"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/img_badge_main"
+                    android:layout_width="128dp"
+                    android:layout_height="128dp"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/moon_badge"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintEnd_toStartOf="@+id/ioo_streak_check_in"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.bitflaker.lucidsourcekit.views.IconOutOf
+                    android:id="@+id/ioo_streak_check_in"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:description="Check-ins"
+                    app:diameter="32dp"
+                    app:icon="@drawable/ic_baseline_local_fire_department_24"
+                    app:layout_constraintVertical_chainStyle="spread"
+                    app:layout_constraintBottom_toTopOf="@+id/ioo_streak_goal"
+                    app:layout_constraintStart_toEndOf="@+id/img_badge_main"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:lineWidth="4dp"
+                    app:textOfSpacing="2dp"
+                    app:textSizeValue="16sp"
+                    app:textSizeValueOf="12sp"
+                    app:textSpacing="6dp" />
+
+                <com.bitflaker.lucidsourcekit.views.IconOutOf
+                    android:id="@+id/ioo_streak_goal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:description="Goal tracking"
+                    app:diameter="32dp"
+                    app:icon="@drawable/ic_baseline_local_fire_department_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/ioo_streak_check_in"
+                    app:layout_constraintTop_toBottomOf="@+id/ioo_streak_check_in"
+                    app:lineWidth="4dp"
+                    app:textOfSpacing="2dp"
+                    app:textSizeValue="16sp"
+                    app:textSizeValueOf="12sp"
+                    app:textSpacing="6dp" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginHorizontal="36dp"
                 android:columnCount="3"
                 android:rowCount="2"
@@ -120,23 +165,20 @@
                     android:textAlignment="center" />
             </GridLayout>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_marginRight="-200dp"
-                android:scaleType="fitXY"
-                android:scaleX="-1"
-                android:src="@drawable/divider_line"
-                app:tint="?attr/colorOutlineVariant" />
+<!--            <View-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="1dp"-->
+<!--                android:layout_marginTop="32dp"-->
+<!--                android:background="?attr/colorOutlineVariant" />-->
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="48dp"
                 app:contentPadding="8dp"
-                app:strokeWidth="0dp"
-                app:strokeColor="?attr/colorOutlineVariant"
+                app:strokeWidth="1dp"
+                app:strokeColor="?attr/colorSurfaceContainerHighest"
                 style="@style/LSK.MaterialCardView.Outlined">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -144,35 +186,36 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/textView6"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginStart="16dp"
-                        android:text="Dream frequency"
-                        android:textColor="?attr/tertiaryTextColor"
-                        android:textSize="11sp"
-                        android:textAllCaps="true"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/textView6"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginTop="16dp"-->
+<!--                        android:layout_marginStart="16dp"-->
+<!--                        android:text="Dream frequency"-->
+<!--                        android:textColor="?attr/tertiaryTextColor"-->
+<!--                        android:textSize="11sp"-->
+<!--                        android:textAllCaps="true"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_dream_frequency_filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingEnd="12dp"
-                        android:paddingStart="18dp"
-                        android:text="Lucid"
-                        android:textSize="12sp"
                         android:drawableEnd="@drawable/rounded_keyboard_arrow_down_24"
-                        android:drawableTint="?attr/secondaryTextColor"
-                        android:textColor="?attr/secondaryTextColor"
-                        app:iconPadding="4dp"
-                        app:rippleColor="?attr/colorOutlineVariant"
+                        android:drawableTint="?attr/tertiaryTextColor"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="12dp"
+                        android:text="General dream Frequency"
+                        android:textColor="?attr/tertiaryTextColor"
+                        android:textSize="11sp"
+                        android:textAllCaps="true"
                         app:backgroundTint="?attr/colorSurface"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:iconPadding="4dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:rippleColor="?attr/colorOutlineVariant" />
 
                     <com.bitflaker.lucidsourcekit.views.HeatmapChart
                         android:id="@+id/htm_dream_count_heatmap"
@@ -189,25 +232,18 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_marginTop="-24dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/divider_line"
-                app:tint="?attr/colorOutlineVariant" />
-
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/materialCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-32dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginHorizontal="20dp"
                 app:cardBackgroundColor="@android:color/transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:strokeWidth="0dp"
+                app:strokeColor="?attr/colorSurfaceContainerHighest"
+                app:strokeWidth="1dp"
                 style="@style/LSK.MaterialCardView.Outlined">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -248,145 +284,119 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/divider_mountain"
-                app:tint="?attr/colorOutlineVariant" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-32dp">
-
-                <TextView
-                    android:id="@+id/txt_card_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Habit trends"
-                    android:textColor="?attr/tertiaryTextColor"
-                    android:textSize="11sp"
-                    android:textAllCaps="true"
-                    android:visibility="gone"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.bitflaker.lucidsourcekit.views.IconCircleHeatmap
-                    android:id="@+id/ich_session_heatmap"
-                    android:layout_width="136dp"
-                    android:layout_height="160dp"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    app:layout_constraintStart_toEndOf="@+id/ll_averageSessionCount"
-                    app:layout_constraintEnd_toStartOf="@+id/ll_averageSessionLength"
-                    app:layout_constraintHorizontal_chainStyle="spread_inside"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_card_label" />
-
-                <LinearLayout
-                    android:id="@+id/ll_averageSessionCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:minWidth="96dp"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/ich_session_heatmap"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintVertical_chainStyle="packed">
-
-                    <TextView
-                        android:id="@+id/txt_averageSessionCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="9,5 x"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="-2dp"
-                        android:text="Avg. Sessions"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="11sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_averageSessionLength"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:minWidth="96dp"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/ich_session_heatmap">
-
-                    <TextView
-                        android:id="@+id/txt_AverageSessionLength"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="32 min"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="-2dp"
-                        android:text="Avg. Length"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="11sp" />
-                </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="56dp"
+                android:layout_marginTop="24dp"
+                app:cardBackgroundColor="@android:color/transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeColor="?attr/colorSurfaceContainerHighest"
+                app:strokeWidth="1dp"
+                app:contentPaddingLeft="0dp"
+                app:contentPaddingRight="0dp"
+                style="@style/LSK.MaterialCardView.Outlined">
 
-                <com.bitflaker.lucidsourcekit.views.IconOutOf
-                    android:id="@+id/ioo_streak_check_in"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="24dp"
-                    app:description="Check-ins"
-                    app:diameter="32dp"
-                    app:icon="@drawable/ic_baseline_local_fire_department_24"
-                    app:layout_constraintEnd_toStartOf="@+id/ioo_streak_goal"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:lineWidth="4dp"
-                    app:textOfSpacing="2dp"
-                    app:textSizeValue="16sp"
-                    app:textSizeValueOf="12sp"
-                    app:textSpacing="6dp" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <com.bitflaker.lucidsourcekit.views.IconOutOf
-                    android:id="@+id/ioo_streak_goal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:description="Goal tracking"
-                    app:diameter="32dp"
-                    app:icon="@drawable/ic_baseline_local_fire_department_24"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/ioo_streak_check_in"
-                    app:lineWidth="4dp"
-                    app:textOfSpacing="2dp"
-                    app:textSizeValue="16sp"
-                    app:textSizeValueOf="12sp"
-                    app:textSpacing="6dp" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/cardDefaultPadding"
+                        android:text="Session timeline"
+                        android:textAllCaps="true"
+                        android:textColor="?attr/tertiaryTextColor"
+                        android:textSize="11sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txt_card_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Habit trends"
+                        android:textColor="?attr/tertiaryTextColor"
+                        android:textSize="11sp"
+                        android:textAllCaps="true"
+                        android:visibility="gone"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.bitflaker.lucidsourcekit.views.IconCircleHeatmap
+                        android:id="@+id/ich_session_heatmap"
+                        android:layout_width="136dp"
+                        android:layout_height="160dp"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        app:layout_constraintEnd_toStartOf="@+id/ll_averageSessionCount"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_averageSessionCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toTopOf="@+id/ll_averageSessionLength"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/ich_session_heatmap"
+                        app:layout_constraintTop_toTopOf="@+id/ich_session_heatmap"
+                        app:layout_constraintVertical_chainStyle="spread">
+
+                        <TextView
+                            android:id="@+id/txt_averageSessionCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="9,5 x"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="-2dp"
+                            android:text="Avg. Sessions"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_averageSessionLength"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="@+id/ich_session_heatmap"
+                        app:layout_constraintStart_toStartOf="@+id/ll_averageSessionCount"
+                        app:layout_constraintTop_toBottomOf="@+id/ll_averageSessionCount">
+
+                        <TextView
+                            android:id="@+id/txt_AverageSessionLength"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="32 min"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Avg. Length"
+                            android:textColor="?attr/secondaryTextColor"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
 
 <!--            <TextView-->
 <!--                android:id="@+id/txt_stats_timespans_heading"-->
@@ -408,18 +418,10 @@
 <!--                android:textColor="?attr/secondaryTextColor"-->
 <!--                android:textSize="14sp" />-->
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginStart="-224dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/divider_line"
-                app:tint="?attr/colorOutlineVariant" />
-
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
                 android:nestedScrollingEnabled="true"
                 android:scrollbars="none"
                 android:clipToPadding="false">

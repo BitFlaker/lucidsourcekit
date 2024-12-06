@@ -17,6 +17,7 @@ class GoalTimeline @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    private val spacing = Tools.dpToPx(context, 8.0)
     private val timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT)
     private val textBounds = Rect()
     private val midnightTimestamp = Tools.getMidnightTime()
@@ -33,7 +34,7 @@ class GoalTimeline @JvmOverloads constructor(
         isAntiAlias = true
         style = Paint.Style.FILL
         color = Tools.getAttrColor(R.attr.colorPrimary, context.theme)
-        strokeWidth = Tools.dpToPx(context, 4.0).toFloat()
+        strokeWidth = Tools.dpToPx(context, 3.0).toFloat()
         xfermode = null
         pathEffect = null
         strokeCap = Paint.Cap.ROUND
@@ -42,7 +43,7 @@ class GoalTimeline @JvmOverloads constructor(
         isAntiAlias = true
         style = Paint.Style.FILL
         color = Tools.getAttrColor(R.attr.colorSurfaceContainer, context.theme)
-        strokeWidth = Tools.dpToPx(context, 4.0).toFloat()
+        strokeWidth = Tools.dpToPx(context, 3.0).toFloat()
         xfermode = null
         pathEffect = null
         strokeCap = Paint.Cap.ROUND
@@ -61,6 +62,7 @@ class GoalTimeline @JvmOverloads constructor(
         set(values) {
             field = ArrayList(values)
             field.sort()
+            shuffleInitTime = achieved.firstOrNull() ?: shuffleInitTime
             var lastDisplayTime = 0L
             for (i in field.indices) {
                 field[i] -= midnightTimestamp
@@ -74,10 +76,11 @@ class GoalTimeline @JvmOverloads constructor(
             invalidate()
         }
     var indicatorRadius: Float = Tools.dpToPx(context, 6.0).toFloat()
-    var shuffleInitTime: Long = 0
+    var shuffleInitTime: Long = midnightTimestamp
         set(initTimestamp) {
             field = initTimestamp - midnightTimestamp
-            actualHeight = (fullHeight / totalDayTime * (totalDayTime - field)).toInt()
+            val currentTime = Calendar.getInstance().timeInMillis - midnightTimestamp
+            actualHeight = (fullHeight / totalDayTime * (currentTime - field) + (backgroundPaint.strokeWidth + spacing) * 3 + spacing).toInt()
             requestLayout()
             invalidate()
         }
@@ -85,13 +88,21 @@ class GoalTimeline @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        val stepMillis = (height - backgroundPaint.strokeWidth) / (totalDayTime - shuffleInitTime)
+        val maxSpacing = backgroundPaint.strokeWidth.coerceAtLeast(indicatorRadius * 2)
+        val stepMillis = (height - maxSpacing) / (totalDayTime - shuffleInitTime)
+
 
         val currentDayProgress = Calendar.getInstance().timeInMillis - midnightTimestamp - shuffleInitTime
         val progressedSinceStart = stepMillis * currentDayProgress
 
-        canvas.drawLine((width - backgroundPaint.strokeWidth) / 2f, backgroundPaint.strokeWidth / 2f, (width - backgroundPaint.strokeWidth) / 2f, height.toFloat() - backgroundPaint.strokeWidth / 2f, backgroundPaint)
-        canvas.drawLine((width - paint.strokeWidth) / 2f, paint.strokeWidth / 2f, (width - paint.strokeWidth) / 2f, progressedSinceStart + paint.strokeWidth / 2f, paint)
+        // Draw progress line
+        canvas.drawLine((width - paint.strokeWidth) / 2f, maxSpacing / 2f, (width - paint.strokeWidth) / 2f, progressedSinceStart + maxSpacing / 2f, paint)
+
+        // Draw collapsed indicators
+        val firstCollapsedDotsY = progressedSinceStart + maxSpacing / 2f + spacing * 2
+        canvas.drawCircle((width - backgroundPaint.strokeWidth) / 2f, firstCollapsedDotsY, backgroundPaint.strokeWidth, backgroundPaint)
+        canvas.drawCircle((width - backgroundPaint.strokeWidth) / 2f, firstCollapsedDotsY + spacing + backgroundPaint.strokeWidth, backgroundPaint.strokeWidth, backgroundPaint)
+        canvas.drawCircle((width - backgroundPaint.strokeWidth) / 2f, firstCollapsedDotsY + (spacing + backgroundPaint.strokeWidth) * 2, backgroundPaint.strokeWidth, backgroundPaint)
 
         var skipped = 0
         for (i in achieved.indices) {
@@ -100,14 +111,13 @@ class GoalTimeline @JvmOverloads constructor(
                 continue
             }
             val pointLocation = stepMillis * (achieved[i] - shuffleInitTime)
-            val yValue = pointLocation + paint.strokeWidth / 2f
+            val yValue = pointLocation + maxSpacing / 2f
 
             // Draw circle indicator
             canvas.drawCircle((width - paint.strokeWidth) / 2f, yValue, indicatorRadius, paint)
 
             // Draw line to text
             val direction = if ((i - skipped) % 2 == 0) 1 else -1
-            val spacing = Tools.dpToPx(context, 8.0)
             val lineStartX = (width - paint.strokeWidth) / 2f + (indicatorRadius + tickPaint.strokeWidth / 2f + spacing) * direction
             val lineStopX = lineStartX + Tools.dpToPx(context, 16.0) * direction
             canvas.drawLine(lineStartX, yValue, lineStopX, yValue, tickPaint)

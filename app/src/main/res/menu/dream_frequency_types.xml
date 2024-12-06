@@ -3,13 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/itm_dream_all"
-        android:icon="@drawable/rounded_filter_alt_off_24"
-        android:title="All dreams"
+        android:title="General dream"
         app:iconTint="?attr/primaryTextColor"/>
     <item
         android:id="@+id/itm_dream_lucid"
         android:icon="@drawable/rounded_award_star_24"
-        android:title="Lucid"
+        android:title="Lucid dream"
         app:iconTint="?attr/primaryTextColor"/>
     <item
         android:id="@+id/itm_dream_nightmare"
@@ -29,6 +28,6 @@
     <item
         android:id="@+id/itm_dream_recurring"
         android:icon="@drawable/ic_round_loop_24"
-        android:title="Recurring"
+        android:title="Recurring dream"
         app:iconTint="?attr/primaryTextColor"/>
 </menu>

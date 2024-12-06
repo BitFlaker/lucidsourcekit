@@ -133,7 +133,7 @@
             android:layout_marginBottom="55dp"
             android:layout_above="@+id/ll_binaural_controls_container"
             android:layout_below="@+id/ll_current_binaural_freq"
-            app:strokeColor="?attr/colorOutlineVariant"
+            app:strokeColor="?attr/colorSurfaceContainerHighest"
             app:cardElevation="@dimen/cardElevationOutline"
             app:cardBackgroundColor="?attr/colorSurface"
             app:cardCornerRadius="@dimen/cardRadius">

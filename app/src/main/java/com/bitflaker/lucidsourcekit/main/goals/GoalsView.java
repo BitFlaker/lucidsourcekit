@@ -71,9 +71,9 @@ public class GoalsView extends Fragment {
 
         DataStoreManager dsManager = DataStoreManager.getInstance();
 
-        // Start the graph from the time the app was first opened today
-        long firstOpenToday = dsManager.getSetting(DataStoreKeys.FIRST_OPEN_TIME_TODAY_DAY).blockingFirst();
-        binding.gtlAchieved.setShuffleInitTime(firstOpenToday);
+//        // Start the graph from the time the app was first opened today
+//        long firstOpenToday = dsManager.getSetting(DataStoreKeys.FIRST_OPEN_TIME_TODAY_DAY).blockingFirst();
+//        binding.gtlAchieved.setShuffleInitTime(firstOpenToday);
 
         db = MainDatabase.getInstance(getContext());
         binding.btnAdjustAlgorithm.setOnClickListener(e -> setupAdjustAlgorithmSheet());

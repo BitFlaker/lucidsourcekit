@@ -67,7 +67,7 @@
                     android:gravity="center_horizontal"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/ll_qa_rc_reminder">
+                    app:layout_constraintEnd_toStartOf="@+id/ll_qa_lockscreen">
 
                     <com.google.android.material.button.MaterialButton
                         style="@style/Widget.Material3.Button.IconButton.Outlined"
@@ -78,7 +78,7 @@
                         app:cornerRadius="16dp"
                         app:icon="@drawable/round_notifications_24"
                         app:rippleColor="?attr/colorSurfaceContainerHighest"
-                        app:strokeColor="?attr/colorOutlineVariant"
+                        app:strokeColor="?attr/colorSurfaceContainerHighest"
                         app:iconTint="?attr/colorOnSurfaceVariant"/>
 
                     <TextView
@@ -91,44 +91,13 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/ll_qa_rc_reminder"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toStartOf="@+id/ll_qa_lockscreen"
-                    app:layout_constraintStart_toEndOf="@+id/ll_qa_notifications"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.button.MaterialButton
-                        style="@style/Widget.Material3.Button.IconButton.Outlined"
-                        android:id="@+id/btn_qa_rc_reminder"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:padding="18dp"
-                        app:cornerRadius="16dp"
-                        app:icon="@drawable/round_history_edu_24"
-                        app:rippleColor="?attr/colorSurfaceContainerHighest"
-                        app:strokeColor="?attr/colorOutlineVariant"
-                        app:iconTint="?attr/colorOnSurfaceVariant" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Questionnaire"
-                        android:textSize="12sp"
-                        android:textColor="?attr/secondaryTextColor" />
-                </LinearLayout>
-
-                <LinearLayout
                     android:id="@+id/ll_qa_lockscreen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
-                    app:layout_constraintEnd_toStartOf="@+id/ll_qa_more"
-                    app:layout_constraintStart_toEndOf="@+id/ll_qa_rc_reminder"
+                    app:layout_constraintEnd_toStartOf="@+id/ll_qa_rc_reminder"
+                    app:layout_constraintStart_toEndOf="@+id/ll_qa_notifications"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.button.MaterialButton
@@ -139,7 +108,7 @@
                         android:padding="18dp"
                         app:cornerRadius="16dp"
                         app:icon="@drawable/rounded_screen_lock_portrait_24"
-                        app:strokeColor="?attr/colorOutlineVariant"
+                        app:strokeColor="?attr/colorSurfaceContainerHighest"
                         app:rippleColor="?attr/colorSurfaceContainerHighest"
                         app:iconTint="?attr/colorOnSurfaceVariant" />
 
@@ -153,13 +122,44 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_qa_rc_reminder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toStartOf="@+id/ll_qa_more"
+                    app:layout_constraintStart_toEndOf="@+id/ll_qa_lockscreen"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Widget.Material3.Button.IconButton.Outlined"
+                        android:id="@+id/btn_qa_rc_reminder"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:padding="18dp"
+                        app:cornerRadius="16dp"
+                        app:icon="@drawable/round_history_edu_24"
+                        app:rippleColor="?attr/colorSurfaceContainerHighest"
+                        app:strokeColor="?attr/colorSurfaceContainerHighest"
+                        app:iconTint="?attr/colorOnSurfaceVariant" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Questionnaire"
+                        android:textSize="12sp"
+                        android:textColor="?attr/secondaryTextColor" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/ll_qa_more"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/ll_qa_lockscreen"
+                    app:layout_constraintStart_toEndOf="@+id/ll_qa_rc_reminder"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.button.MaterialButton
@@ -171,7 +171,7 @@
                         app:cornerRadius="16dp"
                         app:icon="@drawable/rounded_more_horiz_24"
                         app:rippleColor="?attr/colorSurfaceContainerHighest"
-                        app:strokeColor="?attr/colorOutlineVariant"
+                        app:strokeColor="?attr/colorSurfaceContainerHighest"
                         app:iconTint="?attr/colorOnSurfaceVariant" />
 
                     <TextView
@@ -219,7 +219,7 @@
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="24dp"
-                    app:strokeColor="?attr/colorOutlineVariant"
+                    app:strokeColor="?attr/colorSurfaceContainerHighest"
                     app:contentPadding="0dp"
                     app:cardCornerRadius="@dimen/cardRadius"
                     app:layout_constraintEnd_toEndOf="parent"

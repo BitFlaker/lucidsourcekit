@@ -209,21 +209,22 @@ public class NotificationManagerView extends AppCompatActivity {
     }
 
     private void updateNotificationStats() {
+//        long enabledCategoriesCount = rcvaNotificationCategories.getEnabledCategoriesCount();
+//        int totalCategoriesCount = rcvaNotificationCategories.getItemCount();
+//        int obfuscationPercentage = rcvaNotificationCategories.getObfuscationPercentage();
         int totalDailyNotificationCount = rcvaNotificationCategories.getDailyNotificationCount();
-        long enabledCategoriesCount = rcvaNotificationCategories.getEnabledCategoriesCount();
-        int totalCategoriesCount = rcvaNotificationCategories.getItemCount();
         long notificationTimeframeFrom = rcvaNotificationCategories.getNotificationTimeframeFrom();
         long notificationTimeframeTo = rcvaNotificationCategories.getNotificationTimeframeTo();
-        int obfuscationPercentage = rcvaNotificationCategories.getObfuscationPercentage();
+
+//        binding.txtCategoriesEnabledVal.setText(String.format(Locale.ENGLISH, "%d/%d", enabledCategoriesCount, totalCategoriesCount));
+//        binding.txtObfuscationLevelVal.setText(String.format(Locale.ENGLISH, "%d%%", obfuscationPercentage));
 
         binding.txtDailyNotificationsVal.setText(String.format(Locale.ENGLISH, "%d", totalDailyNotificationCount));
-        binding.txtCategoriesEnabledVal.setText(String.format(Locale.ENGLISH, "%d/%d", enabledCategoriesCount, totalCategoriesCount));
         long nTimeframeFromHours = TimeUnit.MILLISECONDS.toHours(notificationTimeframeFrom);
         long nTimeframeFromMinutes = TimeUnit.MILLISECONDS.toMinutes(notificationTimeframeFrom) - TimeUnit.HOURS.toMinutes(nTimeframeFromHours);
         long nTimeframeToHours = TimeUnit.MILLISECONDS.toHours(notificationTimeframeTo);
         long nTimeframeToMinutes = TimeUnit.MILLISECONDS.toMinutes(notificationTimeframeTo) - TimeUnit.HOURS.toMinutes(nTimeframeToHours);
         binding.txtNotificationTimespanVal.setText(String.format(Locale.ENGLISH, "%02d:%02d - %02d:%02d", nTimeframeFromHours, nTimeframeFromMinutes, nTimeframeToHours, nTimeframeToMinutes));
-        binding.txtObfuscationLevelVal.setText(String.format(Locale.ENGLISH, "%d%%", obfuscationPercentage));
         calculateAndApplyNewStatus();
     }
 
