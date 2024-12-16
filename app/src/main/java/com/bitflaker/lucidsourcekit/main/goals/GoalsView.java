@@ -268,6 +268,9 @@ public class GoalsView extends Fragment {
         // Highlight all achieved timestamps on graph
         ArrayList<Long> achievedTimes = new ArrayList<>(db.getShuffleTransactionDao().getAchievedTimes(current.getShuffleId()).blockingGet());
         binding.gtlAchieved.setAchieved(achievedTimes);
+        boolean showTimeline = achievedTimes.isEmpty();
+        binding.gtlAchieved.setVisibility(showTimeline ? View.GONE : View.VISIBLE);
+        binding.crdNoGoalTimeline.setVisibility(showTimeline ? View.VISIBLE : View.GONE);
 
         String numParts = getDecimalNumParts(100 * current.getShuffleOccurrenceRating(), 1);
         binding.txtCurrentSelectionDiffFull.setText(numParts);

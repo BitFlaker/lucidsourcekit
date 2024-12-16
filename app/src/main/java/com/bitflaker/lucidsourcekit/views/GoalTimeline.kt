@@ -91,7 +91,6 @@ class GoalTimeline @JvmOverloads constructor(
         val maxSpacing = backgroundPaint.strokeWidth.coerceAtLeast(indicatorRadius * 2)
         val stepMillis = (height - maxSpacing) / (totalDayTime - shuffleInitTime)
 
-
         val currentDayProgress = Calendar.getInstance().timeInMillis - midnightTimestamp - shuffleInitTime
         val progressedSinceStart = stepMillis * currentDayProgress
 

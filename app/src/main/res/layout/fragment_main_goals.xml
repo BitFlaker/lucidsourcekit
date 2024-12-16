@@ -31,6 +31,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="32dp"
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -284,8 +285,30 @@
                 android:id="@+id/gtl_achieved"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="32dp" />
-            <!--        NOTE:
+                android:layout_marginTop="32dp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/crd_no_goal_timeline"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="24dp"
+                android:visibility="gone"
+                app:strokeColor="?attr/colorOutlineVariant"
+                style="@style/LSK.MaterialCardView.Outlined">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="No goals achieved today. Improve your prospective memory by looking out for the goals listed above."
+                    android:textAlignment="center"
+                    android:textColor="?attr/tertiaryTextColor"
+                    android:textSize="14sp" />
+            </com.google.android.material.card.MaterialCardView>
+
+<!--        NOTE:
               * Removed "yesterday's statistics" section so they can be moved to the statistics fragment
               * Removed the "advice" section as it does not seem to make a lot of sense to keep it here
                 as adjustments can be made manually and there will just be a "Learn more" button to inform the user
