@@ -40,10 +40,7 @@ public class RecyclerViewAdapterNotificationCategories extends RecyclerView.Adap
         NotificationCategory current = notificationCategories.get(position);
         holder.binding.txtNotificationCategoryHeading.setText(current.getItemHeading());
         holder.binding.txtNotificationCategoryDescription.setText(current.getItemDescription());
-        holder.binding.txtNotificationCategoryCount.setText(current.getDailyNotificationCount() == 0 || !current.isEnabled() ? "No notifications" : current.getDailyNotificationCount() + " daily notifications");
-        Drawable enabledStateDrawable = ResourcesCompat.getDrawable(context.getResources(), current.isEnabled() ? R.drawable.round_check_24 : R.drawable.round_clear_24, context.getTheme());
-        holder.binding.txtNotificationCategoryCount.setCompoundDrawablesRelativeWithIntrinsicBounds(enabledStateDrawable, null, null, null);
-        holder.binding.imgNotificationCategoryIcon.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), current.getDrawable(), context.getTheme()));
+        holder.binding.txtNotificationCategoryCount.setText(current.getDailyNotificationCount() == 0 || !current.isEnabled() ? "Disabled" : current.getDailyNotificationCount() + " daily");
         holder.binding.crdNotificationEntry.setOnClickListener(e -> current.getCategoryClickedListener().notificationCategoryClicked());
     }
 

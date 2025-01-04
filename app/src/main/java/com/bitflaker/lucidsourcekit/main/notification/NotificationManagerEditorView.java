@@ -79,7 +79,7 @@ public class NotificationManagerEditorView extends AppCompatActivity {
     }
 
     private void createAndShowBottomSheetConfigurator(NotificationMessage message) {
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogStyle);
         SheetNotificationMessageBinding sBinding = SheetNotificationMessageBinding.inflate(getLayoutInflater());
         bottomSheetDialog.setContentView(sBinding.getRoot());
 

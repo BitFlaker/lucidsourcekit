@@ -2,132 +2,50 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="32dp"
     android:backgroundTint="?attr/colorSurface">
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/crd_notification_settings_icon_background"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
-        app:strokeColor="?attr/colorSurfaceContainerHighest"
-        app:cardCornerRadius="@dimen/cardRadius"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/img_notification_settings_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_baseline_bedtime_24" />
-    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/txt_notification_settings_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Dream journal reminder"
+        android:layout_marginTop="32dp"
+        android:text="Dream journal"
         android:textAlignment="center"
         android:textColor="?attr/primaryTextColor"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/txt_notification_settings_subheading"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/crd_notification_settings_icon_background" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
-        android:id="@+id/txt_notification_settings_description"
-        android:layout_width="0dp"
+        android:id="@+id/txt_notification_settings_subheading"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="48dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginRight="48dp"
-        android:text="Reminder for writing down your dream to the dream journal in order to improve dream recall"
+        android:text="Notification settings"
         android:textAlignment="center"
         android:textColor="?attr/secondaryTextColor"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/txt_notification_settings_heading"
+        app:layout_constraintStart_toStartOf="@+id/txt_notification_settings_heading"
         app:layout_constraintTop_toBottomOf="@+id/txt_notification_settings_heading" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/mcv_obfuscation_level"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginRight="20dp"
-        app:cardBackgroundColor="@color/transparent"
-        app:cardCornerRadius="@dimen/cardRadius"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_notification_settings_description"
-        app:strokeColor="?attr/colorSurfaceContainerHigh"
-        app:strokeWidth="0dp">
-
-        <LinearLayout
-            android:id="@+id/ll_notification_obfuscation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:divider="@drawable/divider_x_small"
-            android:orientation="horizontal"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:showDividers="middle">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chp_obfuscate_transparent"
-                style="@style/Custom.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Transparent"
-                android:textAlignment="center"
-                app:ensureMinTouchTargetSize="false" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chp_obfuscate_neutral"
-                style="@style/Custom.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Neutral"
-                android:textAlignment="center"
-                app:ensureMinTouchTargetSize="false" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chp_obfuscate_max"
-                style="@style/Custom.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Obfuscated"
-                android:textAlignment="center"
-                app:ensureMinTouchTargetSize="false" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/ll_notification_timeframe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="20dp"
-        android:divider="@drawable/divider_medium"
+        android:layout_marginTop="32dp"
+        android:layout_marginHorizontal="32dp"
+        android:divider="@drawable/divider_large"
         android:orientation="horizontal"
         android:showDividers="middle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mcv_obfuscation_level">
+        app:layout_constraintTop_toBottomOf="@+id/txt_notification_settings_subheading">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/crd_notification_time_from"
@@ -137,31 +55,26 @@
             app:cardBackgroundColor="@color/transparent"
             app:cardCornerRadius="@dimen/cardRadius"
             app:cardElevation="0dp"
-            app:strokeColor="?attr/colorSurfaceContainerHigh"
+            app:strokeColor="?attr/colorOutlineVariant"
             app:strokeWidth="1dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp">
+                android:layout_marginBottom="2dp"
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="12dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
                     android:orientation="vertical"
+                    android:gravity="center_horizontal"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/imageView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/txt_start_time_label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="From"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="11sp" />
 
                     <TextView
                         android:id="@+id/txt_notification_time_from"
@@ -170,18 +83,15 @@
                         android:text="07:30"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="18sp" />
-                </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_margin="3dp"
-                    android:padding="12dp"
-                    android:src="@drawable/round_access_time_24"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <TextView
+                        android:id="@+id/txt_start_time_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Start time"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="12sp" />
+                </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -193,31 +103,26 @@
             app:cardBackgroundColor="@color/transparent"
             app:cardCornerRadius="@dimen/cardRadius"
             app:cardElevation="0dp"
-            app:strokeColor="?attr/colorSurfaceContainerHigh"
+            app:strokeColor="?attr/colorOutlineVariant"
             app:strokeWidth="1dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp">
+                android:layout_marginBottom="2dp"
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="12dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
                     android:orientation="vertical"
+                    android:gravity="center_horizontal"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/imageButton"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/txt_end_time_label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Until"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="11sp" />
 
                     <TextView
                         android:id="@+id/txt_notification_time_to"
@@ -226,260 +131,151 @@
                         android:text="16:00"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="18sp" />
-                </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/imageButton"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_margin="3dp"
-                    android:padding="12dp"
-                    android:src="@drawable/round_access_time_24"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <TextView
+                        android:id="@+id/txt_end_time_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="End time"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="12dp" />
+                </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/mcv_daily_notifications"
+        android:id="@+id/crd_daily_notifications"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="20dp"
-        app:cardBackgroundColor="@color/transparent"
-        app:cardCornerRadius="@dimen/cardRadius"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:strokeColor="?attr/colorSurfaceContainerHigh"
-        app:strokeWidth="1dp">
+        android:layout_marginTop="12dp"
+        app:cardCornerRadius="0dp"
+        app:strokeWidth="0dp"
+        app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+        app:layout_constraintTop_toBottomOf="@+id/ll_notification_timeframe">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginVertical="16dp"
+            android:layout_marginHorizontal="24dp">
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/chk_enable_notifications"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:checked="true"
-                android:text="Daily notifications"
-                android:theme="@style/Switch.Dark"
-                app:useMaterialThemeColors="false" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/ll_daily_notification_count"
+            <ImageView
+                android:id="@+id/img_goal_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="16dp"
-                android:layout_gravity="center_horizontal"
-                app:singleSelection="true"
-                app:selectionRequired="true"
-                app:checkedChip="@id/chp_notification_3">
+                android:src="@drawable/rounded_numbers_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="?attr/primaryTextColor" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chp_notification_1"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:text="1"
-                    android:includeFontPadding="false"
-                    android:textAlignment="center"
-                    android:textColor="@color/chip_text_check_change"
-                    app:chipBackgroundColor="@drawable/chip_background"
-                    app:chipCornerRadius="48dp"
-                    app:chipMinHeight="36dp"
-                    app:textStartPadding="0dp"
-                    app:textEndPadding="0dp"
-                    app:chipEndPadding="0dp"
-                    app:chipStartPadding="0dp"
-                    app:chipMinTouchTargetSize="0dp"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"/>
+            <TextView
+                android:id="@+id/txt_title_edit_goal_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:text="Notification count"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintBottom_toTopOf="@id/txt_description_edit_goal_count"
+                app:layout_constraintStart_toEndOf="@+id/img_goal_count"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chp_notification_2"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:text="2"
-                    android:includeFontPadding="false"
-                    android:textAlignment="center"
-                    android:textColor="@color/chip_text_check_change"
-                    app:chipBackgroundColor="@drawable/chip_background"
-                    app:chipCornerRadius="48dp"
-                    app:chipMinHeight="36dp"
-                    app:textStartPadding="0dp"
-                    app:textEndPadding="0dp"
-                    app:chipEndPadding="0dp"
-                    app:chipStartPadding="0dp"
-                    app:chipMinTouchTargetSize="0dp"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chp_notification_3"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:text="3"
-                    android:includeFontPadding="false"
-                    android:textAlignment="center"
-                    android:textColor="@color/chip_text_check_change"
-                    app:chipBackgroundColor="@drawable/chip_background"
-                    app:chipCornerRadius="48dp"
-                    app:chipMinHeight="36dp"
-                    app:textStartPadding="0dp"
-                    app:textEndPadding="0dp"
-                    app:chipEndPadding="0dp"
-                    app:chipStartPadding="0dp"
-                    app:chipMinTouchTargetSize="0dp"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chp_notification_5"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:text="5"
-                    android:includeFontPadding="false"
-                    android:textAlignment="center"
-                    android:textColor="@color/chip_text_check_change"
-                    app:chipBackgroundColor="@drawable/chip_background"
-                    app:chipCornerRadius="48dp"
-                    app:chipMinHeight="36dp"
-                    app:textStartPadding="0dp"
-                    app:textEndPadding="0dp"
-                    app:chipEndPadding="0dp"
-                    app:chipStartPadding="0dp"
-                    app:chipMinTouchTargetSize="0dp"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chp_notification_custom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:text="Custom"
-                    android:includeFontPadding="false"
-                    android:textAlignment="center"
-                    android:textColor="@color/chip_text_check_change"
-                    app:chipBackgroundColor="@drawable/chip_background"
-                    app:chipCornerRadius="48dp"
-                    app:chipMinHeight="36dp"
-                    app:textStartPadding="16dp"
-                    app:textEndPadding="16dp"
-                    app:chipEndPadding="0dp"
-                    app:chipStartPadding="0dp"
-                    app:chipMinTouchTargetSize="0dp"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"/>
-            </com.google.android.material.chip.ChipGroup>
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/mcv_complying_notifications"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="20dp"
-        app:cardBackgroundColor="@color/transparent"
-        app:cardCornerRadius="@dimen/cardRadius"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mcv_daily_notifications"
-        app:strokeColor="?attr/colorSurfaceContainerHigh"
-        app:strokeWidth="1dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/txt_description_edit_goal_count"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="16dp"
-                android:layout_gravity="center_vertical"
-                android:orientation="vertical">
+                android:layout_marginStart="24dp"
+                android:text="How many notifications to get from this category"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/img_goal_count"
+                app:layout_constraintTop_toBottomOf="@+id/txt_title_edit_goal_count"
+                app:layout_constraintWidth_percent="0.6" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Complying notifications"
-                    android:textSize="11sp"
-                    android:textColor="?attr/secondaryTextColor" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/txt_compliant_notification_message_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="24"
-                        android:textSize="18sp"
-                        android:textColor="?attr/primaryTextColor" />
-
-                    <TextView
-                        android:id="@+id/txt_total_notification_message_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="/ 175"
-                        android:textSize="13sp"
-                        android:textColor="?attr/secondaryTextColor" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <ImageButton
-                android:id="@+id/btn_edit_notification_messages"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="6dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="6dp"
-                android:background="@drawable/ripple_round_clear"
-                android:src="@drawable/ic_round_mode_edit_24" />
-        </LinearLayout>
+            <TextView
+                android:id="@+id/txt_notification_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4"
+                android:textSize="16sp"
+                android:textColor="?attr/primaryTextColor"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_cancel"
-        android:layout_width="0dp"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/crd_notification_messages"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="21dp"
-        android:layout_marginTop="28dp"
-        android:minWidth="128dp"
-        android:text="Cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mcv_complying_notifications"
-        style="@style/Widget.Material3.Button.OutlinedButton" />
+        app:cardCornerRadius="0dp"
+        app:strokeWidth="0dp"
+        app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+        app:layout_constraintTop_toBottomOf="@+id/crd_daily_notifications">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="16dp"
+            android:layout_marginHorizontal="24dp">
+
+            <ImageView
+                android:id="@+id/img_notification_messages"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/rounded_edit_notifications_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="?attr/primaryTextColor" />
+
+            <TextView
+                android:id="@+id/txt_title_notification_messages"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:text="Notification messages"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintBottom_toTopOf="@id/txt_description_notification_messages"
+                app:layout_constraintStart_toEndOf="@+id/img_notification_messages"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txt_description_notification_messages"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:text="Manage the notification messages for this category"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/img_notification_messages"
+                app:layout_constraintTop_toBottomOf="@+id/txt_title_notification_messages"
+                app:layout_constraintWidth_percent="0.6" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_save"
+        style="@style/Widget.Material3.Button.IconButton.Filled"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="21dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginHorizontal="20dp"
         android:text="Save"
         app:icon="@drawable/ic_baseline_check_24"
         app:iconGravity="textStart"
         app:iconPadding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_cancel"
-        app:layout_constraintTop_toBottomOf="@+id/mcv_complying_notifications"
-        style="@style/Widget.Material3.Button.IconButton.Filled"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/crd_notification_messages" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,67 +11,48 @@
     style="@style/LSK.MaterialCardView.Filled">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_notification_entry"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/cardDefaultPadding"
+        android:paddingVertical="20dp"
+        android:clipToPadding="false">
 
-        <LinearLayout
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/txt_notification_category_heading"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="72dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Dream journal reminder"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="14sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/txt_notification_category_heading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Dream journal reminder"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txt_notification_category_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textColor="?attr/tertiaryTextColor"
-                android:text="Reminder for writing down your dream to the dream journal in order to improve dream recall"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/txt_notification_category_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:drawablePadding="8dp"
-                android:gravity="center"
-                android:text="No notifications"
-                android:textColor="?attr/secondaryTextColor"
-                android:textSize="14sp"
-                app:drawableTint="?attr/secondaryTextColor"
-                app:drawableStartCompat="@drawable/round_clear_24" />
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/img_notification_category_icon"
-            android:layout_width="0dp"
-            android:layout_height="64dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_baseline_bedtime_24"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <TextView
+            android:id="@+id/txt_notification_category_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-2dp"
+            android:background="@drawable/rounded_rectangle_medium"
+            android:backgroundTint="?attr/colorSurfaceContainerHigh"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="1dp"
+            android:text="Disabled"
+            android:textColor="?attr/tertiaryTextColor"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:tint="#12ffffff"/>
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txt_notification_category_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Reminder for writing down your dream to the dream journal in order to improve dream recall"
+            android:textColor="?attr/secondaryTextColor"
+            android:textSize="13sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_notification_category_heading" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

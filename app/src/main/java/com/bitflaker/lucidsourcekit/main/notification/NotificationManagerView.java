@@ -51,7 +51,6 @@ public class NotificationManagerView extends AppCompatActivity {
     private RecyclerViewAdapterNotificationCategories rcvaNotificationCategories;
     private MainDatabase db;
     private ActivityNotificationManagerBinding binding;
-    private TextView compliantNotificationCountSettings, totalNotificationCountSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,24 +71,24 @@ public class NotificationManagerView extends AppCompatActivity {
             String description;
             int drawable;
 
-            switch (category.getId()){
+            switch (category.getId()) {
                 case "DJR":
-                    heading = "Dream journal reminder";
-                    description = "Reminder for writing down your dream to the dream journal in order to improve dream recall";
+                    heading = "Dream journal";
+                    description = "Reminder for writing down your dreams to the dream journal in order to improve dream recall";
                     drawable = R.drawable.ic_baseline_text_fields_24;
                     break;
                 case "RCR":
-                    heading = "Reality check reminder";
+                    heading = "Reality check";
                     description = "Reminder for performing a reality check to train performing reality checks in your dreams";
                     drawable = R.drawable.round_model_training_24;
                     break;
                 case "DGR":
-                    heading = "Daily goals reminder";
+                    heading = "Daily goals";
                     description = "Reminder for taking a look at your daily goals and to look out for them throughout the day";
                     drawable = R.drawable.ic_baseline_bookmark_added_24;
                     break;
                 case "CR":
-                    heading = "Custom reminder";
+                    heading = "Custom";
                     description = "Reminder for everything you want to be reminded about. You can set your own messages";
                     drawable = R.drawable.round_lightbulb_24;
                     break;
@@ -125,7 +124,7 @@ public class NotificationManagerView extends AppCompatActivity {
         binding.spdoNotificationsDelivered.setData(25f, currentDeliveryProgress, 100);
         binding.spdoNotificationsDelivered.setPercentageData(true);
         binding.spdoNotificationsDelivered.setDecimalPlaces(0);
-        binding.spdoNotificationsDelivered.setDescription("notifications\nalready delivered today");
+        binding.spdoNotificationsDelivered.setDescription("already delivered");
 
         Calendar curr = Calendar.getInstance();
         long delay = (60 - curr.get(Calendar.SECOND) - 1) * 1000 + 1000 - curr.get(Calendar.MILLISECOND);
@@ -212,19 +211,19 @@ public class NotificationManagerView extends AppCompatActivity {
 //        long enabledCategoriesCount = rcvaNotificationCategories.getEnabledCategoriesCount();
 //        int totalCategoriesCount = rcvaNotificationCategories.getItemCount();
 //        int obfuscationPercentage = rcvaNotificationCategories.getObfuscationPercentage();
-        int totalDailyNotificationCount = rcvaNotificationCategories.getDailyNotificationCount();
-        long notificationTimeframeFrom = rcvaNotificationCategories.getNotificationTimeframeFrom();
-        long notificationTimeframeTo = rcvaNotificationCategories.getNotificationTimeframeTo();
+//        int totalDailyNotificationCount = rcvaNotificationCategories.getDailyNotificationCount();
+//        long notificationTimeframeFrom = rcvaNotificationCategories.getNotificationTimeframeFrom();
+//        long notificationTimeframeTo = rcvaNotificationCategories.getNotificationTimeframeTo();
 
 //        binding.txtCategoriesEnabledVal.setText(String.format(Locale.ENGLISH, "%d/%d", enabledCategoriesCount, totalCategoriesCount));
 //        binding.txtObfuscationLevelVal.setText(String.format(Locale.ENGLISH, "%d%%", obfuscationPercentage));
 
-        binding.txtDailyNotificationsVal.setText(String.format(Locale.ENGLISH, "%d", totalDailyNotificationCount));
-        long nTimeframeFromHours = TimeUnit.MILLISECONDS.toHours(notificationTimeframeFrom);
-        long nTimeframeFromMinutes = TimeUnit.MILLISECONDS.toMinutes(notificationTimeframeFrom) - TimeUnit.HOURS.toMinutes(nTimeframeFromHours);
-        long nTimeframeToHours = TimeUnit.MILLISECONDS.toHours(notificationTimeframeTo);
-        long nTimeframeToMinutes = TimeUnit.MILLISECONDS.toMinutes(notificationTimeframeTo) - TimeUnit.HOURS.toMinutes(nTimeframeToHours);
-        binding.txtNotificationTimespanVal.setText(String.format(Locale.ENGLISH, "%02d:%02d - %02d:%02d", nTimeframeFromHours, nTimeframeFromMinutes, nTimeframeToHours, nTimeframeToMinutes));
+//        binding.txtDailyNotificationsVal.setText(String.format(Locale.ENGLISH, "%d", totalDailyNotificationCount));
+//        long nTimeframeFromHours = TimeUnit.MILLISECONDS.toHours(notificationTimeframeFrom);
+//        long nTimeframeFromMinutes = TimeUnit.MILLISECONDS.toMinutes(notificationTimeframeFrom) - TimeUnit.HOURS.toMinutes(nTimeframeFromHours);
+//        long nTimeframeToHours = TimeUnit.MILLISECONDS.toHours(notificationTimeframeTo);
+//        long nTimeframeToMinutes = TimeUnit.MILLISECONDS.toMinutes(notificationTimeframeTo) - TimeUnit.HOURS.toMinutes(nTimeframeToHours);
+//        binding.txtNotificationTimespanVal.setText(String.format(Locale.ENGLISH, "%02d:%02d - %02d:%02d", nTimeframeFromHours, nTimeframeFromMinutes, nTimeframeToHours, nTimeframeToMinutes));
         calculateAndApplyNewStatus();
     }
 
@@ -248,24 +247,17 @@ public class NotificationManagerView extends AppCompatActivity {
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent data = result.getData();
-                    String categoryId = data.getStringExtra("CATEGORY_ID");
-                    int obfuscationTypeId = data.getIntExtra("OBFUSCATION_TYPE_ID", 0);
-                    compliantNotificationCountSettings.setText(String.format(Locale.ENGLISH, "%d", db.getNotificationMessageDao().getCountOfMessagesForCategoryAndObfuscationType(categoryId, obfuscationTypeId).blockingGet()));
-                    totalNotificationCountSettings.setText("/ " + db.getNotificationMessageDao().getCountOfMessagesForCategory(categoryId).blockingGet());
+//                    String categoryId = data.getStringExtra("CATEGORY_ID");
+//                    int obfuscationTypeId = data.getIntExtra("OBFUSCATION_TYPE_ID", 0);
+//                    compliantNotificationCountSettings.setText(String.format(Locale.ENGLISH, "%d", db.getNotificationMessageDao().getCountOfMessagesForCategoryAndObfuscationType(categoryId, obfuscationTypeId).blockingGet()));
+//                    totalNotificationCountSettings.setText("/ " + db.getNotificationMessageDao().getCountOfMessagesForCategory(categoryId).blockingGet());
                 }
             });
 
     private void createAndShowBottomSheetConfigurator(NotificationCategory category) {
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogStyle);
         SheetNotificationSettingsBinding sBinding = SheetNotificationSettingsBinding.inflate(getLayoutInflater());
         bottomSheetDialog.setContentView(sBinding.getRoot());
-
-        Chip[] presetNotificationCounts = new Chip[] {
-                sBinding.chpNotification1,
-                sBinding.chpNotification2,
-                sBinding.chpNotification3,
-                sBinding.chpNotification5
-        };
 
         DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
 
@@ -275,43 +267,16 @@ public class NotificationManagerView extends AppCompatActivity {
         notificationsTimeTo = Calendar.getInstance();
         notificationsTimeTo.setTimeInMillis(Tools.getTimeFromMidnight(category.getTimeTo()));
         customDailyNotificationsCount = category.getDailyNotificationCount();
+        category.setEnabled(customDailyNotificationsCount > 0);
 
-        if (!category.isEnabled()) {
-            sBinding.chkEnableNotifications.setChecked(false);
-            sBinding.llDailyNotificationCount.setVisibility(View.GONE);
-        }
+        sBinding.txtNotificationCount.setText(customDailyNotificationsCount == 0 ? "None" : String.format(Locale.getDefault(), "%d", customDailyNotificationsCount));
 
         sBinding.txtNotificationTimeFrom.setText(tf.format(notificationsTimeFrom.getTime()));
         sBinding.txtNotificationTimeTo.setText(tf.format(notificationsTimeTo.getTime()));
 
-        sBinding.txtCompliantNotificationMessageCount.setText(String.format(Locale.ENGLISH, "%d", db.getNotificationMessageDao().getCountOfMessagesForCategoryAndObfuscationType(category.getId(), category.getObfuscationTypeId()).blockingGet()));
-        sBinding.txtTotalNotificationMessageCount.setText("/ " + db.getNotificationMessageDao().getCountOfMessagesForCategory(category.getId()).blockingGet());
-
-        sBinding.imgNotificationSettingsIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(), category.getDrawable(), getTheme()));
+//        sBinding.imgNotificationSettingsIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(), category.getDrawable(), getTheme()));
         sBinding.txtNotificationSettingsHeading.setText(category.getItemHeading());
-        sBinding.txtNotificationSettingsDescription.setText(category.getItemDescription());
 
-        Chip[] obfuscationChips = new Chip[] { sBinding.chpObfuscateTransparent, sBinding.chpObfuscateNeutral, sBinding.chpObfuscateMax };
-        for (Chip obfuscationChip : obfuscationChips) {
-            obfuscationChip.setOnClickListener(e -> {
-                category.setObfuscationTypeId(obfuscationChip == sBinding.chpObfuscateTransparent ? 0 : (obfuscationChip == sBinding.chpObfuscateNeutral ? 1 : 2));
-                if(!obfuscationChip.isChecked()) {
-                    obfuscationChip.setChecked(true);
-                    return;
-                }
-                for (Chip c : obfuscationChips) {
-                    if(c != obfuscationChip){
-                        c.setChecked(false);
-                    }
-                }
-            });
-        }
-
-        obfuscationChips[category.getObfuscationTypeId()].setChecked(true);
-            sBinding.chkEnableNotifications.setOnCheckedChangeListener((compoundButton, checked) -> {
-            category.setEnabled(checked);
-            sBinding.llDailyNotificationCount.setVisibility(checked ? View.VISIBLE : View.GONE);
-        });
         sBinding.crdNotificationTimeFrom.setOnClickListener(e -> {
             new TimePickerDialog(this, (timePickerFrom, hourFrom, minuteFrom) -> {
                 notificationsTimeFrom.set(Calendar.HOUR_OF_DAY, hourFrom);
@@ -328,50 +293,32 @@ public class NotificationManagerView extends AppCompatActivity {
                 category.setTimeTo(Tools.getTimeOfDayMillis(notificationsTimeTo));
             }, notificationsTimeTo.get(Calendar.HOUR_OF_DAY), notificationsTimeTo.get(Calendar.MINUTE), true).show();
         });
-        sBinding.chpNotificationCustom.setOnClickListener(e -> {
+        sBinding.crdDailyNotifications.setOnClickListener(e -> {
             final NumberPicker numberPicker = new NumberPicker(this);
             numberPicker.setMaxValue(99);
-            numberPicker.setMinValue(1);
+            numberPicker.setMinValue(0);
             numberPicker.setValue(customDailyNotificationsCount);
 
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
             builder.setView(numberPicker);
-            builder.setTitle("Daily notifications count");
-            builder.setMessage("Choose an amount");
+            builder.setTitle("Daily notification count");
             builder.setPositiveButton(getResources().getString(R.string.ok), (dialog, which) -> {
                 customDailyNotificationsCount = numberPicker.getValue();
                 category.setDailyNotificationCount(customDailyNotificationsCount);
-                sBinding.chpNotificationCustom.setText("Custom (" + customDailyNotificationsCount + ")");
+                sBinding.txtNotificationCount.setText(customDailyNotificationsCount == 0 ? "None" : String.format(Locale.getDefault(), "%d", customDailyNotificationsCount));
+                category.setEnabled(customDailyNotificationsCount > 0);
             });
             builder.setNegativeButton(getResources().getString(R.string.cancel), null);
             builder.create();
             builder.show();
         });
-        boolean setPresetCount = false;
-        for (Chip presetNotificationCount : presetNotificationCounts) {
-            int chipInt = Integer.parseInt(presetNotificationCount.getText().toString());
-            if(chipInt == category.getDailyNotificationCount()){
-                presetNotificationCount.setChecked(true);
-                setPresetCount = true;
-            }
-            presetNotificationCount.setOnClickListener(e -> {
-                category.setDailyNotificationCount(chipInt);
-            });
-        }
-        if(!setPresetCount){
-            sBinding.chpNotificationCustom.setChecked(true);
-            sBinding.chpNotificationCustom.setText("Custom (" + customDailyNotificationsCount + ")");
-        }
 
-        sBinding.btnEditNotificationMessages.setOnClickListener(e -> {
+        sBinding.crdNotificationMessages.setOnClickListener(e -> {
             Intent intent = new Intent(this, NotificationManagerEditorView.class);
             intent.putExtra("CATEGORY_ID", category.getId());
             intent.putExtra("OBFUSCATION_TYPE_ID", category.getObfuscationTypeId());
-            compliantNotificationCountSettings = sBinding.txtCompliantNotificationMessageCount;
-            totalNotificationCountSettings = sBinding.txtTotalNotificationMessageCount;
             notificationMessageEditorLauncher.launch(intent);
         });
-        sBinding.btnCancel.setOnClickListener(e -> bottomSheetDialog.cancel());
         sBinding.btnSave.setOnClickListener(e -> {
             // TODO save changes
             int compliantMessageCount = db.getNotificationMessageDao().getCountOfMessagesForCategoryAndObfuscationType(category.getId(), category.getObfuscationTypeId()).blockingGet();
