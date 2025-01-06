@@ -2,11 +2,13 @@ package com.bitflaker.lucidsourcekit.main.alarms;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,14 +26,11 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
 
 public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerViewAdapterAlarms.MainViewHolderAlarms> {
     private final List<MainViewHolderAlarms> loadedItems = new ArrayList<>();
     private final List<Integer> loadedPositions = new ArrayList<>();
-
-    private final static String[] weekdayShorts = new String[] { "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" };
     private OnSelectionModeStateChanged mSelectionModeStateChangedListener;
     private OnEntryActiveStateChanged mEntryActiveStateChangedListener;
     private OnEntryClicked mOnEntryClickedListener;
@@ -43,12 +42,18 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     private boolean selectionModeEnabled = true;
     private boolean controlsVisible = true;
     private boolean elevatedBackground = false;
+    private int horizontalPadding = 0;
 
     public RecyclerViewAdapterAlarms(Context context, List<StoredAlarm> storedAlarms) {
         this.context = context;
         this.storedAlarms = storedAlarms;
         selectedAlarmIds = new ArrayList<>();
         selectedIndexes = new ArrayList<>();
+
+        // Start periodic entry update task at next full minute
+        Calendar curr = Calendar.getInstance();
+        long delay = 59000 - curr.get(Calendar.SECOND) * 1000 + 1000 - curr.get(Calendar.MILLISECOND);
+        new Handler().postDelayed(periodicEntryUpdateTask, delay);
     }
 
     @NonNull
@@ -63,10 +68,16 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         if (!controlsVisible) {
             holder.hideControls();
         }
+        else {
+            holder.binding.txtAlarmIn.setVisibility(View.GONE);
+        }
         StoredAlarm alarm = storedAlarms.get(position);
         loadedItems.add(holder);
         loadedPositions.add(position);
         holder.binding.txtAlarmsTitle.setText(alarm.title);
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder.binding.clAlarmContent.getLayoutParams();
+        params.setMargins(horizontalPadding, 0, horizontalPadding, 0);
+        holder.binding.clAlarmContent.setLayoutParams(params);
 
         long alarmHours = TimeUnit.MILLISECONDS.toHours(alarm.alarmTimestamp);
         long alarmMinutes = TimeUnit.MILLISECONDS.toMinutes(alarm.alarmTimestamp) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(alarm.alarmTimestamp));
@@ -82,6 +93,11 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
             ex.printStackTrace();
         }
 
+        MainDatabase.getInstance(context).getActiveAlarmDao().getById(alarm.requestCodeActiveAlarm).blockingSubscribe(nextAlarmTimeStamp -> {
+            long duration = nextAlarmTimeStamp.initialTime - System.currentTimeMillis();
+            holder.binding.txtAlarmIn.setText(Tools.formatTimeLeft(duration));
+        });
+
         holder.binding.txtAlarmsTimePrim.setText(alarmTime);
         holder.binding.txtAlarmsTimeSec.setText(isPmAm ? (alarmHours < 12 ? " AM" : " PM") : "");
 
@@ -92,7 +108,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         holder.binding.swtAlarmActive.setOnClickListener(e -> {
             MaterialSwitch currSwitch = ((MaterialSwitch) e);
             alarm.isAlarmActive = currSwitch.isChecked();
-            if(currSwitch.isChecked()){
+            if (currSwitch.isChecked()) {
                 // get the current weekday and reduce it by 1 to get the index
                 // because the week starts with SUNDAY [which has id 1]
                 int index = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
@@ -110,29 +126,12 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
                 mEntryActiveStateChangedListener.onEvent(storedAlarms.get(position), currSwitch.isChecked());
             }
         });
-//        Typeface tfThin = FontHandler.getInstance().getFontByName("sans-serif-thin");
-//        Typeface tfNormal = FontHandler.getInstance().getFontByName("sans-serif");
-//        // TODO: enable toggle for either not showing disabled days or showing them only slightly
-//        for (int i = 0; i < holder.weekdays.size(); i++) {
-//            TextView dayT = holder.weekdays.get(i);
-//            dayT.setTypeface(tfThin);
-//            dayT.setTextColor(Tools.getAttrColor(R.attr.secondaryTextColor, context.getTheme()));
-//            dayT.setVisibility(View.GONE);
-//        }
-//        for (AlarmData.ActiveDays day : alarmData.get(position).getActiveDays()) {
-//            TextView dayT = holder.weekdays.get(day.ordinal());
-//            dayT.setTypeface(tfNormal);
-//            dayT.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, context.getTheme()));
-//            dayT.setVisibility(View.VISIBLE);
-//        }
-        StringJoiner joiner = new StringJoiner(", ");
-        joiner.setEmptyValue("No repeat");
+        @ColorInt int colorTertiary = Tools.getAttrColor(R.attr.tertiaryTextColor, context.getTheme());
+        @ColorInt int colorPrimary = Tools.getAttrColor(R.attr.secondaryTextColor, context.getTheme());
         for (int i = 0; i < alarm.pattern.length; i++) {
-            if(alarm.pattern[i]){
-                joiner.add(weekdayShorts[i]);
-            }
+            TextView dayIndicator = holder.weekdays.get((i + alarm.pattern.length - 1) % alarm.pattern.length);
+            dayIndicator.setTextColor(alarm.pattern[i] ? colorPrimary : colorTertiary);
         }
-        holder.binding.txtAlarmsWeekdaysActive.setText(joiner.toString());
         holder.setSelectionModeActive(isInSelectionMode && selectionModeEnabled);
         holder.binding.chkAlarmSelected.setOnTouchListener((v, event) -> {
             View par = ((View) v.getParent().getParent());
@@ -149,7 +148,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
                     selectedAlarmIds.add(alarm.alarmId);
                     return;
                 }
-                selectedIndexes.remove(position);
+                selectedIndexes.remove(Integer.valueOf(position));
                 selectedAlarmIds.remove(alarm.alarmId);
                 if(selectedIndexes.isEmpty()){
                     setIsInSelectionMode(false);
@@ -179,6 +178,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
     private void updateStoredAlarmFromDatabase(int position, StoredAlarm alarm) {
         MainDatabase.getInstance(context).getStoredAlarmDao().getById(alarm.alarmId).subscribe(storedAlarm -> {
             storedAlarms.set(position, storedAlarm);
+            notifyItemChanged(position);
         }).dispose();
     }
 
@@ -241,6 +241,10 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
                 }
             }
         }
+    }
+
+    public void setHorizontalPadding(Integer padding) {
+        horizontalPadding = padding;
     }
 
     public void removeSelectedAlarmIds() {
@@ -306,6 +310,14 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         this.elevatedBackground = elevatedBackground;
     }
 
+    private final Runnable periodicEntryUpdateTask = new Runnable() {
+        @Override
+        public void run() {
+            new Handler().postDelayed(periodicEntryUpdateTask, 60000);
+            notifyItemRangeChanged(0, getItemCount());
+        }
+    };
+
     public static class MainViewHolderAlarms extends RecyclerView.ViewHolder {
         List<TextView> weekdays;
         EntryAlarmBinding binding;
@@ -326,7 +338,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
             );
         }
 
-        public void hideControls(){
+        public void hideControls() {
             binding.chkAlarmSelected.setVisibility(View.GONE);
             binding.swtAlarmActive.setVisibility(View.GONE);
             controlsHidden = true;

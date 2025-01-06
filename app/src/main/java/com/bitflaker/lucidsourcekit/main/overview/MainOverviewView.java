@@ -94,6 +94,7 @@ public class MainOverviewView extends Fragment {
         });
         binding.rcvActiveAlarms.setAdapter(adapterAlarms);
         binding.rcvActiveAlarms.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.rcvActiveAlarms.setItemAnimator(null);
         db.getStoredAlarmDao().getAllActive().subscribe(storedAlarms -> {
             adapterAlarms.setData(storedAlarms);
             setNoActiveAlarmsMessageVisible(storedAlarms.isEmpty());

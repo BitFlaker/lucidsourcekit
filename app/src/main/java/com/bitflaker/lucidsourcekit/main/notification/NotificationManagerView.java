@@ -51,6 +51,7 @@ public class NotificationManagerView extends AppCompatActivity {
     private RecyclerViewAdapterNotificationCategories rcvaNotificationCategories;
     private MainDatabase db;
     private ActivityNotificationManagerBinding binding;
+    private BottomSheetDialog categorySettingsBottomSheet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,17 +248,18 @@ public class NotificationManagerView extends AppCompatActivity {
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent data = result.getData();
-//                    String categoryId = data.getStringExtra("CATEGORY_ID");
-//                    int obfuscationTypeId = data.getIntExtra("OBFUSCATION_TYPE_ID", 0);
-//                    compliantNotificationCountSettings.setText(String.format(Locale.ENGLISH, "%d", db.getNotificationMessageDao().getCountOfMessagesForCategoryAndObfuscationType(categoryId, obfuscationTypeId).blockingGet()));
-//                    totalNotificationCountSettings.setText("/ " + db.getNotificationMessageDao().getCountOfMessagesForCategory(categoryId).blockingGet());
+                    String categoryId = data.getStringExtra("CATEGORY_ID");
+                    if (categorySettingsBottomSheet != null && categorySettingsBottomSheet.isShowing()) {
+                        TextView counter = categorySettingsBottomSheet.findViewById(R.id.txt_messages_count);
+                        counter.setText(String.format(Locale.getDefault(), "%d", db.getNotificationMessageDao().getCountOfMessagesForCategory(categoryId).blockingGet()));
+                    }
                 }
             });
 
     private void createAndShowBottomSheetConfigurator(NotificationCategory category) {
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogStyle);
         SheetNotificationSettingsBinding sBinding = SheetNotificationSettingsBinding.inflate(getLayoutInflater());
-        bottomSheetDialog.setContentView(sBinding.getRoot());
+        categorySettingsBottomSheet = new BottomSheetDialog(this, R.style.BottomSheetDialogStyle);
+        categorySettingsBottomSheet.setContentView(sBinding.getRoot());
 
         DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
 
@@ -270,11 +272,11 @@ public class NotificationManagerView extends AppCompatActivity {
         category.setEnabled(customDailyNotificationsCount > 0);
 
         sBinding.txtNotificationCount.setText(customDailyNotificationsCount == 0 ? "None" : String.format(Locale.getDefault(), "%d", customDailyNotificationsCount));
+        sBinding.txtMessagesCount.setText(String.format(Locale.getDefault(), "%d", db.getNotificationMessageDao().getCountOfMessagesForCategory(category.getId()).blockingGet()));
 
         sBinding.txtNotificationTimeFrom.setText(tf.format(notificationsTimeFrom.getTime()));
         sBinding.txtNotificationTimeTo.setText(tf.format(notificationsTimeTo.getTime()));
 
-//        sBinding.imgNotificationSettingsIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(), category.getDrawable(), getTheme()));
         sBinding.txtNotificationSettingsHeading.setText(category.getItemHeading());
 
         sBinding.crdNotificationTimeFrom.setOnClickListener(e -> {
@@ -327,10 +329,10 @@ public class NotificationManagerView extends AppCompatActivity {
                 category.setEnabled(false);
             }
             db.getNotificationCategoryDao().update(category).blockingAwait();
-            bottomSheetDialog.dismiss();
+            categorySettingsBottomSheet.dismiss();
             rcvaNotificationCategories.notifyCategoryChanged(category);
             AlarmHandler.scheduleNextNotification(this).blockingSubscribe();
         });
-        bottomSheetDialog.show();
+        categorySettingsBottomSheet.show();
     }
 }

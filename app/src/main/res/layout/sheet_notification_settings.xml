@@ -201,9 +201,13 @@
                 android:id="@+id/txt_notification_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
                 android:text="4"
                 android:textSize="16sp"
                 android:textColor="?attr/primaryTextColor"
+                android:background="@drawable/rounded_rectangle_medium"
+                android:backgroundTint="?attr/colorSurfaceContainer"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -261,6 +265,21 @@
                 app:layout_constraintStart_toEndOf="@+id/img_notification_messages"
                 app:layout_constraintTop_toBottomOf="@+id/txt_title_notification_messages"
                 app:layout_constraintWidth_percent="0.6" />
+
+            <TextView
+                android:id="@+id/txt_messages_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:text="29"
+                android:textSize="16sp"
+                android:textColor="?attr/primaryTextColor"
+                android:background="@drawable/rounded_rectangle_medium"
+                android:backgroundTint="?attr/colorSurfaceContainer"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 

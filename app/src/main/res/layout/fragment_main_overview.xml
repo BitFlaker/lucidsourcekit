@@ -70,15 +70,15 @@
                     app:layout_constraintEnd_toStartOf="@+id/ll_qa_lockscreen">
 
                     <com.google.android.material.button.MaterialButton
-                        style="@style/Widget.Material3.Button.IconButton.Outlined"
+                        style="@style/Widget.Material3.Button.IconButton.Filled"
                         android:id="@+id/btn_qa_notifications"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:padding="18dp"
+                        android:backgroundTint="?attr/colorSurfaceContainer"
                         app:cornerRadius="16dp"
                         app:icon="@drawable/round_notifications_24"
                         app:rippleColor="?attr/colorSurfaceContainerHighest"
-                        app:strokeColor="?attr/colorSurfaceContainerHighest"
                         app:iconTint="?attr/colorOnSurfaceVariant"/>
 
                     <TextView
@@ -87,7 +87,7 @@
                         android:layout_marginTop="2dp"
                         android:textSize="12sp"
                         android:text="Notifications"
-                        android:textColor="?attr/secondaryTextColor" />
+                        android:textColor="?attr/tertiaryTextColor" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -101,14 +101,14 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.button.MaterialButton
-                        style="@style/Widget.Material3.Button.IconButton.Outlined"
+                        style="@style/Widget.Material3.Button.IconButton.Filled"
                         android:id="@+id/btn_qa_lockscreen"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:padding="18dp"
+                        android:backgroundTint="?attr/colorSurfaceContainer"
                         app:cornerRadius="16dp"
                         app:icon="@drawable/rounded_screen_lock_portrait_24"
-                        app:strokeColor="?attr/colorSurfaceContainerHighest"
                         app:rippleColor="?attr/colorSurfaceContainerHighest"
                         app:iconTint="?attr/colorOnSurfaceVariant" />
 
@@ -118,7 +118,7 @@
                         android:layout_marginTop="2dp"
                         android:text="Lockscreen"
                         android:textSize="12sp"
-                        android:textColor="?attr/secondaryTextColor" />
+                        android:textColor="?attr/tertiaryTextColor" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -132,15 +132,15 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.button.MaterialButton
-                        style="@style/Widget.Material3.Button.IconButton.Outlined"
+                        style="@style/Widget.Material3.Button.IconButton.Filled"
                         android:id="@+id/btn_qa_rc_reminder"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:padding="18dp"
+                        android:backgroundTint="?attr/colorSurfaceContainer"
                         app:cornerRadius="16dp"
                         app:icon="@drawable/round_history_edu_24"
                         app:rippleColor="?attr/colorSurfaceContainerHighest"
-                        app:strokeColor="?attr/colorSurfaceContainerHighest"
                         app:iconTint="?attr/colorOnSurfaceVariant" />
 
                     <TextView
@@ -149,7 +149,7 @@
                         android:layout_marginTop="2dp"
                         android:text="Questionnaire"
                         android:textSize="12sp"
-                        android:textColor="?attr/secondaryTextColor" />
+                        android:textColor="?attr/tertiaryTextColor" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -163,15 +163,15 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.button.MaterialButton
-                        style="@style/Widget.Material3.Button.IconButton.Outlined"
+                        style="@style/Widget.Material3.Button.IconButton.Filled"
                         android:id="@+id/btn_qa_more"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:padding="18dp"
+                        android:backgroundTint="?attr/colorSurfaceContainer"
                         app:cornerRadius="16dp"
                         app:icon="@drawable/rounded_more_horiz_24"
                         app:rippleColor="?attr/colorSurfaceContainerHighest"
-                        app:strokeColor="?attr/colorSurfaceContainerHighest"
                         app:iconTint="?attr/colorOnSurfaceVariant" />
 
                     <TextView
@@ -180,7 +180,7 @@
                         android:layout_marginTop="2dp"
                         android:text="More"
                         android:textSize="12sp"
-                        android:textColor="?attr/secondaryTextColor" />
+                        android:textColor="?attr/tertiaryTextColor" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -234,7 +234,7 @@
                         android:layout_marginBottom="48dp"
                         android:text="No active alarms set"
                         android:textColor="?attr/tertiaryTextColor"
-                        android:textSize="12sp"
+                        android:textSize="14sp"
                         android:textAlignment="center"
                         android:visibility="gone"/>
 
@@ -242,7 +242,8 @@
                         android:id="@+id/rcv_active_alarms"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="50dp"
+                        android:layout_marginBottom="32dp"
+                        android:paddingTop="6dp"
                         android:overScrollMode="never"
                         android:nestedScrollingEnabled="false"/>
                 </com.google.android.material.card.MaterialCardView>
@@ -304,11 +305,8 @@
                 android:layout_marginBottom="32dp"
                 android:layout_marginHorizontal="20dp"
                 android:visibility="gone"
-                app:contentPadding="16dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainer"
-                app:strokeWidth="0dp"
-                app:cardCornerRadius="@dimen/cardRadius"
-                app:cardElevation="@dimen/cardElevationRegular">
+                app:strokeColor="?attr/colorSurfaceContainerHighest"
+                style="@style/LSK.MaterialCardView.Outlined">
 
                 <TextView
                     android:id="@+id/txt_no_remember_entry"

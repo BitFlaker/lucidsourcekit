@@ -65,7 +65,6 @@
                     android:layout_marginHorizontal="8dp"
                     android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@+id/spdo_notifications_delivered">
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView

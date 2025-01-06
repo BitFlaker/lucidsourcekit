@@ -294,7 +294,7 @@
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="24dp"
                 android:visibility="gone"
-                app:strokeColor="?attr/colorOutlineVariant"
+                app:strokeColor="?attr/colorSurfaceContainerHighest"
                 style="@style/LSK.MaterialCardView.Outlined">
 
                 <TextView

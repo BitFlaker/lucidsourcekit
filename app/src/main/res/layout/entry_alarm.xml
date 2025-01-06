@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/crd_alarm"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -12,12 +13,26 @@
     app:cardBackgroundColor="?attr/colorSurface">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_alarm_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="20dp"
-        android:paddingTop="18dp"
-        android:paddingBottom="18dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
         android:paddingEnd="20dp">
+
+        <TextView
+            android:id="@+id/txt_alarm_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="4d 15h 23m"
+            android:textColor="?attr/tertiaryTextColor"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ll_action_container"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
             android:id="@+id/txt_alarms_time_prim"
@@ -25,8 +40,8 @@
             android:layout_height="wrap_content"
             android:text="02:15"
             android:textColor="?attr/primaryTextColor"
-            android:textSize="26sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/ll_weekdays_container"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,8 +49,10 @@
             android:id="@+id/txt_alarms_time_sec"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginBottom="3dp"
             android:text="AM"
-            android:textColor="?attr/secondaryTextColor"
+            android:textColor="?attr/primaryTextColor"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/txt_alarms_time_prim"
             app:layout_constraintStart_toEndOf="@+id/txt_alarms_time_prim" />
@@ -44,50 +61,32 @@
             android:id="@+id/txt_alarms_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
             android:layout_gravity="center_horizontal"
-            android:fontFamily="sans-serif"
             android:text="First REM-Period Alarm"
-            android:textColor="?attr/primaryTextColor"
-            android:textSize="16sp"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintEnd_toStartOf="@+id/ll_action_container"
-            app:layout_constraintStart_toEndOf="@+id/txt_alarms_time_sec"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/txt_alarms_weekdays_active"/>
-
-        <TextView
-            android:id="@+id/txt_alarms_weekdays_active"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Mo, Tu, Fr, Su"
-            android:textColor="?attr/secondaryTextColor"
+            android:textColor="?attr/tertiaryTextColor"
             android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="@+id/txt_alarms_title"
-            app:layout_constraintStart_toStartOf="@+id/txt_alarms_title"
-            app:layout_constraintTop_toBottomOf="@+id/txt_alarms_title"
-            app:layout_constraintBottom_toTopOf="@+id/ll_weekdays_container"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/ll_weekdays_container"
+            app:layout_constraintTop_toBottomOf="@+id/ll_weekdays_container"
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <LinearLayout
             android:id="@+id/ll_weekdays_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:alpha="0.5"
+            android:layout_marginStart="1dp"
             android:divider="@drawable/divider_small"
             android:orientation="horizontal"
             android:showDividers="middle"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/txt_alarms_title"
-            app:layout_constraintStart_toStartOf="@+id/txt_alarms_title"
-            app:layout_constraintTop_toBottomOf="@+id/txt_alarms_weekdays_active">
+            app:layout_constraintBottom_toTopOf="@+id/txt_alarms_title"
+            app:layout_constraintStart_toStartOf="@+id/txt_alarms_time_prim"
+            app:layout_constraintTop_toBottomOf="@+id/txt_alarms_time_prim">
 
             <TextView
                 android:id="@+id/txt_alarms_week_mo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-thin"
                 android:text="Mo"
                 android:textColor="?attr/tertiaryTextColor"
                 android:textSize="12sp" />
@@ -96,7 +95,6 @@
                 android:id="@+id/txt_alarms_week_tu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-thin"
                 android:text="Tu"
                 android:textColor="?attr/tertiaryTextColor"
                 android:textSize="12sp" />
@@ -121,7 +119,6 @@
                 android:id="@+id/txt_alarms_week_fr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-thin"
                 android:text="Fr"
                 android:textColor="?attr/tertiaryTextColor"
                 android:textSize="12sp" />
@@ -138,7 +135,6 @@
                 android:id="@+id/txt_alarms_week_su"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-thin"
                 android:text="Su"
                 android:textColor="?attr/tertiaryTextColor"
                 android:textSize="12sp" />

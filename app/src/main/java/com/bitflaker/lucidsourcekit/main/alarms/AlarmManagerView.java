@@ -115,6 +115,7 @@ public class AlarmManagerView extends AppCompatActivity {
         }, cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 1000);
 
         adapterAlarms = new RecyclerViewAdapterAlarms(this, new ArrayList<>());
+        adapterAlarms.setHorizontalPadding(Tools.dpToPx(this, 8));
         adapterAlarms.setOnSelectionModeStateChangedListener(new RecyclerViewAdapterAlarms.OnSelectionModeStateChanged() {
             @Override
             public void onSelectionModeEntered() {

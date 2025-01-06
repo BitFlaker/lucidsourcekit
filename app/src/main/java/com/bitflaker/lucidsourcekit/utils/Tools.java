@@ -534,4 +534,18 @@ public class Tools {
         }
         System.exit(0);
     }
+
+    public static String formatTimeLeft(long milliseconds) {
+        long minutesToAlarm = (long) Math.ceil(milliseconds / 60000.0);
+        long days = minutesToAlarm / 60L / 24L;
+        long hours = minutesToAlarm / 60L - days * 24L;
+        long minutes = minutesToAlarm - days * 24L * 60L - hours * 60L;
+        if (days != 0) {
+            return String.format(Locale.getDefault(), "%dd %dh %dm", days, hours, minutes);
+        }
+        if (hours != 0) {
+            return String.format(Locale.getDefault(), "%dh %dm", hours, minutes);
+        }
+        return String.format(Locale.getDefault(), "%dm", minutes);
+    }
 }
