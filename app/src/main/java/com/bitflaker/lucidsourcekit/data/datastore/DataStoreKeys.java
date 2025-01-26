@@ -44,9 +44,10 @@ public class DataStoreKeys {
     // Notifications
     public static final Preferences.Key<Boolean> NOTIFICATION_PAUSED_ALL = PreferencesKeys.booleanKey("NOTIFICATION_PAUSED_ALL");
     public static final Preferences.Key<String> NOTIFICATION_NEXT_CATEGORY = PreferencesKeys.stringKey("NOTIFICATION_NEXT_CATEGORY");
+    public static final Preferences.Key<Boolean> NOTIFICATION_RC_REMINDER_FULL_SCREEN = PreferencesKeys.booleanKey("NOTIFICATION_RC_REMINDER_FULL_SCREEN");
 
     // Default settings values
-    public static final HashMap<Preferences.Key<?>, Object> DEFAULT_VALUES = new HashMap<Preferences.Key<?>, Object>() {{
+    public static final HashMap<Preferences.Key<?>, Object> DEFAULT_VALUES = new HashMap<>() {{
         this.put(LANGUAGE, "en");
         this.put(FIRST_OPEN_LATEST_DAY, 0L);
         this.put(APP_OPEN_STREAK, 0L);
@@ -72,6 +73,7 @@ public class DataStoreKeys {
         this.put(AUTHENTICATION_USE_BIOMETRICS, false);
         this.put(NOTIFICATION_PAUSED_ALL, false);
         this.put(NOTIFICATION_NEXT_CATEGORY, "NONE");
+        this.put(NOTIFICATION_RC_REMINDER_FULL_SCREEN, false);
         this.put(APP_SETUP_FINISHED, false);
     }};
 }

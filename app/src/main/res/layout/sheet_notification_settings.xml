@@ -207,7 +207,7 @@
                 android:textSize="16sp"
                 android:textColor="?attr/primaryTextColor"
                 android:background="@drawable/rounded_rectangle_medium"
-                android:backgroundTint="?attr/colorSurfaceContainer"
+                android:backgroundTint="?attr/colorSurfaceContainerHigh"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -276,7 +276,81 @@
                 android:textSize="16sp"
                 android:textColor="?attr/primaryTextColor"
                 android:background="@drawable/rounded_rectangle_medium"
-                android:backgroundTint="?attr/colorSurfaceContainer"
+                android:backgroundTint="?attr/colorSurfaceContainerHigh"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- TODO: Show a configuration button which allows to configure the three words
+               as well as the time to display the full screen animation for and/or if
+               you have to press (e.g. the volume down key) to close it -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/crd_full_screen_notification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="0dp"
+        app:strokeWidth="0dp"
+        app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+        app:layout_constraintTop_toBottomOf="@+id/crd_notification_messages">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="16dp"
+            android:layout_marginHorizontal="24dp">
+
+            <ImageView
+                android:id="@+id/img_full_screen_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/rounded_open_in_full_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="?attr/primaryTextColor" />
+
+            <TextView
+                android:id="@+id/txt_title_full_screen_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:text="Fullscreen notification"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium"
+                app:layout_constraintBottom_toTopOf="@id/txt_description_full_screen_notification"
+                app:layout_constraintStart_toEndOf="@+id/img_full_screen_notification"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/txt_description_full_screen_notification"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="24dp"
+                android:text="Attention grabbing text animation when the screen is off"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/swt_full_screen_notification"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@+id/img_full_screen_notification"
+                app:layout_constraintTop_toBottomOf="@+id/txt_title_full_screen_notification"
+                app:layout_constraintWidth_percent="0.6" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/swt_full_screen_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:clickable="false"
+                android:textColor="?attr/primaryTextColor"
+                android:textOff="Off"
+                android:textOn="On"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -296,5 +370,5 @@
         app:iconPadding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/crd_notification_messages" />
+        app:layout_constraintTop_toBottomOf="@+id/crd_full_screen_notification" />
 </androidx.constraintlayout.widget.ConstraintLayout>

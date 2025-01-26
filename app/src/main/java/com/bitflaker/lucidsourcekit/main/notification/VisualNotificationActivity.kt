@@ -1,7 +1,11 @@
 package com.bitflaker.lucidsourcekit.main.notification
 
+import android.app.KeyguardManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.bitflaker.lucidsourcekit.databinding.ActivityVisualNotificationBinding
@@ -19,6 +23,18 @@ class VisualNotificationActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityVisualNotificationBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+            val keyguardManager = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
+            keyguardManager.requestDismissKeyguard(this, null)
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        } else {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+
+        Tools.makeStatusBarTransparent(this)
 
         // Configure gradient circle
         binding.gcCircle.setMaskColor(Color.BLACK)
@@ -39,5 +55,13 @@ class VisualNotificationActivity : AppCompatActivity() {
 
         // Start gradient circle animation
         binding.gcCircle.startAnimation(stripeAnimationDelay + circleAnimationDelay)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            finish()
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
     }
 }

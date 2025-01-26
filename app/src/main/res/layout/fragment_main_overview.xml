@@ -87,7 +87,7 @@
                         android:layout_marginTop="2dp"
                         android:textSize="12sp"
                         android:text="Notifications"
-                        android:textColor="?attr/tertiaryTextColor" />
+                        android:textColor="?attr/secondaryTextColor" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -118,7 +118,7 @@
                         android:layout_marginTop="2dp"
                         android:text="Lockscreen"
                         android:textSize="12sp"
-                        android:textColor="?attr/tertiaryTextColor" />
+                        android:textColor="?attr/secondaryTextColor" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -149,7 +149,7 @@
                         android:layout_marginTop="2dp"
                         android:text="Questionnaire"
                         android:textSize="12sp"
-                        android:textColor="?attr/tertiaryTextColor" />
+                        android:textColor="?attr/secondaryTextColor" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -180,7 +180,7 @@
                         android:layout_marginTop="2dp"
                         android:text="More"
                         android:textSize="12sp"
-                        android:textColor="?attr/tertiaryTextColor" />
+                        android:textColor="?attr/secondaryTextColor" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 

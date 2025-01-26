@@ -52,6 +52,7 @@ public class NotificationManagerView extends AppCompatActivity {
     private MainDatabase db;
     private ActivityNotificationManagerBinding binding;
     private BottomSheetDialog categorySettingsBottomSheet;
+    private DataStoreManager dsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +132,7 @@ public class NotificationManagerView extends AppCompatActivity {
         long delay = (60 - curr.get(Calendar.SECOND) - 1) * 1000 + 1000 - curr.get(Calendar.MILLISECOND);
         new Handler().postDelayed(deliveryStatusUpdated, delay);
 
-        DataStoreManager dsManager = DataStoreManager.getInstance();
+        dsManager = DataStoreManager.getInstance();
         binding.txtNotificationsDisabledInfo.setVisibility(dsManager.getSetting(DataStoreKeys.NOTIFICATION_PAUSED_ALL).blockingFirst() ? View.VISIBLE : View.GONE);
         binding.btnMoreNotificationOptions.setOnClickListener(e -> {
             PopupMenu popup = new PopupMenu(new ContextThemeWrapper(this, R.style.Theme_LucidSourceKit_PopupMenu), binding.btnMoreNotificationOptions);
@@ -271,6 +272,13 @@ public class NotificationManagerView extends AppCompatActivity {
         customDailyNotificationsCount = category.getDailyNotificationCount();
         category.setEnabled(customDailyNotificationsCount > 0);
 
+        if (category.getId().equals("RCR")) {
+            sBinding.swtFullScreenNotification.setChecked(dsManager.getSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN).blockingFirst());
+        }
+        else {
+            sBinding.crdFullScreenNotification.setVisibility(View.GONE);
+        }
+
         sBinding.txtNotificationCount.setText(customDailyNotificationsCount == 0 ? "None" : String.format(Locale.getDefault(), "%d", customDailyNotificationsCount));
         sBinding.txtMessagesCount.setText(String.format(Locale.getDefault(), "%d", db.getNotificationMessageDao().getCountOfMessagesForCategory(category.getId()).blockingGet()));
 
@@ -321,6 +329,11 @@ public class NotificationManagerView extends AppCompatActivity {
             intent.putExtra("OBFUSCATION_TYPE_ID", category.getObfuscationTypeId());
             notificationMessageEditorLauncher.launch(intent);
         });
+
+        sBinding.crdFullScreenNotification.setOnClickListener(e -> {
+            sBinding.swtFullScreenNotification.setChecked(!sBinding.swtFullScreenNotification.isChecked());
+        });
+
         sBinding.btnSave.setOnClickListener(e -> {
             // TODO save changes
             int compliantMessageCount = db.getNotificationMessageDao().getCountOfMessagesForCategoryAndObfuscationType(category.getId(), category.getObfuscationTypeId()).blockingGet();
@@ -329,6 +342,9 @@ public class NotificationManagerView extends AppCompatActivity {
                 category.setEnabled(false);
             }
             db.getNotificationCategoryDao().update(category).blockingAwait();
+            if (category.getId().equals("RCR")) {
+                dsManager.updateSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN, sBinding.swtFullScreenNotification.isChecked()).blockingSubscribe();
+            }
             categorySettingsBottomSheet.dismiss();
             rcvaNotificationCategories.notifyCategoryChanged(category);
             AlarmHandler.scheduleNextNotification(this).blockingSubscribe();

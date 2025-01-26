@@ -7,7 +7,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.display.DisplayManager;
 import android.util.Log;
+import android.view.Display;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
@@ -18,6 +20,7 @@ import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarmDetails;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationMessage;
+import com.bitflaker.lucidsourcekit.main.notification.VisualNotificationActivity;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys;
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager;
@@ -66,40 +69,59 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private static void showNotificationIfEnabled(Context context, String notificationCategoryId) {
         MainDatabase db = MainDatabase.getInstance(context);
-        db.getNotificationCategoryDao().getAll().blockingSubscribe(notificationCategories -> {
-            NotificationOrderManager notificationOrderManager = NotificationOrderManager.load(notificationCategories);
-            if(notificationOrderManager.hasNotifications()) {
-                if (!DataStoreManager.isInitialized()) {
-                    DataStoreManager.initialize(context);
-                }
-                boolean allNotificationsPaused = DataStoreManager.getInstance().getSetting(DataStoreKeys.NOTIFICATION_PAUSED_ALL).blockingFirst();
-                NotificationScheduleData nsd = notificationOrderManager.getNextNotification();
-                boolean categoryFound = false, categoryEnabled = false;
-                for (NotificationCategory category : notificationCategories) {
-                    if(category.getId().equals(notificationCategoryId)) {
-                        categoryFound = true;
-                        categoryEnabled = category.isEnabled();
-                        break;
-                    }
-                }
-                if(categoryFound && categoryEnabled && !allNotificationsPaused) {
-                    showNotificationForCategory(context, notificationCategoryId);
-                }
-                AlarmHandler.scheduleNextNotification(context, nsd).blockingSubscribe();
+        List<NotificationCategory> categories = db.getNotificationCategoryDao().getAll().blockingGet();
+        NotificationOrderManager manager = NotificationOrderManager.load(categories);
+        if (manager.hasNotifications()) {
+            if (!DataStoreManager.isInitialized()) {
+                DataStoreManager.initialize(context);
             }
-        });
+
+            // Check if the desired notification category id is still enabled
+            boolean categoryEnabled = false;
+            for (NotificationCategory category : categories) {
+                if (category.getId().equals(notificationCategoryId)) {
+                    categoryEnabled = category.isEnabled();
+                    break;
+                }
+            }
+
+            // Only show the notification if notifications are not paused and the
+            // current notification's category is enabled
+            boolean allNotificationsPaused = DataStoreManager.getInstance().getSetting(DataStoreKeys.NOTIFICATION_PAUSED_ALL).blockingFirst();
+            if(categoryEnabled && !allNotificationsPaused) {
+                showNotificationForCategory(context, notificationCategoryId);
+            }
+
+            // Schedule next notification
+            NotificationScheduleData nsd = manager.getNextNotification();
+            AlarmHandler.scheduleNextNotification(context, nsd).blockingSubscribe();
+        }
     }
 
     public static void showNotificationForCategory(Context context, String notificationCategoryId) {
         MainDatabase db = MainDatabase.getInstance(context);
         db.getNotificationCategoryDao().getById(notificationCategoryId).subscribe(notificationCategory -> {
-            if(notificationCategory.isEnabled()) {
-                db.getNotificationCategoryDao().getById(notificationCategoryId).subscribe(notCat -> {
-                    db.getNotificationMessageDao().getAllOfCategoryAndObfuscationType(notCat.getId(), notCat.getObfuscationTypeId()).subscribe(messages -> {
-                        if(messages.size() == 0) {
-                            Log.e("LSC_NOTIFICATION", "No notification messages available for category " + notCat.getId() + " with obfuscation id " + notCat.getObfuscationTypeId());
+            if (notificationCategory.isEnabled()) {
+                db.getNotificationCategoryDao().getById(notificationCategoryId).subscribe(category ->
+                    db.getNotificationMessageDao().getAllOfCategoryAndObfuscationType(category.getId(), category.getObfuscationTypeId()).subscribe(messages -> {
+                        if (messages.isEmpty()) {
+                            Log.e("LSC_NOTIFICATION", "No notification messages available for category " + category.getId() + " with obfuscation id " + category.getObfuscationTypeId());
                             return;
                         }
+
+                        // In case the notification is a reality check reminder, show the full screen
+                        // notification if it is enabled and the screen is currently locked
+                        if (category.getId().equals("RCR")) {
+                            boolean fullScreenEnabled = DataStoreManager.getInstance().getSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN).blockingFirst();
+                            boolean screenOff = isScreenOff(context);
+                            if (fullScreenEnabled && screenOff) {
+                                Intent fullScreenNotification = new Intent(context, VisualNotificationActivity.class);
+                                fullScreenNotification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                                context.startActivity(fullScreenNotification);
+                            }
+                        }
+
+                        // Get message for category based on the notification weights and build it
                         NotificationMessage msg = getWeightedNotificationMessage(messages);
                         Notification builder = new NotificationCompat.Builder(context, notificationCategoryId)
                                 .setSmallIcon(R.drawable.icon_no_bg)
@@ -108,17 +130,28 @@ public class AlarmReceiver extends BroadcastReceiver {
                                 .setStyle(new NotificationCompat.BigTextStyle().bigText(msg.getMessage()))
                                 .setPriority(NotificationManager.IMPORTANCE_DEFAULT)
                                 .build();
-                        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                            return;
+
+                        // Show notification only when the permission for posting notifications is granted
+                        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                            int notifyId = Tools.getUniqueNotificationId(notificationCategoryId);
+                            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                            manager.cancel(notifyId);
+                            manager.notify(notifyId, builder);
                         }
-                        int notifyId = Tools.getUniqueNotificationId(notificationCategoryId);
-                        NotificationManager nMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                        nMgr.cancel(notifyId);
-                        nMgr.notify(notifyId, builder);
-                    }).dispose();
-                }).dispose();
+                    }).dispose()
+                ).dispose();
             }
         }).dispose();
+    }
+
+    private static boolean isScreenOff(Context context) {
+        DisplayManager dm = (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
+        for (Display display : dm.getDisplays()) {
+            if (display.getState() != Display.STATE_OFF) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static NotificationMessage getWeightedNotificationMessage(List<NotificationMessage> messages) {

@@ -21,15 +21,6 @@
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/flx_dj_tags_to_add"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:flexWrap="wrap"
-        app:justifyContent="center"
-        app:layout_constraintTop_toBottomOf="@+id/txt_recordings_list" />
-
     <AutoCompleteTextView
         android:id="@+id/txt_dj_tags_enter"
         android:layout_width="wrap_content"
@@ -38,10 +29,10 @@
         android:layout_gravity="center_horizontal"
         android:background="@drawable/rounded_spinner"
         android:backgroundTint="?attr/colorSurfaceContainerHigh"
-        android:hint="enter tag to add"
+        android:hint="Enter a tag"
         android:imeOptions="actionDone"
         android:inputType="textAutoComplete"
-        android:minWidth="100dp"
+        android:minWidth="200dp"
         android:minHeight="48dp"
         android:paddingLeft="20dp"
         android:paddingTop="5dp"
@@ -49,7 +40,16 @@
         android:paddingBottom="5dp"
         android:textColor="?attr/primaryTextColor"
         android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@+id/txt_recordings_list"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flx_dj_tags_to_add" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/flx_dj_tags_to_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:flexWrap="wrap"
+        app:justifyContent="center"
+        app:layout_constraintTop_toBottomOf="@+id/txt_dj_tags_enter" />
 </androidx.constraintlayout.widget.ConstraintLayout>
