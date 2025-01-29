@@ -4,6 +4,8 @@ import android.app.KeyguardManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.KeyEvent
 import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
@@ -55,6 +57,11 @@ class VisualNotificationActivity : AppCompatActivity() {
 
         // Start gradient circle animation
         binding.gcCircle.startAnimation(stripeAnimationDelay + circleAnimationDelay)
+
+        // Stop the activity automatically after some time
+        Handler(Looper.getMainLooper()).postDelayed({
+            finish()
+        }, 15000)   // TODO: Make this value adjustable / allow to disable the auto-close functionality
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

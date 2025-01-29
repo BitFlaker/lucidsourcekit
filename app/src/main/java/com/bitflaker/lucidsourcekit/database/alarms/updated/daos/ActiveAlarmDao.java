@@ -21,7 +21,8 @@ public interface ActiveAlarmDao {
     @Query("SELECT * FROM activealarm")
     Single<List<ActiveAlarm>> getAll();
 
-    @Query("SELECT ActiveAlarm.*, StoredAlarm.pattern, StoredAlarm.alarmId AS storedAlarmId FROM ActiveAlarm LEFT JOIN StoredAlarm ON ActiveAlarm.requestCode = StoredAlarm.requestCodeActiveAlarm WHERE ActiveAlarm.requestCode != -1")
+    // TODO: Fix ActiveAlarm entries existing without StoredAlarms
+    @Query("SELECT ActiveAlarm.*, StoredAlarm.pattern, StoredAlarm.alarmId AS storedAlarmId FROM StoredAlarm LEFT JOIN ActiveAlarm ON ActiveAlarm.requestCode = StoredAlarm.requestCodeActiveAlarm WHERE ActiveAlarm.requestCode != -1")
     Single<List<ActiveAlarmDetails>> getAllDetails();
 
     @Query("SELECT * FROM (SELECT t1.requestCode+1 AS Id FROM ActiveAlarm t1 WHERE NOT EXISTS(SELECT * FROM ActiveAlarm t2 WHERE t2.requestCode = t1.requestCode + 1 ) UNION SELECT 1 AS Id WHERE NOT EXISTS (SELECT * FROM ActiveAlarm t3 WHERE t3.requestCode = 1)) ot ORDER BY 1 LIMIT 1")

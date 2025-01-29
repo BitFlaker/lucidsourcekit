@@ -312,6 +312,7 @@ public class AlarmHandler {
             AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(context, AlarmReceiver.class);
             intent.putExtra("STORED_ALARM_ID", storedAlarmId);
+            var all = MainDatabase.getInstance(context).getStoredAlarmDao().getAll().blockingGet();
             MainDatabase.getInstance(context).getStoredAlarmDao().getById(storedAlarmId).blockingSubscribe(alarm -> {
                 if (alarm.requestCodeActiveAlarm != -1) {
                     final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarm.requestCodeActiveAlarm, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -348,7 +349,7 @@ public class AlarmHandler {
     public static void reEnableAlarmsIfNotRunning(Context context, List<ActiveAlarmDetails> alarms) {
         for (ActiveAlarmDetails alarm : alarms) {
             // skip the unreferenced alarm entry
-            if(alarm.requestCode == -1){
+            if (alarm.requestCode == -1) {
                 continue;
             }
 
