@@ -34,6 +34,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class MainOverviewView extends Fragment {
     private RecyclerViewAdapterAlarms adapterAlarms;
+    private OnRememberJournalEntryClicked mRememberJournalEntryClickedListener;
     private final ActivityResultCallback<ActivityResult> alarmCreationOrModificationCallback = result -> {
         if(result.getResultCode() == RESULT_OK) {
             Intent data = result.getData();
@@ -79,8 +80,10 @@ public class MainOverviewView extends Fragment {
             DreamJournalEntry entry = entries.get(0);
             generateRememberEntry(binding.djeRememberDream, entry);
             binding.djeRememberDream.crdJournalEntryCard.setOnClickListener(e -> {
-                // TODO: switch over to dream journal entries, scroll to this entry and click it to open the dream journal entry viewer
-                //       maybe allow as option not to scroll all the way to the entry but to just simply open it
+                if (mRememberJournalEntryClickedListener != null) {
+                    mRememberJournalEntryClickedListener.onEvent(entry);
+                }
+                // TODO: add setting not to smooth scroll to the entry and to just open it
             });
         }));
 
@@ -140,5 +143,13 @@ public class MainOverviewView extends Fragment {
     public void onDestroyView() {
         disposables.clear();
         super.onDestroyView();
+    }
+
+    public interface OnRememberJournalEntryClicked {
+        void onEvent(DreamJournalEntry entry);
+    }
+
+    public void setRememberJournalEntryClickedListener(OnRememberJournalEntryClicked listener) {
+        mRememberJournalEntryClickedListener = listener;
     }
 }

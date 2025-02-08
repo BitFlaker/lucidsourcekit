@@ -55,6 +55,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Stack;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -72,6 +73,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     private MediaPlayer mPlayer;
     private ImageButton currentPlayingImageButton;
     private OnEntryCountChanged entryCountChangedListener;
+    private Stack<Runnable> listChangedCallbacks;
 
     public RecyclerViewAdapterDreamJournal(Activity activity, DreamJournalView journalFragment, List<DreamJournalEntry> entries) {
         this.journalFragment = journalFragment;
@@ -84,6 +86,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         itemsBeforeFilter = null;
         currentSort = SortBy.Timestamp;
         isSortDescending = true;
+        listChangedCallbacks = new Stack<>();
         differ = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<>() {
             @Override
             public boolean areItemsTheSame(@NonNull DreamJournalEntry oldItem, @NonNull DreamJournalEntry newItem) {
@@ -98,6 +101,9 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         differ.submitList(entries);
         differ.addListListener((previousList, currentList) -> {
             notifyItemRangeChanged(0, currentList.size());
+            while (!listChangedCallbacks.isEmpty()) {
+                listChangedCallbacks.pop().run();
+            }
         });
     }
 
@@ -156,7 +162,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         return showEntryDate;
     }
 
-    private void viewDreamJournalEntry(DreamJournalEntry current) {
+    public void viewDreamJournalEntry(DreamJournalEntry current) {
         final BottomSheetDialog bsd = new BottomSheetDialog(context, R.style.BottomSheetDialogStyle);
         SheetJournalEntryBinding binding = SheetJournalEntryBinding.inflate(LayoutInflater.from(context));
         bsd.setContentView(binding.getRoot());
@@ -326,6 +332,11 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         return itemsCount;
     }
 
+    public int resetFilters(Runnable callback) {
+        listChangedCallbacks.push(callback);
+        return resetFilters();
+    }
+
     public void submitSortedEntries(SortBy sortBy, boolean descending) {
         submitSortedEntries(sortBy, descending, (Runnable) null);
     }
@@ -425,6 +436,10 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         lParams.setMargins(0, dp8 / 4, dp8 / 2, dp8 / 4);
         tag.setLayoutParams(lParams);
         return tag;
+    }
+
+    public int indexOfEntry(DreamJournalEntry entry) {
+        return differ.getCurrentList().indexOf(entry);
     }
 
     public enum Operation {

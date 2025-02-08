@@ -1,5 +1,7 @@
 package com.bitflaker.lucidsourcekit.main.dreamjournal;
 
+import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -18,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.data.enums.SortBy;
@@ -101,10 +105,17 @@ public class DreamJournalView extends Fragment {
     }
 
     private void setupResetFilterButton() {
-        binding.btnFilterOff.setOnClickListener(e -> {
-            binding.btnFilterOff.setVisibility(View.GONE);
-            handleItemCount(recyclerViewAdapterDreamJournal.resetFilters());
-        });
+        binding.btnFilterOff.setOnClickListener(e -> resetFilters());
+    }
+
+    private void resetFilters() {
+        binding.btnFilterOff.setVisibility(View.GONE);
+        handleItemCount(recyclerViewAdapterDreamJournal.resetFilters());
+    }
+
+    private void resetFilters(Runnable callback) {
+        binding.btnFilterOff.setVisibility(View.GONE);
+        handleItemCount(recyclerViewAdapterDreamJournal.resetFilters(callback));
     }
 
     private void setupFilterButton() {
@@ -123,8 +134,7 @@ public class DreamJournalView extends Fragment {
                         binding.btnFilterOff.setVisibility(View.VISIBLE);
                     }
                     else if (binding.btnFilterOff.getVisibility() == View.VISIBLE) {
-                        binding.btnFilterOff.setVisibility(View.GONE);
-                        handleItemCount(recyclerViewAdapterDreamJournal.resetFilters());
+                        resetFilters();
                     }
                     fd.dismiss();
                 });
@@ -216,6 +226,60 @@ public class DreamJournalView extends Fragment {
                 binding.recyclerView.scrollToPosition(insertedIndex);
             }
         });
+    }
+
+    public void openJournalEntry(DreamJournalEntry entry, boolean tryResetFilters) {
+        // Check if the entry complies with current filters otherwise reset filters
+        if (tryResetFilters && !entry.compliesWithFilter(recyclerViewAdapterDreamJournal.getCurrentFilter())) {
+            resetFilters(() -> openJournalEntry(entry, false));
+            return;
+        }
+
+        // Try to get the position of the entry
+        int entryPosition = recyclerViewAdapterDreamJournal.indexOfEntry(entry);
+
+        // If the entry cannot be found display error message and return
+        if (entryPosition == -1) {
+            Toast.makeText(getContext(), "Error finding journal entry", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Check if the position is already visible and open the entry if that is the case
+        RecyclerView.LayoutManager lm = binding.recyclerView.getLayoutManager();
+        if (lm instanceof LinearLayoutManager llm && isPositionVisible(llm, entryPosition)) {
+            openDreamJournalEntry(entryPosition, entry);
+            return;
+        }
+
+        // Scroll to position and open entry after scrolling finished
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == SCROLL_STATE_IDLE) {
+                    binding.recyclerView.removeOnScrollListener(this);
+                    openDreamJournalEntry(entryPosition, entry);
+                }
+            }
+        });
+        binding.recyclerView.smoothScrollToPosition(entryPosition);
+    }
+
+    private void openDreamJournalEntry(int entryPosition, DreamJournalEntry entry) {
+        RecyclerView.ViewHolder vh = binding.recyclerView.findViewHolderForLayoutPosition(entryPosition);
+        if (vh instanceof RecyclerViewAdapterDreamJournal.MainViewHolder mvh) {
+            mvh.binding.crdJournalEntryCard.setPressed(true);
+            binding.recyclerView.postOnAnimationDelayed(() -> {
+                mvh.binding.crdJournalEntryCard.setPressed(false);
+                recyclerViewAdapterDreamJournal.viewDreamJournalEntry(entry);
+            }, 192);
+        }
+    }
+
+    private boolean isPositionVisible(LinearLayoutManager layoutManager, int position) {
+        int firstVisiblePosition = layoutManager.findFirstVisibleItemPosition();
+        int lastVisiblePosition = layoutManager.findLastVisibleItemPosition();
+        return firstVisiblePosition <= position && position <= lastVisiblePosition;
     }
 
     public void showJournalCreatorWhenLoaded(@Nullable DreamJournalEntry.EntryType type) {

@@ -117,6 +117,12 @@ public class MainViewer extends AppCompatActivity {
             }
         }
 
+        // Add handler for click on remember journal entry
+        vwOverview.setRememberJournalEntryClickedListener(entry -> {
+            binding.tablayout.selectTab(binding.tablayout.getTabAt(vpAdapter.getTabIndex(PAGE_LOGGING)));
+            vwLogging.openJournalEntry(entry, true);
+        });
+
         // Remove the old application data backup only if the app is stable for at least 5 seconds
         new Handler().postDelayed(() -> {
             BackupTask.Companion.deleteOldBeforeImportBackup(this);
