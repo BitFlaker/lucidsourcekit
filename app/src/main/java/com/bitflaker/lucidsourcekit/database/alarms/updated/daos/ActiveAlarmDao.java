@@ -10,6 +10,7 @@ import androidx.room.Update;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarm;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarmDetails;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
+import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.resulttables.AlarmTimestamps;
 
 import java.util.List;
 
@@ -28,8 +29,8 @@ public interface ActiveAlarmDao {
     @Query("SELECT * FROM (SELECT t1.requestCode+1 AS Id FROM ActiveAlarm t1 WHERE NOT EXISTS(SELECT * FROM ActiveAlarm t2 WHERE t2.requestCode = t1.requestCode + 1 ) UNION SELECT 1 AS Id WHERE NOT EXISTS (SELECT * FROM ActiveAlarm t3 WHERE t3.requestCode = 1)) ot ORDER BY 1 LIMIT 1")
     Single<Integer> getFirstFreeRequestCode();
 
-    @Query("SELECT IFNULL((SELECT initialTime FROM ActiveAlarm WHERE requestCode != -1 ORDER BY initialTime ASC LIMIT 1), -1)")
-    Single<Long> getNextUpcomingAlarmTimestamp();
+    @Query("SELECT initialTime as alarmTimestamp, StoredAlarm.bedtimeTimestamp FROM ActiveAlarm LEFT JOIN StoredAlarm ON StoredAlarm.requestCodeActiveAlarm = requestCode WHERE requestCode != -1 ORDER BY initialTime ASC LIMIT 1")
+    Single<List<AlarmTimestamps>> getNextUpcomingAlarmTimestamp();
 
     @Update
     Completable update(ActiveAlarm alarm);
@@ -54,4 +55,7 @@ public interface ActiveAlarmDao {
 
     @Query("SELECT StoredAlarm.* FROM ActiveAlarm LEFT JOIN StoredAlarm ON ActiveAlarm.requestCode = StoredAlarm.requestCodeActiveAlarm WHERE initialTime = :alarmTime")
     Single<List<StoredAlarm>> getStoredAlarmByAlarmTime(long alarmTime);
+
+    @Query("DELETE FROM ActiveAlarm WHERE requestCode != -1")
+    Completable clear();
 }

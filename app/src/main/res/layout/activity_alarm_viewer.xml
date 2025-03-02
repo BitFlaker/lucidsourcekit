@@ -209,7 +209,7 @@
                     android:backgroundTint="?attr/colorSurface"
                     android:minWidth="56dp"
                     android:minHeight="56dp"
-                    android:src="@drawable/frequency_symbol"
+                    android:src="@drawable/rounded_planner_review_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

@@ -219,7 +219,7 @@ public class BinauralBeatsView extends Fragment {
 
         binding.lgBinauralTimeProgress.setBottomLineSpacing(10);
         binding.lgBinauralTimeProgress.setDrawGradient(true);
-        binding.lgBinauralTimeProgress.setGradientOpacity(0.25f);
+        binding.lgBinauralTimeProgress.setGradientOpacity(0.5f);
         binding.lgBinauralTimeProgress.setDrawProgressIndicator(false);
 
         String[] labels = new String[] { "β", "α", "θ", "δ" };

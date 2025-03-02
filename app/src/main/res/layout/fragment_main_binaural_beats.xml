@@ -157,7 +157,7 @@
                         android:id="@+id/txt_carrier_frequency"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawableTop="@drawable/frequency_symbol"
+                        android:drawableTop="@drawable/rounded_planner_review_24"
                         android:drawablePadding="8dp"
                         android:textSize="18sp"
                         android:text="No beat selected"

@@ -32,135 +32,99 @@
         android:layout_marginTop="6dp"
         android:orientation="vertical">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            app:cardBackgroundColor="?attr/colorSurface"
-            app:cardCornerRadius="@dimen/cardRadius"
-            app:strokeColor="?attr/colorSurfaceContainer"
-            app:strokeWidth="1dp">
+            android:layout_marginHorizontal="24dp">
+
+            <com.bitflaker.lucidsourcekit.views.SleepClock
+                android:id="@+id/slp_clock"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
+                android:id="@+id/ll_bedtime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="25dp"
-                android:layout_marginBottom="15dp"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                app:layout_constraintHorizontal_bias="0.85"
+                app:layout_constraintBottom_toTopOf="@+id/ll_alarm"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/slp_clock"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <com.bitflaker.lucidsourcekit.views.SleepClock
-                    android:id="@+id/slp_clock"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_gravity="center" />
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/txt_time_to_next_bedtime"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="25dp"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:text="03h 22m"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="18sp" />
 
-                    <androidx.legacy.widget.Space
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Next alarm"
-                            android:textAllCaps="true"
-                            android:textColor="?attr/secondaryTextColor"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/txt_next_alarm_time"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="14:03"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="18sp" />
-                    </LinearLayout>
-
-                    <androidx.legacy.widget.Space
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Alarm in"
-                            android:textAllCaps="true"
-                            android:textColor="?attr/secondaryTextColor"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/txt_next_alarm_time_to"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="15h 21m"
-                            android:textColor="?attr/primaryTextColor"
-                            android:textSize="18sp" />
-                    </LinearLayout>
-
-                    <androidx.legacy.widget.Space
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1" />
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/txt_title_bedtime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center_vertical"
+                    android:drawableStart="@drawable/rounded_bedtime_16"
+                    android:drawablePadding="4dp"
+                    android:drawableTint="?attr/secondaryTextColor"
+                    android:text="Time to bedtime"
+                    android:textAllCaps="true"
+                    android:textColor="?attr/secondaryTextColor"
+                    android:textSize="11sp" />
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/txt_current_time"
+            <LinearLayout
+                android:id="@+id/ll_alarm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-thin"
-                android:text="03:05 PM"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="24sp" />
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/ll_bedtime"
+                app:layout_constraintTop_toBottomOf="@+id/ll_bedtime">
 
-            <TextView
-                android:id="@+id/txt_current_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="06.06.2022"
-                android:textColor="?attr/tertiaryTextColor"
-                android:textSize="14sp" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/txt_time_to_next_alarm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="08h 19m"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toTopOf="@+id/txt_title_alarm"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_title_bedtime"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <TextView
+                    android:id="@+id/txt_title_alarm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center_vertical"
+                    android:drawableStart="@drawable/rounded_alarm_16"
+                    android:drawablePadding="4dp"
+                    android:drawableTint="?attr/secondaryTextColor"
+                    android:text="Time to alarm"
+                    android:textAllCaps="true"
+                    android:textColor="?attr/secondaryTextColor"
+                    android:textSize="11sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/txt_time_to_next_alarm" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcv_list_alarms"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:overScrollMode="never"
-            android:layout_marginTop="15dp" />
+            android:layout_marginTop="20dp" />
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

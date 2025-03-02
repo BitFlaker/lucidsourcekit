@@ -2,6 +2,7 @@ package com.bitflaker.lucidsourcekit.main.alarms;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Paint;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -94,8 +95,8 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         }
 
         MainDatabase.getInstance(context).getActiveAlarmDao().getById(alarm.requestCodeActiveAlarm).blockingSubscribe(nextAlarmTimeStamp -> {
-            long duration = nextAlarmTimeStamp.initialTime - System.currentTimeMillis();
-            holder.binding.txtAlarmIn.setText(Tools.formatTimeLeft(duration));
+            long duration = nextAlarmTimeStamp.initialTime + 60 * 1000 - System.currentTimeMillis();
+            holder.binding.txtAlarmIn.setText(Tools.getTimeSpanStringZeroed(duration));
         });
 
         holder.binding.txtAlarmsTimePrim.setText(alarmTime);
@@ -130,7 +131,14 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         @ColorInt int colorPrimary = Tools.getAttrColor(R.attr.secondaryTextColor, context.getTheme());
         for (int i = 0; i < alarm.pattern.length; i++) {
             TextView dayIndicator = holder.weekdays.get((i + alarm.pattern.length - 1) % alarm.pattern.length);
-            dayIndicator.setTextColor(alarm.pattern[i] ? colorPrimary : colorTertiary);
+            if (alarm.pattern[i]) {
+                dayIndicator.setTextColor(colorPrimary);
+                dayIndicator.setPaintFlags(dayIndicator.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            }
+            else {
+                dayIndicator.setTextColor(colorTertiary);
+                dayIndicator.setPaintFlags(dayIndicator.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
+            }
         }
         holder.setSelectionModeActive(isInSelectionMode && selectionModeEnabled);
         holder.binding.chkAlarmSelected.setOnTouchListener((v, event) -> {

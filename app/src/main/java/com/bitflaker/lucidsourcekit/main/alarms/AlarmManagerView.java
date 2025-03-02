@@ -15,23 +15,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
+import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.resulttables.AlarmTimestamps;
 import com.bitflaker.lucidsourcekit.databinding.ActivityAlarmManagerBinding;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 public class AlarmManagerView extends AppCompatActivity {
     private RecyclerViewAdapterAlarms adapterAlarms;
     private boolean isInSelectionMode = false;
-    private long nextAlarmTimeStamp;
+    private long nextAlarmTimeStamp, nextBedtimeTimeStamp;
+    private MainDatabase db;
     private ActivityAlarmManagerBinding binding;
 
     private final ActivityResultCallback<ActivityResult> alarmCreationOrModificationCallback = result -> {
@@ -55,6 +54,7 @@ public class AlarmManagerView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        db = MainDatabase.getInstance(AlarmManagerView.this);
         binding = ActivityAlarmManagerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -72,7 +72,6 @@ public class AlarmManagerView extends AppCompatActivity {
                         .setMessage("Do you really want to delete the selected alarms?")
                         .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
                             List<Long> alarmIds = adapterAlarms.getSelectedStoredAlarmIds();
-                            MainDatabase db = MainDatabase.getInstance(this);
                             db.getStoredAlarmDao().getAllById(alarmIds).blockingSubscribe(allAlarms -> {
                                 // TODO: also support one time only alarms
                                 // cancel all scheduled alarms
@@ -89,30 +88,6 @@ public class AlarmManagerView extends AppCompatActivity {
                         .show();
             }
         });
-
-        DateFormat tf = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-        DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
-        binding.txtCurrentTime.setText(tf.format(Calendar.getInstance().getTime()));
-        binding.txtCurrentDate.setText(df.format(Calendar.getInstance().getTime()));
-
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.SECOND, cal.get(Calendar.SECOND) + 1);
-        cal.set(Calendar.MILLISECOND, 0);
-
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Calendar curr = Calendar.getInstance();
-                String timeS = tf.format(curr.getTime());
-                String dateS = df.format(curr.getTime());
-
-                runOnUiThread(() -> {
-                    binding.txtCurrentTime.setText(timeS);
-                    binding.txtCurrentDate.setText(dateS);
-                });
-            }
-        }, cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 1000);
 
         adapterAlarms = new RecyclerViewAdapterAlarms(this, new ArrayList<>());
         adapterAlarms.setHorizontalPadding(Tools.dpToPx(this, 8));
@@ -141,40 +116,51 @@ public class AlarmManagerView extends AppCompatActivity {
         adapterAlarms.setOnEntryActiveStateChangedListener((alarmData, checked) -> fetchNextAlarmAndDisplay(false));
         binding.rcvListAlarms.setAdapter(adapterAlarms);
         binding.rcvListAlarms.setLayoutManager(new LinearLayoutManager(this));
-        MainDatabase db = MainDatabase.getInstance(AlarmManagerView.this);
         db.getStoredAlarmDao().getAll().subscribe(storedAlarms -> {
             adapterAlarms.setData(storedAlarms);
         }).dispose();
+        updateMarkers();
         fetchNextAlarmAndDisplay(false);
     }
 
+    private void updateMarkers() {
+        db.getStoredAlarmDao().getAll().subscribe(alarms -> {
+            ArrayList<Long> activeAlarmTimes = new ArrayList<>();
+            ArrayList<Long> inactiveAlarmTimes = new ArrayList<>();
+            for (var alarm : alarms) {
+                if (alarm.isAlarmActive) activeAlarmTimes.add(alarm.alarmTimestamp);
+                else inactiveAlarmTimes.add(alarm.alarmTimestamp);
+            }
+            binding.slpClock.setMarkersHigh(activeAlarmTimes);
+            binding.slpClock.setMarkersLow(inactiveAlarmTimes);
+        }).dispose();
+    }
+
     private void fetchNextAlarmAndDisplay(boolean triggeredByAlarm) {
-        // TODO: support AM/PM
-        MainDatabase.getInstance(AlarmManagerView.this).getActiveAlarmDao().getAll().blockingSubscribe(all -> {
-            MainDatabase.getInstance(AlarmManagerView.this).getActiveAlarmDao().getNextUpcomingAlarmTimestamp().blockingSubscribe(nextAlarmTimeStamp -> {
-                // TODO: also say which weekday as otherwise it seems as if it would go off today at that time
-                if(triggeredByAlarm && this.nextAlarmTimeStamp != nextAlarmTimeStamp){
-                    adapterAlarms.alarmWentOff(nextAlarmTimeStamp);
+        updateMarkers();
+        db.getActiveAlarmDao().getNextUpcomingAlarmTimestamp().blockingSubscribe(timestamps -> {
+            if (timestamps.isEmpty()) {
+                nextAlarmTimeStamp = -1;
+                nextBedtimeTimeStamp = -1;
+                if (nextTimeToCalcTask != null) {
+                    nextTimeToCalcTask.cancel();
+                    nextTimeToCalcTask = null;
                 }
-                this.nextAlarmTimeStamp = nextAlarmTimeStamp;
-                if(nextAlarmTimeStamp != -1) {
-                    if(nextTimeToCalcTask == null){
-                        startTimeToAlarmUpdater();
-                    }
-                    Calendar calAlarm = Calendar.getInstance();
-                    calAlarm.setTimeInMillis(nextAlarmTimeStamp);
-                    binding.txtNextAlarmTimeTo.setText(String.format(Locale.ENGLISH, "%02d:%02d", calAlarm.get(Calendar.HOUR_OF_DAY), calAlarm.get(Calendar.MINUTE)));
-                    setNextTimeTo(nextAlarmTimeStamp);
+                binding.txtTimeToNextBedtime.setText("--");
+                binding.txtTimeToNextAlarm.setText("--");
+            }
+            else {
+                AlarmTimestamps current = timestamps.get(0);
+                if (triggeredByAlarm && this.nextAlarmTimeStamp != current.alarmTimestamp()) {
+                    adapterAlarms.alarmWentOff(current.alarmTimestamp());
                 }
-                else {
-                    if(nextTimeToCalcTask != null) {
-                        nextTimeToCalcTask.cancel();
-                        nextTimeToCalcTask = null;
-                    }
-                    binding.txtNextAlarmTime.setText("--");
-                    binding.txtNextAlarmTimeTo.setText("--");
+                nextAlarmTimeStamp = current.alarmTimestamp();
+                nextBedtimeTimeStamp = current.bedtimeTimestamp();
+                if (nextTimeToCalcTask == null) {
+                    startTimeToAlarmUpdater();
                 }
-            });
+                setNextTimeTo();
+            }
         });
     }
 
@@ -189,22 +175,30 @@ public class AlarmManagerView extends AppCompatActivity {
         nextTimeToCalcTask = new TimerTask() {
             @Override
             public void run() {
-                setNextTimeTo(nextAlarmTimeStamp);
+                setNextTimeTo();
             }
         };
         new Timer().schedule(nextTimeToCalcTask, calDelay.getTimeInMillis() - Calendar.getInstance().getTimeInMillis(), 60*1000);
     }
 
-    private void setNextTimeTo(Long nextAlarmTimeStamp) {
+    private void setNextTimeTo() {
         // adding 60000 to always round up to the next minute (as when only e.g. 50 seconds are left for
         // the alarm to go off, it would show 00:00:00, but with the added 60000ms it will show 00:00:01)
-        long diff = (nextAlarmTimeStamp + (60 * 1000)) - Calendar.getInstance().getTimeInMillis();
-        long days = TimeUnit.MILLISECONDS.toDays(diff);
-        long hours = TimeUnit.MILLISECONDS.toHours(diff) - TimeUnit.DAYS.toHours(days);
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(diff) - TimeUnit.DAYS.toMinutes(days) - TimeUnit.HOURS.toMinutes(hours);
+        long diffAlarmTime = nextAlarmTimeStamp + 60 * 1000 - Calendar.getInstance().getTimeInMillis();
+        long timeOfDayAlarm = Tools.getTimeOfDayMillis(nextAlarmTimeStamp);
+        long bedtimeDiff = nextBedtimeTimeStamp <= timeOfDayAlarm ? timeOfDayAlarm - nextBedtimeTimeStamp : timeOfDayAlarm + 1000 * 60 * 60 * 24 - nextBedtimeTimeStamp;
+        long diffBedtime = diffAlarmTime - bedtimeDiff;
+        long bedtimeDirection = Long.signum(diffBedtime);
+        diffBedtime *= bedtimeDirection;
+        String bedtimePostfix = bedtimeDirection < 0 ? " ago" : "";
+
+        String timeToAlarm = Tools.getTimeSpanStringZeroed(diffAlarmTime);
+        String timeToBedtime = Tools.getTimeSpanStringZeroed(diffBedtime) + bedtimePostfix;
+
         runOnUiThread(() -> {
-            binding.txtNextAlarmTimeTo.setText(String.format(Locale.ENGLISH, "%02d:%02d:%02d", (int)days, (int)hours, (int)minutes));
-            if(days == 0 && hours == 0 && minutes == 0) {
+            binding.txtTimeToNextAlarm.setText(timeToAlarm);
+            binding.txtTimeToNextBedtime.setText(timeToBedtime);
+            if (timeToAlarm.isEmpty()) {
                 // Fetching time of next alarm with a delay of 20ms as the rescheduling takes some time
                 // and the fetched data might still be the same
                 new Handler().postDelayed(() -> fetchNextAlarmAndDisplay(true), 15);

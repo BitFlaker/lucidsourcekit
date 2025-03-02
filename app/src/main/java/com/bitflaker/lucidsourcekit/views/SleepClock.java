@@ -26,12 +26,14 @@ import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.data.Brainwaves;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class SleepClock extends View {
+    private static long DAY_DURATION_MILLIS = 24 * 60 * 60 * 1000;
     private float lineWidth;
     private float innerRadiusOffset = 20;
     private float timeSetterButtonRadius = Tools.dpToPx(getContext(), 18);
@@ -63,13 +65,7 @@ public class SleepClock extends View {
     private SweepGradient gradientShaderREM = null;
     private SweepGradient gradientShader = null;
     private Matrix matrixSweepRotationShader = null;
-    private int slightElevated2x;
-    private int colorSecondary;
-    private int colorPrimary;
-    private int colorSecondaryContainer;
-    private int colorPrimaryContainer;
-    private int colorOnPrimary;
-    private int colorOnSecondary;
+    private int slightElevated2x, colorSurfaceContainer, colorSecondary, colorSecondaryText, colorPrimary, colorSecondaryContainer, colorPrimaryContainer, colorOnPrimary, colorOnSecondary;
     private int[] colorsREMRotator;
     private int[] colorsRotator;
     private Vibrator vib;
@@ -88,23 +84,26 @@ public class SleepClock extends View {
     private OnFirstDrawFinished mFirstDrawFinishedListener;
     private boolean drewAtLeastOnce = false;
     private Handler mainHandler;
+    private Long[] markersLow, markersHigh;
 
     public SleepClock(Context context, AttributeSet as){
         super(context, as);
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         slightElevated2x = Tools.getAttrColor(R.attr.colorSurfaceContainerHigh, getContext().getTheme());
+        colorSecondaryText = Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme());
         colorSecondary = Tools.getAttrColor(R.attr.colorTertiary, getContext().getTheme());
         colorPrimary = Tools.getAttrColor(R.attr.colorPrimary, getContext().getTheme());
+        colorSurfaceContainer = Tools.getAttrColor(R.attr.colorSurfaceContainer, getContext().getTheme());
         colorSecondaryContainer = Tools.getAttrColor(R.attr.colorTertiaryContainer, getContext().getTheme());
         colorPrimaryContainer = Tools.getAttrColor(R.attr.colorPrimaryContainer, getContext().getTheme());
         colorOnPrimary = Tools.getAttrColor(R.attr.colorOnPrimaryContainer, getContext().getTheme());
         colorOnSecondary = Tools.getAttrColor(R.attr.colorOnSecondaryContainer, getContext().getTheme());
         vib = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        dataLinePaint.setColor(Tools.getAttrColor(R.attr.colorSurfaceContainer, getContext().getTheme()));
+        dataLinePaint.setColor(colorSurfaceContainer);
         dataLinePaint.setAntiAlias(true);
         dataLinePaint.setStyle(Paint.Style.STROKE);
         dataLinePaint.setStrokeWidth(Tools.dpToPx(getContext(), 2));
-        dataLinePaintStroker.setColor(Tools.getAttrColor(R.attr.colorSurfaceContainer, getContext().getTheme()));
+        dataLinePaintStroker.setColor(colorSurfaceContainer);
         dataLinePaintStroker.setAntiAlias(true);
         dataLinePaintStroker.setStyle(Paint.Style.STROKE);
         dataLinePaintStroker.setStrokeWidth(Tools.dpToPx(getContext(), 2));
@@ -153,12 +152,12 @@ public class SleepClock extends View {
         float currentAngleOffset = drawTimeSetterButtons ? (float)(angleOffset/2.0f) : (float)angleOffset;
 
         if(getWidth() > getHeight()) {
-            setMinimumWidth((int) getWidth());
-            setMinimumHeight((int) getWidth());
+            setMinimumWidth(getWidth());
+            setMinimumHeight(getWidth());
         }
         else {
-            setMinimumWidth((int) getHeight());
-            setMinimumHeight((int) getHeight());
+            setMinimumWidth(getHeight());
+            setMinimumHeight(getHeight());
         }
         if(drawTimeSetterButtons) { innerRadiusOffset = 25; }
 
@@ -179,10 +178,6 @@ public class SleepClock extends View {
                 float sweepRad = (float) (angleBedtime < angleAlarm ? angleAlarm - angleBedtime : 2 * Math.PI + (angleAlarm - angleBedtime));
                 float endPerc = (float) (sweepRad / (2.0 * Math.PI));
                 calculateTimes();
-//                float hours = (float) Math.max(0, ((24 * sweepRad) / (2 * Math.PI)) - (minutesToFallAsleep / 60.0f));
-//                hours -= (((hours % ((int)hours)) * 60) % ((int)((hours % ((int)hours)) * 60)))/60.0f;
-//                minutesToSleep = (int) (hours > 1 ? ((hours % ((int) hours)) * 60) : hours * 60);
-//                hoursToSleep = (int) hours;
                 gradientShaderREM = new SweepGradient(getWidth() / 2.0f, getHeight() / 2.0f, colorsREMRotator, new float[]{0.0f, 0.0f, endPerc, endPerc});
                 gradientShader = new SweepGradient(getWidth() / 2.0f, getHeight() / 2.0f, colorsRotator, new float[]{0.0f, 0.0f, endPerc, endPerc});
                 gradientShaderREM.setLocalMatrix(matrixSweepRotationShader);
@@ -199,7 +194,7 @@ public class SleepClock extends View {
         if(drawTimeSetterButtons) {
             innerRadius -= timeSetterButtonRadius + digitToButtonSpace;
         }
-        float totalAngle = (float)(startAngle + currentAngleOffset);
+        float totalAngle = startAngle + currentAngleOffset;
         int hCount = drawTimeSetterButtons ? 25 : 13;
         for (int i = 1; i < hCount; i++) {
             float xPos = (float)(Math.cos(totalAngle) * innerRadius);
@@ -269,12 +264,42 @@ public class SleepClock extends View {
             Bitmap alarm = Tools.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_access_alarm_24, getContext().getTheme()), isAlarmWithinREM ? colorOnSecondary : colorOnPrimary, Tools.dpToPx(getContext(), 16));
             canvas.drawBitmap(alarm, xAlarm-alarm.getWidth()/2.0f, yAlarm-alarm.getHeight()/2.0f, dataLinePaint);
         }
-        if(!drewAtLeastOnce){
+
+        drawMarkers(canvas, offset, markersLow, false);
+        drawMarkers(canvas, offset, markersHigh, true);
+
+        if (!drewAtLeastOnce) {
             drewAtLeastOnce = true;
-            if(mFirstDrawFinishedListener != null){
+            if (mFirstDrawFinishedListener != null) {
                 mFirstDrawFinishedListener.onEvent();
             }
         }
+    }
+
+    private void drawMarkers(Canvas canvas, float offset, Long[] markers, boolean isActive) {
+        if (markers == null) return;
+        int initialColor = dataLinePaint.getColor();
+        Paint.Cap initialCap = dataLinePaint.getStrokeCap();
+        dataLinePaint.setColor(isActive ? colorSecondaryText : colorSurfaceContainer);
+        dataLinePaint.setStrokeCap(Paint.Cap.ROUND);
+        float currentAngleOffset = drawTimeSetterButtons ? (float)(angleOffset/2.0f) : (float)angleOffset;
+        final float radius = getWidth() * 0.5f;
+        for (long marker : markers) {
+            float angle = startAngle + (marker / 3_600_000f) * currentAngleOffset;
+            float length = Tools.dpToPx(getContext(), 6);
+            float offsetRadius = radius - offset;
+            float angleCos = (float) Math.cos(angle);
+            float angleSin = (float) Math.sin(angle);
+
+            float lineStartX = radius + angleCos * (offsetRadius - length);
+            float lineStartY = radius + angleSin * (offsetRadius - length);
+            float lineEndX = radius + angleCos * offsetRadius;
+            float lineEndY = radius + angleSin * offsetRadius;
+
+            canvas.drawLine(lineStartX, lineStartY, lineEndX, lineEndY, dataLinePaint);
+        }
+        dataLinePaint.setColor(initialColor);
+        dataLinePaint.setStrokeCap(initialCap);
     }
 
     @Override
@@ -498,6 +523,16 @@ public class SleepClock extends View {
 
     public void setDrawTimeSetterButtons(boolean drawTimeSetterButtons) {
         this.drawTimeSetterButtons = drawTimeSetterButtons;
+    }
+
+    public void setMarkersHigh(ArrayList<Long> markers) {
+        markersHigh = markers.toArray(new Long[0]);
+        invalidate();
+    }
+
+    public void setMarkersLow(ArrayList<Long> markers) {
+        markersLow = markers.toArray(new Long[0]);
+        invalidate();
     }
 
     public interface OnBedtimeChanged {

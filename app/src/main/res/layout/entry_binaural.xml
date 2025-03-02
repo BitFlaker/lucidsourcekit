@@ -61,9 +61,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:textColor="?attr/secondaryTextColor"
                     android:text="635Hz"
-                    android:drawableStart="@drawable/frequency_symbol"
-                    android:drawablePadding="5dp"/>
+                    android:drawableTint="?attr/secondaryTextColor"
+                    android:drawableStart="@drawable/rounded_planner_review_16"
+                    android:drawablePadding="8dp"/>
             </LinearLayout>
 
             <TextView

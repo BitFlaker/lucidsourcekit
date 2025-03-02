@@ -21,7 +21,6 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bitflaker.lucidsourcekit.R;
@@ -34,14 +33,12 @@ import com.bitflaker.lucidsourcekit.databinding.SheetNotificationSettingsBinding
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 public class NotificationManagerView extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 772;
@@ -266,9 +263,9 @@ public class NotificationManagerView extends AppCompatActivity {
 
         // Setting saved values
         notificationsTimeFrom = Calendar.getInstance();
-        notificationsTimeFrom.setTimeInMillis(Tools.getTimeFromMidnight(category.getTimeFrom()));
+        notificationsTimeFrom.setTimeInMillis(Tools.getTimeFromCurrentMidnight(category.getTimeFrom()));
         notificationsTimeTo = Calendar.getInstance();
-        notificationsTimeTo.setTimeInMillis(Tools.getTimeFromMidnight(category.getTimeTo()));
+        notificationsTimeTo.setTimeInMillis(Tools.getTimeFromCurrentMidnight(category.getTimeTo()));
         customDailyNotificationsCount = category.getDailyNotificationCount();
         category.setEnabled(customDailyNotificationsCount > 0);
 

@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.core.Maybe;
 
@@ -446,7 +447,13 @@ public class Tools {
         return timeOfDayMillis;
     }
 
-    public static long getTimeFromMidnight(long timeInMillis) {
+    public static long getTimeOfDayMillis(long timeInMillis) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timeInMillis);
+        return getTimeOfDayMillis(cal);
+    }
+
+    public static long getTimeFromCurrentMidnight(long timeInMillis) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(getMidnightTime() + timeInMillis);
         return cal.getTimeInMillis();
@@ -535,17 +542,35 @@ public class Tools {
         System.exit(0);
     }
 
-    public static String formatTimeLeft(long milliseconds) {
-        long minutesToAlarm = (long) Math.ceil(milliseconds / 60000.0);
-        long days = minutesToAlarm / 60L / 24L;
-        long hours = minutesToAlarm / 60L - days * 24L;
-        long minutes = minutesToAlarm - days * 24L * 60L - hours * 60L;
-        if (days != 0) {
-            return String.format(Locale.getDefault(), "%dd %dh %dm", days, hours, minutes);
+    public static String getTimeSpanStringZeroed(long milliseconds) {
+        String timeSpan = getTimeSpanString(milliseconds);
+        if (timeSpan.isEmpty()) {
+            return "00m";
         }
-        if (hours != 0) {
-            return String.format(Locale.getDefault(), "%dh %dm", hours, minutes);
+        return timeSpan;
+    }
+
+    public static String getTimeSpanString(long milliseconds) {
+        long days = TimeUnit.MILLISECONDS.toDays(milliseconds);
+        long hours = TimeUnit.MILLISECONDS.toHours(milliseconds) - TimeUnit.DAYS.toHours(days);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(milliseconds) - TimeUnit.DAYS.toMinutes(days) - TimeUnit.HOURS.toMinutes(hours);
+
+        StringBuilder sb = new StringBuilder();
+        ArrayList<Integer> args = new ArrayList<>();
+        if (days > 0) {
+            sb.append("%02dd");
+            args.add((int)days);
         }
-        return String.format(Locale.getDefault(), "%dm", minutes);
+        if (hours > 0 || !args.isEmpty()) {
+            if (!args.isEmpty()) sb.append(' ');
+            sb.append("%02dh");
+            args.add((int)hours);
+        }
+        if (minutes > 0 || !args.isEmpty()) {
+            if (!args.isEmpty()) sb.append(' ');
+            sb.append("%02dm");
+            args.add((int)minutes);
+        }
+        return String.format(Locale.ENGLISH, sb.toString(), args.toArray());
     }
 }
