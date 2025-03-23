@@ -30,7 +30,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LucidSourceKit.Default">
         <activity
-            android:name=".main.notification.VisualNotificationActivity"
+            android:name=".main.notification.visual.VisualNotificationActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

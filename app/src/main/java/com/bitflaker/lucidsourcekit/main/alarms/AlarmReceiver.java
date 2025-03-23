@@ -20,7 +20,7 @@ import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarmDetails;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationMessage;
-import com.bitflaker.lucidsourcekit.main.notification.VisualNotificationActivity;
+import com.bitflaker.lucidsourcekit.main.notification.visual.VisualNotificationActivity;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys;
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager;

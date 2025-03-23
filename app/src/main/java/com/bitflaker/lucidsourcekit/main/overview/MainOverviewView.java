@@ -26,7 +26,7 @@ import com.bitflaker.lucidsourcekit.main.alarms.AlarmManagerView;
 import com.bitflaker.lucidsourcekit.main.alarms.RecyclerViewAdapterAlarms;
 import com.bitflaker.lucidsourcekit.main.dreamjournal.RecyclerViewAdapterDreamJournal;
 import com.bitflaker.lucidsourcekit.main.notification.NotificationManagerView;
-import com.bitflaker.lucidsourcekit.main.notification.VisualNotificationActivity;
+import com.bitflaker.lucidsourcekit.main.notification.visual.VisualNotificationActivity;
 
 import java.util.ArrayList;
 

@@ -45,6 +45,8 @@ public class DataStoreKeys {
     public static final Preferences.Key<Boolean> NOTIFICATION_PAUSED_ALL = PreferencesKeys.booleanKey("NOTIFICATION_PAUSED_ALL");
     public static final Preferences.Key<String> NOTIFICATION_NEXT_CATEGORY = PreferencesKeys.stringKey("NOTIFICATION_NEXT_CATEGORY");
     public static final Preferences.Key<Boolean> NOTIFICATION_RC_REMINDER_FULL_SCREEN = PreferencesKeys.booleanKey("NOTIFICATION_RC_REMINDER_FULL_SCREEN");
+    public static final Preferences.Key<byte[]> NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_DIGITS = PreferencesKeys.byteArrayKey("NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_DIGITS");
+    public static final Preferences.Key<Long> NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_TIME = PreferencesKeys.longKey("NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_TIME");
 
     // Default settings values
     public static final HashMap<Preferences.Key<?>, Object> DEFAULT_VALUES = new HashMap<>() {{
@@ -74,6 +76,8 @@ public class DataStoreKeys {
         this.put(NOTIFICATION_PAUSED_ALL, false);
         this.put(NOTIFICATION_NEXT_CATEGORY, "NONE");
         this.put(NOTIFICATION_RC_REMINDER_FULL_SCREEN, false);
+        this.put(NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_DIGITS, new byte[0]);
+        this.put(NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_TIME, 0L);
         this.put(APP_SETUP_FINISHED, false);
     }};
 }
