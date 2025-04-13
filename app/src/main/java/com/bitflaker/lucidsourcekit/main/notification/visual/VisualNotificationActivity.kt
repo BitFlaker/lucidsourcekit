@@ -9,7 +9,7 @@ import android.os.Looper
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View.GONE
-import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +17,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys
@@ -25,7 +24,6 @@ import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager
 import com.bitflaker.lucidsourcekit.databinding.ActivityVisualNotificationBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.fadeIn
-import com.bitflaker.lucidsourcekit.utils.fadeOut
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Timer
@@ -33,9 +31,6 @@ import java.util.TimerTask
 import kotlin.random.Random
 
 // TODO: Refactor this code
-// TODO: Add indicator (like progress bar at bottom / top of display) to show how long you still have to hold the screen for
-// TODO: Fix lag and shader issue with text when fading out gradient circle
-// TODO: Add a close button when after displaying next sequence
 
 class VisualNotificationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityVisualNotificationBinding
@@ -48,6 +43,7 @@ class VisualNotificationActivity : AppCompatActivity() {
     private val timeToReadText: Long = 3000
     private var discardHandler: DelayedTaskHandler? = null
     private var confirmationTimer: Timer? = Timer()
+    private var progressUpdateTimer: Timer? = Timer()
     private val targetConfirmationDigitCount: Int = 2
     private val currentDigits = DataStoreManager.getInstance().getSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_DIGITS).blockingFirst()
     private var isInConfirmationScreen = false
@@ -97,8 +93,13 @@ class VisualNotificationActivity : AppCompatActivity() {
         binding.gcCircle.startAnimation(stripeAnimationDelay + circleAnimationDelay)
 
         // Stop the activity automatically after some time
-        discardHandler = DelayedTaskHandler({ runOnUiThread { finish() }}, 5000)   // TODO: Make this value adjustable / allow to disable the auto-close functionality
+        discardHandler = DelayedTaskHandler({ runOnUiThread { finish() }}, 15000)   // TODO: Make this value adjustable / allow to disable the auto-close functionality
         discardHandler?.start()
+
+        // Configure close button click appearing after displaying next sequence
+        binding.btnCloseViewer.setOnClickListener {
+            runOnUiThread { finish() }
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -108,6 +109,18 @@ class VisualNotificationActivity : AppCompatActivity() {
                 val openTime = System.currentTimeMillis() - activityStartTime
                 val additionalDelay = (stripeAnimationDelay + circleAnimationDelay + circleAnimationDuration - openTime).coerceAtLeast(0L)
                 val delay = additionalDelay + timeToReadText
+                val startTime = System.currentTimeMillis()
+
+                // Configure timer for progress bar update below
+                progressUpdateTimer = Timer()
+                progressUpdateTimer?.schedule(object : TimerTask() {
+                    override fun run() {
+                        val current = System.currentTimeMillis() - startTime
+                        binding.piHoldProgress.setProgress(100f * current / delay.toFloat())
+                    }
+                }, 0L, 4L)
+
+                // Configure timer for showing confirmation screen
                 confirmationTimer = Timer()
                 confirmationTimer?.schedule(object : TimerTask() {
                     override fun run() {
@@ -118,17 +131,21 @@ class VisualNotificationActivity : AppCompatActivity() {
                 }, delay)
             }
             else if (event.action == MotionEvent.ACTION_UP) {
+                progressUpdateTimer?.cancel()
                 confirmationTimer?.cancel()
                 discardHandler?.resume()
+                binding.piHoldProgress.setProgress(0f)
             }
         }
         return super.onTouchEvent(event)
     }
 
     private fun showConfirmation() {
+        progressUpdateTimer?.cancel()
         discardHandler?.cancel()
         isInConfirmationScreen = true
-        binding.gcCircle.fadeOut()
+        binding.gcCircle.reverseAnimation()
+        binding.piHoldProgress.visibility = GONE
 
         // Check if there are any digits yet, otherwise directly generate some
         val generatedToday = DataStoreManager.getInstance().getSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_TIME).blockingFirst() < Tools.getMidnightTime()
@@ -161,17 +178,7 @@ class VisualNotificationActivity : AppCompatActivity() {
         keypadAdapter.onButtonClick = {
             if (it == '#') {
                 digitAdapter.confirm()
-                binding.rcvKeypad.fadeOut()
                 generateNextDigit(currentDigits)
-                Handler(Looper.getMainLooper()).postDelayed({
-                    runOnUiThread {
-                        binding.rcvKeypad.visibility = INVISIBLE
-                        val constraintSet = ConstraintSet()
-                        constraintSet.clone(binding.main)
-                        binding.rcvKeypad.visibility = GONE
-                        TransitionManager.beginDelayedTransition(binding.main, ChangeBounds())
-                    }
-                }, 400)
             }
             else {
                 digitAdapter.setCurrentValue(it)
@@ -185,7 +192,7 @@ class VisualNotificationActivity : AppCompatActivity() {
                 binding.rcvNumFieldContainer.fadeIn()
                 binding.rcvKeypad.fadeIn()
             }
-        }, 200)
+        }, 1000)
     }
 
     private fun generateNextDigit(digits: ByteArray) {
@@ -203,15 +210,33 @@ class VisualNotificationActivity : AppCompatActivity() {
             }
             DataStoreManager.getInstance().updateSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_DIGITS, newDigits).blockingSubscribe()
             DataStoreManager.getInstance().updateSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_TIME, System.currentTimeMillis()).blockingSubscribe()
-            Handler(Looper.getMainLooper()).postDelayed({
-                runOnUiThread {
-                    binding.txtNextSequence.text = newDigits.joinToString("")
-                    val constraintSet = ConstraintSet()
-                    constraintSet.clone(binding.main)
-                    binding.llNextSequenceContainer.fadeIn()
-                    TransitionManager.beginDelayedTransition(binding.main, ChangeBounds())
-                }
-            }, 400)
+            runOnUiThread {
+                binding.rcvKeypad.visibility = GONE
+                binding.txtNextSequence.text = newDigits.joinToString("")
+                binding.llNextSequenceContainer.alpha = 0f
+                binding.llNextSequenceContainer.visibility = VISIBLE
+                binding.btnCloseViewer.alpha = 0f
+                binding.btnCloseViewer.visibility = VISIBLE
+
+                val rootView = binding.main
+                val constraintSet = ConstraintSet()
+                constraintSet.clone(rootView)
+                constraintSet.connect(binding.rcvNumFieldContainer.id, ConstraintSet.BOTTOM, binding.btnCloseViewer.id, ConstraintSet.TOP)
+                TransitionManager.beginDelayedTransition(rootView)
+                constraintSet.applyTo(rootView)
+
+                // For some reason the keypad does not disappear therefore set adapter
+                // to null to force it to be removed (TODO: Fix this workaround)
+                binding.rcvKeypad.adapter = null
+
+                // Fade in next sequence after some delay
+                Handler(Looper.getMainLooper()).postDelayed({
+                    runOnUiThread {
+                        binding.llNextSequenceContainer.fadeIn()
+                        binding.btnCloseViewer.fadeIn()
+                    }
+                }, 400)
+            }
         }
     }
 

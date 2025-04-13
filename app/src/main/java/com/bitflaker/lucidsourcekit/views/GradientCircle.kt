@@ -108,7 +108,6 @@ class GradientCircle @JvmOverloads constructor(
         }
         circleAnimator = ValueAnimator.ofFloat(startMaskOffset, 1f).apply {
             duration = 750
-            repeatMode = REVERSE
             interpolator = AccelerateDecelerateInterpolator()
             addUpdateListener { animation ->
                 currentScale = animation.animatedValue as Float
@@ -119,6 +118,7 @@ class GradientCircle @JvmOverloads constructor(
         circleAnimator.doOnEnd {
             textFadeInAnimator.start()
             textAnimator.start()
+            circleAnimator.removeAllListeners()
         }
     }
 
@@ -263,6 +263,17 @@ class GradientCircle @JvmOverloads constructor(
 
     fun stopAnimation() {
         circleAnimator.cancel()
+    }
+
+    fun reverseAnimation() {
+        textFadeInAnimator.duration /= 3
+        textFadeInAnimator.reverse()
+        textFadeInAnimator.doOnEnd {
+            textAnimator.pause()
+            circleAnimator.duration /= 2
+            circleAnimator.reverse()
+            circleAnimator.repeatCount = 0
+        }
     }
 
     /*+**********************************

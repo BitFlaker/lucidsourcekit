@@ -84,4 +84,27 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_close_viewer"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Close"
+        android:textColor="?attr/secondaryTextColor"
+        android:visibility="gone"
+        app:rippleColor="?attr/colorOutlineVariant"
+        app:backgroundTint="?attr/colorSurfaceContainer"
+        app:iconTint="?attr/secondaryTextColor"
+        app:icon="@drawable/rounded_close_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rcv_num_field_container" />
+
+    <com.bitflaker.lucidsourcekit.views.ProgressIndicator
+        android:id="@+id/pi_hold_progress"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
