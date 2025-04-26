@@ -125,6 +125,7 @@ public class MainOverviewView extends Fragment {
         rememberDreamHolder.setSpecialDreamIcons(entry.getDreamTypes());
         rememberDreamHolder.setTitleAndTextContent(entry.journalEntry.title, entry.journalEntry.description);
         rememberDreamHolder.setRecordingsCount(entry.audioLocations.size());
+        rememberDreamHolder.removeQuestionnaire();
         RecyclerViewAdapterDreamJournal.MainViewHolder.setTagList(binding.llTagsHolder, rememberDreamHolder.calculateAdditionalContainerPadding(), 1, entry.getStringTags(), getActivity());
     }
 

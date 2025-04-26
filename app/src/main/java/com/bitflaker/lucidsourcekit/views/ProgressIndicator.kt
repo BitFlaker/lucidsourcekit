@@ -21,7 +21,7 @@ class ProgressIndicator : View {
     }
 
     private fun setup() {
-        paint.color = Tools.getAttrColor(R.attr.colorSurfaceContainerHigh, context.theme)
+        paint.color = Tools.getAttrColor(R.attr.colorOutlineVariant, context.theme)
         paint.strokeCap = Paint.Cap.ROUND
     }
 

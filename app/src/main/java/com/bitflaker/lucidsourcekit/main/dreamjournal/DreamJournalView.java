@@ -49,12 +49,12 @@ public class DreamJournalView extends Fragment {
     private int sortBy = 0;
 
     private final List<SortEntry> sortEntryValues = List.of(
-            new SortEntry("timestamp - newest first", SortBy.Timestamp, true),
-            new SortEntry("timestamp - oldest first", SortBy.Timestamp, false),
-            new SortEntry("title - A to Z", SortBy.Title, true),
-            new SortEntry("title - Z to A", SortBy.Title, false),
-            new SortEntry("description - A to Z", SortBy.Description, true),
-            new SortEntry("description - Z to A", SortBy.Description, false)
+            new SortEntry("Timestamp - newest first", SortBy.Timestamp, true),
+            new SortEntry("Timestamp - oldest first", SortBy.Timestamp, false),
+            new SortEntry("Title - A to Z", SortBy.Title, true),
+            new SortEntry("Title - Z to A", SortBy.Title, false),
+            new SortEntry("Description - A to Z", SortBy.Description, true),
+            new SortEntry("Description - Z to A", SortBy.Description, false)
     );
 
     @Nullable
@@ -146,7 +146,7 @@ public class DreamJournalView extends Fragment {
     private void setupSortButton() {
         binding.btnSort.setOnClickListener(e -> {
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext(), R.style.Theme_LucidSourceKit_ThemedDialog);
-            builder.setTitle("Sort entries by");
+            builder.setTitle("Sort entries");
             String[] entries = sortEntryValues.stream().map(SortEntry::sortText).toArray(String[]::new);
             builder.setSingleChoiceItems(entries, sortBy, (dialog, which) -> {
                 sortBy = which;

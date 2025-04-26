@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -124,10 +125,40 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             setTopEntryMargin(holder);
         }
 
+        FrameLayout.LayoutParams lParams = (FrameLayout.LayoutParams) holder.binding.crdJournalEntryCard.getLayoutParams();
         Calendar currentEntryTime = Tools.calendarFromMillis(current.journalEntry.timeStamp);
-        if (isFirstEntryOfDay(position, currentList, currentEntryTime)) {
+        int entryDayIndex = entryIndexOfDay(position, currentList, currentEntryTime);
+        int entryCountAfter = countOfDayAfter(position, currentList, currentEntryTime);
+
+        int left = holder.binding.clMainContent.getPaddingLeft();
+        int right = holder.binding.clMainContent.getPaddingRight();
+        int bottom = holder.binding.clMainContent.getPaddingBottom();
+        int dp16 = Tools.dpToPx(context, 16);
+        int dp32 = Tools.dpToPx(context, 32);
+
+        // Set first card of day to have corner radius at top
+        if (entryDayIndex == 0) {
             holder.setDreamTimeHeading(currentEntryTime);
+            lParams.topMargin = 0;
+            holder.binding.clMainContent.setPadding(left, dp16, right, bottom);
         }
+        else {
+            lParams.topMargin = -dp16;
+            holder.binding.clMainContent.setPadding(left, dp32, right, bottom);
+        }
+
+        // Show questionnaire count only after last journal entry
+        boolean isLastEntryOfDay = entryCountAfter == 0;
+        holder.binding.flQuestionnaire.setVisibility(isLastEntryOfDay ? View.VISIBLE : View.GONE);
+        holder.binding.vDivider.setVisibility(isLastEntryOfDay ? View.INVISIBLE : View.VISIBLE);
+        holder.binding.crdQuestionnaire.setOnClickListener(!isLastEntryOfDay ? null : e -> {
+            // TODO: Show completed questionnaires for that day / allow to fill out new one
+        });
+
+        Calendar cal = Calendar.getInstance();
+        boolean isToday = cal.get(Calendar.DAY_OF_YEAR) == currentEntryTime.get(Calendar.DAY_OF_YEAR) && cal.get(Calendar.YEAR) == currentEntryTime.get(Calendar.YEAR);
+        // TODO: Only show when the sleep quality questionnaire has not yet been filled out today
+        holder.binding.btnRateSleep.setVisibility(isToday ? View.VISIBLE : View.GONE);
 
         List<DreamTypes> dreamTypes = current.getDreamTypes();
         holder.setSpecialDreamIcons(dreamTypes);
@@ -146,20 +177,43 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     }
 
     public void setTopEntryMargin(@NonNull MainViewHolder holder) {
-        LinearLayout.LayoutParams lParams = ((LinearLayout.LayoutParams) holder.binding.txtJournalEntryFirstDateIndicatorDate.getLayoutParams());
+        LinearLayout.LayoutParams lParams = ((LinearLayout.LayoutParams) holder.binding.llTopDayHeader.getLayoutParams());
         lParams.topMargin = 0;
-        holder.binding.txtJournalEntryFirstDateIndicatorDate.setLayoutParams(lParams);
+        holder.binding.llTopDayHeader.setLayoutParams(lParams);
     }
 
-    private static boolean isFirstEntryOfDay(int position, List<DreamJournalEntry> currentList, Calendar cCurrent) {
-        boolean showEntryDate = true;
-        if(position > 0) {
-            Calendar cPast = Calendar.getInstance();
-            cPast.setTimeInMillis(currentList.get(position - 1).journalEntry.timeStamp);
-            boolean sameDay = cCurrent.get(Calendar.DAY_OF_YEAR) == cPast.get(Calendar.DAY_OF_YEAR) && cCurrent.get(Calendar.YEAR) == cPast.get(Calendar.YEAR);
-            showEntryDate = !sameDay;
+    private static int entryIndexOfDay(int position, List<DreamJournalEntry> currentList, Calendar current) {
+        Calendar cal = Calendar.getInstance();
+        int currentYear = current.get(Calendar.YEAR);
+        int currentDayOfYear = current.get(Calendar.DAY_OF_YEAR);
+        int count = 0;
+        while (position > 0) {
+            cal.setTimeInMillis(currentList.get(position - 1).journalEntry.timeStamp);
+            boolean sameDay = currentDayOfYear == cal.get(Calendar.DAY_OF_YEAR) && currentYear == cal.get(Calendar.YEAR);
+            if (!sameDay) {
+                break;
+            }
+            count++;
+            position--;
         }
-        return showEntryDate;
+        return count;
+    }
+
+    private static int countOfDayAfter(int position, List<DreamJournalEntry> currentList, Calendar current) {
+        Calendar cal = Calendar.getInstance();
+        int currentYear = current.get(Calendar.YEAR);
+        int currentDayOfYear = current.get(Calendar.DAY_OF_YEAR);
+        int count = 0;
+        while (position < currentList.size() - 1) {
+            cal.setTimeInMillis(currentList.get(position + 1).journalEntry.timeStamp);
+            boolean sameDay = currentDayOfYear == cal.get(Calendar.DAY_OF_YEAR) && currentYear == cal.get(Calendar.YEAR);
+            if (!sameDay) {
+                break;
+            }
+            count++;
+            position++;
+        }
+        return count;
     }
 
     public void viewDreamJournalEntry(DreamJournalEntry current) {
@@ -487,20 +541,18 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         }
 
         public void resetEntry() {
-            LinearLayout.LayoutParams lParams = ((LinearLayout.LayoutParams) binding.txtJournalEntryFirstDateIndicatorDate.getLayoutParams());
+            LinearLayout.LayoutParams lParams = ((LinearLayout.LayoutParams) binding.llTopDayHeader.getLayoutParams());
             lParams.topMargin = Tools.dpToPx(context, 14);
-            binding.txtJournalEntryFirstDateIndicatorDate.setLayoutParams(lParams);
-            binding.txtJournalEntryFirstDateIndicatorDate.setVisibility(View.GONE);
-            binding.txtJournalEntryFirstDateIndicatorName.setVisibility(View.GONE);
+            binding.llTopDayHeader.setLayoutParams(lParams);
+            binding.llTopDayHeader.setVisibility(View.GONE);
             binding.llTagsHolder.removeAllViews();
             binding.llTitleIcons.removeAllViews();
         }
 
         public void setDreamTimeHeading(Calendar currentEntryTime) {
-            binding.txtJournalEntryFirstDateIndicatorName.setVisibility(View.VISIBLE);
             binding.txtJournalEntryFirstDateIndicatorName.setText(fullDayInWeekNameFormatter.format(currentEntryTime.getTime()));
-            binding.txtJournalEntryFirstDateIndicatorDate.setVisibility(View.VISIBLE);
             binding.txtJournalEntryFirstDateIndicatorDate.setText(dateFormat.format(currentEntryTime.getTime()));
+            binding.llTopDayHeader.setVisibility(View.VISIBLE);
         }
 
         public void setSpecialDreamIcons(List<DreamTypes> dreamTypes) {
@@ -647,6 +699,18 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             int size = Tools.dpToPx(context, 20);
             icon.setLayoutParams(new LinearLayout.LayoutParams(size, size));
             return icon;
+        }
+
+        public void removeQuestionnaire() {
+            ((ViewGroup) binding.flQuestionnaire.getParent()).removeView(binding.flQuestionnaire);
+            binding.vDivider.setVisibility(View.GONE);
+            FrameLayout.LayoutParams lParams = (FrameLayout.LayoutParams) binding.crdJournalEntryCard.getLayoutParams();
+            lParams.bottomMargin = 0;
+            binding.crdJournalEntryCard.setLayoutParams(lParams);
+            int left = binding.clMainContent.getPaddingLeft();
+            int right = binding.clMainContent.getPaddingRight();
+            int top = binding.clMainContent.getPaddingTop();
+            binding.clMainContent.setPadding(left, top, right, 0);
         }
     }
 }
