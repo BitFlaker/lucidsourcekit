@@ -27,6 +27,7 @@ import com.bitflaker.lucidsourcekit.main.alarms.RecyclerViewAdapterAlarms;
 import com.bitflaker.lucidsourcekit.main.dreamjournal.RecyclerViewAdapterDreamJournal;
 import com.bitflaker.lucidsourcekit.main.notification.NotificationManagerView;
 import com.bitflaker.lucidsourcekit.main.notification.visual.VisualNotificationActivity;
+import com.bitflaker.lucidsourcekit.main.questionnaire.QuestionnaireView;
 
 import java.util.ArrayList;
 
@@ -116,7 +117,7 @@ public class MainOverviewView extends Fragment {
         // TODO: This is just here for testing purpose, move this into alarm receiver for reality check reminder
         //       and add a check for locked screen, as it should only be launched when the user is not
         //       actively using the phone in order to not interfere with user interactions
-        binding.btnQaMore.setOnClickListener(e -> startActivity(new Intent(getContext(), VisualNotificationActivity.class)));
+        binding.btnQaMore.setOnClickListener(e -> startActivity(new Intent(getContext(), QuestionnaireView.class)));
     }
 
     private void generateRememberEntry(EntryJournalBinding binding, DreamJournalEntry entry) {

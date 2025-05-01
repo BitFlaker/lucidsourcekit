@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:paddingHorizontal="24dp">
+
+    <TextView
+        android:id="@+id/txt_qc_value_from"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textColor="?attr/secondaryTextColor"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/sld_qc_slider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sld_qc_slider" />
+
+    <com.google.android.material.slider.Slider
+        style="@style/Widget.Material3.Slider"
+        android:id="@+id/sld_qc_slider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:value="2"
+        android:valueFrom="0"
+        android:valueTo="9"
+        android:stepSize="1"
+        app:haloColor="@android:color/transparent"
+        app:tickColorActive="?attr/colorPrimary"
+        app:tickColorInactive="?attr/colorPrimary"
+        app:trackHeight="4dp"
+        app:thumbWidth="20dp"
+        app:thumbHeight="20dp"
+        app:thumbTrackGapSize="16dp"
+        app:labelBehavior="floating"
+        app:labelStyle="@style/Tooltip.Dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/txt_qc_value_to"
+        app:layout_constraintStart_toEndOf="@+id/txt_qc_value_from"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_qc_value_to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="9"
+        android:textColor="?attr/secondaryTextColor"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/sld_qc_slider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sld_qc_slider" />
+</androidx.constraintlayout.widget.ConstraintLayout>
