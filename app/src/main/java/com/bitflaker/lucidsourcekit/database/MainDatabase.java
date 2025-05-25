@@ -55,6 +55,20 @@ import com.bitflaker.lucidsourcekit.database.notifications.daos.NotificationObfu
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationMessage;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationObfuscations;
+import com.bitflaker.lucidsourcekit.database.questionnaire.daos.CompletedQuestionnaireDao;
+import com.bitflaker.lucidsourcekit.database.questionnaire.daos.QuestionDao;
+import com.bitflaker.lucidsourcekit.database.questionnaire.daos.QuestionOptionsDao;
+import com.bitflaker.lucidsourcekit.database.questionnaire.daos.QuestionTypeDao;
+import com.bitflaker.lucidsourcekit.database.questionnaire.daos.QuestionnaireAnswerDao;
+import com.bitflaker.lucidsourcekit.database.questionnaire.daos.QuestionnaireDao;
+import com.bitflaker.lucidsourcekit.database.questionnaire.daos.SelectedOptionsDao;
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.CompletedQuestionnaire;
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.Question;
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionOptions;
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionType;
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.Questionnaire;
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionnaireAnswer;
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.SelectedOptions;
 
 import org.json.JSONObject;
 
@@ -65,7 +79,9 @@ import java.util.Map;
         JournalEntryHasTag.class, JournalEntryHasType.class, Goal.class, Shuffle.class,
         ShuffleHasGoal.class, Alarm.class, AlarmIsOnWeekday.class, AlarmToneTypes.class,
         Weekdays.class, ActiveAlarm.class, StoredAlarm.class, NotificationObfuscations.class,
-        NotificationMessage.class, NotificationCategory.class, ShuffleTransaction.class}, version = 15, exportSchema = false)
+        NotificationMessage.class, NotificationCategory.class, ShuffleTransaction.class,
+        Questionnaire.class, Question.class, QuestionType.class, CompletedQuestionnaire.class,
+        QuestionnaireAnswer.class, QuestionOptions.class, SelectedOptions.class}, version = 16, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class MainDatabase extends RoomDatabase {
 
@@ -103,6 +119,15 @@ public abstract class MainDatabase extends RoomDatabase {
     public abstract NotificationMessageDao getNotificationMessageDao();
     public abstract NotificationCategoryDao getNotificationCategoryDao();
 
+    // Questionnaire tables
+    public abstract CompletedQuestionnaireDao getCompletedQuestionnaireDao();
+    public abstract QuestionDao getQuestionDao();
+    public abstract QuestionnaireAnswerDao getQuestionnaireAnswerDao();
+    public abstract QuestionnaireDao getQuestionnaireDao();
+    public abstract QuestionOptionsDao getQuestionOptionsDao();
+    public abstract QuestionTypeDao getQuestionTypeDao();
+    public abstract SelectedOptionsDao getSelectedOptionsDao();
+
     // Database
     private static volatile MainDatabase instance;
 
@@ -134,6 +159,7 @@ public abstract class MainDatabase extends RoomDatabase {
                 .addMigrations(MainDatabaseMigrations.MIGRATION_12_13)
                 .addMigrations(MainDatabaseMigrations.MIGRATION_13_14)
                 .addMigrations(MainDatabaseMigrations.MIGRATION_14_15)
+                .addMigrations(MainDatabaseMigrations.MIGRATION_15_16)
                 .build();
     }
 

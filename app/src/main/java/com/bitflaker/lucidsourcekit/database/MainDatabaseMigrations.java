@@ -218,4 +218,73 @@ public class MainDatabaseMigrations {
                     "WHERE shg.achieved = 1");
         }
     };
+
+    public static final Migration MIGRATION_15_16 = new Migration(15, 16) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE Questionnaire (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "title TEXT NOT NULL," +
+                    "description TEXT," +
+                    "isHidden INTEGER NOT NULL, " +
+                    "isCompact INTEGER NOT NULL);"
+            );
+            database.execSQL("CREATE TABLE QuestionType (" +
+                    "id INTEGER PRIMARY KEY NOT NULL," +
+                    "description TEXT NOT NULL);"
+            );
+            database.execSQL("CREATE TABLE CompletedQuestionnaire (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "timestamp INTEGER NOT NULL," +
+                    "questionnaireId INTEGER NOT NULL," +
+                    "FOREIGN KEY (questionnaireId) REFERENCES Questionnaire (id) ON DELETE CASCADE ON UPDATE CASCADE);"
+            );
+            database.execSQL("CREATE TABLE Question (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "question TEXT NOT NULL," +
+                    "questionTypeId INTEGER NOT NULL," +
+                    "questionnaireId INTEGER NOT NULL, " +
+                    "orderNr INTEGER NOT NULL, " +
+                    "valueFrom INTEGER, " +
+                    "valueTo INTEGER, " +
+                    "autoContinue INTEGER NOT NULL, " +
+                    "isHidden INTEGER NOT NULL, " +
+                    "FOREIGN KEY (questionTypeId) REFERENCES QuestionType (id) ON DELETE CASCADE ON UPDATE CASCADE," +
+                    "FOREIGN KEY (questionnaireId) REFERENCES Questionnaire (id) ON DELETE CASCADE ON UPDATE CASCADE);"
+            );
+            database.execSQL("CREATE TABLE QuestionOptions (" +
+                    "questionId INTEGER NOT NULL," +
+                    "id INTEGER NOT NULL," +
+                    "text TEXT NOT NULL," +
+                    "description TEXT, " +
+                    "PRIMARY KEY (questionId, id)," +
+                    "FOREIGN KEY (questionId) REFERENCES Question (id) ON DELETE CASCADE ON UPDATE CASCADE);"
+            );
+            database.execSQL("CREATE TABLE QuestionnaireAnswer (" +
+                    "completedQuestionnaireId INTEGER NOT NULL," +
+                    "questionId INTEGER NOT NULL," +
+                    "value TEXT," +
+                    "PRIMARY KEY (completedQuestionnaireId, questionId)," +
+                    "FOREIGN KEY (completedQuestionnaireId) REFERENCES CompletedQuestionnaire (id) ON DELETE CASCADE ON UPDATE CASCADE, " +
+                    "FOREIGN KEY (questionId) REFERENCES Question (id) ON DELETE CASCADE ON UPDATE CASCADE);"
+            );
+            database.execSQL("CREATE TABLE SelectedOptions (" +
+                    "completedQuestionnaireId INTEGER NOT NULL," +
+                    "questionId INTEGER NOT NULL," +
+                    "optionId INTEGER NOT NULL," +
+                    "PRIMARY KEY (completedQuestionnaireId, questionId, optionId)," +
+                    "FOREIGN KEY (completedQuestionnaireId, questionId) REFERENCES QuestionnaireAnswer (completedQuestionnaireId, questionId) ON DELETE CASCADE ON UPDATE CASCADE, " +
+                    "FOREIGN KEY (questionId, optionId) REFERENCES QuestionOptions (questionId, id) ON DELETE CASCADE ON UPDATE CASCADE);"
+            );
+
+            database.execSQL("CREATE INDEX index_CompletedQuestionnaire_questionnaireId ON CompletedQuestionnaire (questionnaireId);");
+            database.execSQL("CREATE INDEX index_Question_questionTypeId ON Question (questionTypeId);");
+            database.execSQL("CREATE INDEX index_Question_questionnaireId ON Question (questionnaireId);");
+            database.execSQL("CREATE INDEX index_QuestionOptions_questionId ON QuestionOptions (questionId);");
+            database.execSQL("CREATE INDEX index_QuestionnaireAnswer_completedQuestionnaireId ON QuestionnaireAnswer (completedQuestionnaireId);");
+            database.execSQL("CREATE INDEX index_QuestionnaireAnswer_questionId ON QuestionnaireAnswer (questionId);");
+            database.execSQL("CREATE INDEX index_SelectedOptions_completedQuestionnaireId_questionId ON SelectedOptions (completedQuestionnaireId, questionId);");
+            database.execSQL("CREATE INDEX index_SelectedOptions_questionId_optionId ON SelectedOptions (questionId, optionId);");
+        }
+    };
 }

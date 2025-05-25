@@ -27,6 +27,7 @@
         app:rippleColor="?attr/colorOutlineVariant" />
 
     <TextView
+        android:id="@+id/txt_questionnaire_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="0dp"

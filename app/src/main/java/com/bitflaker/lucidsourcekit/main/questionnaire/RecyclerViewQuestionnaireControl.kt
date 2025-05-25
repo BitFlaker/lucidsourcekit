@@ -16,7 +16,7 @@ import com.bitflaker.lucidsourcekit.databinding.EntryQuestionnaireControlRangeBi
 import com.bitflaker.lucidsourcekit.databinding.EntryQuestionnaireControlSelectionBinding
 import com.bitflaker.lucidsourcekit.databinding.EntryQuestionnaireControlTextBinding
 import com.bitflaker.lucidsourcekit.main.questionnaire.options.RangeOptions
-import com.bitflaker.lucidsourcekit.main.questionnaire.options.SelectOptions
+import com.bitflaker.lucidsourcekit.main.questionnaire.options.ChoiceOptions
 import com.bitflaker.lucidsourcekit.main.questionnaire.results.ControlResult
 import com.bitflaker.lucidsourcekit.main.questionnaire.results.ControlResultBool
 import com.bitflaker.lucidsourcekit.main.questionnaire.results.ControlResultMultiSelect
@@ -29,9 +29,19 @@ import java.util.Locale
 
 class RecyclerViewQuestionnaireControl(
     val context: Context,
-    private val control: QuestionnaireControlContext
+    private var control: QuestionnaireControlContext
 ) : RecyclerView.Adapter<RecyclerViewQuestionnaireControl.MainViewHolder>() {
     private var resultListener: ((Boolean) -> Unit)? = null
+    var questionContext: QuestionnaireControlContext = control
+        set(value) {
+            field = value
+            control = value
+
+            // In this case notifying a dataset change should be fine as the
+            // dataset only consists of a single entry anyways and this also
+            // prevents any animations to play (entry changed animation)
+            notifyDataSetChanged()
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         val inflater = LayoutInflater.from(context)
@@ -51,12 +61,7 @@ class RecyclerViewQuestionnaireControl(
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        holder.bind(control, { resultListener?.invoke(it) }) {
-            // In this case notifying a dataset change should be fine as the
-            // dataset only consists of a single entry anyways and this also
-            // prevents any animations to play (entry changed animation)
-            notifyDataSetChanged()
-        }
+        holder.bind(control, { resultListener?.invoke(it) })
     }
 
     override fun getItemCount(): Int {
@@ -71,15 +76,13 @@ class RecyclerViewQuestionnaireControl(
         var result: ControlResult? = null
         val maxTextLength = 500
         var resultListener: ((Boolean) -> Unit)? = null
-        var update: (() -> Unit)? = null
 
         fun bind(
             control: QuestionnaireControlContext,
-            resultListener: ((Boolean) -> Unit)?,
-            update: () -> Unit
+            resultListener: ((Boolean) -> Unit)?
         ) {
+            this.result = control.result
             this.resultListener = resultListener
-            this.update = update
             when (control.type) {
                 QuestionnaireControlType.Bool -> bindBoolControl()
                 QuestionnaireControlType.Range -> bindRangeControl(control)
@@ -104,11 +107,17 @@ class RecyclerViewQuestionnaireControl(
                     res.result = s?.toString() ?: ""
                 }
             })
+
+            // Set correct state according to current result value
+            val resultText = (result as? ControlResultText)?.result
+            if (resultText != null) {
+                cb.etQcText.setText(resultText)
+            }
         }
 
         private fun bindMultiSelectControl(control: QuestionnaireControlContext) {
             val cb = binding as EntryQuestionnaireControlSelectionBinding
-            val options = control.options as SelectOptions
+            val options = control.options as ChoiceOptions
             val opts = setOptions(cb, options, true)
 
             for (i in opts.indices) {
@@ -120,14 +129,24 @@ class RecyclerViewQuestionnaireControl(
                     }
                     val res = result as ControlResultMultiSelect
                     if (button.isChecked) {
-                        res.resultIndices.add(i)
+                        res.result.add(options.values[i].id)
                     }
                     else {
-                        res.resultIndices.remove(i)
-                        if (res.resultIndices.isEmpty()) {
+                        res.result.remove(options.values[i].id)
+                        if (res.result.isEmpty()) {
                             result = null
                             resultListener?.invoke(false)
                         }
+                    }
+                }
+            }
+
+            // Set correct state according to current result value
+            val selectedIds = (result as? ControlResultMultiSelect)?.result
+            if (selectedIds != null) {
+                for (i in opts.indices) {
+                    if (selectedIds.contains(options.values[i].id)) {
+                        opts[i].isChecked = true
                     }
                 }
             }
@@ -135,7 +154,7 @@ class RecyclerViewQuestionnaireControl(
 
         private fun bindSingleSelectControl(control: QuestionnaireControlContext) {
             val cb = binding as EntryQuestionnaireControlSelectionBinding
-            val options = control.options as SelectOptions
+            val options = control.options as ChoiceOptions
             val opts = setOptions(cb, options, false)
 
             // Configure click listeners (and ensure only a single item is selected)
@@ -145,11 +164,18 @@ class RecyclerViewQuestionnaireControl(
                         b.isChecked = b == opts[i]
                     }
                     val resultWasNull = result == null
-                    result = ControlResultSingleSelect(i)
+                    result = ControlResultSingleSelect(options.values[i].id)
                     if (resultWasNull) {
                         resultListener?.invoke(true)
                     }
                 }
+            }
+
+            // Set correct state according to current result value
+            val selectedId = (result as? ControlResultSingleSelect)?.result
+            if (selectedId != null) {
+                val optionIndex = options.values.indexOfFirst { it.id ==  selectedId }
+                opts[optionIndex].isChecked = true
             }
         }
 
@@ -167,33 +193,37 @@ class RecyclerViewQuestionnaireControl(
                     resultListener?.invoke(true)
                 }
             }
-            cb.sldQcSlider.value = options.from.toFloat()
+
+            // Set correct state according to current result value
+            cb.sldQcSlider.value = (result as? ControlResultRange)?.result?.toFloat() ?: options.from.toFloat()
         }
 
         private fun bindBoolControl() {
             val cb = binding as EntryQuestionnaireControlBoolBinding
 
-            // Set correct state according to current result value
-            val isTrue = (result as ControlResultBool?)?.result
-            cb.btnQcTrue.isChecked = isTrue ?: false
-            cb.btnQcFalse.isChecked = isTrue != null && !isTrue
-
             // Configure click listeners
             cb.btnQcTrue.setOnClickListener {
                 result = ControlResultBool(true)
                 resultListener?.invoke(true)
-                this.update?.invoke()
+                cb.btnQcTrue.isChecked = true
+                cb.btnQcFalse.isChecked = false
             }
             cb.btnQcFalse.setOnClickListener {
                 result = ControlResultBool(false)
                 resultListener?.invoke(true)
-                this.update?.invoke()
+                cb.btnQcTrue.isChecked = false
+                cb.btnQcFalse.isChecked = true
             }
+
+            // Set correct state according to current result value
+            val isTrue = (result as? ControlResultBool)?.result
+            cb.btnQcTrue.isChecked = isTrue ?: false
+            cb.btnQcFalse.isChecked = isTrue != null && !isTrue
         }
 
         private fun setOptions(
             cb: EntryQuestionnaireControlSelectionBinding,
-            options: SelectOptions,
+            options: ChoiceOptions,
             isMultiSelect: Boolean
         ): ArrayList<MaterialButton> {
             cb.glOptionContainer.removeAllViews()
@@ -208,7 +238,7 @@ class RecyclerViewQuestionnaireControl(
                 button.isCheckable = true
                 button.isToggleCheckedStateOnClick = isMultiSelect
                 button.cornerRadius = context.resources.getDimension(R.dimen.cardRadius).toInt()
-                button.text = option
+                button.text = option.text
                 opts.add(button)
                 cb.glOptionContainer.addView(button)
             }

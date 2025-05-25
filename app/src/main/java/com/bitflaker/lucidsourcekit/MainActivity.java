@@ -38,6 +38,12 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal;
 import com.bitflaker.lucidsourcekit.database.goals.entities.defaults.DefaultGoals;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationObfuscations;
+import com.bitflaker.lucidsourcekit.database.questionnaire.daos.QuestionDao;
+import com.bitflaker.lucidsourcekit.database.questionnaire.daos.QuestionOptionsDao;
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.Question;
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionOptions;
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionType;
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.Questionnaire;
 import com.bitflaker.lucidsourcekit.databinding.ActivityMainBinding;
 import com.bitflaker.lucidsourcekit.main.MainViewer;
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler;
@@ -153,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
             db.getAlarmToneTypesDao().insertAll(AlarmToneTypes.populateData()).blockingSubscribe();
             db.getNotificationObfuscationDao().insertAll(NotificationObfuscations.populateData()).blockingSubscribe();
             db.getNotificationCategoryDao().insertAll(NotificationCategory.populateData()).blockingSubscribe();
+            db.getQuestionTypeDao().insertAll(QuestionType.Companion.getDefaults()).blockingSubscribe();
+            addDebugQuestionnaire(db);
             if (db.getGoalDao().getGoalCount().blockingGet() == 0) {    // Only add default goals in case no goals are present in the database
                 db.getGoalDao().insertAll(new DefaultGoals(this).getGoalsList()).blockingSubscribe();
             }
@@ -172,6 +180,29 @@ public class MainActivity extends AppCompatActivity {
             }
             shuffleGoalsForToday(db);
         }).start();
+    }
+
+    private void addDebugQuestionnaire(MainDatabase db) {
+        if (db.getQuestionnaireDao().exists("Test questionnaire").blockingGet()) return;
+        Questionnaire quest = new Questionnaire("Test questionnaire", "This is a test questionnaire with test data", false);
+        int id = db.getQuestionnaireDao().insert(quest).blockingGet().intValue();
+
+        QuestionDao qd = db.getQuestionDao();
+        int q1 = qd.insert(new Question("What is your rating?", 0, id, 0, 10, false)).blockingGet().intValue();
+        int q2 = qd.insert(new Question("Which one will you pick?", 1, id, null, null, false)).blockingGet().intValue();
+        int q3 = qd.insert(new Question("Which ones will you pick?", 2, id, null, null, false)).blockingGet().intValue();
+        int q4 = qd.insert(new Question("Is this ok?", 3, id, null, null, true)).blockingGet().intValue();
+        int q5 = qd.insert(new Question("Anything else?", 4, id, null, null, false)).blockingGet().intValue();
+
+        QuestionOptionsDao qo = db.getQuestionOptionsDao();
+        qo.insert(new QuestionOptions(q2, 1, "Option 1", null)).blockingSubscribe();
+        qo.insert(new QuestionOptions(q2, 2, "Option 2", null)).blockingSubscribe();
+        qo.insert(new QuestionOptions(q2, 3, "Option 3", null)).blockingSubscribe();
+
+        qo.insert(new QuestionOptions(q3, 1, "Option 1", null)).blockingSubscribe();
+        qo.insert(new QuestionOptions(q3, 2, "Option 2", null)).blockingSubscribe();
+        qo.insert(new QuestionOptions(q3, 3, "Option 3", null)).blockingSubscribe();
+        qo.insert(new QuestionOptions(q3, 4, "Option 4", null)).blockingSubscribe();
     }
 
     private void applicationLogin() {

@@ -16,12 +16,20 @@ class StepProgress @JvmOverloads constructor(
     private var colorInactive = Tools.getAttrColor(R.attr.colorSurfaceContainer, context.theme)
     private var strokeHeight = Tools.dpToPx(context, 6.0).toFloat()
     private var strokeGap = Tools.dpToPx(context, 8.0).toFloat()
-    private var totalStepCount = 10
-    private var currentStepCount = 4
     private var paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         strokeWidth = strokeHeight
         strokeCap = Paint.Cap.ROUND
     }
+    var totalStepCount = 10
+        set(value) {
+            field = value
+            invalidate()
+        }
+    var currentStepCount = 4
+        set(value) {
+            field = value
+            invalidate()
+        }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
