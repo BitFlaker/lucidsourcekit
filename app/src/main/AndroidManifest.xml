@@ -30,6 +30,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LucidSourceKit.Default">
         <activity
+            android:name=".main.questionnaire.QuestionnaireEditorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".main.questionnaire.QuestionnaireOverviewActivity"
+            android:exported="false" />
+        <activity
             android:name=".main.questionnaire.QuestionnaireView"
             android:exported="false" />
         <activity

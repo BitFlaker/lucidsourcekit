@@ -8,6 +8,8 @@
         style="@style/LSK.MaterialCardView.Outlined"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:cardBackgroundColor="?attr/colorSurfaceContainer"
+        app:strokeWidth="0dp"
         app:contentPadding="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -40,6 +40,7 @@ class QuestionnaireView : AppCompatActivity() {
     private lateinit var questions: List<Question>
     private lateinit var adapter: RecyclerViewQuestionnaireControl
     private lateinit var results: Array<ControlResult?>
+    private var fillOutStartTime: Long = 0
     private var questionIndex: Int = 0
         set(value) {
             field = value
@@ -88,10 +89,14 @@ class QuestionnaireView : AppCompatActivity() {
                 questionIndex++
             }
         }
+
+        // Save the start timestamp to measure time taken for questionnaire
+        fillOutStartTime = Calendar.getInstance().timeInMillis
     }
 
     private fun saveQuestionnaireToDB() {
-        val completed = CompletedQuestionnaire(questionnaire.id, Calendar.getInstance().timeInMillis)
+        val duration = Calendar.getInstance().timeInMillis - fillOutStartTime
+        val completed = CompletedQuestionnaire(questionnaire.id, duration, Calendar.getInstance().timeInMillis)
         val id = db.completedQuestionnaireDao.insert(completed).blockingGet().toInt()
         for (i in questions.indices) {
             val question = questions[i]

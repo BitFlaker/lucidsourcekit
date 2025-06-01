@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
-                    app:layout_constraintEnd_toStartOf="@+id/ll_qa_rc_reminder"
+                    app:layout_constraintEnd_toStartOf="@+id/ll_qa_questionnaire"
                     app:layout_constraintStart_toEndOf="@+id/ll_qa_notifications"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -122,7 +122,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/ll_qa_rc_reminder"
+                    android:id="@+id/ll_qa_questionnaire"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
@@ -133,7 +133,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         style="@style/Widget.Material3.Button.IconButton.Filled"
-                        android:id="@+id/btn_qa_rc_reminder"
+                        android:id="@+id/btn_qa_questionnaire"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:padding="18dp"
@@ -159,7 +159,7 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/ll_qa_rc_reminder"
+                    app:layout_constraintStart_toEndOf="@+id/ll_qa_questionnaire"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.button.MaterialButton

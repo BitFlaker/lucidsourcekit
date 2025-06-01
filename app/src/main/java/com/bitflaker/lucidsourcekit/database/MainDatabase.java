@@ -81,7 +81,7 @@ import java.util.Map;
         Weekdays.class, ActiveAlarm.class, StoredAlarm.class, NotificationObfuscations.class,
         NotificationMessage.class, NotificationCategory.class, ShuffleTransaction.class,
         Questionnaire.class, Question.class, QuestionType.class, CompletedQuestionnaire.class,
-        QuestionnaireAnswer.class, QuestionOptions.class, SelectedOptions.class}, version = 16, exportSchema = false)
+        QuestionnaireAnswer.class, QuestionOptions.class, SelectedOptions.class}, version = 17, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class MainDatabase extends RoomDatabase {
 
@@ -160,6 +160,7 @@ public abstract class MainDatabase extends RoomDatabase {
                 .addMigrations(MainDatabaseMigrations.MIGRATION_13_14)
                 .addMigrations(MainDatabaseMigrations.MIGRATION_14_15)
                 .addMigrations(MainDatabaseMigrations.MIGRATION_15_16)
+                .addMigrations(MainDatabaseMigrations.MIGRATION_16_17)
                 .build();
     }
 

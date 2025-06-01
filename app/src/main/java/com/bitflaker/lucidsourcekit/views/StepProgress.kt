@@ -11,8 +11,8 @@ import com.bitflaker.lucidsourcekit.utils.Tools
 class StepProgress @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-    private var colorActive = Tools.getAttrColor(R.attr.colorPrimary, context.theme)
-    private var colorCurrent = Tools.getAttrColor(R.attr.colorPrimaryContainer, context.theme)
+    private var colorActive = Tools.getAttrColor(R.attr.colorOutlineVariant, context.theme)
+    private var colorCurrent = Tools.getAttrColor(R.attr.colorOutline, context.theme)
     private var colorInactive = Tools.getAttrColor(R.attr.colorSurfaceContainer, context.theme)
     private var strokeHeight = Tools.dpToPx(context, 6.0).toFloat()
     private var strokeGap = Tools.dpToPx(context, 8.0).toFloat()

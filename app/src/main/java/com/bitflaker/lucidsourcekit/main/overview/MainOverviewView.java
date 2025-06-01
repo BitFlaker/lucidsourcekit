@@ -27,6 +27,7 @@ import com.bitflaker.lucidsourcekit.main.alarms.RecyclerViewAdapterAlarms;
 import com.bitflaker.lucidsourcekit.main.dreamjournal.RecyclerViewAdapterDreamJournal;
 import com.bitflaker.lucidsourcekit.main.notification.NotificationManagerView;
 import com.bitflaker.lucidsourcekit.main.notification.visual.VisualNotificationActivity;
+import com.bitflaker.lucidsourcekit.main.questionnaire.QuestionnaireOverviewActivity;
 import com.bitflaker.lucidsourcekit.main.questionnaire.QuestionnaireView;
 
 import java.util.ArrayList;
@@ -108,10 +109,12 @@ public class MainOverviewView extends Fragment {
             alarmManagerLauncher.launch(new Intent(getContext(), AlarmManagerView.class));
         });
 
-        // Quick action button click
-        binding.btnQaNotifications.setOnClickListener(e -> startActivity(new Intent(getContext(), NotificationManagerView.class)));
+        // Questionnaire quick access
+        binding.btnQaQuestionnaire.setOnClickListener(e -> startActivity(new Intent(getContext(), QuestionnaireOverviewActivity.class)));
+        binding.llQaQuestionnaire.setOnClickListener(e -> binding.btnQaQuestionnaire.performClick());
 
-        // Quick action container click forwarding
+        // Notification quick access
+        binding.btnQaNotifications.setOnClickListener(e -> startActivity(new Intent(getContext(), NotificationManagerView.class)));
         binding.llQaNotifications.setOnClickListener(e -> binding.btnQaNotifications.performClick());
 
         // TODO: This is just here for testing purpose, move this into alarm receiver for reality check reminder

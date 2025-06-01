@@ -19,8 +19,9 @@ import androidx.room.PrimaryKey
 data class CompletedQuestionnaire(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val questionnaireId: Int,
+    val answerDuration: Long,
     val timestamp: Long
 ) {
     @Ignore
-    constructor(questionnaireId: Int, timestamp: Long): this(0, questionnaireId, timestamp)
+    constructor(questionnaireId: Int, answerDuration: Long, timestamp: Long): this(0, questionnaireId, answerDuration, timestamp)
 }

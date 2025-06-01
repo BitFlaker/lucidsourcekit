@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/crd_questionnaire"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="0dp"
+    app:strokeWidth="0dp"
+    app:cardBackgroundColor="?attr/colorSurface">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_alarm_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="24dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingEnd="24dp"
+        android:clipToPadding="false">
+
+        <TextView
+            android:id="@+id/txt_questionnaire_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="Questionnaire name"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/vw_color_indicator"
+            android:layout_width="12dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="-33dp"
+            android:layout_marginTop="-8dp"
+            android:layout_marginBottom="-8dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/rounded_rectangle_medium"
+            android:backgroundTint="#448866"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txt_questionnaire_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:text="Some short description of the questionnaire that outlines what this is about and shows the amount of questions and the average time it takes to fill out this questionnaire"
+            android:textColor="?attr/secondaryTextColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/txt_questionnaire_name"
+            app:layout_constraintTop_toBottomOf="@+id/txt_questionnaire_name" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@+id/txt_questionnaire_name"
+            app:layout_constraintTop_toBottomOf="@+id/txt_questionnaire_description">
+
+            <TextView
+                android:id="@+id/txt_badge_question_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="?attr/colorSurfaceContainerHighest"
+                android:drawableStart="@drawable/rounded_list_alt_check_16"
+                android:drawablePadding="4dp"
+                android:drawableTint="?attr/secondaryTextColor"
+                android:text="14 questions"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/txt_badge_avg_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:backgroundTint="?attr/colorSurfaceContainerHighest"
+                android:drawableStart="@drawable/round_access_time_16"
+                android:drawablePadding="4dp"
+                android:drawableTint="?attr/secondaryTextColor"
+                android:text="avg. 9 min"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

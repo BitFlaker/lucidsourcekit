@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void addDebugQuestionnaire(MainDatabase db) {
         if (db.getQuestionnaireDao().exists("Test questionnaire").blockingGet()) return;
-        Questionnaire quest = new Questionnaire("Test questionnaire", "This is a test questionnaire with test data", false);
+        Questionnaire quest = new Questionnaire("Test questionnaire", "This is a test questionnaire with test data", null, false);
         int id = db.getQuestionnaireDao().insert(quest).blockingGet().intValue();
 
         QuestionDao qd = db.getQuestionDao();

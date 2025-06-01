@@ -287,4 +287,13 @@ public class MainDatabaseMigrations {
             database.execSQL("CREATE INDEX index_SelectedOptions_questionId_optionId ON SelectedOptions (questionId, optionId);");
         }
     };
+
+    public static final Migration MIGRATION_16_17 = new Migration(16, 17) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE Questionnaire ADD orderNr INTEGER DEFAULT -1 NOT NULL;");
+            database.execSQL("ALTER TABLE Questionnaire ADD colorCode TEXT DEFAULT NULL;");
+            database.execSQL("ALTER TABLE CompletedQuestionnaire ADD answerDuration INTEGER DEFAULT 0 NOT NULL;");
+        }
+    };
 }
