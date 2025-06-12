@@ -2,6 +2,7 @@ package com.bitflaker.lucidsourcekit.database.questionnaire.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Ignore
 import androidx.room.Index
 
 @Entity(primaryKeys = ["questionId", "id"],
@@ -17,8 +18,13 @@ import androidx.room.Index
     indices = [Index("questionId")]
 )
 data class QuestionOptions(
-    val questionId: Int,
-    val id: Int,
-    val text: String,
+    var questionId: Int,
+    var id: Int,
+    var text: String,
+    var orderNr: Int,
+    var isHidden: Boolean,
     val description: String?
-)
+) {
+    @Ignore
+    constructor(questionId: Int) : this(questionId, -1, "", 0, false, null)
+}

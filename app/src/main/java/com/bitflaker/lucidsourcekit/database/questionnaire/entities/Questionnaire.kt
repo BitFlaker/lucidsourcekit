@@ -7,13 +7,16 @@ import androidx.room.PrimaryKey
 @Entity
 data class Questionnaire(
     @PrimaryKey(autoGenerate = true) val id: Int,
-    val title: String,
-    val description: String?,
-    val orderNr: Int,
-    val colorCode: String?,
-    val isHidden: Boolean,
-    val isCompact: Boolean
+    var title: String,
+    var description: String?,
+    var orderNr: Int,
+    var colorCode: String?,
+    var isHidden: Boolean,
+    var isCompact: Boolean
 ) {
     @Ignore
     constructor(title: String, description: String?, colorCode: String?, isCompact: Boolean) : this(0, title, description, -1, colorCode, false, isCompact)
+
+    @Ignore
+    constructor() : this(0, "", null, -1, null, false, false)
 }

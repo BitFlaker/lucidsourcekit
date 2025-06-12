@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="24dp">
+
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:id="@+id/bsd_handle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/vw_color_preview"
+        android:layout_width="96dp"
+        android:layout_height="32dp"
+        android:background="@drawable/small_rounded_rectangle"
+        android:backgroundTint="#fff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bsd_handle" />
+
+    <TextView
+        android:id="@+id/txt_title_hex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hex"
+        android:textSize="12sp"
+        android:textColor="?attr/secondaryTextColor"
+        app:layout_constraintBottom_toTopOf="@+id/txt_value_hex"
+        app:layout_constraintEnd_toStartOf="@+id/vw_color_preview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bsd_handle" />
+
+    <TextView
+        android:id="@+id/txt_value_hex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="#FF4815"
+        android:textSize="14sp"
+        android:textColor="?attr/secondaryTextColor"
+        app:layout_constraintBottom_toBottomOf="@+id/vw_color_preview"
+        app:layout_constraintEnd_toStartOf="@+id/vw_color_preview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_title_hex" />
+
+    <TextView
+        android:id="@+id/txt_title_rgb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RGB"
+        android:textSize="12sp"
+        android:textColor="?attr/secondaryTextColor"
+        app:layout_constraintBottom_toTopOf="@+id/txt_value_rgb"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/vw_color_preview"
+        app:layout_constraintTop_toBottomOf="@+id/bsd_handle" />
+
+    <TextView
+        android:id="@+id/txt_value_rgb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="255, 255, 255"
+        android:textSize="14sp"
+        android:textColor="?attr/secondaryTextColor"
+        app:layout_constraintBottom_toBottomOf="@+id/vw_color_preview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/vw_color_preview"
+        app:layout_constraintTop_toBottomOf="@+id/txt_title_rgb" />
+
+    <LinearLayout
+        android:id="@+id/ll_hsv_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="12dp"
+        app:layout_constraintTop_toBottomOf="@+id/vw_color_preview">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="18dp"
+            android:text="Hue"
+            android:textColor="?attr/secondaryTextColor"
+            android:textSize="14sp" />
+
+        <SeekBar
+            android:id="@+id/sb_hue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:splitTrack="false"
+            android:thumb="@drawable/progress_thumb"
+            android:thumbOffset="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="18dp"
+            android:text="Saturation"
+            android:textColor="?attr/secondaryTextColor"
+            android:textSize="14sp" />
+
+        <SeekBar
+            android:id="@+id/sb_saturation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:splitTrack="false"
+            android:thumb="@drawable/progress_thumb"
+            android:thumbOffset="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="18dp"
+            android:text="Brightness"
+            android:textColor="?attr/secondaryTextColor"
+            android:textSize="14sp" />
+
+        <SeekBar
+            android:id="@+id/sb_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:splitTrack="false"
+            android:thumb="@drawable/progress_thumb"
+            android:thumbOffset="4dp" />
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_clear_color"
+        style="@style/Widget.Material3.Button.TextButton.Icon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="56dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginHorizontal="24dp"
+        android:text="Clear color"
+        android:textColor="?attr/colorError"
+        app:iconTint="?attr/colorError"
+        app:icon="@drawable/rounded_format_color_reset_24"
+        app:iconGravity="textStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_hsv_container" />
+</androidx.constraintlayout.widget.ConstraintLayout>

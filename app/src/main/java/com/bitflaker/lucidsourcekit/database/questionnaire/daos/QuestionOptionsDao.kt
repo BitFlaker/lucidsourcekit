@@ -14,11 +14,17 @@ interface QuestionOptionsDao {
     @Query("SELECT * FROM QuestionOptions ORDER BY questionId, id")
     fun getAll(): Single<List<QuestionOptions>>
 
-    @Query("SELECT * FROM QuestionOptions WHERE questionId = :questionId ORDER BY id")
+    @Query("SELECT * FROM QuestionOptions WHERE questionId = :questionId AND isHidden = 0 ORDER BY orderNr, id")
     fun getAllForQuestion(questionId: Int): Single<List<QuestionOptions>>
+
+    @Query("SELECT MAX(id) + 1 FROM QuestionOptions WHERE questionId = :questionId")
+    fun getNextId(questionId: Int): Single<Int>
 
     @Query("SELECT * FROM QuestionOptions WHERE questionId = :questionId AND id = :optionId")
     fun getById(questionId: Int, optionId: Int): Single<QuestionOptions>
+
+    @Query("SELECT COUNT(*) > 0 FROM SelectedOptions WHERE questionId = :questionId AND optionId = :optionId")
+    fun isReferenced(questionId: Int, optionId: Int): Single<Boolean>
 
     @Update
     fun update(entry: QuestionOptions): Completable

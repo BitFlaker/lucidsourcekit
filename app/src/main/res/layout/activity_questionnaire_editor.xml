@@ -10,7 +10,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_close"
         style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="51dp"
+        android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginVertical="4dp"
         android:layout_marginStart="8dp"
@@ -26,6 +26,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:rippleColor="?attr/colorOutlineVariant" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_delete_questionnaire"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginVertical="4dp"
+        android:layout_marginEnd="8dp"
+        app:icon="@drawable/ic_baseline_delete_24"
+        app:iconTint="?attr/colorOnSurface"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:rippleColor="?attr/colorOutlineVariant" />
+
     <TextView
         android:id="@+id/txt_title"
         android:layout_width="0dp"
@@ -38,114 +51,207 @@
         android:textSize="20sp"
         android:ellipsize="end"
         android:maxLines="1"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/btn_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_close"
         app:layout_constraintTop_toTopOf="@+id/btn_close" />
 
-    <EditText
-        android:id="@+id/txt_questionnaire_name"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:fontFamily="sans-serif-medium"
-        android:hint="Name"
-        android:importantForAutofill="no"
-        android:inputType="textCapSentences|textMultiLine"
-        android:paddingHorizontal="24dp"
-        android:paddingVertical="12dp"
-        android:scrollHorizontally="false"
-        android:textColor="?attr/primaryTextColor"
-        android:textSize="24sp"
-        app:layout_constraintTop_toBottomOf="@+id/btn_close" />
+        android:layout_height="0dp"
+        android:background="?attr/colorSurfaceContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/nsv_questionnaire_scroller" />
 
-    <EditText
-        android:id="@+id/txt_questionnaire_description"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nsv_questionnaire_scroller"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minLines="3"
-        android:gravity="top"
-        android:background="@null"
-        android:hint="Describe what this questionnaire is about"
-        android:importantForAutofill="no"
-        android:inputType="textMultiLine|textCapSentences"
-        android:isScrollContainer="false"
-        android:paddingHorizontal="24dp"
-        android:textColor="?attr/secondaryTextColor"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@+id/txt_questionnaire_name" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_close">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="4dp"
-        android:gravity="center_vertical"
-        android:divider="@drawable/divider_large"
-        android:orientation="horizontal"
-        android:showDividers="middle"
-        app:layout_constraintTop_toBottomOf="@+id/txt_questionnaire_description">
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            app:cardBackgroundColor="#449966"
-            app:cardCornerRadius="999dp"
-            app:strokeColor="#66000000"
-            app:strokeWidth="2dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <View
-                android:layout_width="6dp"
-                android:layout_height="6dp"
-                android:layout_gravity="center"
-                android:background="@drawable/rounded_rectangle_medium"
-                android:backgroundTint="?attr/colorSurface" />
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="?attr/colorSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/img_separator"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/txt_questionnaire_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:fontFamily="sans-serif-medium"
+                android:hint="Name"
+                android:importantForAutofill="no"
+                android:inputType="textCapSentences|textMultiLine"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="8dp"
+                android:scrollHorizontally="false"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="24sp"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/txt_questionnaire_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minLines="2"
+                android:background="@null"
+                android:gravity="top"
+                android:hint="Describe what this questionnaire is about"
+                android:importantForAutofill="no"
+                android:inputType="textMultiLine|textCapSentences"
+                android:isScrollContainer="false"
+                android:paddingHorizontal="24dp"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="16sp"
+                app:layout_constraintTop_toBottomOf="@+id/txt_questionnaire_name" />
+
+            <LinearLayout
+                android:id="@+id/ll_color_select"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                android:divider="@drawable/divider_large"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:showDividers="middle"
+                app:layout_constraintTop_toBottomOf="@+id/txt_questionnaire_description">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:cardCornerRadius="999dp"
+                    app:strokeColor="#449966"
+                    app:strokeWidth="1dp">
+
+                    <View
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/rounded_rectangle_medium"
+                        android:backgroundTint="#449966" />
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/rounded_close_18" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:cardBackgroundColor="#4499aa"
+                    app:cardCornerRadius="999dp"
+                    app:strokeColor="#66000000"
+                    app:strokeWidth="0dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:cardBackgroundColor="#3388cc"
+                    app:cardCornerRadius="999dp"
+                    app:strokeColor="#66000000"
+                    app:strokeWidth="0dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:cardBackgroundColor="#aa77cc"
+                    app:cardCornerRadius="999dp"
+                    app:strokeColor="#66000000"
+                    app:strokeWidth="0dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:cardBackgroundColor="#cc6677"
+                    app:cardCornerRadius="999dp"
+                    app:strokeColor="#66000000"
+                    app:strokeWidth="0dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:cardCornerRadius="999dp"
+                    app:strokeWidth="0dp">
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/rounded_colorize_24"
+                        app:tint="?attr/colorOutline" />
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/img_separator"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:layout_marginTop="24dp"
+                android:src="@drawable/rectangle_top_border"
+                app:layout_constraintTop_toBottomOf="@+id/ll_color_select"
+                app:tint="?attr/colorSurfaceContainer" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv_questions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorSurfaceContainer"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                app:layout_constraintTop_toBottomOf="@+id/img_separator" />
 
             <View
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_gravity="center"
-                android:background="@drawable/rounded_rectangle_medium"
-                android:backgroundTint="#66000000" />
-        </com.google.android.material.card.MaterialCardView>
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="?attr/colorSurfaceContainer"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rcv_questions" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            app:cardBackgroundColor="#4499aa"
-            app:cardCornerRadius="999dp"
-            app:strokeColor="#66000000"
-            app:strokeWidth="2dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add_question"
+                style="@style/Widget.Material3.Button.TextButton.Icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="16dp"
+                android:text="Add question"
+                app:icon="@drawable/rounded_add_24"
+                app:iconGravity="textStart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rcv_questions" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            app:cardBackgroundColor="#3388cc"
-            app:cardCornerRadius="999dp"
-            app:strokeColor="#66000000"
-            app:strokeWidth="2dp" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            app:cardBackgroundColor="#aa77cc"
-            app:cardCornerRadius="999dp"
-            app:strokeColor="#66000000"
-            app:strokeWidth="2dp" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            app:cardBackgroundColor="#cc6677"
-            app:cardCornerRadius="999dp"
-            app:strokeColor="#66000000"
-            app:strokeWidth="2dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="40dp"
-            android:layout_height="48dp"
-            app:icon="@drawable/rounded_colorize_24"
-            app:iconTint="?attr/colorOutline"
-            style="@style/Widget.Material3.Button.TextButton.Icon" />
-    </LinearLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_save_questionnaire"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/rounded_check_24"
+        app:rippleColor="?attr/colorPrimaryInverse"
+        app:borderWidth="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:shapeAppearance="@style/FloatingShapeAppearanceOverlay" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,17 +24,20 @@ import androidx.room.PrimaryKey
     indices = [Index("questionTypeId"), Index("questionnaireId")]
 )
 data class Question(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey(autoGenerate = true) var id: Int,
     val question: String,
     val questionTypeId: Int,
-    val questionnaireId: Int,
-    val orderNr: Int,
-    val valueFrom: Int?,
-    val valueTo: Int?,
+    var questionnaireId: Int,
+    var orderNr: Int,
+    var valueFrom: Int?,
+    var valueTo: Int?,
     val autoContinue: Boolean,
-    val isHidden: Boolean
+    var isHidden: Boolean
 ) {
     @Ignore
     constructor(question: String, questionTypeId: Int, questionnaireId: Int, valueFrom: Int?, valueTo: Int?, autoContinue: Boolean):
             this(0, question, questionTypeId, questionnaireId, 0, valueFrom, valueTo, autoContinue, false)
+
+    @Ignore
+    var options: MutableList<QuestionOptions>? = null
 }

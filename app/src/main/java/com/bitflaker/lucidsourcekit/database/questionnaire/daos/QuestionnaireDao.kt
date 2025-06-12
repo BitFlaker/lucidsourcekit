@@ -17,14 +17,31 @@ interface QuestionnaireDao {
 
     @Query("""SELECT fq.*, COUNT(cq.id) AS completedCount, AVG(cq.answerDuration) AS averageDuration 
             FROM (
-                SELECT q.id, q.title, q.description, q.isCompact, q.isHidden, Count(Question.id) AS questionCount 
+                SELECT q.id, q.title, q.description, q.isCompact, q.colorCode, Count(*) AS questionCount 
                 FROM Questionnaire q 
                 LEFT JOIN Question ON q.id = Question.questionnaireId 
-                GROUP BY q.id, q.title, q.description, q.isCompact, q.isHidden 
+                GROUP BY q.id, q.title, q.description, q.isCompact, q.colorCode
+                HAVING q.isHidden = 0 AND Question.isHidden = 0
+                ORDER BY q.id
+            ) fq
+            LEFT JOIN CompletedQuestionnaire cq ON fq.id = cq.questionnaireId
+            GROUP BY fq.id, fq.title, fq.description, fq.isCompact, fq.colorCode, fq.questionCount""")
+    fun getAllDetails(): Single<List<QuestionnaireDetails>>
+
+    @Query("""SELECT fq.*, COUNT(cq.id) AS completedCount, AVG(cq.answerDuration) AS averageDuration 
+            FROM (
+                SELECT q.id, q.title, q.description, q.isCompact, q.colorCode, Count(Question.id) AS questionCount 
+                FROM Questionnaire q 
+                LEFT JOIN Question ON q.id = Question.questionnaireId 
+                GROUP BY q.id, q.title, q.description, q.isCompact, q.colorCode
+                HAVING q.id = :questionnaireId AND q.isHidden = 0 AND Question.isHidden = 0
                 ORDER BY q.id
             ) fq
             LEFT JOIN CompletedQuestionnaire cq ON fq.id = cq.questionnaireId""")
-    fun getAllMore(): Single<List<QuestionnaireDetails>>
+    fun getDetailsById(questionnaireId: Int): Single<QuestionnaireDetails>
+
+    @Query("SELECT (SELECT COUNT(*) FROM Question WHERE questionnaireId = :id) + (SELECT COUNT(*) FROM CompletedQuestionnaire WHERE questionnaireId = :id) > 0")
+    fun isReferenced(id: Int): Single<Boolean>
 
     @Query("SELECT * FROM Questionnaire WHERE id = :id")
     fun getById(id: Int): Single<Questionnaire>

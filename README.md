@@ -16,6 +16,7 @@
 * Alarms
 * Statistics
 * Backup / Export
+
 Everything is supposed to be as customizable as possible
 
 ## 🛡️ Privacy

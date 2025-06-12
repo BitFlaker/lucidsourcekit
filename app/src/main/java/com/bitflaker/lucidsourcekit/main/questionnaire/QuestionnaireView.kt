@@ -77,10 +77,12 @@ class QuestionnaireView : AppCompatActivity() {
 
         // Setup button listeners for Next, Back and close questionnaire
         binding.btnQuestionnaireClose.setOnClickListener { promptDiscardChanges() }
-        binding.btnQuestionnaireBack.setOnClickListener { questionIndex-- }
+        binding.btnQuestionnaireBack.setOnClickListener {
+            storeResult()
+            questionIndex--
+        }
         binding.btnQuestionnaireNext.setOnClickListener {
-            val holder = binding.rcvQuestionControl.findViewHolderForAdapterPosition(0) as RecyclerViewQuestionnaireControl.MainViewHolder
-            results[questionIndex] = holder.result
+            storeResult()
             if (questionIndex == questions.size - 1) {
                 saveQuestionnaireToDB()
                 finish()
@@ -92,6 +94,11 @@ class QuestionnaireView : AppCompatActivity() {
 
         // Save the start timestamp to measure time taken for questionnaire
         fillOutStartTime = Calendar.getInstance().timeInMillis
+    }
+
+    private fun storeResult() {
+        val holder = binding.rcvQuestionControl.findViewHolderForAdapterPosition(0) as RecyclerViewQuestionnaireControl.MainViewHolder
+        results[questionIndex] = holder.result
     }
 
     private fun saveQuestionnaireToDB() {

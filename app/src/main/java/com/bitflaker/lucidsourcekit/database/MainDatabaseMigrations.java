@@ -296,4 +296,12 @@ public class MainDatabaseMigrations {
             database.execSQL("ALTER TABLE CompletedQuestionnaire ADD answerDuration INTEGER DEFAULT 0 NOT NULL;");
         }
     };
+
+    public static final Migration MIGRATION_17_18 = new Migration(17, 18) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE QuestionOptions ADD orderNr INTEGER DEFAULT 0 NOT NULL;");
+            database.execSQL("ALTER TABLE QuestionOptions ADD isHidden INTEGER DEFAULT 0 NOT NULL;");
+        }
+    };
 }

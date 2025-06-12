@@ -195,14 +195,14 @@ public class MainActivity extends AppCompatActivity {
         int q5 = qd.insert(new Question("Anything else?", 4, id, null, null, false)).blockingGet().intValue();
 
         QuestionOptionsDao qo = db.getQuestionOptionsDao();
-        qo.insert(new QuestionOptions(q2, 1, "Option 1", null)).blockingSubscribe();
-        qo.insert(new QuestionOptions(q2, 2, "Option 2", null)).blockingSubscribe();
-        qo.insert(new QuestionOptions(q2, 3, "Option 3", null)).blockingSubscribe();
+        qo.insert(new QuestionOptions(q2, 1, "Option 1", 1, false, null)).blockingSubscribe();
+        qo.insert(new QuestionOptions(q2, 2, "Option 2", 2, false, null)).blockingSubscribe();
+        qo.insert(new QuestionOptions(q2, 3, "Option 3", 3, false, null)).blockingSubscribe();
 
-        qo.insert(new QuestionOptions(q3, 1, "Option 1", null)).blockingSubscribe();
-        qo.insert(new QuestionOptions(q3, 2, "Option 2", null)).blockingSubscribe();
-        qo.insert(new QuestionOptions(q3, 3, "Option 3", null)).blockingSubscribe();
-        qo.insert(new QuestionOptions(q3, 4, "Option 4", null)).blockingSubscribe();
+        qo.insert(new QuestionOptions(q3, 1, "Option 1", 1, false, null)).blockingSubscribe();
+        qo.insert(new QuestionOptions(q3, 2, "Option 2", 2, false, null)).blockingSubscribe();
+        qo.insert(new QuestionOptions(q3, 3, "Option 3", 3, false, null)).blockingSubscribe();
+        qo.insert(new QuestionOptions(q3, 4, "Option 4", 4, false, null)).blockingSubscribe();
     }
 
     private void applicationLogin() {
