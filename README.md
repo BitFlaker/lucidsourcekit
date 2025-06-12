@@ -7,15 +7,16 @@
 **LucidSourceKit** is supposed to be an all-you-need toolkit for lucid dreaming with a focus on feature richness and customizability. The main idea is to store all your data on your phone where you have full control over it. Therefore the app neither needs nor has the permission `android.permission.INTERNET` which means the app in and of itself cannot access the internet. In addition to that, an ad-free experience and a modern UI while providing powerful tools are some of the primary goals.
 
 ### Main features
-* Setting a pin or password with biometric authentication before the app can be opened
-* Creating dream journal entries (text, template, audio) with ratings
-* Setting alarms to try to wake you up during REM periodes
-* Sending customizable notifications
-* Tracking goals to look out for in order to improve awareness
-* Playing binaural beats
-* Analyzing your progress by viewing journal and usage statistics
-* Backup your data by exporting and importing local backups
-* And more features in the future...
+* Password / PIN / Biometric app protection
+* Dream Journal (Audio, Text, Template)
+* Questionnaires
+* Prospective memory trainer (Goals)
+* Binaural Beats
+* Notifications
+* Alarms
+* Statistics
+* Backup / Export
+Everything is supposed to be as customizable as possible
 
 ## 🛡️ Privacy
 As stated above, it is being tried to keep all your data on your phone exclusively for as long as you do not export it. Everything is saved locally (unencrypted) on the phone in the applications data directory (which should only be accessible by this app on non-rooted devices). The app does not have the permission `android.permission.INTERNET`. Therefore it cannot directly connect to the internet. Exceptions would be data automatically processed by Android devices and other data transfers that I am not aware of. If you notice any kind of privacy issues, feel free to report it in the [Issues](https://github.com/BitFlaker/lucidsourcekit/issues) section.
@@ -30,7 +31,7 @@ Use the app at your own risk.
 > The code quaility is not great at the moment and requires a lot of refactoring which will be done piece by piece in the future.
 
 ## 🚀 Installation
-To install this app, you have to build it from source. To do so, you can clone this repository and use the "Import Project" option in [Android Studio](https://developer.android.com/studio?hl=de). Then you can export the project as an `apk` file and install it on your phone. \
+An official release APK download will be provided in the near future. For now, the only way is to build the app yourself from source. To do so, you can clone this repository and use the "Import Project" option in [Android Studio](https://developer.android.com/studio?hl=de). Then you can export the project as an `apk` file and install it on your phone. \
 This application requires an Android device with **at least Android 7.0 (Nougat)** or newer.
 
 > [!WARNING]  
