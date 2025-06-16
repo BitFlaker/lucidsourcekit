@@ -17,6 +17,9 @@ interface QuestionnaireAnswerDao {
     @Query("SELECT * FROM QuestionnaireAnswer WHERE completedQuestionnaireId = :completedQuestionnaireId AND questionId = :questionId")
     fun getById(completedQuestionnaireId: Int, questionId: Int): Single<QuestionnaireAnswer>
 
+    @Query("SELECT * FROM QuestionnaireAnswer WHERE completedQuestionnaireId = :completedQuestionnaireId")
+    fun getAll(completedQuestionnaireId: Int): Single<List<QuestionnaireAnswer>>
+
     @Update
     fun update(entry: QuestionnaireAnswer): Completable
 

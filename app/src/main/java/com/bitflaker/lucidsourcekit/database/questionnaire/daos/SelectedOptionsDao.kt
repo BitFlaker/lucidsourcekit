@@ -13,6 +13,9 @@ interface SelectedOptionsDao {
     @Query("SELECT * FROM SelectedOptions ORDER BY completedQuestionnaireId, questionId, optionId")
     fun getAll(): Single<List<SelectedOptions>>
 
+    @Query("SELECT * FROM SelectedOptions WHERE completedQuestionnaireId = :completedQuestionnaireId AND questionId = :questionId ORDER BY completedQuestionnaireId, questionId, optionId")
+    fun getById(completedQuestionnaireId: Int, questionId: Int): Single<List<SelectedOptions>>
+
     @Insert
     fun insert(entry: SelectedOptions): Completable
 

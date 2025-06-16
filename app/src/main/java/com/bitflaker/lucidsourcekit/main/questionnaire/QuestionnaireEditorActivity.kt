@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.database.MainDatabase
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.CompletedQuestionnaire
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.Question
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionOptions
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.Questionnaire
@@ -50,6 +51,8 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
     private lateinit var db: MainDatabase
     private lateinit var adapter: RecyclerViewQuestions
     private lateinit var questionnaire: Questionnaire
+    private lateinit var completedQuestionnaire: CompletedQuestionnaire
+    private var completedQuestionnaireId: Int = -1
     private var questionnaireId: Int = -1
     private val colorPresets: List<Int> = listOf(
         "#449966".toColorInt(),
@@ -74,30 +77,78 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
         }
         db = MainDatabase.getInstance(this)
 
-        // Try to get the questionnaire id from the intent extras, otherwise create empty questionnaire
+        // Try to get the questionnaire id from the intent extras, otherwise create empty questionnaire, then query all questions
         questionnaireId = intent.getIntExtra("QUESTIONNAIRE_ID", -1)
+        completedQuestionnaireId = intent.getIntExtra("COMPLETED_QUESTIONNAIRE_ID", -1)
+        val isViewer = completedQuestionnaireId != -1
+        if (isViewer) {
+            completedQuestionnaire = db.completedQuestionnaireDao.getById(completedQuestionnaireId).blockingGet()
+            questionnaireId = completedQuestionnaire.questionnaireId
+        }
         questionnaire = if (questionnaireId == -1) Questionnaire() else db.questionnaireDao.getById(questionnaireId).blockingGet()
+        val allQuestions = if (completedQuestionnaireId == -1) { getEditorQuestions() } else { getViewerQuestions() }
 
+        // Set general data
+        binding.txtTitle.text = questionnaire.title
+        binding.txtQuestionnaireName.setText(questionnaire.title)
+        binding.txtQuestionnaireDescription.setText(questionnaire.description)
+
+        // Configure recyclerview containing all questions for the current questionnaire
+        adapter = RecyclerViewQuestions(this, allQuestions, isViewer)
+        binding.rcvQuestions.layoutManager = LinearLayoutManager(this)
+        binding.rcvQuestions.adapter = adapter
+
+        // Configure for editor or viewer state
+        if (isViewer) {
+            binding.txtTitle.visibility = View.VISIBLE
+            val color = questionnaire.colorCode
+            if (color != null) {
+                binding.imgSeparator.imageTintList = ColorStateList.valueOf(color.toColorInt())
+                binding.vwColorDivider.visibility = View.VISIBLE
+            }
+            binding.btnAddQuestion.visibility = View.GONE
+            binding.btnSaveQuestionnaire.visibility = View.GONE
+            binding.llColorSelect.visibility = View.GONE
+            binding.btnDeleteQuestionnaire.visibility = View.GONE
+            binding.txtQuestionnaireName.visibility = View.GONE
+            binding.txtQuestionnaireDescription.isEnabled = false
+            binding.btnClose.setOnClickListener { finish() }
+        }
+        else {
+            setupEditor()
+        }
+    }
+
+    private fun getViewerQuestions(): MutableList<Question> {
+        return db.questionnaireAnswerDao.getAll(completedQuestionnaireId).blockingGet().map { answer ->
+            val question = db.questionDao.getById(answer.questionId).blockingGet().apply {
+                value = answer.value
+            }
+            if (question.questionTypeId == QuestionnaireControlType.SingleSelect.ordinal || question.questionTypeId == QuestionnaireControlType.MultiSelect.ordinal) {
+                question.options = db.selectedOptionsDao.getById(completedQuestionnaireId, answer.questionId).blockingGet().map {
+                    db.questionOptionsDao.getById(answer.questionId, it.optionId).blockingGet()
+                }.toMutableList()
+            }
+            question
+        }.toMutableList()
+    }
+
+    private fun getEditorQuestions(): MutableList<Question> {
         // Get all the questions for the selected questionnaire and in case the question has
         // options, get all the options and save them in the question
-        val allQuestions = if (questionnaireId == -1) mutableListOf() else db.questionDao.getAllForQuestionnaire(questionnaireId).blockingGet().map {
+        return if (questionnaireId == -1) mutableListOf() else db.questionDao.getAllForQuestionnaire(questionnaireId).blockingGet().map {
             if (it.questionTypeId == QuestionnaireControlType.SingleSelect.ordinal || it.questionTypeId == QuestionnaireControlType.MultiSelect.ordinal) {
                 it.options = db.questionOptionsDao.getAllForQuestion(it.id).blockingGet().toMutableList()
             }
             it
         }.toMutableList()
+    }
 
-        binding.txtQuestionnaireName.setText(questionnaire.title)
-        binding.txtQuestionnaireDescription.setText(questionnaire.description)
+    private fun setupEditor() {
+        touchHelperQuestions.attachToRecyclerView(binding.rcvQuestions)
+        adapter.questionClickListener = { openQuestionEditor(it) }
 
         configurePresetColors()
-
-        // Configure recyclerview containing all questions for the current questionnaire
-        adapter = RecyclerViewQuestions(this, allQuestions)
-        adapter.questionClickListener = { openQuestionEditor(it) }
-        binding.rcvQuestions.layoutManager = LinearLayoutManager(this)
-        binding.rcvQuestions.adapter = adapter
-        touchHelperQuestions.attachToRecyclerView(binding.rcvQuestions)
 
         // Configure button to add question
         binding.btnAddQuestion.setOnClickListener {
@@ -108,9 +159,11 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
         binding.btnSaveQuestionnaire.setOnClickListener {
             if (binding.txtQuestionnaireName.text.isNotBlank() && binding.txtQuestionnaireDescription.text.isNotBlank() && adapter.questions.isNotEmpty()) {
                 saveQuestionnaire()
-            }
-            else {
-                showInfoDialog("Missing fields", "Set a questionnaire title, description and add at least one question to save.\n(The color coding is optional)")
+            } else {
+                showInfoDialog(
+                    "Missing fields",
+                    "Set a questionnaire title, description and add at least one question to save.\n(The color coding is optional)"
+                )
             }
         }
 
@@ -130,19 +183,18 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
                         if (isReferenced) {
                             hiddenQuestion.isHidden = true
                             db.questionDao.update(hiddenQuestion).blockingSubscribe()
-                        }
-                        else {
+                        } else {
                             db.questionDao.delete(hiddenQuestion).blockingSubscribe()
                         }
                     }
 
                     // Delete questionnaire / Mark questionnaire as hidden
-                    val isQuestionnaireReferenced = db.questionnaireDao.isReferenced(questionnaireId).blockingGet()
+                    val isQuestionnaireReferenced =
+                        db.questionnaireDao.isReferenced(questionnaireId).blockingGet()
                     if (isQuestionnaireReferenced) {
                         questionnaire.isHidden = true
                         db.questionnaireDao.update(questionnaire).blockingSubscribe()
-                    }
-                    else {
+                    } else {
                         db.questionnaireDao.delete(questionnaire).blockingSubscribe()
                     }
 

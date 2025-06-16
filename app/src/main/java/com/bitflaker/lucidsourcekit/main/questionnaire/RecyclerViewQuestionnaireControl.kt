@@ -196,6 +196,7 @@ class RecyclerViewQuestionnaireControl(
 
             // Set correct state according to current result value
             cb.sldQcSlider.value = (result as? ControlResultRange)?.result?.toFloat() ?: options.from.toFloat()
+            result = ControlResultRange(cb.sldQcSlider.value.toInt())
         }
 
         private fun bindBoolControl() {

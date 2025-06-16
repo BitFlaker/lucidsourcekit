@@ -76,9 +76,9 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         loadedItems.add(holder);
         loadedPositions.add(position);
         holder.binding.txtAlarmsTitle.setText(alarm.title);
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder.binding.clAlarmContent.getLayoutParams();
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder.binding.clQuestionnaire.getLayoutParams();
         params.setMargins(horizontalPadding, 0, horizontalPadding, 0);
-        holder.binding.clAlarmContent.setLayoutParams(params);
+        holder.binding.clQuestionnaire.setLayoutParams(params);
 
         long alarmHours = TimeUnit.MILLISECONDS.toHours(alarm.alarmTimestamp);
         long alarmMinutes = TimeUnit.MILLISECONDS.toMinutes(alarm.alarmTimestamp) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(alarm.alarmTimestamp));

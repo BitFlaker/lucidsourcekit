@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.questionnaire.QuestionnaireOverviewActivity">
+    tools:context=".main.questionnaire.CompletedQuestionnaireViewerActivity">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_questionnaire_close"
@@ -33,7 +33,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginEnd="24dp"
         android:fontFamily="sans-serif-medium"
-        android:text="Questionnaires"
+        android:text="Completed Questionnaires"
         android:textColor="?attr/colorOnSurface"
         android:textSize="20sp"
         android:ellipsize="end"
@@ -42,6 +42,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_questionnaire_close"
         app:layout_constraintTop_toTopOf="@+id/btn_questionnaire_close" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcv_completed_questionnaires"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingBottom="24dp"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_questionnaire_close" />
 
     <TextView
         android:id="@+id/txt_no_questionnaires_title"
@@ -63,23 +72,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="No questionnaires created yet\nGo on, populate this place"
+        android:text="No questionnaires filled out yet\nGo on, populate this place"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="@+id/txt_no_questionnaires_title"
         app:layout_constraintStart_toStartOf="@+id/txt_no_questionnaires_title"
         app:layout_constraintTop_toBottomOf="@+id/txt_no_questionnaires_title" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcv_questionnaires"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:paddingBottom="24dp"
-        android:clipToPadding="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_questionnaire_close" />
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_add_questionnaire"
+        android:id="@+id/btn_fill_out_questionnaire"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"

@@ -1,5 +1,9 @@
 package com.bitflaker.lucidsourcekit.main.dreamjournal;
 
+import static android.app.Activity.RESULT_OK;
+
+import static androidx.activity.result.ActivityResultCallerKt.registerForActivityResult;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,19 +16,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.AttrRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bitflaker.lucidsourcekit.R;
@@ -39,8 +46,12 @@ import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.SleepQuality;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.resulttables.CompletedQuestionnaireDetails;
 import com.bitflaker.lucidsourcekit.databinding.EntryJournalBinding;
 import com.bitflaker.lucidsourcekit.databinding.SheetJournalEntryBinding;
+import com.bitflaker.lucidsourcekit.databinding.SheetQuestionnaireListBinding;
+import com.bitflaker.lucidsourcekit.main.questionnaire.QuestionnaireView;
+import com.bitflaker.lucidsourcekit.main.questionnaire.RecyclerViewFilledOutQuestionnaires;
 import com.bitflaker.lucidsourcekit.utils.RecordingObjectTools;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -60,6 +71,8 @@ import java.util.Stack;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import kotlin.Unit;
+
 public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<RecyclerViewAdapterDreamJournal.MainViewHolder> {
     private final Context context;
     private final Activity activity;
@@ -74,6 +87,7 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     private MediaPlayer mPlayer;
     private ImageButton currentPlayingImageButton;
     private OnEntryCountChanged entryCountChangedListener;
+    private OnQuestionnaireAddClick questionnaireAddClickListener;
     private Stack<Runnable> listChangedCallbacks;
 
     public RecyclerViewAdapterDreamJournal(Activity activity, DreamJournalView journalFragment, List<DreamJournalEntry> entries) {
@@ -125,40 +139,18 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             setTopEntryMargin(holder);
         }
 
-        FrameLayout.LayoutParams lParams = (FrameLayout.LayoutParams) holder.binding.crdJournalEntryCard.getLayoutParams();
+        LinearLayout.LayoutParams lParams = (LinearLayout.LayoutParams) holder.binding.crdJournalEntryCard.getLayoutParams();
         Calendar currentEntryTime = Tools.calendarFromMillis(current.journalEntry.timeStamp);
         int entryDayIndex = entryIndexOfDay(position, currentList, currentEntryTime);
-        int entryCountAfter = countOfDayAfter(position, currentList, currentEntryTime);
-
-        int left = holder.binding.clMainContent.getPaddingLeft();
-        int right = holder.binding.clMainContent.getPaddingRight();
-        int bottom = holder.binding.clMainContent.getPaddingBottom();
-        int dp16 = Tools.dpToPx(context, 16);
-        int dp32 = Tools.dpToPx(context, 32);
 
         // Set first card of day to have corner radius at top
         if (entryDayIndex == 0) {
             holder.setDreamTimeHeading(currentEntryTime);
             lParams.topMargin = 0;
-            holder.binding.clMainContent.setPadding(left, dp16, right, bottom);
         }
         else {
-            lParams.topMargin = -dp16;
-            holder.binding.clMainContent.setPadding(left, dp32, right, bottom);
+            lParams.topMargin = Tools.dpToPx(context, 8);
         }
-
-        // Show questionnaire count only after last journal entry
-        boolean isLastEntryOfDay = entryCountAfter == 0;
-        holder.binding.flQuestionnaire.setVisibility(isLastEntryOfDay ? View.VISIBLE : View.GONE);
-        holder.binding.vDivider.setVisibility(isLastEntryOfDay ? View.INVISIBLE : View.VISIBLE);
-        holder.binding.crdQuestionnaire.setOnClickListener(!isLastEntryOfDay ? null : e -> {
-            // TODO: Show completed questionnaires for that day / allow to fill out new one
-        });
-
-        Calendar cal = Calendar.getInstance();
-        boolean isToday = cal.get(Calendar.DAY_OF_YEAR) == currentEntryTime.get(Calendar.DAY_OF_YEAR) && cal.get(Calendar.YEAR) == currentEntryTime.get(Calendar.YEAR);
-        // TODO: Only show when the sleep quality questionnaire has not yet been filled out today
-        holder.binding.btnRateSleep.setVisibility(isToday ? View.VISIBLE : View.GONE);
 
         List<DreamTypes> dreamTypes = current.getDreamTypes();
         holder.setSpecialDreamIcons(dreamTypes);
@@ -174,6 +166,16 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         RecyclerViewAdapterDreamJournal.MainViewHolder.setTagList(holder.binding.llTagsHolder, holder.calculateAdditionalContainerPadding(), 1, tagItems, activity);
 
         holder.binding.crdJournalEntryCard.setOnClickListener(e -> viewDreamJournalEntry(current));
+
+        int count = current.getQuestionnaireCount();
+        holder.binding.btnFilledOutQuestionnaires.setText(String.format(Locale.getDefault(), "%d Questionnaire%s", count, count != 1 ? "s" : ""));
+        holder.binding.btnFilledOutQuestionnaires.setTextColor(Tools.getAttrColor(count == 0 ? R.attr.tertiaryTextColor : R.attr.colorPrimary, context.getTheme()));
+        holder.binding.btnFilledOutQuestionnaires.setIconTint(Tools.getAttrColorStateList(count == 0 ? R.attr.tertiaryTextColor : R.attr.colorPrimary, context.getTheme()));
+        holder.binding.btnFilledOutQuestionnaires.setOnClickListener(e -> {
+            if (questionnaireAddClickListener != null) {
+                questionnaireAddClickListener.onEvent(current);
+            }
+        });
     }
 
     public void setTopEntryMargin(@NonNull MainViewHolder holder) {
@@ -441,17 +443,27 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
     }
 
     public void updateDataForEntry(DreamJournalEntry newData, Consumer<Integer> scrollToPositionCallback) {
+        updateDataForEntry(List.of(newData), scrollToPositionCallback);
+    }
+
+    public void updateDataForEntry(List<DreamJournalEntry> newData, Consumer<Integer> scrollToPositionCallback) {
         List<DreamJournalEntry> currentEntries = new ArrayList<>(differ.getCurrentList());
         if (itemsBeforeFilter != null) {
-            updateOrAdd(newData, itemsBeforeFilter);
+            for (DreamJournalEntry entry : newData) {
+                updateOrAdd(entry, itemsBeforeFilter);
+            }
         }
-        int index = updateOrAdd(newData, currentEntries);
-        if (index == -1 && entryCountChangedListener != null) {
+        boolean anyAdded = false;
+        for (DreamJournalEntry entry : newData) {
+            anyAdded = anyAdded || updateOrAdd(entry, currentEntries) == -1;
+        }
+        if (anyAdded && entryCountChangedListener != null) {
             entryCountChangedListener.onEvent(currentEntries.size());
         }
+        boolean finalAnyAdded = anyAdded;
         submitSortedEntries(currentSort, isSortDescending, currentEntries, () -> {
-            if (index != -1) return;
-            int sortedIndex = currentEntries.indexOf(newData);
+            if (newData.size() > 1 || !finalAnyAdded || scrollToPositionCallback == null) return;
+            int sortedIndex = currentEntries.indexOf(newData.get(0));
             scrollToPositionCallback.accept(sortedIndex);
         });
     }
@@ -496,6 +508,24 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         return differ.getCurrentList().indexOf(entry);
     }
 
+    public List<Integer> getEntriesByDate(long timestamp) {
+        long dayFrom = Tools.getMidnightTime(timestamp);
+        long dayTo = dayFrom + 24 * 60 * 60 * 1000;
+        List<Integer> entries = getEntriesInTimeFrame(differ.getCurrentList(), dayFrom, dayTo);
+        if (itemsBeforeFilter != null) {
+            entries.addAll(getEntriesInTimeFrame(itemsBeforeFilter, dayFrom, dayTo));
+            return entries.stream().distinct().collect(Collectors.toList());
+        }
+        return entries;
+    }
+
+    public List<Integer> getEntriesInTimeFrame(List<DreamJournalEntry> entries, long dayFrom, long dayTo) {
+        return entries.stream()
+                .filter(e -> e.journalEntry.timeStamp >= dayFrom && e.journalEntry.timeStamp < dayTo)
+                .map(e -> e.journalEntry.entryId)
+                .collect(Collectors.toList());
+    }
+
     public enum Operation {
         ADDED,
         DELETED,
@@ -507,8 +537,16 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
         void onEvent(int entryCount);
     }
 
+    public interface OnQuestionnaireAddClick {
+        void onEvent(DreamJournalEntry entry);
+    }
+
     public void setOnEntryCountChangedListener(OnEntryCountChanged listener) {
         entryCountChangedListener = listener;
+    }
+
+    public void setOnQuestionnaireAddClickListener(OnQuestionnaireAddClick listener) {
+        questionnaireAddClickListener = listener;
     }
 
     public static class MainViewHolder extends RecyclerView.ViewHolder {
@@ -699,18 +737,6 @@ public class RecyclerViewAdapterDreamJournal extends RecyclerView.Adapter<Recycl
             int size = Tools.dpToPx(context, 20);
             icon.setLayoutParams(new LinearLayout.LayoutParams(size, size));
             return icon;
-        }
-
-        public void removeQuestionnaire() {
-            ((ViewGroup) binding.flQuestionnaire.getParent()).removeView(binding.flQuestionnaire);
-            binding.vDivider.setVisibility(View.GONE);
-            FrameLayout.LayoutParams lParams = (FrameLayout.LayoutParams) binding.crdJournalEntryCard.getLayoutParams();
-            lParams.bottomMargin = 0;
-            binding.crdJournalEntryCard.setLayoutParams(lParams);
-            int left = binding.clMainContent.getPaddingLeft();
-            int right = binding.clMainContent.getPaddingRight();
-            int top = binding.clMainContent.getPaddingTop();
-            binding.clMainContent.setPadding(left, top, right, 0);
         }
     }
 }

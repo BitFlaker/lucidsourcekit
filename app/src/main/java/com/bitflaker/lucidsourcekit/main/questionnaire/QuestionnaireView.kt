@@ -1,6 +1,10 @@
 package com.bitflaker.lucidsourcekit.main.questionnaire
 
+import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.DatePicker
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -17,8 +21,8 @@ import com.bitflaker.lucidsourcekit.database.questionnaire.entities.Questionnair
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionnaireAnswer
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.SelectedOptions
 import com.bitflaker.lucidsourcekit.databinding.ActivityQuestionnaireBinding
-import com.bitflaker.lucidsourcekit.main.questionnaire.options.RangeOptions
 import com.bitflaker.lucidsourcekit.main.questionnaire.options.ChoiceOptions
+import com.bitflaker.lucidsourcekit.main.questionnaire.options.RangeOptions
 import com.bitflaker.lucidsourcekit.main.questionnaire.results.ControlResult
 import com.bitflaker.lucidsourcekit.main.questionnaire.results.ControlResultBool
 import com.bitflaker.lucidsourcekit.main.questionnaire.results.ControlResultMultiSelect
@@ -28,6 +32,7 @@ import com.bitflaker.lucidsourcekit.main.questionnaire.results.ControlResultText
 import com.bitflaker.lucidsourcekit.utils.Tools
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.text.DateFormat
 import java.util.Calendar
 
 // TODO: Prompt to discard changes on phone back navigation press
@@ -40,6 +45,7 @@ class QuestionnaireView : AppCompatActivity() {
     private lateinit var questions: List<Question>
     private lateinit var adapter: RecyclerViewQuestionnaireControl
     private lateinit var results: Array<ControlResult?>
+    private var specificDate: Long = 0
     private var fillOutStartTime: Long = 0
     private var questionIndex: Int = 0
         set(value) {
@@ -60,9 +66,57 @@ class QuestionnaireView : AppCompatActivity() {
             insets
         }
 
+        specificDate = intent.getLongExtra("USE_SPECIFIC_DATE", 0)
+
         // Load all questionnaire data from the database
         db = MainDatabase.getInstance(this)
-        questionnaire = db.questionnaireDao.getById(1).blockingGet()
+        binding.btnQuestionnaireClose.setOnClickListener { finish() }
+
+        // Setup views for selecting questionnaire to fill out
+        binding.spQuestionnaireProgress.visibility = View.GONE
+        binding.clQuestionViewer.visibility = View.GONE
+        binding.btnQuestionnaireNext.visibility = View.GONE
+        binding.btnQuestionnaireBack.visibility = View.GONE
+        binding.rcvQuestionnaires.visibility = View.VISIBLE
+        binding.btnQuestionnaireDate.visibility = View.VISIBLE
+        binding.txtQuestionnaireTitle.text = "Questionnaires"
+
+        // Setup date picker for questionnaire timestamp
+        val date = if (specificDate == 0L) Calendar.getInstance() else Tools.calendarFromMillis(specificDate)
+        binding.btnQuestionnaireDate.text = DateFormat.getDateInstance(DateFormat.SHORT).format(date.time)
+        binding.btnQuestionnaireDate.setOnClickListener {
+            val currentDate = if (specificDate == 0L) Calendar.getInstance() else Tools.calendarFromMillis(specificDate)
+            DatePickerDialog(this, { _: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+                    currentDate[Calendar.YEAR] = year
+                    currentDate[Calendar.MONTH] = monthOfYear
+                    currentDate[Calendar.DAY_OF_MONTH] = dayOfMonth
+                    specificDate = Tools.getMidnightTime(currentDate.timeInMillis)
+                    binding.btnQuestionnaireDate.text = DateFormat.getDateInstance(DateFormat.SHORT).format(currentDate.time)
+                },
+                currentDate[Calendar.YEAR],
+                currentDate[Calendar.MONTH],
+                currentDate[Calendar.DAY_OF_MONTH]
+            ).show()
+        }
+
+        // Configure recyclerview for selecting questionnaire to fill out
+        val questionnaires = db.questionnaireDao.getAllDetails().blockingGet().toMutableList()
+        binding.rcvQuestionnaires.layoutManager = LinearLayoutManager(this)
+        val questionnaireAdapter = RecyclerViewQuestionnaireOverview(this, questionnaires)
+        questionnaireAdapter.onQuestionnaireClickListener = { id ->
+            binding.spQuestionnaireProgress.visibility = View.VISIBLE
+            binding.clQuestionViewer.visibility = View.VISIBLE
+            binding.btnQuestionnaireNext.visibility = View.VISIBLE
+            binding.btnQuestionnaireBack.visibility = View.VISIBLE
+            binding.rcvQuestionnaires.visibility = View.GONE
+            binding.btnQuestionnaireDate.visibility = View.GONE
+            showQuestionnaireEditor(id)
+        }
+        binding.rcvQuestionnaires.adapter = questionnaireAdapter
+    }
+
+    private fun showQuestionnaireEditor(questionnaireId: Int) {
+        questionnaire = db.questionnaireDao.getById(questionnaireId).blockingGet()
         questions = db.questionDao.getAllForQuestionnaire(questionnaire.id).blockingGet()
         binding.txtQuestionnaireTitle.text = questionnaire.title
         binding.spQuestionnaireProgress.totalStepCount = questions.size
@@ -84,10 +138,12 @@ class QuestionnaireView : AppCompatActivity() {
         binding.btnQuestionnaireNext.setOnClickListener {
             storeResult()
             if (questionIndex == questions.size - 1) {
-                saveQuestionnaireToDB()
+                val id = saveQuestionnaireToDB()
+                val data = Intent()
+                data.putExtra("COMPLETED_QUESTIONNAIRE_ID", id)
+                setResult(RESULT_OK, data)
                 finish()
-            }
-            else {
+            } else {
                 questionIndex++
             }
         }
@@ -101,9 +157,13 @@ class QuestionnaireView : AppCompatActivity() {
         results[questionIndex] = holder.result
     }
 
-    private fun saveQuestionnaireToDB() {
-        val duration = Calendar.getInstance().timeInMillis - fillOutStartTime
-        val completed = CompletedQuestionnaire(questionnaire.id, duration, Calendar.getInstance().timeInMillis)
+    private fun saveQuestionnaireToDB(): Int {
+        var completedTime = Calendar.getInstance().timeInMillis
+        val duration = completedTime - fillOutStartTime
+        if (specificDate > 0) {
+            completedTime = specificDate + Tools.getTimeOfDayMillis(completedTime)
+        }
+        val completed = CompletedQuestionnaire(questionnaire.id, duration, completedTime)
         val id = db.completedQuestionnaireDao.insert(completed).blockingGet().toInt()
         for (i in questions.indices) {
             val question = questions[i]
@@ -136,6 +196,7 @@ class QuestionnaireView : AppCompatActivity() {
                 }
             }
         }
+        return id
     }
 
     private fun showCurrentQuestion(): QuestionnaireControlContext {

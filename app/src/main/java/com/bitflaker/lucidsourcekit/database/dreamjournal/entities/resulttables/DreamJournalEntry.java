@@ -42,6 +42,9 @@ public class DreamJournalEntry {
     @Ignore
     private final List<String> audioLocationsToDelete = new ArrayList<>();
 
+    @Ignore
+    private int questionnaireCount = -1;
+
     // Recording modifications
 
     public void addAudioLocation(AudioLocation audioLocation) {
@@ -122,6 +125,14 @@ public class DreamJournalEntry {
                 .filter(x -> x.typeId.equals(dreamType))
                 .findFirst()
                 .ifPresent(type -> journalEntryHasTypes.remove(type));
+    }
+
+    public int getQuestionnaireCount() {
+        return questionnaireCount;
+    }
+
+    public void setQuestionnaireCount(int count) {
+        questionnaireCount = count;
     }
 
     // Equality checking

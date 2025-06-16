@@ -43,6 +43,32 @@
         app:layout_constraintStart_toEndOf="@+id/btn_questionnaire_close"
         app:layout_constraintTop_toTopOf="@+id/btn_questionnaire_close" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_questionnaire_date"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginEnd="12dp"
+        android:fontFamily="sans-serif"
+        android:paddingStart="12dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="4dp"
+        android:text="20.03.2022"
+        android:textAlignment="center"
+        android:textColor="?attr/primaryTextColor"
+        android:textSize="12sp"
+        app:backgroundTint="?attr/colorSurfaceContainerHigh"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_questionnaire_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txt_questionnaire_title" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcv_questionnaires"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_questionnaire_close" />
+
     <com.bitflaker.lucidsourcekit.views.StepProgress
         android:id="@+id/sp_questionnaire_progress"
         android:layout_width="0dp"
@@ -54,6 +80,7 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_questionnaire_close" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_question_viewer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"

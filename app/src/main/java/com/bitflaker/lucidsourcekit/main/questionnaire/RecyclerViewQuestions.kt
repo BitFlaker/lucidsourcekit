@@ -1,23 +1,20 @@
 package com.bitflaker.lucidsourcekit.main.questionnaire
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.Question
-import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionOptions
-import com.bitflaker.lucidsourcekit.database.questionnaire.entities.resulttables.QuestionnaireDetails
 import com.bitflaker.lucidsourcekit.databinding.EntryQuestionEditorBinding
-import com.bitflaker.lucidsourcekit.databinding.EntryQuestionnaireBinding
 import java.util.Collections
 import java.util.Locale
 
 class RecyclerViewQuestions(
     val context: Context,
-    private val items: MutableList<Question>
+    private val items: MutableList<Question>,
+    private val isViewer: Boolean
 ): RecyclerView.Adapter<RecyclerViewQuestions.MainViewHolder>() {
     class MainViewHolder(val binding: EntryQuestionEditorBinding) : ViewHolder(binding.root)
 
@@ -39,8 +36,15 @@ class RecyclerViewQuestions(
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
         val current = items[position]
-        holder.binding.root.setOnClickListener {
-            questionClickListener?.invoke(current.id)
+        if (questionClickListener == null) {
+            holder.binding.root.isEnabled = false
+            holder.binding.root.setOnClickListener(null)
+        }
+        else {
+            holder.binding.root.isEnabled = true
+            holder.binding.root.setOnClickListener {
+                questionClickListener?.invoke(current.id)
+            }
         }
         holder.binding.txtQuestion.text = current.question
         holder.binding.imgQuestionTypeIcon.setImageResource(when (current.questionTypeId) {
@@ -51,13 +55,25 @@ class RecyclerViewQuestions(
             QuestionnaireControlType.Text.ordinal -> R.drawable.rounded_text_fields_24
             else -> throw IllegalStateException("Unknown question type ${current.questionTypeId}")
         })
-        holder.binding.txtQuestionOptions.text = when (current.questionTypeId) {
-            QuestionnaireControlType.Range.ordinal -> String.format(Locale.getDefault(), "From %d to %d", current.valueFrom, current.valueTo)
-            QuestionnaireControlType.SingleSelect.ordinal -> current.options?.joinToString("  •  ") { it.text }
-            QuestionnaireControlType.MultiSelect.ordinal -> current.options?.joinToString("  •  ") { it.text }
-            QuestionnaireControlType.Bool.ordinal -> "True / False"
-            QuestionnaireControlType.Text.ordinal -> "Free text"
-            else -> throw IllegalStateException("Unknown question type ${current.questionTypeId}")
+        if (isViewer) {
+            holder.binding.txtQuestionOptions.text = when (current.questionTypeId) {
+                QuestionnaireControlType.Range.ordinal -> current.value
+                QuestionnaireControlType.SingleSelect.ordinal -> current.options?.joinToString("  •  ") { it.text }
+                QuestionnaireControlType.MultiSelect.ordinal -> current.options?.joinToString("  •  ") { it.text }
+                QuestionnaireControlType.Bool.ordinal -> if (current.value.toBoolean()) "True" else "False"
+                QuestionnaireControlType.Text.ordinal -> if (current.value.isNullOrEmpty()) "-" else current.value
+                else -> throw IllegalStateException("Unknown question type ${current.questionTypeId}")
+            }
+        }
+        else {
+            holder.binding.txtQuestionOptions.text = when (current.questionTypeId) {
+                QuestionnaireControlType.Range.ordinal -> String.format(Locale.getDefault(), "From %d to %d", current.valueFrom, current.valueTo)
+                QuestionnaireControlType.SingleSelect.ordinal -> current.options?.joinToString("  •  ") { it.text }
+                QuestionnaireControlType.MultiSelect.ordinal -> current.options?.joinToString("  •  ") { it.text }
+                QuestionnaireControlType.Bool.ordinal -> "True / False"
+                QuestionnaireControlType.Text.ordinal -> "Free text"
+                else -> throw IllegalStateException("Unknown question type ${current.questionTypeId}")
+            }
         }
     }
 

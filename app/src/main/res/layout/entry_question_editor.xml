@@ -40,8 +40,6 @@
             android:id="@+id/txt_question_options"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
             android:text="Option 1; Option 2; Option 3"
             android:textColor="?attr/secondaryTextColor"
             app:layout_constraintEnd_toEndOf="parent"

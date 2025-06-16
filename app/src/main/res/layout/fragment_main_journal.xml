@@ -56,7 +56,62 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/ll_header" />
+        android:layout_below="@id/ll_header"
+        android:layout_above="@+id/crd_all_questionnaires"
+        android:paddingBottom="24dp"
+        android:clipToPadding="false"/>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/crd_all_questionnaires"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:cardCornerRadius="0dp"
+        app:strokeWidth="0dp"
+        app:cardBackgroundColor="?attr/colorSurface">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="?attr/colorSurfaceContainer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:layout_marginStart="24dp"
+                android:paddingTop="2dp"
+                android:text="All questionnaires"
+                android:textColor="?attr/secondaryTextColor"
+                android:drawableStart="@drawable/round_history_edu_24"
+                android:drawableTint="?attr/secondaryTextColor"
+                android:gravity="center_vertical"
+                android:drawablePadding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:layout_marginEnd="24dp"
+                android:paddingTop="2dp"
+                android:src="@drawable/rounded_chevron_right_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="?attr/secondaryTextColor" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/txt_no_entries"
@@ -76,13 +131,13 @@
         android:id="@+id/btn_add_journal_entry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/crd_all_questionnaires"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:src="@drawable/ic_round_add_24"
-        app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
-        app:borderWidth="0dp" />
+        app:borderWidth="0dp"
+        app:shapeAppearance="@style/FloatingShapeAppearanceOverlay" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_text"
@@ -105,24 +160,21 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:src="@drawable/ic_baseline_ballot_24"
+        android:src="@drawable/rounded_convert_to_text_24"
         android:visibility="invisible"
         app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
         app:borderWidth="0dp" />
 
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/fab_audio"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_above="@id/fab_forms"-->
-<!--        android:layout_alignParentEnd="true"-->
-<!--        android:layout_gravity="bottom|end"-->
-<!--        android:layout_marginEnd="16dp"-->
-<!--        android:layout_marginBottom="1dp"-->
-<!--        android:background="@drawable/rounded_spinner"-->
-<!--        android:backgroundTint="?attr/colorPrimary"-->
-<!--        android:src="@drawable/ic_baseline_mic_24"-->
-<!--        android:visibility="invisible"-->
-<!--        app:borderWidth="0dp"-->
-<!--        app:tint="?attr/colorOnPrimary" />-->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_questionnaire"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/fab_forms"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/round_history_edu_24"
+        android:visibility="invisible"
+        app:shapeAppearance="@style/FloatingShapeAppearanceOverlay"
+        app:borderWidth="0dp" />
 </RelativeLayout>

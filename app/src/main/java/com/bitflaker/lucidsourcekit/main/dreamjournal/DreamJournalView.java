@@ -1,5 +1,6 @@
 package com.bitflaker.lucidsourcekit.main.dreamjournal;
 
+import static android.app.Activity.RESULT_OK;
 import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 import android.app.Activity;
@@ -19,6 +20,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,13 +31,26 @@ import com.bitflaker.lucidsourcekit.data.records.AppliedFilter;
 import com.bitflaker.lucidsourcekit.data.records.SortEntry;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.CompletedQuestionnaire;
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.resulttables.CompletedQuestionnaireDetails;
+import com.bitflaker.lucidsourcekit.databinding.ActivityCompletedQuestionnaireViewerBinding;
 import com.bitflaker.lucidsourcekit.databinding.FragmentMainJournalBinding;
+import com.bitflaker.lucidsourcekit.databinding.SheetQuestionnaireListBinding;
+import com.bitflaker.lucidsourcekit.main.questionnaire.CompletedQuestionnaireViewerActivity;
+import com.bitflaker.lucidsourcekit.main.questionnaire.QuestionnaireEditorActivity;
+import com.bitflaker.lucidsourcekit.main.questionnaire.QuestionnaireView;
+import com.bitflaker.lucidsourcekit.main.questionnaire.RecyclerViewFilledOutQuestionnaires;
 import com.bitflaker.lucidsourcekit.utils.Tools;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import kotlin.Unit;
 
 public class DreamJournalView extends Fragment {
     public ActivityResultLauncher<Intent> journalEditorActivityResultLauncher;
@@ -44,6 +59,10 @@ public class DreamJournalView extends Fragment {
     private DreamJournalEntry.EntryType autoOpenJournalTypeCreator = null;
     private CompositeDisposable compositeDisposable;
     private FragmentMainJournalBinding binding;
+    private RecyclerViewFilledOutQuestionnaires questionnaireAdapter;
+    private SheetQuestionnaireListBinding questionnaireSheetBinding;
+    private ActivityResultLauncher<Intent> editorLauncher;
+    private int entryIdToUpdateQuestionnaires = -1;
     private MainDatabase db;
     private boolean isOpen = false;
     private int sortBy = 0;
@@ -73,12 +92,44 @@ public class DreamJournalView extends Fragment {
 
         db = MainDatabase.getInstance(getContext());
 
+        Activity activity = getActivity();
+        editorLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            Intent intent = result.getData();
+            if (intent != null) {
+                int id = intent.getIntExtra("COMPLETED_QUESTIONNAIRE_ID", -1);
+                if (result.getResultCode() == RESULT_OK && id != -1) {
+                    if (entryIdToUpdateQuestionnaires != -1) {
+                        reloadEntryData(entryIdToUpdateQuestionnaires);
+                    }
+                    else {
+                        reloadEntryDataByCompleted(id);
+                    }
+                    if (questionnaireAdapter != null) {
+                        CompletedQuestionnaireDetails completed = db.getCompletedQuestionnaireDao().getDetailsById(id).blockingGet();
+                        questionnaireAdapter.addCompletedQuestionnaire(completed);
+                        activity.runOnUiThread(() -> {
+                            questionnaireSheetBinding.txtNoQuestionnairesTitle.setVisibility(View.GONE);
+                            questionnaireSheetBinding.txtNoQuestionnairesSubTitle.setVisibility(View.GONE);
+                        });
+                    }
+                    questionnaireAdapter = null;
+                    questionnaireSheetBinding = null;
+                    entryIdToUpdateQuestionnaires = -1;
+                }
+            }
+        });
+
         fabOpen = AnimationUtils.loadAnimation(getContext(), R.anim.add_open);
         fabClose = AnimationUtils.loadAnimation(getContext(),R.anim.add_close);
         rotateForward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_forward);
         rotateBackward = AnimationUtils.loadAnimation(getContext(),R.anim.rotate_backward);
 
         compositeDisposable.add(db.getJournalEntryDao().getAll().subscribe(journalEntries -> {
+            journalEntries.forEach(e -> {
+                long dayFrom = Tools.getMidnightTime(e.journalEntry.timeStamp);
+                long dayTo = dayFrom + 24 * 60 * 60 * 1000;
+                e.setQuestionnaireCount(db.getCompletedQuestionnaireDao().getQuestionnaireCount(dayFrom, dayTo).blockingGet());
+            });
             getActivity().runOnUiThread(() -> {
                 recyclerViewAdapterDreamJournal = new RecyclerViewAdapterDreamJournal(getActivity(), this, journalEntries);
                 setBasics();
@@ -88,14 +139,58 @@ public class DreamJournalView extends Fragment {
                 setupResetFilterButton();
                 handleItemCount(journalEntries.size());
                 recyclerViewAdapterDreamJournal.setOnEntryCountChangedListener(this::handleItemCount);
+                recyclerViewAdapterDreamJournal.setOnQuestionnaireAddClickListener(this::viewQuestionnaires);
             });
         }));
 
-        if(autoOpenJournalTypeCreator != null) {
+        if (autoOpenJournalTypeCreator != null) {
             // TODO when an entry was created after the editor was opened by the alarm quick action, the list of entries in the MainViewer does not get updated
             showJournalCreator(autoOpenJournalTypeCreator);
             autoOpenJournalTypeCreator = null;
         }
+
+        binding.crdAllQuestionnaires.setOnClickListener(e -> {
+            startActivity(new Intent(getContext(), CompletedQuestionnaireViewerActivity.class));
+            // TODO: Add result listener to update all questionnaire counts for all journal entries at the dates where a new questionnaire was added
+        });
+    }
+
+    private void viewQuestionnaires(DreamJournalEntry entry) {
+        long timestamp = entry.journalEntry.timeStamp;
+        BottomSheetDialog bsd = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
+        questionnaireSheetBinding = com.bitflaker.lucidsourcekit.databinding.SheetQuestionnaireListBinding.inflate(getLayoutInflater());
+        bsd.setContentView(questionnaireSheetBinding.getRoot());
+
+        long dayFrom = Tools.getMidnightTime(timestamp);
+        long dayTo = dayFrom + 24 * 60 * 60 * 1000;
+
+        questionnaireSheetBinding.txtQuestionnairesDate.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(timestamp));
+
+        List<CompletedQuestionnaireDetails> completed = db.getCompletedQuestionnaireDao().getByTimeFrame(dayFrom, dayTo).blockingGet();
+
+        int emptyVisibility = completed.isEmpty() ? View.VISIBLE : View.GONE;
+        questionnaireSheetBinding.txtNoQuestionnairesTitle.setVisibility(emptyVisibility);
+        questionnaireSheetBinding.txtNoQuestionnairesSubTitle.setVisibility(emptyVisibility);
+
+        questionnaireSheetBinding.rcvQuestionnairesFilledOut.setLayoutManager(new LinearLayoutManager(getContext()));
+        questionnaireAdapter = new RecyclerViewFilledOutQuestionnaires(getContext(), completed);
+        questionnaireAdapter.setOnQuestionnaireClickListener(completedId -> {
+            Intent intent = new Intent(getContext(), QuestionnaireEditorActivity.class);
+            intent.putExtra("COMPLETED_QUESTIONNAIRE_ID", completedId);
+            startActivity(intent);
+            return Unit.INSTANCE;
+        });
+        questionnaireSheetBinding.rcvQuestionnairesFilledOut.setAdapter(questionnaireAdapter);
+
+        questionnaireSheetBinding.btnFillOutQuestionnaire.setOnClickListener(e -> {
+            entryIdToUpdateQuestionnaires = entry.journalEntry.entryId;
+            long dateTimeStamp = timestamp - Tools.getTimeOfDayMillis(timestamp);
+            Intent intent = new Intent(getContext(), QuestionnaireView.class);
+            intent.putExtra("USE_SPECIFIC_DATE", dateTimeStamp);
+            editorLauncher.launch(intent);
+        });
+
+        bsd.show();
     }
 
     private void setBasics() {
@@ -163,6 +258,12 @@ public class DreamJournalView extends Fragment {
         binding.btnAddJournalEntry.setOnClickListener(e -> animateFab());
         binding.fabText.setOnClickListener(e -> showJournalCreator(DreamJournalEntry.EntryType.PLAIN_TEXT));
         binding.fabForms.setOnClickListener(e -> showJournalCreator(DreamJournalEntry.EntryType.FORMS_TEXT));
+        binding.fabQuestionnaire.setOnClickListener(e -> showQuestionnaireCreator());
+    }
+
+    private void showQuestionnaireCreator() {
+        animateFab();
+        editorLauncher.launch(new Intent(getContext(), QuestionnaireView.class));
     }
 
     private void handleItemCount(int itemCount) {
@@ -187,20 +288,24 @@ public class DreamJournalView extends Fragment {
             binding.btnAddJournalEntry.startAnimation(rotateForward);
             binding.fabText.startAnimation(fabClose);
             binding.fabForms.startAnimation(fabClose);
+            binding.fabQuestionnaire.startAnimation(fabClose);
             Tools.animateBackgroundTint(binding.btnAddJournalEntry, colorOpenBackground, colorClosedBackground, 300);
             Tools.animateImageTint(binding.btnAddJournalEntry, colorOnOpenBackground, colorOnClosedBackground, 300);
             binding.fabText.setClickable(false);
             binding.fabForms.setClickable(false);
+            binding.fabQuestionnaire.setClickable(false);
             isOpen=false;
         }
         else {
             binding.btnAddJournalEntry.startAnimation(rotateBackward);
             binding.fabText.startAnimation(fabOpen);
             binding.fabForms.startAnimation(fabOpen);
+            binding.fabQuestionnaire.startAnimation(fabOpen);
             Tools.animateBackgroundTint(binding.btnAddJournalEntry, colorClosedBackground, colorOpenBackground, 300);
             Tools.animateImageTint(binding.btnAddJournalEntry, colorOnClosedBackground, colorOnOpenBackground, 300);
             binding.fabText.setClickable(true);
             binding.fabForms.setClickable(true);
+            binding.fabQuestionnaire.setClickable(true);
             isOpen=true;
         }
     }
@@ -219,13 +324,28 @@ public class DreamJournalView extends Fragment {
         });
     }
 
+    private void reloadEntryDataByCompleted(int id) {
+        CompletedQuestionnaire completed = db.getCompletedQuestionnaireDao().getById(id).blockingGet();
+        List<Integer> idsToReload = recyclerViewAdapterDreamJournal.getEntriesByDate(completed.getTimestamp());
+        List<DreamJournalEntry> entriesToReload = idsToReload.stream().map(this::getDreamJournalEntry).collect(Collectors.toList());
+        recyclerViewAdapterDreamJournal.updateDataForEntry(entriesToReload, null);
+    }
+
     private void reloadEntryData(int entryId) {
-        DreamJournalEntry entry = db.getJournalEntryDao().getEntryDataById(entryId).blockingGet();
-        recyclerViewAdapterDreamJournal.updateDataForEntry(entry, insertedIndex -> {
+        recyclerViewAdapterDreamJournal.updateDataForEntry(getDreamJournalEntry(entryId), insertedIndex -> {
             if (insertedIndex != -1) {
                 binding.recyclerView.scrollToPosition(insertedIndex);
             }
         });
+    }
+
+    @NonNull
+    private DreamJournalEntry getDreamJournalEntry(int entryId) {
+        DreamJournalEntry entry = db.getJournalEntryDao().getEntryDataById(entryId).blockingGet();
+        long dayFrom = Tools.getMidnightTime(entry.journalEntry.timeStamp);
+        long dayTo = dayFrom + 24 * 60 * 60 * 1000;
+        entry.setQuestionnaireCount(db.getCompletedQuestionnaireDao().getQuestionnaireCount(dayFrom, dayTo).blockingGet());
+        return entry;
     }
 
     public void openJournalEntry(DreamJournalEntry entry, boolean tryResetFilters) {

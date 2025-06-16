@@ -40,4 +40,7 @@ data class Question(
 
     @Ignore
     var options: MutableList<QuestionOptions>? = null
+
+    @Ignore
+    var value: String? = null
 }
