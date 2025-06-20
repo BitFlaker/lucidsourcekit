@@ -114,7 +114,7 @@
     <!-- PIN login -->
     <LinearLayout
         android:id="@+id/ll_setup_pinLayout"
-        android:layout_width="320dp"
+        android:layout_width="272dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="56dp"
         android:layout_marginRight="56dp"
