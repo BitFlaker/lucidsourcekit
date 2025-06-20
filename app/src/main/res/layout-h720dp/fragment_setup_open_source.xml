@@ -71,13 +71,35 @@
         android:textSize="16sp" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_open_readme"
+        android:id="@+id/btn_privacy_policy"
+        style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:minHeight="32dp"
+        android:text="Privacy policy"
+        android:textColor="?attr/secondaryTextColor"
         android:layout_below="@+id/txt_open_source_description"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="21dp"
-        android:textAllCaps="false"
+        app:icon="@drawable/ic_round_open_in_new_24"
+        app:iconPadding="8dp"
+        app:iconSize="12dp"
+        app:iconTint="?attr/secondaryTextColor"
+        app:rippleColor="?attr/colorSurfaceContainer" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_open_readme"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="32dp"
         android:text="README.md"
-        app:icon="@drawable/ic_round_open_in_new_24" />
+        android:textColor="?attr/secondaryTextColor"
+        android:layout_below="@+id/btn_privacy_policy"
+        android:layout_centerHorizontal="true"
+        app:icon="@drawable/ic_round_open_in_new_24"
+        app:iconPadding="8dp"
+        app:iconSize="12dp"
+        app:iconTint="?attr/secondaryTextColor"
+        app:rippleColor="?attr/colorSurfaceContainer" />
 </RelativeLayout>

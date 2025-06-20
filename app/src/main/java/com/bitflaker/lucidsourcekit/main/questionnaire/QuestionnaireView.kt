@@ -74,7 +74,7 @@ class QuestionnaireView : AppCompatActivity() {
 
         // Setup views for selecting questionnaire to fill out
         binding.spQuestionnaireProgress.visibility = View.GONE
-        binding.clQuestionViewer.visibility = View.GONE
+        binding.svQuestionViewer.visibility = View.GONE
         binding.btnQuestionnaireNext.visibility = View.GONE
         binding.btnQuestionnaireBack.visibility = View.GONE
         binding.rcvQuestionnaires.visibility = View.VISIBLE
@@ -105,7 +105,7 @@ class QuestionnaireView : AppCompatActivity() {
         val questionnaireAdapter = RecyclerViewQuestionnaireOverview(this, questionnaires)
         questionnaireAdapter.onQuestionnaireClickListener = { id ->
             binding.spQuestionnaireProgress.visibility = View.VISIBLE
-            binding.clQuestionViewer.visibility = View.VISIBLE
+            binding.svQuestionViewer.visibility = View.VISIBLE
             binding.btnQuestionnaireNext.visibility = View.VISIBLE
             binding.btnQuestionnaireBack.visibility = View.VISIBLE
             binding.rcvQuestionnaires.visibility = View.GONE

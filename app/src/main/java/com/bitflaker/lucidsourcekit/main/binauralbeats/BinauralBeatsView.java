@@ -2,6 +2,7 @@ package com.bitflaker.lucidsourcekit.main.binauralbeats;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,19 +75,22 @@ public class BinauralBeatsView extends Fragment {
                 bottomSheetDialog.dismiss();
                 binding.llBbpTimeContainer.setVisibility(View.VISIBLE);
                 LinearLayout.LayoutParams lParams = (LinearLayout.LayoutParams) binding.llBbpCarrierFreqHeading.getLayoutParams();
-                lParams.topMargin = Tools.dpToPx(getContext(), 15);
+                lParams.topMargin = Tools.dpToPx(getContext(), 24);
                 binding.llBbpCarrierFreqHeading.setLayoutParams(lParams);
                 binding.lgBinauralTimeProgress.setVisibility(View.VISIBLE);
                 binding.txtBbpCarrierFreqHeading.setVisibility(View.VISIBLE);
-                binding.txtCurrTrackName.setVisibility(View.VISIBLE);
-                binding.txtCurrTrackName.setText(binauralBeat.title());
-                binding.txtCurrTrackDescription.setText(binauralBeat.description());
+//                binding.txtCurrTrackName.setVisibility(View.VISIBLE);
+//                binding.txtCurrTrackName.setText(binauralBeat.title());
+//                binding.txtCurrTrackDescription.setText(binauralBeat.description());
                 binding.txtBinauralBeatsTotalTime.setText(String.format(" / %s", getTimeStringFromSeconds((int) binauralBeat.frequencyList().getDuration())));
                 binding.txtBinauralBeatsTimeline.setText(getTimeStringFromSeconds(0));
                 binding.txtCurrentBinauralFrequency.setText("0.00");
                 binding.txtCarrierFrequency.setText(String.format(Locale.ENGLISH, "%.0f Hz", binauralBeat.baseFrequency()));
+                binding.txtCarrierFrequency.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
                 binding.txtCarrierFrequency.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, getContext().getTheme()));
-                TextViewCompat.setCompoundDrawableTintList(binding.txtCarrierFrequency, Tools.getAttrColorStateList(R.attr.secondaryTextColor, getContext().getTheme()));
+                binding.txtCarrierFrequency.setCompoundDrawables(null, null, null, null);
+                binding.txtBbpCarrierFreqHeading.setTextColor(Tools.getAttrColor(R.attr.secondaryTextColor, getContext().getTheme()));
+//                TextViewCompat.setCompoundDrawableTintList(binding.txtCarrierFrequency, Tools.getAttrColorStateList(R.attr.secondaryTextColor, getContext().getTheme()));
                 binding.btnPlayTrack.setIcon(getContext().getDrawable(R.drawable.ic_baseline_play_arrow_24));
                 setDataForProgress(binauralBeat, 0);
                 if (binBeatPlayer != null) {
@@ -124,21 +128,22 @@ public class BinauralBeatsView extends Fragment {
         });
 
         binding.btnAddBackgroundNoise.setOnClickListener(e -> {
-            final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
-            SheetBinauralBackgroundNoiseBinding sBinding = SheetBinauralBackgroundNoiseBinding.inflate(getLayoutInflater());
-            bottomSheetDialog.setContentView(sBinding.getRoot());
-
-            RecyclerViewAdapterBackgroundNoisesManager manager = new RecyclerViewAdapterBackgroundNoisesManager(getContext(), noises);
-            manager.setOnEntryClickedListener((backgroundNoise, position) -> {
-                System.out.println(backgroundNoise.getName());
-            });
-            manager.setOnVolumeChangedListener((backgroundNoise, position) -> {
-                System.out.println(backgroundNoise.getName() + " | " + backgroundNoise.getVolume());
-            });
-            sBinding.rcvListBackgroundNoises.setAdapter(manager);
-            sBinding.rcvListBackgroundNoises.setLayoutManager(new LinearLayoutManager(getContext()));
-
-            bottomSheetDialog.show();
+            Tools.showPlaceholderDialog(getContext());
+//            final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetDialogStyle);
+//            SheetBinauralBackgroundNoiseBinding sBinding = SheetBinauralBackgroundNoiseBinding.inflate(getLayoutInflater());
+//            bottomSheetDialog.setContentView(sBinding.getRoot());
+//
+//            RecyclerViewAdapterBackgroundNoisesManager manager = new RecyclerViewAdapterBackgroundNoisesManager(getContext(), noises);
+//            manager.setOnEntryClickedListener((backgroundNoise, position) -> {
+//                System.out.println(backgroundNoise.getName());
+//            });
+//            manager.setOnVolumeChangedListener((backgroundNoise, position) -> {
+//                System.out.println(backgroundNoise.getName() + " | " + backgroundNoise.getVolume());
+//            });
+//            sBinding.rcvListBackgroundNoises.setAdapter(manager);
+//            sBinding.rcvListBackgroundNoises.setLayoutManager(new LinearLayoutManager(getContext()));
+//
+//            bottomSheetDialog.show();
         });
 
         binding.btnLoopTrack.setOnClickListener(e -> {

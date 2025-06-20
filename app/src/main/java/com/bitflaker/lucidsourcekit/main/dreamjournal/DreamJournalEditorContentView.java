@@ -7,6 +7,7 @@ import static java.util.UUID.randomUUID;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.media.MediaPlayer;
@@ -48,6 +49,7 @@ import com.bitflaker.lucidsourcekit.databinding.SheetJournalTimestampBinding;
 import com.bitflaker.lucidsourcekit.utils.RecordingObjectTools;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
@@ -106,6 +108,7 @@ public class DreamJournalEditorContentView extends Fragment {
         setupRecordingsEditor();
         setupContinueButton();
 
+        Tools.setEditTextSingleLine(binding.txtDjTitleDream);
         binding.txtDjTitleDream.setText(entry.journalEntry.title);
         binding.txtDjTitleDream.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
@@ -387,10 +390,24 @@ public class DreamJournalEditorContentView extends Fragment {
             SheetJournalTagsEditorBinding sBinding = SheetJournalTagsEditorBinding.inflate(getLayoutInflater());
             bsd.setContentView(sBinding.getRoot());
 
+            // Fix issue with EditText hidden behind soft-keyboard
+            bsd.setOnShowListener(dialog -> new Handler().postDelayed(() -> {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
+                BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from(d.findViewById(R.id.design_bottom_sheet));
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }, 0));
+
             showAllSetTags(sBinding.flxDjTagsToAdd);
+            Tools.setEditTextSingleLine(sBinding.txtDjTagsEnter);
             sBinding.txtDjTagsEnter.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, allAvailableTags));
             setupTagEditorEditText(sBinding.flxDjTagsToAdd, sBinding.txtDjTagsEnter);
             setupTagEditorSelection(sBinding.flxDjTagsToAdd, sBinding.txtDjTagsEnter);
+            sBinding.btnAddTag.setOnClickListener(v -> {
+                String enteredTag = sBinding.txtDjTagsEnter.getText().toString();
+                if (!enteredTag.isEmpty()) {
+                    tryAddTag(sBinding.flxDjTagsToAdd, sBinding.txtDjTagsEnter, enteredTag);
+                }
+            });
 
             bsd.show();
         });
@@ -421,7 +438,7 @@ public class DreamJournalEditorContentView extends Fragment {
                 removeTag(enteredTag);
                 tagsContainer.removeView(tagChip);
             });
-            tagsContainer.addView(tagChip);
+            tagsContainer.addView(tagChip, 0);
             tagAddBox.setText("");
         }
     }

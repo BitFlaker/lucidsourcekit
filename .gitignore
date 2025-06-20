@@ -82,3 +82,6 @@ lint/tmp/
 
 # Other
 values-classic/
+
+app/release/
+app/release/output-metadata.json

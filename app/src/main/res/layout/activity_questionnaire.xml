@@ -79,51 +79,70 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_questionnaire_close" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_question_viewer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
+    <ScrollView
+        android:id="@+id/sv_question_viewer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@+id/btn_questionnaire_next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sp_questionnaire_progress">
 
-        <TextView
-            android:id="@+id/txt_question_heading"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Question #04"
-            android:textColor="?attr/secondaryTextColor"
-            android:textSize="12sp"
-            android:textAllCaps="true"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:paddingVertical="32dp"
+            android:layout_marginHorizontal="24dp">
 
-        <TextView
-            android:id="@+id/txt_question_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Placeholder for the question to display"
-            android:textColor="?attr/primaryTextColor"
-            android:textSize="24sp"
-            android:fontFamily="sans-serif-medium"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_question_heading" />
+            <TextView
+                android:id="@+id/txt_question_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Question #04"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="12sp"
+                android:textAllCaps="true"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/txt_question_title"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcv_question_control"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:overScrollMode="never"
-            android:nestedScrollingEnabled="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_question_title" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/txt_question_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Placeholder for the question to display"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="24sp"
+                android:fontFamily="sans-serif-medium"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_question_heading"
+                app:layout_constraintBottom_toTopOf="@+id/rcv_question_control"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv_question_control"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:overScrollMode="never"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_question_title" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <ImageView
+        android:id="@+id/v_button_background"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:src="@drawable/background_fade_in_gradient"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintBottom_toBottomOf="@+id/sv_question_viewer" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_questionnaire_next"

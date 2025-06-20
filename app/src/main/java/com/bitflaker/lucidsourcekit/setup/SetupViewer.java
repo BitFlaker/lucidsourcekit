@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bitflaker.lucidsourcekit.R;
@@ -168,17 +169,17 @@ public class SetupViewer extends AppCompatActivity {
 
                 if (binding.tablayout.getSelectedTabPosition() + 1 == pageCount) {
                     binding.btnNext.setText(R.string.setup_next_finish);
-                    binding.btnNext.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                    binding.btnNext.setIcon(null);
                 }
                 else {
                     binding.btnNext.setText(R.string.setup_next);
-                    binding.btnNext.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_arrow_forward_24, 0);
+                    binding.btnNext.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_chevron_right_24, getTheme()));
                 }
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                pageDots.get(tab.getPosition()).setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurfaceContainerLow, getTheme()));
+                pageDots.get(tab.getPosition()).setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurfaceContainerHigh, getTheme()));
             }
 
             @Override
@@ -193,7 +194,7 @@ public class SetupViewer extends AppCompatActivity {
             dotPage.setBackgroundResource(R.drawable.page_dot);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(Tools.dpToPx(this, 8), Tools.dpToPx(this, 8));
             lp.setMargins(Tools.dpToPx(this, 2), 0, Tools.dpToPx(this, 2), 0);
-            dotPage.setBackgroundTintList(Tools.getAttrColorStateList(i == 0 ? R.attr.colorPrimary : R.attr.colorSurfaceContainerLow, getTheme()));
+            dotPage.setBackgroundTintList(Tools.getAttrColorStateList(i == 0 ? R.attr.colorPrimary : R.attr.colorSurfaceContainerHigh, getTheme()));
             binding.pageDotContainer.addView(dotPage, lp);
             pageDots.add(dotPage);
         }

@@ -61,6 +61,7 @@ public class RecyclerViewAdapterCurrentGoals extends RecyclerView.Adapter<Recycl
         int achievedCount = goalAchievedCount.getOrDefault(currentGoal.goalId, 0);
         holder.binding.imgAchievedCounterBackground.setImageTintList(achievedCount == 0 ? colorNotAchieved : colorAchieved);
         holder.binding.txtAchievedCounter.setVisibility(achievedCount == 0 ? View.GONE : View.VISIBLE);
+        holder.binding.txtAchievedCounterPlaceholder.setVisibility(achievedCount == 0 ? View.VISIBLE : View.GONE);
         holder.binding.txtAchievedCounter.setText(String.format(Locale.getDefault(), "%d", achievedCount));
         holder.binding.crdCurrentGoal.setOnClickListener(e -> {
             ShuffleTransaction transaction = new ShuffleTransaction(shuffleId, currentGoal.goalId, Calendar.getInstance().getTimeInMillis());

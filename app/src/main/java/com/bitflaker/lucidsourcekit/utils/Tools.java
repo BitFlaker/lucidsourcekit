@@ -14,10 +14,13 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
+import android.text.InputType;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -37,6 +40,7 @@ import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.SleepQuality;
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import com.bitflaker.lucidsourcekit.main.goals.RandomGoalPicker;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -143,6 +147,21 @@ public class Tools {
 
     public static int pxToDp(Context context, double px) {
         return (int)(px / context.getResources().getDisplayMetrics().density);
+    }
+
+    public static void setEditTextSingleLine(EditText editText) {
+        editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        editText.setMaxLines(6);
+        editText.setHorizontallyScrolling(false);
+        editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+    }
+
+    public static void showPlaceholderDialog(Context context) {
+        new MaterialAlertDialogBuilder(context, R.style.Theme_LucidSourceKit_ThemedDialog)
+                .setTitle("Placeholder")
+                .setMessage("This action currently is just a placeholder. There will be some functionality behind here at a later point in time")
+                .setPositiveButton(context.getResources().getString(R.string.ok), null)
+                .show();
     }
 
     public static RelativeLayout.LayoutParams getRelativeLayoutParamsTopStatusbar(Context context) {

@@ -45,7 +45,7 @@ class RecyclerViewFilledOutQuestionnaires(
     }
 
     fun addCompletedQuestionnaire(completed: CompletedQuestionnaireDetails) {
-        items.add(completed)
-        notifyItemInserted(items.size - 1)
+        items.add(0, completed)
+        notifyItemInserted(0)
     }
 }

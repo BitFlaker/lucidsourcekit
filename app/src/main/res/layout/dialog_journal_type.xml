@@ -41,11 +41,11 @@
                 android:layout_margin="6dp"
                 android:text="Text"
                 android:textColor="?attr/primaryTextColor"
-                android:padding="24dp"
-                android:drawableTop="@drawable/ic_baseline_text_fields_24"
-                android:drawableTint="@color/white"
-                android:background="@drawable/ripple_rounded"
-                app:backgroundTint="?attr/colorSurfaceContainer"/>
+                app:iconTint="?attr/primaryTextColor"
+                app:icon="@drawable/ic_baseline_text_fields_24"
+                app:iconGravity="textTop"
+                app:cornerRadius="12dp"
+                app:backgroundTint="?attr/colorSurfaceContainer" />
 
             <Space
                 android:layout_width="8dp"

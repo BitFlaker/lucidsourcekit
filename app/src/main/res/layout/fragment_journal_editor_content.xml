@@ -65,15 +65,13 @@
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="12dp"
-                android:scrollHorizontally="false"
                 android:gravity="center_vertical"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="24sp"
                 android:background="@null"
                 android:fontFamily="sans-serif-medium"
                 android:hint="@string/dream_title_hint"
-                android:importantForAutofill="no"
-                android:inputType="textCapSentences|textMultiLine" />
+                android:importantForAutofill="no" />
 
             <!-- NOTE: due to performance reasons, the framework automatically limits text length to 5000 characters, if not configured otherwise -->
             <EditText

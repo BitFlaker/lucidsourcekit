@@ -15,6 +15,7 @@ import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao
@@ -30,6 +31,10 @@ public interface JournalEntryDao {
     @Transaction
     @Query("SELECT * FROM JournalEntry WHERE entryId = :id")
     Single<DreamJournalEntry> getEntryDataById(int id);
+
+    @Transaction
+    @Query("SELECT * FROM JournalEntry WHERE timeStamp >= :startTimestamp AND timeStamp < :endTimestamp")
+    Single<List<DreamJournalEntry>> getEntriesInTimestampRange(long startTimestamp, long endTimestamp);
 
     @Query("SELECT * FROM JournalEntry WHERE entryId = :id")
     Single<JournalEntry> getEntryById(int id);
@@ -48,6 +53,12 @@ public interface JournalEntryDao {
 
     @Query("SELECT COUNT(*) FROM JournalEntry")
     Single<Integer> getTotalEntriesCount();
+
+    @Query("SELECT COALESCE(MIN(timestamp), -1) FROM JournalEntry")
+    Single<Long> getOldestTime();
+
+    @Query("SELECT timeStamp FROM JournalEntry WHERE timeStamp >= :from AND timeStamp < :to ORDER BY timeStamp DESC")
+    Single<List<Long>> getTimestampsBetween(long from, long to);
 
     @Insert(onConflict = REPLACE)
     Single<List<Long>> insertAll(List<JournalEntry> entries);

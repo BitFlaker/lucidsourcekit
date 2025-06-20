@@ -94,10 +94,8 @@
                 android:fontFamily="sans-serif-medium"
                 android:hint="Name"
                 android:importantForAutofill="no"
-                android:inputType="textCapSentences|textMultiLine"
                 android:paddingHorizontal="24dp"
                 android:paddingVertical="8dp"
-                android:scrollHorizontally="false"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="24sp"
                 app:layout_constraintTop_toTopOf="parent" />

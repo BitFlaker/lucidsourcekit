@@ -1,12 +1,12 @@
 [versions]
-appcompat = "1.7.0"
+appcompat = "1.7.1"
 biometric = "1.2.0-alpha05"
-constraintlayout = "2.1.4"
+constraintlayout = "2.2.1"
 coreKtx = "1.13.1"
-datastoreVersion = "1.1.1"
+datastoreVersion = "1.1.7"
 espressoCore = "3.6.1"
 flexbox = "3.0.0"
-gradle = "8.9.1"
+gradle = "8.9.3"
 junit = "1.2.1"
 kotlinVersion = "2.0.0"
 legacySupportV4 = "1.0.0"
@@ -16,7 +16,8 @@ playServicesOssLicenses = "17.1.0"
 preferenceKtx = "1.2.1"
 roomVersion = "2.6.1"
 viewpager2 = "1.1.0"
-activity = "1.8.0"
+activity = "1.9.3"
+markdown = "0.7.3"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
@@ -33,6 +34,7 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion" }
 androidx-room-rxjava3 = { module = "androidx.room:room-rxjava3", version.ref = "roomVersion" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
+markdown = { module = "org.jetbrains:markdown", version.ref = "markdown" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinVersion" }

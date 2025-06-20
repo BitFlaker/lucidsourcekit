@@ -1,13 +1,22 @@
 package com.bitflaker.lucidsourcekit.main;
 
+import static com.bitflaker.lucidsourcekit.utils.UtilsKt.generateFileName;
+
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -17,12 +26,21 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bitflaker.lucidsourcekit.MainActivity;
 import com.bitflaker.lucidsourcekit.R;
+import com.bitflaker.lucidsourcekit.data.export.ExportDialog;
+import com.bitflaker.lucidsourcekit.data.export.ExportTypeAdapter;
+import com.bitflaker.lucidsourcekit.data.export.SimpleActivityLauncher;
+import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
 import com.bitflaker.lucidsourcekit.databinding.ActivityMainViewerBinding;
 import com.bitflaker.lucidsourcekit.databinding.DialogProgressBinding;
+import com.bitflaker.lucidsourcekit.main.about.AboutActivity;
+import com.bitflaker.lucidsourcekit.main.alarms.AlarmViewer;
+import com.bitflaker.lucidsourcekit.main.alarms.JournalTypeDialogKt;
 import com.bitflaker.lucidsourcekit.main.binauralbeats.BinauralBeatsView;
 import com.bitflaker.lucidsourcekit.main.dreamjournal.DreamJournalView;
 import com.bitflaker.lucidsourcekit.main.goals.GoalsView;
@@ -33,10 +51,16 @@ import com.bitflaker.lucidsourcekit.utils.BackupTask;
 import com.bitflaker.lucidsourcekit.utils.BackupTaskCallback;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.textfield.TextInputLayout;
 
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Locale;
+
+import kotlin.Unit;
 
 public class MainViewer extends AppCompatActivity {
     private static final String PAGE_OVERVIEW = "overview";
@@ -57,6 +81,7 @@ public class MainViewer extends AppCompatActivity {
     private BinauralBeatsView vwPageBinauralBeats;
 
     private ActivityMainViewerBinding binding;
+    private SimpleActivityLauncher launcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +91,7 @@ public class MainViewer extends AppCompatActivity {
         Tools.makeStatusBarTransparent(this);
         initVars();
 
+        launcher = new SimpleActivityLauncher(this, 2);
         backupSaveDialogLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::backupSaveDialogResult);
         backupLoadDialogLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::backupLoadDialogResult);
 
@@ -83,21 +109,24 @@ public class MainViewer extends AppCompatActivity {
             androidx.appcompat.widget.PopupMenu popup = new androidx.appcompat.widget.PopupMenu(new ContextThemeWrapper(this, R.style.Theme_LucidSourceKit_PopupMenu), binding.btnMoreOptions);
             popup.getMenuInflater().inflate(R.menu.more_options_popup_menu, popup.getMenu());
             popup.setOnMenuItemClickListener(item -> {
-                if (item.getItemId() == R.id.itm_third_party) {
-                    startActivity(new Intent(this, OssLicensesMenuActivity.class));
-                }
-                else if (item.getItemId() == R.id.itm_export_data) {
+                if (item.getItemId() == R.id.itm_export_data) {
                     Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     intent.setType("application/zip");
-                    intent.putExtra(Intent.EXTRA_TITLE, "backupdata.zip");
+                    intent.putExtra(Intent.EXTRA_TITLE, generateFileName("LucidSourceKit_Backup", "zip"));
                     backupSaveDialogLauncher.launch(intent);
                 }
                 else if (item.getItemId() == R.id.itm_import_data) {
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("application/zip");
-                    backupLoadDialogLauncher.launch(intent);
+                    promptImportBackup();
+                }
+                else if (item.getItemId() == R.id.itm_export) {
+                    ExportDialog.Companion.promptExportData(this, launcher);
+                }
+                else if (item.getItemId() == R.id.itm_about) {
+                    startActivity(new Intent(this, AboutActivity.class));
+                }
+                else {
+                    Tools.showPlaceholderDialog(this);
                 }
                 return true;
             });
@@ -128,6 +157,20 @@ public class MainViewer extends AppCompatActivity {
             BackupTask.Companion.deleteOldBeforeImportBackup(this);
             Log.i("BackupCleaner", "Deleted old application data backup from before last import as the application has been running for at least 5 seconds");
         }, 5000);
+    }
+
+    private void promptImportBackup() {
+        new MaterialAlertDialogBuilder(this, R.style.Theme_LucidSourceKit_ThemedDialog)
+                .setTitle("Import backup")
+                .setMessage("Importing a backup will erase all of your current data! Are you sure you want to proceed?")
+                .setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("application/zip");
+                    backupLoadDialogLauncher.launch(intent);
+                })
+                .setNegativeButton(getResources().getString(R.string.no), null)
+                .show();
     }
 
     private void backupSaveDialogResult(ActivityResult result) {

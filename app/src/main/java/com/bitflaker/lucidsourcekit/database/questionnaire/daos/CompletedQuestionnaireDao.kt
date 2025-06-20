@@ -3,9 +3,10 @@ package com.bitflaker.lucidsourcekit.database.questionnaire.daos
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.CompletedQuestionnaire
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.resulttables.CompletedQuestionnaireDetails
 import io.reactivex.rxjava3.core.Completable
@@ -25,6 +26,15 @@ interface CompletedQuestionnaireDao {
     @Query("SELECT cq.id, cq.questionnaireId, cq.answerDuration, cq.timestamp, q.title, q.description, q.colorCode, q.orderNr FROM CompletedQuestionnaire cq LEFT JOIN Questionnaire q ON cq.questionnaireId = q.id WHERE cq.id = :id")
     fun getDetailsById(id: Int): Single<CompletedQuestionnaireDetails>
 
+    @Query("SELECT COALESCE(MIN(timestamp), -1) FROM CompletedQuestionnaire")
+    fun getOldestTime(): Single<Long>
+
+    @Query("SELECT timestamp FROM CompletedQuestionnaire WHERE timestamp >= :from AND timestamp < :to ORDER BY timestamp DESC")
+    fun getTimestampsBetween(from: Long, to: Long): Single<List<Long>>
+
+    @Query("SELECT * FROM CompletedQuestionnaire WHERE timestamp >= :startTimestamp AND timestamp < :endTimestamp")
+    fun getEntriesInTimestampRange(startTimestamp: Long, endTimestamp: Long): Single<List<CompletedQuestionnaire>>
+
     @Update
     fun update(entry: CompletedQuestionnaire): Completable
 
@@ -43,7 +53,7 @@ interface CompletedQuestionnaireDao {
     @Query("DELETE FROM CompletedQuestionnaire")
     fun deleteAll(): Completable
 
-    @Query("SELECT cq.id, cq.questionnaireId, cq.answerDuration, cq.timestamp, q.title, q.description, q.colorCode, q.orderNr FROM CompletedQuestionnaire cq LEFT JOIN Questionnaire q ON cq.questionnaireId = q.id WHERE timestamp >= :dayFrom AND timestamp < :dayTo")
+    @Query("SELECT cq.id, cq.questionnaireId, cq.answerDuration, cq.timestamp, q.title, q.description, q.colorCode, q.orderNr FROM CompletedQuestionnaire cq LEFT JOIN Questionnaire q ON cq.questionnaireId = q.id WHERE timestamp >= :dayFrom AND timestamp < :dayTo ORDER BY timestamp DESC")
     fun getByTimeFrame(dayFrom: Long, dayTo: Long): Single<List<CompletedQuestionnaireDetails>>
 
     @Query("SELECT COUNT(*) FROM CompletedQuestionnaire WHERE timestamp >= :dayFrom AND timestamp < :dayTo")

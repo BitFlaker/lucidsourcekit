@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
         android:id="@+id/bsd_handle"
@@ -33,10 +35,8 @@
                 android:fontFamily="sans-serif-medium"
                 android:hint="Enter Question..."
                 android:importantForAutofill="no"
-                android:inputType="textCapSentences|textMultiLine"
                 android:paddingHorizontal="24dp"
                 android:paddingVertical="8dp"
-                android:scrollHorizontally="false"
                 android:textColor="?attr/primaryTextColor"
                 android:textColorHint="?attr/tertiaryTextColor"
                 android:textSize="20sp"

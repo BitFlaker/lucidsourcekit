@@ -2,6 +2,7 @@ package com.bitflaker.lucidsourcekit.main.overview;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import com.bitflaker.lucidsourcekit.main.notification.NotificationManagerView;
 import com.bitflaker.lucidsourcekit.main.notification.visual.VisualNotificationActivity;
 import com.bitflaker.lucidsourcekit.main.questionnaire.QuestionnaireOverviewActivity;
 import com.bitflaker.lucidsourcekit.main.questionnaire.QuestionnaireView;
+import com.bitflaker.lucidsourcekit.utils.Tools;
 
 import java.util.ArrayList;
 
@@ -117,10 +119,13 @@ public class MainOverviewView extends Fragment {
         binding.btnQaNotifications.setOnClickListener(e -> startActivity(new Intent(getContext(), NotificationManagerView.class)));
         binding.llQaNotifications.setOnClickListener(e -> binding.btnQaNotifications.performClick());
 
-        // TODO: This is just here for testing purpose, move this into alarm receiver for reality check reminder
-        //       and add a check for locked screen, as it should only be launched when the user is not
-        //       actively using the phone in order to not interfere with user interactions
-        binding.btnQaMore.setOnClickListener(e -> startActivity(new Intent(getContext(), QuestionnaireView.class)));
+        // More button quick access placeholder
+        binding.btnQaMore.setOnClickListener(e -> Tools.showPlaceholderDialog(getContext()));
+        binding.llQaMore.setOnClickListener(e -> binding.btnQaMore.performClick());
+
+        // Lockscreen button quick access placeholder
+        binding.btnQaLockscreen.setOnClickListener(e -> Tools.showPlaceholderDialog(getContext()));
+        binding.llQaLockscreen.setOnClickListener(e -> binding.btnQaLockscreen.performClick());
     }
 
     private void generateRememberEntry(EntryJournalBinding binding, DreamJournalEntry entry) {

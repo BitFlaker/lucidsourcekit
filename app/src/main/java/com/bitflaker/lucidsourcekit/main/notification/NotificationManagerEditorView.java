@@ -2,6 +2,7 @@ package com.bitflaker.lucidsourcekit.main.notification;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.NumberPicker;
 
@@ -16,6 +17,7 @@ import com.bitflaker.lucidsourcekit.database.notifications.entities.Notification
 import com.bitflaker.lucidsourcekit.databinding.ActivityNotificationMessageEditorBinding;
 import com.bitflaker.lucidsourcekit.databinding.SheetNotificationMessageBinding;
 import com.bitflaker.lucidsourcekit.utils.Tools;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -87,28 +89,12 @@ public class NotificationManagerEditorView extends AppCompatActivity {
                 sBinding.chpNotificationWeight1,
                 sBinding.chpNotificationWeight2,
                 sBinding.chpNotificationWeight3,
-                sBinding.chpNotificationWeight4,
-                sBinding.chpNotificationWeight5
+                sBinding.chpNotificationWeight4
         };
 
         // Setting default values
         customNotificationWeightValue = 6;
 
-        Chip[] obfuscationChips = new Chip[] { sBinding.chpObfuscateTransparent, sBinding.chpObfuscateNeutral, sBinding.chpObfuscateMax };
-        for (Chip obfuscationChip : obfuscationChips) {
-            obfuscationChip.setOnClickListener(e -> {
-                if(!obfuscationChip.isChecked()) {
-                    obfuscationChip.setChecked(true);
-                    return;
-                }
-                for (Chip c : obfuscationChips) {
-                    if(c != obfuscationChip){
-                        c.setChecked(false);
-                    }
-                }
-            });
-        }
-        sBinding.chpObfuscateTransparent.setChecked(true);
         sBinding.chkCustomNotificationWeight.setOnCheckedChangeListener((compoundButton, checked) -> {
             sBinding.chpGrpNotificationWeight.setVisibility(checked ? View.VISIBLE : View.GONE);
         });
@@ -132,23 +118,23 @@ public class NotificationManagerEditorView extends AppCompatActivity {
         });
         sBinding.btnCancel.setOnClickListener(e -> bottomSheetDialog.cancel());
         sBinding.btnSave.setOnClickListener(e -> {
-            if(message != null){
+            if (message != null){
                 int origObfuscationTypeId = message.getObfuscationTypeId();
                 message.setMessage(sBinding.txtCustomNotificationMessage.getText().toString());
-                int weight = sBinding.chkCustomNotificationWeight.isChecked() ? (sBinding.chkCustomNotificationWeight.isChecked() ? customNotificationWeightValue : getSelectedWeight(customNotificationWeightChips)) : 1;
-                if(weight != -1){ message.setWeight(weight); }
-                if(sBinding.chpObfuscateTransparent.isChecked()) { message.setObfuscationTypeId(0); }
-                else if(sBinding.chpObfuscateNeutral.isChecked()){ message.setObfuscationTypeId(1); }
-                else if(sBinding.chpObfuscateMax.isChecked()){ message.setObfuscationTypeId(2); }
+                int weight = sBinding.chkCustomNotificationWeight.isChecked() ? (sBinding.chpNotificationWeightCustom.isChecked() ? customNotificationWeightValue : getSelectedWeight(customNotificationWeightChips)) : 1;
+                if (weight != -1) { message.setWeight(weight); }
+                message.setObfuscationTypeId(0);
                 db.getNotificationMessageDao().update(message).blockingAwait();
                 rcvaNotificationEditor.notifyMessageChanged(message, origObfuscationTypeId, message.getObfuscationTypeId());
             }
             else {
+                int weight = sBinding.chkCustomNotificationWeight.isChecked() ? (sBinding.chpNotificationWeightCustom.isChecked() ? customNotificationWeightValue : getSelectedWeight(customNotificationWeightChips)) : 1;
+                if (weight == -1) weight = 1;
                 NotificationMessage newMessage = new NotificationMessage(
-                        notificationCategoryId,
+                        getNotificationCategoryId(),
                         sBinding.txtCustomNotificationMessage.getText().toString(),
-                        sBinding.chpObfuscateTransparent.isChecked() ? 0 : (sBinding.chpObfuscateNeutral.isChecked() ? 1 : 2),
-                        sBinding.chpNotificationWeightCustom.isChecked() ? customNotificationWeightValue : getSelectedWeight(customNotificationWeightChips)
+                        0,
+                        weight
                 );
                 long messageId = db.getNotificationMessageDao().insert(newMessage);
                 newMessage.setId((int)messageId);
@@ -159,22 +145,8 @@ public class NotificationManagerEditorView extends AppCompatActivity {
             bottomSheetDialog.dismiss();
         });
 
-        if(message != null) {
+        if (message != null) {
             sBinding.txtCustomNotificationMessage.setText(message.getMessage());
-            sBinding.chpObfuscateTransparent.setChecked(false);
-            sBinding.chpObfuscateNeutral.setChecked(false);
-            sBinding.chpObfuscateMax.setChecked(false);
-            switch (message.getObfuscationTypeId()){
-                case 0:
-                    sBinding.chpObfuscateTransparent.setChecked(true);
-                    break;
-                case 1:
-                    sBinding.chpObfuscateNeutral.setChecked(true);
-                    break;
-                case 2:
-                    sBinding.chpObfuscateMax.setChecked(true);
-                    break;
-            }
             switch(message.getWeight()) {
                 case 1:
                     sBinding.chkCustomNotificationWeight.setChecked(false);
@@ -183,7 +155,6 @@ public class NotificationManagerEditorView extends AppCompatActivity {
                 case 3:
                 case 4:
                 case 5:
-                case 6:
                     sBinding.chkCustomNotificationWeight.setChecked(true);
                     customNotificationWeightChips[message.getWeight() - 2].setChecked(true);
                     break;
@@ -197,7 +168,19 @@ public class NotificationManagerEditorView extends AppCompatActivity {
         else {
             sBinding.txtCustomNotificationMessage.requestFocus();
         }
+
+        // Fix issue with EditText hidden behind soft-keyboard
+        bottomSheetDialog.setOnShowListener(dialog -> new Handler().postDelayed(() -> {
+            BottomSheetDialog d = (BottomSheetDialog) dialog;
+            BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from(d.findViewById(R.id.design_bottom_sheet));
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }, 0));
+
         bottomSheetDialog.show();
+    }
+
+    private String getNotificationCategoryId() {
+        return notificationCategoryId;
     }
 
     private int getSelectedWeight(Chip[] customNotificationWeightChips) {

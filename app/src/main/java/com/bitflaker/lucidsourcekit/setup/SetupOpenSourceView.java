@@ -32,6 +32,10 @@ public class SetupOpenSourceView extends Fragment {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/BitFlaker/lucidsourcekit/blob/main/README.md"));
             startActivity(browserIntent);
         });
+        binding.btnPrivacyPolicy.setOnClickListener(e -> {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://bitflaker.github.io/lucidsourcekit/privacy"));
+            startActivity(browserIntent);
+        });
     }
 
     public void updateLanguages() {

@@ -33,13 +33,20 @@ public class SetupPrivacyView extends Fragment {
             @DrawableRes int icon = b ? R.drawable.ic_baseline_check_box_24 : R.drawable.ic_baseline_check_box_outline_blank_24;
             binding.chkUseBiometrics.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, 0, 0, 0);
         });
+        binding.spnrLockType.setPopupBackgroundResource(R.drawable.popup_menu_background_dark);
         binding.spnrLockType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (AuthTypes.values()[i]) {
                     case Password:
-                    case Pin: binding.chkUseBiometrics.setEnabled(true); break;
-                    case None: binding.chkUseBiometrics.setEnabled(false); break;
+                    case Pin:
+                        binding.chkUseBiometrics.setVisibility(View.VISIBLE);
+                        binding.chkUseBiometrics.setEnabled(true);
+                        break;
+                    case None:
+                        binding.chkUseBiometrics.setVisibility(View.INVISIBLE);
+                        binding.chkUseBiometrics.setEnabled(false);
+                        break;
                 }
                 if(mListener != null) {
                     mListener.onEvent(AuthTypes.values()[i]);

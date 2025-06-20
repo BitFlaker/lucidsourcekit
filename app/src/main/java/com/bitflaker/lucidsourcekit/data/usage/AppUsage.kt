@@ -4,10 +4,16 @@ import android.app.AppOpsManager
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS
+import android.widget.Toast
+import com.bitflaker.lucidsourcekit.R
+import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys
+import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager
 import com.bitflaker.lucidsourcekit.main.dreamjournal.DreamJournalEditorView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class AppUsage {
     companion object {
@@ -15,39 +21,55 @@ class AppUsage {
             var openCount = 0
             val stateMap = HashMap<String, AppUsageEvents>()
             val launchActivityClassName = context.packageManager.getLaunchIntentForPackage(context.packageName)!!.component!!.className
-            if(checkUsageStatsPermission(context)) {
-                val manager: UsageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-                val currentTime = System.currentTimeMillis()
-                val usageEvents = manager.queryEvents(currentTime - msInPast, currentTime)
-
-                while(usageEvents.hasNextEvent()) {
-                    val event = UsageEvents.Event()
-                    usageEvents.getNextEvent(event)
-                    if (event.packageName != context.packageName) continue
-                    if (event.eventType == UsageEvents.Event.ACTIVITY_RESUMED) {
-                        stateMap[event.packageName] = stateMap[event.packageName] ?: AppUsageEvents(packageName = event.packageName)
-                        stateMap[event.packageName]!!.appUsageEvents.add(LaunchEvent(event.className, event.timeStamp, true))
-                        if (event.className == launchActivityClassName) {
-                            openCount++
+            val manager: UsageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+            val currentTime = System.currentTimeMillis()
+            val usageEvents = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                manager.queryEventsForSelf(currentTime - msInPast, currentTime)
+            } else {
+                val dsManager = DataStoreManager.getInstance()
+                val dismissCount = dsManager.getSetting(DataStoreKeys.USAGE_STATS_PERMISSION_DISMISSED).blockingFirst()
+                if (!checkUsageStatsPermission(context) && dismissCount < 10) {
+                    MaterialAlertDialogBuilder(context, R.style.Theme_LucidSourceKit_ThemedDialog)
+                        .setTitle("Permission")
+                        .setMessage("To be able to show you statistics about usage of this app, access to app usages is required. Grant the permission to proceed.")
+                        .setPositiveButton(context.resources.getString(R.string.ok)) { _: DialogInterface?, _: Int ->
+                            Intent(ACTION_USAGE_ACCESS_SETTINGS).apply {
+                                context.startActivity(this)
+                            }
                         }
-                    }
-                    else if (event.eventType == UsageEvents.Event.ACTIVITY_STOPPED) {
-                        val state = stateMap[event.packageName]
-                        state?.appUsageEvents?.add(LaunchEvent(event.className, event.timeStamp, false))
-                    }
-                    else if (event.eventType == UsageEvents.Event.ACTIVITY_PAUSED) {
-                        val state = stateMap[event.packageName]
-                        state?.appUsageEvents?.add(LaunchEvent(event.className, event.timeStamp, null))
+                        .setNegativeButton(context.resources.getString(R.string.no)) { _: DialogInterface?, _: Int ->
+                            dsManager.updateSetting(DataStoreKeys.USAGE_STATS_PERMISSION_DISMISSED, 99).blockingSubscribe()
+                        }
+                        .setOnCancelListener {
+                            Toast.makeText(context, "Permission required to display app usage", Toast.LENGTH_LONG).show()
+                            dsManager.updateSetting(DataStoreKeys.USAGE_STATS_PERMISSION_DISMISSED, dismissCount + 1).blockingSubscribe()
+                        }
+                        .show()
+                }
+                manager.queryEvents(currentTime - msInPast, currentTime)
+            }
+
+            while (usageEvents?.hasNextEvent() == true) {
+                val event = UsageEvents.Event()
+                usageEvents.getNextEvent(event)
+                if (event.packageName != context.packageName) continue
+                if (event.eventType == UsageEvents.Event.ACTIVITY_RESUMED) {
+                    stateMap[event.packageName] = stateMap[event.packageName] ?: AppUsageEvents(packageName = event.packageName)
+                    stateMap[event.packageName]!!.appUsageEvents.add(LaunchEvent(event.className, event.timeStamp, true))
+                    if (event.className == launchActivityClassName) {
+                        openCount++
                     }
                 }
-                return stateMap[context.packageName] ?: AppUsageEvents(packageName = context.packageName)
-            }
-            else {
-                Intent(ACTION_USAGE_ACCESS_SETTINGS).apply {
-                    context.startActivity(this)
+                else if (event.eventType == UsageEvents.Event.ACTIVITY_STOPPED) {
+                    val state = stateMap[event.packageName]
+                    state?.appUsageEvents?.add(LaunchEvent(event.className, event.timeStamp, false))
+                }
+                else if (event.eventType == UsageEvents.Event.ACTIVITY_PAUSED) {
+                    val state = stateMap[event.packageName]
+                    state?.appUsageEvents?.add(LaunchEvent(event.className, event.timeStamp, null))
                 }
             }
-            return AppUsageEvents(packageName = context.packageName)
+            return stateMap[context.packageName] ?: AppUsageEvents(packageName = context.packageName)
         }
 
         private fun checkUsageStatsPermission(context: Context): Boolean {
@@ -55,8 +77,7 @@ class AppUsage {
             val uid = context.packageManager.getApplicationInfo(context.packageName, 0).uid
             val accessMode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 appOpsManager.unsafeCheckOpNoThrow("android:get_usage_stats", uid, context.packageName)
-            }
-            else {
+            } else {
                 @Suppress("DEPRECATION")
                 appOpsManager.checkOpNoThrow("android:get_usage_stats", uid, context.packageName)
             }

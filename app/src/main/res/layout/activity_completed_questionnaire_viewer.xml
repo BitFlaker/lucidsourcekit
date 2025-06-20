@@ -72,8 +72,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="No questionnaires filled out yet\nGo on, populate this place"
+        android:text="No questionnaires filled out yet.\nGo on, populate this place"
         android:textAlignment="center"
+        android:textColor="?attr/secondaryTextColor"
         app:layout_constraintEnd_toEndOf="@+id/txt_no_questionnaires_title"
         app:layout_constraintStart_toStartOf="@+id/txt_no_questionnaires_title"
         app:layout_constraintTop_toBottomOf="@+id/txt_no_questionnaires_title" />

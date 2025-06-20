@@ -1,5 +1,7 @@
 package com.bitflaker.lucidsourcekit.main.questionnaire
 
+import android.content.DialogInterface
+import android.content.DialogInterface.OnShowListener
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -76,6 +78,7 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
             insets
         }
         db = MainDatabase.getInstance(this)
+        Tools.setEditTextSingleLine(binding.txtQuestionnaireName)
 
         // Try to get the questionnaire id from the intent extras, otherwise create empty questionnaire, then query all questions
         questionnaireId = intent.getIntExtra("QUESTIONNAIRE_ID", -1)
@@ -366,7 +369,7 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
         val card = MaterialCardView(this)
         card.layoutParams = LinearLayout.LayoutParams(dp32, dp32)
         card.setCardBackgroundColor(color)
-        card.radius = 999f
+        card.radius = dp32 / 2.0f
         card.strokeColor = card.cardBackgroundColor.defaultColor
         card.strokeWidth = 0
 
@@ -494,6 +497,7 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
         // Configure click listeners for all questionnaire type buttons
         sQBinding.glQuestionTypes.children.filter { it is MaterialButton }.forEach { tbtn ->
             tbtn.setOnClickListener {
+                sQBinding.txtQuestion.clearFocus()
                 sQBinding.glQuestionTypes.children.filter { btn ->
                     btn is MaterialButton
                 }.forEach {
@@ -538,6 +542,8 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
             sQBinding.txtQuestion.requestFocus()
             val imm = ContextCompat.getSystemService(this, InputMethodManager::class.java)
             Handler(Looper.getMainLooper()).postDelayed(kotlinx.coroutines.Runnable {
+                val bottomSheetBehavior = BottomSheetBehavior.from(bsd.findViewById(R.id.design_bottom_sheet)!!)
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED)
                 imm!!.showSoftInput(sQBinding.txtQuestion, 0)
             }, 50)
         }
@@ -584,6 +590,7 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
     }
 
     private fun configureQuestionData(sQBinding: SheetQuestionEditorBinding, question: Question) {
+        Tools.setEditTextSingleLine(sQBinding.txtQuestion)
         sQBinding.txtQuestion.setText(question.question)
         val selected = sQBinding.glQuestionTypes.children.single {
             (it.tag as String?)?.toInt() == question.questionTypeId

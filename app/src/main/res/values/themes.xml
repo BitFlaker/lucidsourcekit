@@ -152,6 +152,11 @@
         <item name="contentPadding">@dimen/cardDefaultPadding</item>
     </style>
 
+    <style name="RoundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">32dp</item>
+    </style>
+
     <!-- Bottom Sheet styles -->
     <style name="BottomSheetDialogStyle" parent="Theme.Material3.Dark.BottomSheetDialog">
         <!--        <item name="slightElevated">@color/grayed_blue</item>-->

@@ -27,8 +27,8 @@
 
             <com.bitflaker.lucidsourcekit.views.LineGraph
                 android:id="@+id/lg_binaural_gradient"
-                android:layout_width="120dp"
-                android:layout_height="80dp"
+                android:layout_width="96dp"
+                android:layout_height="64dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="15dp"/>
 
@@ -56,27 +56,38 @@
                     android:textSize="14sp"
                     android:textColor="?attr/secondaryTextColor"/>
 
-                <TextView
-                    android:id="@+id/txt_binaural_beats_base_frequency"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textColor="?attr/secondaryTextColor"
-                    android:text="635Hz"
-                    android:drawableTint="?attr/secondaryTextColor"
-                    android:drawableStart="@drawable/rounded_planner_review_16"
-                    android:drawablePadding="8dp"/>
-            </LinearLayout>
+                    android:orientation="horizontal"
+                    android:showDividers="middle"
+                    android:divider="@drawable/divider_large">
 
-            <TextView
-                android:id="@+id/txt_binaural_beats_duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:textColor="?attr/secondaryTextColor"
-                android:layout_gravity="center_vertical"
-                android:textSize="12sp"
-                android:text="28:36"/>
+                    <TextView
+                        android:id="@+id/txt_binaural_beats_duration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="12sp"
+                        android:text="28:36"
+                        android:drawableTint="?attr/secondaryTextColor"
+                        android:drawableStart="@drawable/round_access_time_16"
+                        android:drawablePadding="4dp"/>
+
+                    <TextView
+                        android:id="@+id/txt_binaural_beats_base_frequency"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="?attr/secondaryTextColor"
+                        android:textSize="12sp"
+                        android:text="635Hz"
+                        android:drawableTint="?attr/secondaryTextColor"
+                        android:drawableStart="@drawable/rounded_planner_review_16"
+                        android:drawablePadding="4dp"/>
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

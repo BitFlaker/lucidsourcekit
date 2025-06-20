@@ -27,4 +27,7 @@ data class QuestionOptions(
 ) {
     @Ignore
     constructor(questionId: Int) : this(questionId, -1, "", 0, false, null)
+
+    @Ignore
+    var isChecked: Boolean = false
 }

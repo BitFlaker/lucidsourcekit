@@ -2,6 +2,7 @@ package com.bitflaker.lucidsourcekit.main.goals;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -17,6 +18,7 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.Goal;
 import com.bitflaker.lucidsourcekit.databinding.ActivityGoalsEditorBinding;
 import com.bitflaker.lucidsourcekit.databinding.SheetGoalsEditorBinding;
 import com.bitflaker.lucidsourcekit.utils.Tools;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.slider.Slider;
@@ -75,6 +77,13 @@ public class GoalsEditorView extends AppCompatActivity {
                         addGoalSheet.dismiss();
                     }));
                 });
+
+                // Fix issue with EditText hidden behind soft-keyboard
+                addGoalSheet.setOnShowListener(dialog -> new Handler().postDelayed(() -> {
+                    BottomSheetDialog d = (BottomSheetDialog) dialog;
+                    BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from(d.findViewById(R.id.design_bottom_sheet));
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }, 0));
 
                 addGoalSheet.show();
             }
@@ -179,6 +188,13 @@ public class GoalsEditorView extends AppCompatActivity {
                         .setNegativeButton(getResources().getString(R.string.no), null)
                         .show();
             });
+
+            // Fix issue with EditText hidden behind soft-keyboard
+            editGoalSheet.setOnShowListener(dialog -> new Handler().postDelayed(() -> {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
+                BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from(d.findViewById(R.id.design_bottom_sheet));
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }, 0));
 
             editGoalSheet.show();
         });

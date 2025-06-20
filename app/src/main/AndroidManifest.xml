@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
 
-    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <!-- Required for audio recordings in dream journal -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- Required for app lock feature -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
+    <!-- Required for notification feature -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Required for alarm feature -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
 
-    <permission
-        android:name="android.permission.FLASHLIGHT"
-        android:permissionGroup="android.permission-group.HARDWARE_CONTROLS"
-        android:protectionLevel="normal"
-        tools:node="remove" />
+    <!-- Required for rescheduling alarms and notifications after phone reboot -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- Required for getting this apps usage stats before packageSelf(...) existed -->
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" android:maxSdkVersion="27" />
 
     <application
         android:allowBackup="true"
@@ -29,6 +34,9 @@
         android:roundIcon="@mipmap/ic_launcher_pure_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LucidSourceKit.Default">
+        <activity
+            android:name=".main.about.AboutActivity"
+            android:exported="false" />
         <activity
             android:name=".main.questionnaire.CompletedQuestionnaireViewerActivity"
             android:exported="false" />

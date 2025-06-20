@@ -19,6 +19,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys;
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager;
@@ -47,6 +49,8 @@ import com.bitflaker.lucidsourcekit.database.questionnaire.entities.Questionnair
 import com.bitflaker.lucidsourcekit.databinding.ActivityMainBinding;
 import com.bitflaker.lucidsourcekit.main.MainViewer;
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler;
+import com.bitflaker.lucidsourcekit.main.notification.visual.KeypadAdapter;
+import com.bitflaker.lucidsourcekit.main.notification.visual.KeypadButtonModel;
 import com.bitflaker.lucidsourcekit.setup.SetupViewer;
 import com.bitflaker.lucidsourcekit.utils.Crypt;
 import com.bitflaker.lucidsourcekit.utils.Tools;
@@ -56,14 +60,17 @@ import com.google.android.material.button.MaterialButton;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.core.Maybe;
+import kotlin.Unit;
 
 public class MainActivity extends AppCompatActivity {
     private final char[] pinLayout = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ', '0', '<' };
@@ -75,6 +82,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        DataStoreManager.initialize(this);
+        DataStoreMigrator.migrateSharedPreferencesToDataStore(this);
+        DataStoreMigrator.migrateSetupFinishedToDataStore(this);
+        Tools.loadLanguage(this);
+
         // TODO: remove enforce dark mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
@@ -91,18 +103,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        DataStoreManager.initialize(this);
-        DataStoreMigrator.migrateSharedPreferencesToDataStore(this);
-        DataStoreMigrator.migrateSetupFinishedToDataStore(this);
-
-        Tools.loadLanguage(MainActivity.this);
         Tools.makeStatusBarTransparent(MainActivity.this);
 
         binding.btnFingerprintUnlock.setOnClickListener(e -> startBiometricAuthentication());
         pinButtonSize = getResources().getBoolean(R.bool.is_h720dp) ? 68 : 54;
-
-        // TODO: set language of controls
 
         Calendar cldrStored = new GregorianCalendar(TimeZone.getDefault());
         Calendar cldrNow = new GregorianCalendar(TimeZone.getDefault());
@@ -340,38 +344,34 @@ public class MainActivity extends AppCompatActivity {
     private void setupPinAuthentication() {
         binding.llPwAuthContainer.setVisibility(View.GONE);
         binding.llPinAuthContainer.setVisibility(View.VISIBLE);
-        for (int y = 0; y < 4; y++) {
-            FlexboxLayout hFlxBx = new FlexboxLayout(this);
-            hFlxBx.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            hFlxBx.setJustifyContent(JustifyContent.SPACE_AROUND);
-            for (int x = 0; x < 3; x++) {
-                hFlxBx.addView(generatePinButton(y*3+x));
-            }
-            binding.llPinLayout.addView(hFlxBx);
-        }
-    }
 
-    private View generatePinButton(int pos) {
-        MaterialButton pinButton = new MaterialButton(this);
-        char currentType = pinLayout[pos];
-        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        pinButton.setLayoutParams(lParams);
-        pinButton.setMinimumHeight(Tools.dpToPx(this, pinButtonSize));
-        pinButton.setMinimumWidth(Tools.dpToPx(this, pinButtonSize));
-        pinButton.setMinHeight(Tools.dpToPx(this, pinButtonSize));
-        pinButton.setMinWidth(Tools.dpToPx(this, pinButtonSize));
-        pinButton.setHeight(Tools.dpToPx(this, pinButtonSize));
-        pinButton.setWidth(Tools.dpToPx(this, pinButtonSize));
-        pinButton.setPadding(0,0,0,0);
-        pinButton.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, getTheme()));
-        pinButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
-        pinButton.setBackgroundResource(R.drawable.ripple_round_clear);
-        if (Character.isDigit(currentType)) {
-            pinButton.setText(Character.toString(currentType));
-            int buttonVal = Integer.parseInt(Character.toString(currentType));
-            pinButton.setOnClickListener(e -> {
+        // Generate the keypad
+        List<KeypadButtonModel> buttons = Arrays.stream(new Character[] {
+                '1', '2', '3',
+                '4', '5', '6',
+                '7', '8', '9',
+                null, '0', '#'
+        }).map(c -> new KeypadButtonModel(c, null)).collect(Collectors.toList());
+
+        // Set the icon for delete
+        buttons.get(buttons.size() - 1).setButtonIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_backspace_24, getTheme()));
+
+        // Configure keypad adapter
+        KeypadAdapter keypadAdapter = new KeypadAdapter(this, buttons);
+        binding.rcvKeypad.setAdapter(keypadAdapter);
+        binding.rcvKeypad.setLayoutManager(new GridLayoutManager(this, 3));
+        keypadAdapter.setOnButtonClick(value -> {
+            if (value == '#') {
+                if (enteredPin.length() > 0) {
+                    enteredPin.deleteCharAt(enteredPin.length() - 1);
+                    StringBuilder pinText = new StringBuilder();
+                    for(int i = 0; i < enteredPin.length(); i++) { pinText.append("\u2022"); }
+                    binding.txtEnteredPin.setText(pinText.toString());
+                }
+            }
+            else {
                 binding.txtEnteredPin.setText(binding.txtEnteredPin.getText() + "•");
-                enteredPin.append(buttonVal);
+                enteredPin.append(value);
                 new Thread(() -> {
                     boolean success = isPinSuccess();
                     if(success || enteredPin.length() > 7){
@@ -388,22 +388,9 @@ public class MainActivity extends AppCompatActivity {
                         });
                     }
                 }).start();
-            });
-            return pinButton;
-        }
-        else if (currentType == '<') {
-            pinButton.setText("⌫");
-            pinButton.setOnClickListener(e -> {
-                if(enteredPin.length() > 0) {
-                    enteredPin.deleteCharAt(enteredPin.length()-1);
-                    StringBuilder pinText = new StringBuilder();
-                    for(int i = 0; i < enteredPin.length(); i++) { pinText.append("\u2022"); }
-                    binding.txtEnteredPin.setText(pinText.toString());
-                }
-            });
-            return pinButton;
-        }
-        return generateSpace();
+            }
+            return Unit.INSTANCE;
+        });
     }
 
     private void startLoadingAnimation() {

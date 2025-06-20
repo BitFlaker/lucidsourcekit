@@ -194,7 +194,6 @@ public class DreamJournalView extends Fragment {
     }
 
     private void setBasics() {
-        binding.txtNoEntries.setText(Html.fromHtml("<span><big><big><strong>Uhh...</strong></big></big><br />" + getContext().getResources().getString(R.string.empty_dream_journal) + "</span>", Html.FROM_HTML_MODE_COMPACT));
         binding.recyclerView.setAdapter(recyclerViewAdapterDreamJournal);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
@@ -267,7 +266,8 @@ public class DreamJournalView extends Fragment {
     }
 
     private void handleItemCount(int itemCount) {
-        binding.txtNoEntries.setVisibility(itemCount == 0 ? View.VISIBLE : View.GONE);
+        binding.txtNoJournalEntriesTitle.setVisibility(itemCount == 0 ? View.VISIBLE : View.GONE);
+        binding.txtNoJournalEntriesSubTitle.setVisibility(itemCount == 0 ? View.VISIBLE : View.GONE);
     }
 
     public void showJournalCreator(DreamJournalEntry.EntryType type) {

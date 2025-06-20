@@ -1,5 +1,8 @@
 package com.bitflaker.lucidsourcekit.setup;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +33,7 @@ public class SetupLanguageView extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        binding.spnrLanguage.setPopupBackgroundResource(R.drawable.popup_menu_background_dark);
         binding.spnrLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -37,6 +41,7 @@ public class SetupLanguageView extends Fragment {
                 String lang = binding.spnrLanguage.getSelectedItem().toString().split("\\(")[1];
                 lang = lang.substring(0, lang.length() - 1);
                 DataStoreManager.getInstance().updateSetting(DataStoreKeys.LANGUAGE, lang).blockingSubscribe();
+                binding.txtLanguageSupportNotice.setVisibility(lang.equals("de") ? VISIBLE : GONE);
                 Tools.loadLanguage(getActivity());
                 if(mListener!=null) {
                     mListener.onEvent(lang);

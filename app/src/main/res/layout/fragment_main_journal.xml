@@ -114,18 +114,31 @@
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
-        android:id="@+id/txt_no_entries"
-        android:layout_width="180dp"
+        android:id="@+id/txt_no_journal_entries_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Uhh..."
-        android:textAlignment="center"
+        android:text="Nothing found"
+        android:drawableTop="@drawable/rounded_backlight_low_24"
+        android:drawableTint="?attr/primaryTextColor"
+        android:drawablePadding="4dp"
+        android:textSize="18sp"
+        android:textColor="?attr/primaryTextColor"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:textColor="?attr/primaryTextColor"
-        android:drawablePadding="15dp"
-        app:drawableTopCompat="@drawable/big_note"
-        android:visibility="gone"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_no_journal_entries_sub_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_below="@+id/txt_no_journal_entries_title"
+        android:layout_centerHorizontal="true"
+        android:text="No journal entries created yet.\nGo on, populate this place"
+        android:textAlignment="center"
+        android:textColor="?attr/secondaryTextColor"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_add_journal_entry"

@@ -27,6 +27,7 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerViewAdapterAlarms.MainViewHolderAlarms> {
@@ -83,7 +84,7 @@ public class RecyclerViewAdapterAlarms extends RecyclerView.Adapter<RecyclerView
         long alarmHours = TimeUnit.MILLISECONDS.toHours(alarm.alarmTimestamp);
         long alarmMinutes = TimeUnit.MILLISECONDS.toMinutes(alarm.alarmTimestamp) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(alarm.alarmTimestamp));
         boolean isPmAm = !android.text.format.DateFormat.is24HourFormat(context);
-        String alarmTime = alarmHours + ":" + alarmMinutes;
+        String alarmTime = String.format(Locale.getDefault(), "%02d:%02d", alarmHours, alarmMinutes);
         SimpleDateFormat clock24H = new SimpleDateFormat("HH:mm");
         SimpleDateFormat clock12H = new SimpleDateFormat("hh:mm");
         try {

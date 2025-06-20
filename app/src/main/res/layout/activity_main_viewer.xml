@@ -51,7 +51,7 @@
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:icon="@drawable/rounded_planner_review_24" />
+                android:icon="@drawable/rounded_planner_review_20" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"

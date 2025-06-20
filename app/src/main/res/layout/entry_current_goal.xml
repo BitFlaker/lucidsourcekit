@@ -29,6 +29,19 @@
             app:tint="?attr/colorTertiary" />
 
         <TextView
+            android:id="@+id/txt_achieved_counter_placeholder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="?attr/colorSurfaceContainerHighest"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-medium"
+            app:layout_constraintBottom_toBottomOf="@+id/img_achieved_counter_background"
+            app:layout_constraintEnd_toEndOf="@+id/img_achieved_counter_background"
+            app:layout_constraintStart_toStartOf="@+id/img_achieved_counter_background"
+            app:layout_constraintTop_toTopOf="@+id/img_achieved_counter_background" />
+
+        <TextView
             android:id="@+id/txt_achieved_counter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

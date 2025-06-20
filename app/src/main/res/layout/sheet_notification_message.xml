@@ -2,19 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:backgroundTint="?attr/colorSurface">
+    android:layout_height="wrap_content"
+    android:backgroundTint="?attr/colorSurface"
+    android:paddingBottom="24dp">
 
-    <TextView
-        android:id="@+id/txt_notification_settings_heading"
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:id="@+id/bs_handle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:text="Notification Editor"
-        android:textAlignment="center"
-        android:textColor="?attr/primaryTextColor"
-        android:textSize="18sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,83 +18,16 @@
         android:id="@+id/txt_custom_notification_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/rounded_spinner"
-        android:backgroundTint="?attr/colorSurfaceContainer"
-        android:hint="Enter a custom message..."
-        android:imeOptions="actionDone"
-        android:inputType="text|textShortMessage|textCapSentences"
-        android:minWidth="100dp"
-        android:minHeight="48dp"
-        android:paddingLeft="20dp"
-        android:paddingTop="5dp"
-        android:paddingRight="20dp"
-        android:paddingBottom="5dp"
+        android:background="@null"
+        android:fontFamily="sans-serif-medium"
+        android:hint="Enter message..."
+        android:importantForAutofill="no"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="8dp"
         android:textColor="?attr/primaryTextColor"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@+id/txt_notification_settings_heading" />
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/mcv_obfuscation_level"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginRight="20dp"
-        app:cardBackgroundColor="@color/transparent"
-        app:cardCornerRadius="@dimen/cardRadius"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_custom_notification_message"
-        app:strokeColor="?attr/colorSurfaceContainer"
-        app:strokeWidth="0dp">
-
-        <LinearLayout
-            android:id="@+id/ll_notification_obfuscation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:divider="@drawable/divider_x_small"
-            android:orientation="horizontal"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:showDividers="middle">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chp_obfuscate_transparent"
-                style="@style/Custom.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Transparent"
-                android:textAlignment="center"
-                app:ensureMinTouchTargetSize="false" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chp_obfuscate_neutral"
-                style="@style/Custom.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Neutral"
-                android:textAlignment="center"
-                app:ensureMinTouchTargetSize="false" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chp_obfuscate_max"
-                style="@style/Custom.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Obfuscated"
-                android:textAlignment="center"
-                app:ensureMinTouchTargetSize="false" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+        android:textColorHint="?attr/tertiaryTextColor"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/bs_handle" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/mcv_custom_weight"
@@ -113,8 +41,8 @@
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mcv_obfuscation_level"
-        app:strokeColor="?attr/colorSurfaceContainer"
+        app:layout_constraintTop_toBottomOf="@+id/txt_custom_notification_message"
+        app:strokeColor="?attr/colorOutlineVariant"
         app:strokeWidth="1dp">
 
         <LinearLayout
@@ -137,9 +65,10 @@
                 android:id="@+id/chp_grp_notification_weight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="14dp"
                 android:layout_marginBottom="16dp"
+                android:layout_marginStart="16dp"
+                android:textAlignment="textStart"
                 android:visibility="gone"
                 app:checkedChip="@id/chp_notification_weight_1"
                 app:selectionRequired="true"
@@ -218,24 +147,6 @@
                     app:textStartPadding="0dp" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chp_notification_weight_5"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:includeFontPadding="false"
-                    android:text="6"
-                    android:textAlignment="center"
-                    android:textColor="@color/chip_text_check_change"
-                    app:chipBackgroundColor="@drawable/chip_background"
-                    app:chipCornerRadius="48dp"
-                    app:chipEndPadding="0dp"
-                    app:chipMinHeight="36dp"
-                    app:chipMinTouchTargetSize="0dp"
-                    app:chipStartPadding="0dp"
-                    app:textEndPadding="0dp"
-                    app:textStartPadding="0dp" />
-
-                <com.google.android.material.chip.Chip
                     android:id="@+id/chp_notification_weight_custom"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
@@ -263,9 +174,8 @@
         android:layout_marginStart="20dp"
         android:layout_marginBottom="21dp"
         android:layout_marginTop="28dp"
-        android:minWidth="128dp"
         android:text="Cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_save"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mcv_custom_weight"
         style="@style/Widget.Material3.Button.OutlinedButton" />
@@ -282,7 +192,6 @@
         app:icon="@drawable/ic_baseline_check_24"
         app:iconGravity="textStart"
         app:iconPadding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_cancel"
         app:layout_constraintTop_toBottomOf="@+id/mcv_custom_weight"

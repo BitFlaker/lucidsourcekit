@@ -25,6 +25,8 @@ public class AudioLocation {
     @PrimaryKey(autoGenerate = true)
     public int audioId;
     public int entryId;
+
+    // TODO: Migrate from absolute path to relative path
     public String audioPath;
     @ColumnInfo(defaultValue = "0")
     public long recordingTimestamp;

@@ -48,9 +48,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="?attr/colorOnPrimaryContainer"
-            android:drawableEnd="@drawable/ic_baseline_arrow_forward_24"
-            android:drawableTint="?attr/colorOnPrimaryContainer"
             android:text="@string/setup_next"
+            app:icon="@drawable/rounded_chevron_right_24"
+            app:iconTint="?attr/colorOnPrimaryContainer"
+            app:iconGravity="textEnd"
             app:backgroundTint="?attr/colorPrimaryContainer" />
     </LinearLayout>
 </RelativeLayout>

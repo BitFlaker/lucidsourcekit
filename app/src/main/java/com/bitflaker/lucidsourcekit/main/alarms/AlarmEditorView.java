@@ -6,6 +6,7 @@ import android.Manifest;
 import android.app.AlarmManager;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Ringtone;
@@ -15,23 +16,30 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.data.enums.AlarmToneType;
 import com.bitflaker.lucidsourcekit.database.MainDatabase;
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
+import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory;
 import com.bitflaker.lucidsourcekit.databinding.ActivityAlarmEditorBinding;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 import com.bitflaker.lucidsourcekit.views.SleepClock;
@@ -105,9 +113,13 @@ public class AlarmEditorView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityAlarmEditorBinding.inflate(getLayoutInflater());
+        EdgeToEdge.enable(this);
         setContentView(binding.getRoot());
-        Tools.makeStatusBarTransparent(this);
-        binding.llAlarmCreatorHeading.setLayoutParams(Tools.addLinearLayoutParamsTopStatusbarSpacing(this, ((LinearLayout.LayoutParams) binding.llAlarmCreatorHeading.getLayoutParams())));
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         db = MainDatabase.getInstance(this);
 
@@ -121,9 +133,20 @@ public class AlarmEditorView extends AppCompatActivity {
                 binding.chpSaturday
         };
 
+        Tools.setEditTextSingleLine(binding.txtAlarmName);
         if (!Settings.canDrawOverlays(this)) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-            drawOverOtherAppsSettingsLauncher.launch(intent);
+            new MaterialAlertDialogBuilder(this, R.style.Theme_LucidSourceKit_ThemedDialog)
+                    .setTitle("Permission")
+                    .setMessage("Displaying an alarm requires the app to open the alarm viewer on top of other applications. Grant the permission to proceed.")
+                    .setPositiveButton(getResources().getString(R.string.ok), (dialog, which) -> {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+                        drawOverOtherAppsSettingsLauncher.launch(intent);
+                    })
+                    .setOnCancelListener(dialog -> {
+                        Toast.makeText(this, "Permission required to display alarms", Toast.LENGTH_LONG).show();
+                        finish();
+                    })
+                    .show();
         }
 
         for (int i = 0; i < weekdayChips.length; i++) {
@@ -280,10 +303,18 @@ public class AlarmEditorView extends AppCompatActivity {
 //        });
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if(!alarmManager.canScheduleExactAlarms()){
-                scheduleAlarmSettingsLauncher.launch(new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM));
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+            new MaterialAlertDialogBuilder(this, R.style.Theme_LucidSourceKit_ThemedDialog)
+                    .setTitle("Permission")
+                    .setMessage("To ensure alarms go off on time, the permission to schedule exact alarms is required. Grant the permission to proceed.")
+                    .setPositiveButton(getResources().getString(R.string.ok), (dialog, which) -> {
+                        scheduleAlarmSettingsLauncher.launch(new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM));
+                    })
+                    .setOnCancelListener(dialog -> {
+                        Toast.makeText(this, "Permission required to schedule alarms", Toast.LENGTH_LONG).show();
+                        finish();
+                    })
+                    .show();
         }
     }
 

@@ -34,11 +34,14 @@ import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry;
 import com.bitflaker.lucidsourcekit.databinding.ActivityAlarmViewerBinding;
 import com.bitflaker.lucidsourcekit.utils.Tools;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import kotlin.Unit;
 
 public class AlarmViewer extends AppCompatActivity {
     private StoredAlarm storedAlarm;
@@ -122,11 +125,10 @@ public class AlarmViewer extends AppCompatActivity {
             finishAffinity();
         });
         binding.btnOpenJournal.setOnClickListener(e -> {
-            DreamJournalEntryTypeDialog dialog = new DreamJournalEntryTypeDialog(this);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.setOnEntryTypeSelected(this::showJournalCreator);
-            dialog.show();
-            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            new MaterialAlertDialogBuilder(this, R.style.Theme_LucidSourceKit_ThemedDialog)
+                    .setTitle("Journal type")
+                    .setView(JournalTypeDialogKt.generateContent(this, this::showJournalCreator))
+                    .show();
         });
         binding.btnOpenApp.setOnClickListener(e -> {
             Intent intent = new Intent(this, MainActivity.class);
@@ -272,13 +274,14 @@ public class AlarmViewer extends AppCompatActivity {
         }
     }
 
-    private void showJournalCreator(DreamJournalEntry.EntryType type) {
+    private Unit showJournalCreator(DreamJournalEntry.EntryType type) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("DREAM_JOURNAL_TYPE", type.ordinal());
         intent.putExtra("INITIAL_PAGE", "journal");
         startActivity(intent);
         finishAffinity();
+        return Unit.INSTANCE;
     }
 
     private void resetAlarmActivity() {

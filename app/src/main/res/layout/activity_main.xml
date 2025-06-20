@@ -44,6 +44,7 @@
         android:background="@drawable/ripple_round"
         android:backgroundTint="?attr/colorSurfaceContainer"
         android:src="@drawable/round_fingerprint_24"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -76,22 +77,21 @@
                 android:layout_marginBottom="12dp"
                 android:autofillHints="password"
                 android:background="@drawable/rounded_edit_text"
-                android:drawableStart="@drawable/ic_baseline_lock_24"
-                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/rounded_key_24"
+                android:drawableTint="?attr/tertiaryTextColor"
+                android:drawablePadding="12dp"
                 android:hint="@string/login_password_hint"
                 android:inputType="textPassword"
                 android:minHeight="48dp"
                 android:padding="12dp"
                 android:textColor="?attr/primaryTextColor"
-                android:textColorHint="#6F9E9BB1" />
+                android:textColorHint="?attr/tertiaryTextColor" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_unlock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_button_primary"
                 android:text="@string/login_password_unlock_button"
-                android:textColor="?attr/primaryTextColor"
                 android:visibility="visible" />
         </LinearLayout>
 
@@ -118,6 +118,13 @@
                     android:textAlignment="center"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="48sp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcv_keypad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:overScrollMode="never"
+                    android:layout_gravity="center_horizontal" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

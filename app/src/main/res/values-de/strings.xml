@@ -4,18 +4,18 @@
     <string name="login_password_hint">Passwort</string>
     <string name="login_password_unlock_button">Entsperren</string>
     <string name="setup_language_title">Willkommen!</string>
-    <string name="setup_languages_description">Bitte wähle die Sprache aus, in er du die App benutzen möchtest. Dies kann später jederzeit in den Einstellungen geändert werden.</string>
+    <string name="setup_languages_description">Bitte wähle die Sprache aus, in er du die App benutzen möchtest.</string>
     <string name="setup_next">Weiter</string>
     <string name="password_too_short">Passwort zu kurz!</string>
     <string name="pin_too_short">PIN zu kurz!</string>
     <string name="setup_security_title">Bleib sicher</string>
     <string name="setup_security_description">Deine Traumtagebucheinträge, Alarme, Statistiken, etc. können durch Aktivieren der Authentifikations-Funktion lokal geschützt werden.</string>
     <string name="setup_open_source_title">Open Source</string>
-    <string name="setup_open_source_description">Diese Anwendung ist Open Source. Das bedeutet, dass der Quellcode der Anwendung öfftenlich auf GitHub einsehbar ist. Mithilfe des Erstellens eines "Issues", können Bugs, Funktionswünsche und vieles mehr besprochen werden.\n\nWenn Sie fortfahren, bestätigen Sie, dass Sie den Inhalt der README.md Datei auf der GitHub Website des Projektes sorgfältig gelesen haben und akzeptieren alles, das im Dokument aufgeführt ist.</string>
-    <string name="setup_privacy_biometrics">verwende Biometrik</string>
-    <string name="setup_experimental_title">Experimentell</string>
-    <string name="setup_experimental_description">Diese Anwendung beinhaltet experimentelle Funktionen welche auf manche Menschen unvorhersehbar wirken kann. Stellen Sie sicher, dass Sie Ihre eigenen Nachforschungen anstellen, z.B. über binaurale Beats und ob Sie diese hören dürfen. Benutzen Sie diese Anwendung auf eigenes Risiko.</string>
-    <string name="setup_consent_checkbox">Ich akzeptiere das Risiko</string>
+    <string name="setup_open_source_description">Diese Anwendung ist Open Source. Der Quellcode ist über die "Über" Seite der App abrufbar.\nWenn Sie fortfahren, bestätigen Sie, dass Sie den Inhalt der Datenschutzrichtlinien und der README.md Datei der folgenden Links sorgfältig gelesen haben und akzeptieren.</string>
+    <string name="setup_privacy_biometrics">Biometrik Aktivieren</string>
+    <string name="setup_experimental_title">Achtung</string>
+    <string name="setup_experimental_description">Manche können auf Funktionen wie binaurale beats empflindlich reagieren. Vergewissern Sie sich vor der Verwendung ob Sie diese vermeiden sollten. Benutzen Sie diese Anwendung auf eigenes Risiko.</string>
+    <string name="setup_consent_checkbox">Ich akzeptiere</string>
     <string name="setup_auth_data_title_pin">PIN festlegen</string>
     <string name="setup_auth_data_title_password">Passwort festlegen</string>
     <string name="setup_next_finish">Fertigstellen</string>
@@ -82,8 +82,8 @@
     <string name="setup_finish_content">Der Setup der Anwendung ist abgeschlossen. Um alle Angaben zu speichern und die Anwendung zu starten, klicke auf den Fertigstellen Button.</string>
     <string name="setup_privacy_password">Geben Sie im Textfeld unten ein Passwort ein, dass Sie bei jedem öffnen der App eingeben müssen</string>
     <string name="setup_privacy_pin">Setzen Sie einen PIN den Sie bei jedem öffnen der App eingeben müssen</string>
-    <string name="export_data">Daten exportieren</string>
-    <string name="import_data">Daten importieren</string>
+    <string name="export_data">Backup erstellen</string>
+    <string name="import_data">Backup wiederherstellen</string>
     <string-array name="languages">
         <item>English (en)</item>
         <item>Deutsch (de)</item>

@@ -15,30 +15,17 @@
     app:strokeColor="?attr/colorSurfaceContainer"
     app:cardBackgroundColor="?attr/colorSurfaceContainer">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <TextView
+        android:id="@+id/txt_notification_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp">
-
-        <ImageView
-            android:id="@+id/img_notification_obfuscation_indicator"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:padding="8dp"
-            android:src="@drawable/round_notification_important_24"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/txt_notification_message"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="This is a very long example notification message which should not fit within one line or even two lines of this TextView 😯"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/img_notification_obfuscation_indicator"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_marginVertical="12dp"
+        android:layout_marginHorizontal="16dp"
+        android:minHeight="32dp"
+        android:gravity="center_vertical"
+        android:text="This is a very long example notification message which should not fit within one line or even two lines of this TextView 😯"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </com.google.android.material.card.MaterialCardView>
