@@ -16,8 +16,14 @@
 * Alarms
 * Statistics
 * Backup / Export
+* Customizability
 
-Everything is supposed to be as customizable as possible
+<br />
+
+[<img src=".github/screenshots/journal.png" width=185>](.github/screenshots/journal.png)
+[<img src=".github/screenshots/goals.png" width=185>](.github/screenshots/goals.png)
+[<img src=".github/screenshots/statistics.png" width=185>](.github/screenshots/statistics.png)
+[<img src=".github/screenshots/questionnaire.png" width=185>](.github/screenshots/questionnaire.png)
 
 ## 🛡️ Privacy
 As stated above, it is being tried to keep all your data on your phone exclusively for as long as you do not export it. Everything is saved locally (unencrypted) on the phone in the applications data directory (which should only be accessible by this app on non-rooted devices). The app does not have the permission `android.permission.INTERNET`. Therefore it cannot directly connect to the internet. Exceptions would be data automatically processed by Android devices and other data transfers that I am not aware of. If you notice any kind of privacy issues, feel free to report it in the [Issues](https://github.com/BitFlaker/lucidsourcekit/issues) section.
