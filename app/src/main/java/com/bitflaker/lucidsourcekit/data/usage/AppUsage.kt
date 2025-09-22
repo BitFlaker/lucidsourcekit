@@ -4,20 +4,24 @@ import android.app.AppOpsManager
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS
-import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.lifecycle.lifecycleScope
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager
+import com.bitflaker.lucidsourcekit.data.datastore.getSetting
+import com.bitflaker.lucidsourcekit.data.datastore.updateSetting
 import com.bitflaker.lucidsourcekit.main.dreamjournal.DreamJournalEditorView
+import com.bitflaker.lucidsourcekit.utils.showToastLong
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class AppUsage {
     companion object {
-        fun getUsageStats(context: Context, msInPast: Long): AppUsageEvents {
+        suspend fun getUsageStats(context: ComponentActivity, msInPast: Long): AppUsageEvents {
             var openCount = 0
             val stateMap = HashMap<String, AppUsageEvents>()
             val launchActivityClassName = context.packageManager.getLaunchIntentForPackage(context.packageName)!!.component!!.className
@@ -26,25 +30,9 @@ class AppUsage {
             val usageEvents = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 manager.queryEventsForSelf(currentTime - msInPast, currentTime)
             } else {
-                val dsManager = DataStoreManager.getInstance()
-                val dismissCount = dsManager.getSetting(DataStoreKeys.USAGE_STATS_PERMISSION_DISMISSED).blockingFirst()
+                val dismissCount = context.getSetting(DataStoreKeys.USAGE_STATS_PERMISSION_DISMISSED) ?: 0
                 if (!checkUsageStatsPermission(context) && dismissCount < 10) {
-                    MaterialAlertDialogBuilder(context, R.style.Theme_LucidSourceKit_ThemedDialog)
-                        .setTitle("Permission")
-                        .setMessage("To be able to show you statistics about usage of this app, access to app usages is required. Grant the permission to proceed.")
-                        .setPositiveButton(context.resources.getString(R.string.ok)) { _: DialogInterface?, _: Int ->
-                            Intent(ACTION_USAGE_ACCESS_SETTINGS).apply {
-                                context.startActivity(this)
-                            }
-                        }
-                        .setNegativeButton(context.resources.getString(R.string.no)) { _: DialogInterface?, _: Int ->
-                            dsManager.updateSetting(DataStoreKeys.USAGE_STATS_PERMISSION_DISMISSED, 99).blockingSubscribe()
-                        }
-                        .setOnCancelListener {
-                            Toast.makeText(context, "Permission required to display app usage", Toast.LENGTH_LONG).show()
-                            dsManager.updateSetting(DataStoreKeys.USAGE_STATS_PERMISSION_DISMISSED, dismissCount + 1).blockingSubscribe()
-                        }
-                        .show()
+                    showPermissionDialog(context, dismissCount)
                 }
                 manager.queryEvents(currentTime - msInPast, currentTime)
             }
@@ -70,6 +58,27 @@ class AppUsage {
                 }
             }
             return stateMap[context.packageName] ?: AppUsageEvents(packageName = context.packageName)
+        }
+
+        private fun showPermissionDialog(context: ComponentActivity, dismissCount: Int) {
+            MaterialAlertDialogBuilder(context, R.style.Theme_LucidSourceKit_ThemedDialog)
+                .setTitle("Permission")
+                .setMessage("To be able to show you statistics about usage of this app, access to app usages is required. Grant the permission to proceed.")
+                .setPositiveButton(context.resources.getString(R.string.ok)) { _, _ ->
+                    context.startActivity(Intent(ACTION_USAGE_ACCESS_SETTINGS))
+                }
+                .setNegativeButton(context.resources.getString(R.string.no)) { _, _ ->
+                    context.lifecycleScope.launch(Dispatchers.IO) {
+                        context.updateSetting(DataStoreKeys.USAGE_STATS_PERMISSION_DISMISSED, 99)
+                    }
+                }
+                .setOnCancelListener {
+                    showToastLong(context, "Permission required to display app usage")
+                    context.lifecycleScope.launch(Dispatchers.IO) {
+                        context.updateSetting(DataStoreKeys.USAGE_STATS_PERMISSION_DISMISSED, dismissCount + 1)
+                    }
+                }
+                .show()
         }
 
         private fun checkUsageStatsPermission(context: Context): Boolean {
@@ -153,10 +162,7 @@ class AppUsage {
         }
     }
 
-    data class AppOpenStats(
-        val openedAt: Long,
-        val closedAt: Long,
-    ) {
+    data class AppOpenStats(val openedAt: Long, val closedAt: Long) {
         val openFor
             get() = closedAt - openedAt
     }

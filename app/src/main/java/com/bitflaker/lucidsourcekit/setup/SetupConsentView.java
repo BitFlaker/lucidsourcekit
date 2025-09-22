@@ -37,7 +37,7 @@ public class SetupConsentView extends Fragment {
         });
     }
 
-    public void updateLanguages() {
+    public void onLanguageUpdated() {
         if (getView() != null) {
             binding.txtExperimentalTitle.setText(getContext().getResources().getString(R.string.setup_experimental_title));
             binding.txtExperimentalDescription.setText(getContext().getResources().getString(R.string.setup_experimental_description));

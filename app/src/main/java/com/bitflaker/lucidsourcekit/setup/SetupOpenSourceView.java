@@ -38,7 +38,7 @@ public class SetupOpenSourceView extends Fragment {
         });
     }
 
-    public void updateLanguages() {
+    public void onLanguageUpdated() {
         if(getView() != null){
             binding.txtOpenSourceTitle.setText(getContext().getResources().getString(R.string.setup_open_source_title));
             binding.txtOpenSourceDescription.setText(getContext().getResources().getString(R.string.setup_open_source_description));

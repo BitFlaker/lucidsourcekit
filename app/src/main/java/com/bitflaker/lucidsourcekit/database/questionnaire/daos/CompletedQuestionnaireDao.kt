@@ -54,7 +54,7 @@ interface CompletedQuestionnaireDao {
     fun deleteAll(): Completable
 
     @Query("SELECT cq.id, cq.questionnaireId, cq.answerDuration, cq.timestamp, q.title, q.description, q.colorCode, q.orderNr FROM CompletedQuestionnaire cq LEFT JOIN Questionnaire q ON cq.questionnaireId = q.id WHERE timestamp >= :dayFrom AND timestamp < :dayTo ORDER BY timestamp DESC")
-    fun getByTimeFrame(dayFrom: Long, dayTo: Long): Single<List<CompletedQuestionnaireDetails>>
+    fun getByTimeFrame(dayFrom: Long, dayTo: Long): Single<MutableList<CompletedQuestionnaireDetails>>
 
     @Query("SELECT COUNT(*) FROM CompletedQuestionnaire WHERE timestamp >= :dayFrom AND timestamp < :dayTo")
     fun getQuestionnaireCount(dayFrom: Long, dayTo: Long): Single<Int>

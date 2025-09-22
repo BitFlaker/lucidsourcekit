@@ -169,6 +169,8 @@ public class HeatmapChart extends View {
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
 
+        if (tileColors == null) return;
+
         drawDaysOfWeek(canvas);
         drawTiles(canvas);
         drawCalendarWeeks(canvas);
@@ -272,7 +274,7 @@ public class HeatmapChart extends View {
 
         setMeasuredDimension(width, height);
 
-        if(mListener != null) {
+        if (mListener != null) {
             weekCount = (width - (gap + maxWeekdayLabelWidth + gap)) / (tileSize + gap);
             Calendar calendar = Calendar.getInstance();
             calendar.setFirstDayOfWeek(Calendar.MONDAY);
@@ -320,8 +322,9 @@ public class HeatmapChart extends View {
             int amount = timestampCounts.getOrDefault(millis, 0) + 1;
             timestampCounts.put(millis, amount);
         }
-        setValueMax(timestampCounts.size() > 0 ? Collections.max(timestampCounts.values()) : 4);
+        setValueMax(!timestampCounts.isEmpty() ? Collections.max(timestampCounts.values()) : 4);
         initTileColors(Math.min(4, this.maxValue));
+        invalidate();
     }
 
     public interface OnWeekCountCalculated {
@@ -330,5 +333,6 @@ public class HeatmapChart extends View {
 
     public void setOnWeekCountCalculatedListener(OnWeekCountCalculated listener) {
         this.mListener = listener;
+        invalidate();
     }
 }

@@ -25,7 +25,7 @@ interface QuestionTypeDao {
     fun insert(entry: QuestionType): Completable
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAll(entry: List<QuestionType>): Completable
+    suspend fun insertAll(entry: List<QuestionType>)
 
     @Delete
     fun delete(entry: QuestionType): Completable

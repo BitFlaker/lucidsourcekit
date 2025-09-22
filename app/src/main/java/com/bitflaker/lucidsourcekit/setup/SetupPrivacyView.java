@@ -58,7 +58,7 @@ public class SetupPrivacyView extends Fragment {
         });
     }
 
-    public void updateLanguages() {
+    public void onLanguageUpdated() {
         binding.txtPrivacyTitle.setText(getContext().getResources().getString(R.string.setup_security_title));
         binding.txtPrivacyDescription.setText(getContext().getResources().getString(R.string.setup_security_description));
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.lock_types, android.R.layout.simple_spinner_item);

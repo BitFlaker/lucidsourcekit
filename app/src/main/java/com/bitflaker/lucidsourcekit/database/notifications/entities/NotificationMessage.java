@@ -10,16 +10,12 @@ import androidx.room.PrimaryKey;
 import com.bitflaker.lucidsourcekit.main.notification.NotificationMessageModel;
 
 @Entity(foreignKeys = {
-        @ForeignKey(entity = NotificationObfuscations.class,
-            parentColumns = "obfuscationTypeId",
-            childColumns = "obfuscationTypeId",
-            onDelete = ForeignKey.CASCADE),
         @ForeignKey(entity = NotificationCategory.class,
             parentColumns = "id",
             childColumns = "notificationCategoryId",
             onDelete = ForeignKey.CASCADE)
     },
-    indices = { @Index("notificationCategoryId"), @Index("obfuscationTypeId") }
+    indices = { @Index("notificationCategoryId") }
 )
 public class NotificationMessage extends NotificationMessageModel {
     @PrimaryKey(autoGenerate = true)
@@ -28,31 +24,30 @@ public class NotificationMessage extends NotificationMessageModel {
     private final String notificationCategoryId;
     @NonNull
     private String message;
-    private int obfuscationTypeId;
     private int weight;
 
-    public NotificationMessage(int id, @NonNull String notificationCategoryId, @NonNull String message, int obfuscationTypeId, int weight) {
+    public NotificationMessage(int id, @NonNull String notificationCategoryId, @NonNull String message, int weight) {
         this.id = id;
         this.notificationCategoryId = notificationCategoryId;
         this.message = message;
-        this.obfuscationTypeId = obfuscationTypeId;
         this.weight = weight;
     }
 
     @Ignore
-    public NotificationMessage(@NonNull String notificationCategoryId, @NonNull String message, int obfuscationTypeId, int weight) {
+    public NotificationMessage(@NonNull String notificationCategoryId, @NonNull String message, int weight) {
         this.notificationCategoryId = notificationCategoryId;
         this.message = message;
-        this.obfuscationTypeId = obfuscationTypeId;
         this.weight = weight;
+    }
+
+    @Ignore
+    public NotificationMessage(@NonNull String notificationCategoryId) {
+        this.notificationCategoryId = notificationCategoryId;
+        this.message = "";
     }
 
     public void setMessage(@NonNull String message) {
         this.message = message;
-    }
-
-    public void setObfuscationTypeId(int obfuscationTypeId) {
-        this.obfuscationTypeId = obfuscationTypeId;
     }
 
     public void setWeight(int weight) {
@@ -69,11 +64,6 @@ public class NotificationMessage extends NotificationMessageModel {
         return message;
     }
 
-    @Override
-    public int getObfuscationTypeId() {
-        return obfuscationTypeId;
-    }
-
     public int getWeight() {
         return weight;
     }
@@ -83,8 +73,8 @@ public class NotificationMessage extends NotificationMessageModel {
         return notificationCategoryId;
     }
 
-    public void setId(int messageId) {
-        this.id = messageId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

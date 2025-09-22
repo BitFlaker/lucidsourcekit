@@ -7,14 +7,7 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(foreignKeys = {
-        @ForeignKey(entity = NotificationObfuscations.class,
-            parentColumns = "obfuscationTypeId",
-            childColumns = "obfuscationTypeId",
-            onDelete = ForeignKey.CASCADE)
-    },
-    indices = { @Index("obfuscationTypeId") }
-)
+@Entity
 public class NotificationCategory {
     @NonNull
     @PrimaryKey
@@ -23,7 +16,6 @@ public class NotificationCategory {
     private final String description;
     private long timeFrom;
     private long timeTo;
-    private int obfuscationTypeId;
     private int dailyNotificationCount;
     private boolean isPermanent;
     private boolean isEnabled;
@@ -37,12 +29,11 @@ public class NotificationCategory {
     @Ignore
     private NotificationCategoryClicked categoryClickedListener;
 
-    public NotificationCategory(@NonNull String id, @NonNull String description, long timeFrom, long timeTo, int obfuscationTypeId, int dailyNotificationCount, boolean isPermanent, boolean isEnabled) {
+    public NotificationCategory(@NonNull String id, @NonNull String description, long timeFrom, long timeTo, int dailyNotificationCount, boolean isPermanent, boolean isEnabled) {
         this.id = id;
         this.description = description;
         this.timeFrom = timeFrom;
         this.timeTo = timeTo;
-        this.obfuscationTypeId = obfuscationTypeId;
         this.dailyNotificationCount = dailyNotificationCount;
         this.isPermanent = isPermanent;
         this.isEnabled = isEnabled;
@@ -54,10 +45,6 @@ public class NotificationCategory {
 
     public void setTimeTo(long timeTo) {
         this.timeTo = timeTo;
-    }
-
-    public void setObfuscationTypeId(int obfuscationTypeId) {
-        this.obfuscationTypeId = obfuscationTypeId;
     }
 
     public void setDailyNotificationCount(int dailyNotificationCount) {
@@ -90,10 +77,6 @@ public class NotificationCategory {
         return timeTo;
     }
 
-    public int getObfuscationTypeId() {
-        return obfuscationTypeId;
-    }
-
     public int getDailyNotificationCount() {
         return dailyNotificationCount;
     }
@@ -106,15 +89,13 @@ public class NotificationCategory {
         return isEnabled;
     }
 
-    public static NotificationCategory[] populateData() {
-        return new NotificationCategory[] {
-                new NotificationCategory("DJR", "Dream journal reminder", 0, 0, 0, 1, false, false),
-                new NotificationCategory("RCR", "Reality check reminder", 0, 0, 0, 4, false, false),
-                new NotificationCategory("DGR", "Daily goals reminder", 0, 0, 0, 4, false, false),
-                new NotificationCategory("CR", "Custom reminder", 0, 0, 0, 1, false, false),
-                new NotificationCategory("PN", "Permanent notification", 0, 0, 0, 0, true, false),
-        };
-    }
+    public static NotificationCategory[] defaultData = new NotificationCategory[] {
+            new NotificationCategory("DJR", "Dream journal reminder", 0, 0, 1, false, false),
+            new NotificationCategory("RCR", "Reality check reminder", 0, 0, 4, false, false),
+            new NotificationCategory("DGR", "Daily goals reminder", 0, 0, 4, false, false),
+            new NotificationCategory("CR", "Custom reminder", 0, 0, 1, false, false),
+            new NotificationCategory("PN", "Permanent notification", 0, 0, 0, true, false),
+    };
 
     public void setItemHeading(String itemHeading) {
         this.itemHeading = itemHeading;

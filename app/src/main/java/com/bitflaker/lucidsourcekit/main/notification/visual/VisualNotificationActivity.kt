@@ -20,7 +20,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.TransitionManager
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager
+import com.bitflaker.lucidsourcekit.data.datastore.getSetting
+import com.bitflaker.lucidsourcekit.data.datastore.updateSetting
 import com.bitflaker.lucidsourcekit.databinding.ActivityVisualNotificationBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.fadeIn
@@ -45,7 +46,7 @@ class VisualNotificationActivity : AppCompatActivity() {
     private var confirmationTimer: Timer? = Timer()
     private var progressUpdateTimer: Timer? = Timer()
     private val targetConfirmationDigitCount: Int = 2
-    private val currentDigits = DataStoreManager.getInstance().getSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_DIGITS).blockingFirst()
+    private lateinit var currentDigits: ByteArray
     private var isInConfirmationScreen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,6 +70,10 @@ class VisualNotificationActivity : AppCompatActivity() {
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
             )
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            currentDigits = getSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_DIGITS)
         }
 
         Tools.makeStatusBarTransparent(this)
@@ -148,52 +153,56 @@ class VisualNotificationActivity : AppCompatActivity() {
         binding.gcCircle.reverseAnimation()
         binding.piHoldProgress.visibility = GONE
 
-        // Check if there are any digits yet, otherwise directly generate some
-        val generatedToday = DataStoreManager.getInstance().getSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_TIME).blockingFirst() < Tools.getMidnightTime()
-        if (generatedToday || currentDigits.isEmpty()) {
-            generateNextDigit(ByteArray(0))
-            return
-        }
-
-        // Generate top digit input fields
-        val items = List(currentDigits.size) { _ -> ConfirmationFieldModel(null, false) }
-        val digitAdapter = RecyclerViewAdapterConfirmationField(this, currentDigits, items)
-        binding.rcvNumFieldContainer.adapter = digitAdapter
-        binding.rcvNumFieldContainer.itemAnimator = null
-
-        // Generate the keypad
-        val buttons = listOf(
-            '1', '2', '3',
-            '4', '5', '6',
-            '7', '8', '9',
-            null, '0', '#'
-        ).map { KeypadButtonModel(it, null) }
-
-        // Set the icon for confirming
-        buttons.last().buttonIcon = ResourcesCompat.getDrawable(resources, R.drawable.rounded_check_24, theme)
-
-        // Build the keypad
-        val keypadAdapter = KeypadAdapter(this, buttons)
-        binding.rcvKeypad.adapter = keypadAdapter
-        binding.rcvKeypad.layoutManager = GridLayoutManager(this, 3)
-        keypadAdapter.onButtonClick = {
-            if (it == '#') {
-                digitAdapter.confirm()
-                generateNextDigit(currentDigits)
+        lifecycleScope.launch(Dispatchers.IO) {
+            // Check if there are any digits yet, otherwise directly generate some
+            val generatedToday = getSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_TIME) < Tools.getMidnightTime()
+            if (generatedToday || currentDigits.isEmpty()) {
+                generateNextDigit(ByteArray(0))
+                return@launch
             }
-            else {
-                digitAdapter.setCurrentValue(it)
-                digitAdapter.moveNext()
-            }
-        }
 
-        // Fade in the confirmation screen
-        Handler(Looper.getMainLooper()).postDelayed({
             runOnUiThread {
-                binding.rcvNumFieldContainer.fadeIn()
-                binding.rcvKeypad.fadeIn()
+                // Generate top digit input fields
+                val items = List(currentDigits.size) { _ -> ConfirmationFieldModel(null, false) }
+                val digitAdapter = RecyclerViewAdapterConfirmationField(this@VisualNotificationActivity, currentDigits, items)
+                binding.rcvNumFieldContainer.adapter = digitAdapter
+                binding.rcvNumFieldContainer.itemAnimator = null
+
+                // Generate the keypad
+                val buttons = listOf(
+                    '1', '2', '3',
+                    '4', '5', '6',
+                    '7', '8', '9',
+                    null, '0', '#'
+                ).map { KeypadButtonModel(it, null) }
+
+                // Set the icon for confirming
+                buttons.last().buttonIcon = ResourcesCompat.getDrawable(resources, R.drawable.rounded_check_24, theme)
+
+                // Build the keypad
+                val keypadAdapter = KeypadAdapter(this@VisualNotificationActivity, buttons)
+                binding.rcvKeypad.adapter = keypadAdapter
+                binding.rcvKeypad.layoutManager = GridLayoutManager(this@VisualNotificationActivity, 3)
+                keypadAdapter.onButtonClick = {
+                    if (it == '#') {
+                        digitAdapter.confirm()
+                        generateNextDigit(currentDigits)
+                    }
+                    else {
+                        digitAdapter.setCurrentValue(it)
+                        digitAdapter.moveNext()
+                    }
+                }
+
+                // Fade in the confirmation screen
+                Handler(Looper.getMainLooper()).postDelayed({
+                    runOnUiThread {
+                        binding.rcvNumFieldContainer.fadeIn()
+                        binding.rcvKeypad.fadeIn()
+                    }
+                }, 1000)
             }
-        }, 1000)
+        }
     }
 
     private fun generateNextDigit(digits: ByteArray) {
@@ -209,8 +218,8 @@ class VisualNotificationActivity : AppCompatActivity() {
                 digits[digits.lastIndex] = nextDigit
                 digits
             }
-            DataStoreManager.getInstance().updateSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_DIGITS, newDigits).blockingSubscribe()
-            DataStoreManager.getInstance().updateSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_TIME, System.currentTimeMillis()).blockingSubscribe()
+            updateSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_DIGITS, newDigits)
+            updateSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_TIME, System.currentTimeMillis())
             runOnUiThread {
                 binding.rcvKeypad.visibility = GONE
                 binding.txtNextSequence.text = newDigits.joinToString("")

@@ -2,7 +2,7 @@ package com.bitflaker.lucidsourcekit.utils
 
 import android.content.Context
 import android.net.Uri
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreManager
+import com.bitflaker.lucidsourcekit.data.datastore.DATA_STORE_FILE_NAME
 import com.bitflaker.lucidsourcekit.database.MainDatabase
 import com.bitflaker.lucidsourcekit.utils.zip.ZipUtil
 import com.bitflaker.lucidsourcekit.utils.zip.builder.ZipStructureBuilder
@@ -74,14 +74,14 @@ class BackupTask private constructor(
     private val dataDBFile = context.getDatabasePath(MainDatabase.MAIN_DATABASE_NAME)
     private val dataDBWal = File(dataDBFile.path + "-wal")
     private val dataDBShm = File(dataDBFile.path + "-shm")
-    private val dataDataStore = File(context.filesDir, "datastore" + File.separator + DataStoreManager.DATA_STORE_FILE_NAME + ".preferences_pb")
+    private val dataDataStore = File(context.filesDir, "datastore" + File.separator + DATA_STORE_FILE_NAME + ".preferences_pb")
     private val dataRecordings = File(context.filesDir, "Recordings")
 
     // IMPORTED FILES
     private val impDBFile = backupTempImportDirectory.resolve("database" + File.separator + MainDatabase.MAIN_DATABASE_NAME)
     private val impDBWal = File(impDBFile.path + "-wal")
     private val impDBShm = File(impDBFile.path + "-shm")
-    private val impDataStore = File(backupTempImportDirectory, DataStoreManager.DATA_STORE_FILE_NAME + ".preferences_pb")
+    private val impDataStore = File(backupTempImportDirectory, "$DATA_STORE_FILE_NAME.preferences_pb")
     private val impRecordings = File(backupTempImportDirectory, "Recordings")
     private val impPreferenceEntry = File(backupTempImportDirectory, "preferences.json")
 

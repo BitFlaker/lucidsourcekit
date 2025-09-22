@@ -17,9 +17,7 @@ import com.bitflaker.lucidsourcekit.data.enums.AuthTypes;
 import com.bitflaker.lucidsourcekit.databinding.FragmentSetupAuthDataBinding;
 import com.bitflaker.lucidsourcekit.main.notification.visual.KeypadAdapter;
 import com.bitflaker.lucidsourcekit.main.notification.visual.KeypadButtonModel;
-import com.google.android.material.button.MaterialButton;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,7 +37,7 @@ public class SetupAuthDataView extends Fragment {
         return binding.getRoot();
     }
 
-    public void updateLanguages() {
+    public void onLanguageUpdated() {
         if(getView() != null) {
             binding.txtSetupPassword.setHint(getContext().getResources().getString(R.string.login_password_hint));
             showCredentialsSetup(selectedAuthType);

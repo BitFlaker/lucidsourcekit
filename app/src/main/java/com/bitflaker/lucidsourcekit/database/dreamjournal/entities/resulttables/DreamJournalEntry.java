@@ -147,11 +147,11 @@ public class DreamJournalEntry {
     }
 
     public boolean compliesWithFilter(AppliedFilter filter) {
-        return filterDreamTypes(filter.dreamTypes()) &&
-                filterTags(filter.filterTagsList()) &&
-                filterDreamClarity(filter.dreamClarity()) &&
-                filterSleepQuality(filter.sleepQuality()) &&
-                filterDreamMood(filter.dreamMood());
+        return filterDreamTypes(filter.getDreamTypes()) &&
+                filterTags(filter.getFilterTagsList()) &&
+                filterDreamClarity(filter.getDreamClarity()) &&
+                filterSleepQuality(filter.getSleepQuality()) &&
+                filterDreamMood(filter.getDreamMood());
     }
 
     private boolean filterDreamTypes(List<String> dreamTypes) {

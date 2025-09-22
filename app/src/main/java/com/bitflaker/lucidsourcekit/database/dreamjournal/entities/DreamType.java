@@ -2,6 +2,7 @@ package com.bitflaker.lucidsourcekit.database.dreamjournal.entities;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity
@@ -16,14 +17,13 @@ public class DreamType {
         this.description = description;
     }
 
-    public static DreamType[] populateData() {
-        return new DreamType[] {
-                new DreamType("NTM", "Nightmare"),
-                new DreamType("SPL", "SleepParalysis"),
-                new DreamType("FAW", "FalseAwakening"),
-                new DreamType("LCD", "Lucid"),
-                new DreamType("REC", "Recurring"),
-                new DreamType("", "None")
-        };
-    }
+    @Ignore
+    public static DreamType[] defaultData = new DreamType[] {
+            new DreamType("NTM", "Nightmare"),
+            new DreamType("SPL", "SleepParalysis"),
+            new DreamType("FAW", "FalseAwakening"),
+            new DreamType("LCD", "Lucid"),
+            new DreamType("REC", "Recurring"),
+            new DreamType("", "None")
+    };
 }

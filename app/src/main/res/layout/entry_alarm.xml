@@ -153,7 +153,6 @@
                 android:id="@+id/swt_alarm_active"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 app:showText="false" />
 
             <CheckBox

@@ -27,9 +27,7 @@ public class ActiveAlarm {
 //        this.patternIndex = patternIndex;
 //    }
 
-    public static ActiveAlarm createUnreferencedAlarm() {
-        return new ActiveAlarm(-1, -1, -1, -1);
-    }
+    public static ActiveAlarm defaultData = new ActiveAlarm(-1, -1, -1, -1);
 
     @NonNull
     @Override

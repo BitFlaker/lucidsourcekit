@@ -50,20 +50,22 @@ class ExportDialog {
         private val dfShort = DateFormat.getDateInstance(DateFormat.SHORT)
         private val tfShort = DateFormat.getTimeInstance(DateFormat.SHORT)
 
-        fun promptExportData(context: Activity, launcher: SimpleActivityLauncher) {
+        suspend fun promptExportData(context: Activity, launcher: SimpleActivityLauncher) {
             if (context !is LifecycleOwner) throw IllegalArgumentException("context has to implement LifecycleOwner for exporting data")
             val cal = Calendar.getInstance()
             val dp24 = Tools.dpToPx(context, 24.0)
             val dp12 = Tools.dpToPx(context, 12.0)
 
             val db = MainDatabase.getInstance(context)
-            val journalTS = db.journalEntryDao.oldestTime.blockingGet()
+            val journalTS = db.journalEntryDao.getOldestTime()
             val questionnaireTS = db.completedQuestionnaireDao.getOldestTime().blockingGet()
 
-            var fromTS = if (journalTS == -1L && questionnaireTS == -1L) cal.timeInMillis
-                         else if (journalTS == -1L) questionnaireTS
-                         else if (questionnaireTS == -1L) journalTS
-                         else min(journalTS.toDouble(), questionnaireTS.toDouble()).toLong()
+            var fromTS = when {
+                journalTS == -1L && questionnaireTS == -1L -> cal.timeInMillis
+                journalTS == -1L -> questionnaireTS
+                questionnaireTS == -1L -> journalTS
+                else -> min(journalTS.toDouble(), questionnaireTS.toDouble()).toLong()
+            }
             var toTS = cal.timeInMillis
 
             // Create container
@@ -110,20 +112,22 @@ class ExportDialog {
             contentContainer.addView(exportType)
 
             // Build and show dialog
-            MaterialAlertDialogBuilder(context, R.style.Theme_LucidSourceKit_ThemedDialog)
-                .setTitle("Export data")
-                .setView(contentContainer)
-                .setPositiveButton("Export") { _: DialogInterface?, _: Int ->
-                    val exportingDialog = showExportingDialog(context)
-                    context.lifecycleScope.launch(Dispatchers.IO) {
-                        async {
-                            performExport(context, launcher, fromTS, toTS, adapter.getItem(exportType.selectedItemPosition))
-                        }.await()
-                        exportingDialog.dismiss()
+            context.runOnUiThread {
+                MaterialAlertDialogBuilder(context, R.style.Theme_LucidSourceKit_ThemedDialog)
+                    .setTitle("Export data")
+                    .setView(contentContainer)
+                    .setPositiveButton("Export") { _: DialogInterface?, _: Int ->
+                        val exportingDialog = showExportingDialog(context)
+                        context.lifecycleScope.launch(Dispatchers.IO) {
+                            async {
+                                performExport(context, launcher, fromTS, toTS, adapter.getItem(exportType.selectedItemPosition))
+                            }.await()
+                            exportingDialog.dismiss()
+                        }
                     }
-                }
-                .setNegativeButton(context.resources.getString(R.string.cancel), null)
-                .show()
+                    .setNegativeButton(context.resources.getString(R.string.cancel), null)
+                    .show()
+            }
         }
 
         private fun showExportingDialog(context: Activity): AlertDialog {
@@ -248,7 +252,7 @@ class ExportDialog {
             val cal = Calendar.getInstance()
             val db = MainDatabase.getInstance(context)
 
-            val ts1 = db.journalEntryDao.getTimestampsBetween(fromTimestamp, toTimestamp).await()
+            val ts1 = db.journalEntryDao.getTimestampsBetween(fromTimestamp, toTimestamp)
             val ts2 = db.completedQuestionnaireDao.getTimestampsBetween(fromTimestamp, toTimestamp).await()
             val timestamps = mergeToDistinctDays(ts1, ts2)
 
@@ -262,7 +266,7 @@ class ExportDialog {
                     .append("\n---\n")
 
                 // Load journal and completed questionnaire data
-                val journals = db.journalEntryDao.getEntriesInTimestampRange(timestamp, timestamp + 24 * 60 * 60 * 1000).await()
+                val journals = db.journalEntryDao.getEntriesInTimestampRange(timestamp, timestamp + 24 * 60 * 60 * 1000)
                 val questionnaires = db.completedQuestionnaireDao.getEntriesInTimestampRange(timestamp, timestamp + 24 * 60 * 60 * 1000).await()
 
                 // Increase counters

@@ -300,8 +300,11 @@ public class LineGraph extends View {
     }
 
     public void resetProgress() {
+        if (lgSurfaceOpacity == null) return;
         lgSurfaceOpacity.getLocalMatrix(lgradOpacMatrix);
-        if (!doNotIndicateProgress) { lgradOpacMatrix.postTranslate(-(float)((lastSetProgress/xMax) * getWidth()), 0); }
+        if (!doNotIndicateProgress) {
+            lgradOpacMatrix.postTranslate(-(float)((lastSetProgress/xMax) * getWidth()), 0);
+        }
         lgSurfaceOpacity.setLocalMatrix(lgradOpacMatrix);
         lastSetProgress = progress = 0;
         invalidate();

@@ -24,6 +24,7 @@ import androidx.core.graphics.toColorInt
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +38,7 @@ import com.bitflaker.lucidsourcekit.databinding.ActivityQuestionnaireEditorBindi
 import com.bitflaker.lucidsourcekit.databinding.SheetColorPickerBinding
 import com.bitflaker.lucidsourcekit.databinding.SheetQuestionEditorBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.singleLine
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
@@ -78,7 +80,7 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
             insets
         }
         db = MainDatabase.getInstance(this)
-        Tools.setEditTextSingleLine(binding.txtQuestionnaireName)
+        binding.txtQuestionnaireName.singleLine()
 
         // Try to get the questionnaire id from the intent extras, otherwise create empty questionnaire, then query all questions
         questionnaireId = intent.getIntExtra("QUESTIONNAIRE_ID", -1)
@@ -524,6 +526,7 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
         }
 
         // Create listener to save question modification in memory
+        sQBinding.btnDeleteQuestion.isVisible = questionId != -1
         sQBinding.btnDeleteQuestion.setOnClickListener {
             adapter.removeQuestion(questionId)
             bsd.dismiss()
@@ -541,7 +544,7 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
         if (questionId == -1) {
             sQBinding.txtQuestion.requestFocus()
             val imm = ContextCompat.getSystemService(this, InputMethodManager::class.java)
-            Handler(Looper.getMainLooper()).postDelayed(kotlinx.coroutines.Runnable {
+            Handler(Looper.getMainLooper()).postDelayed({
                 val bottomSheetBehavior = BottomSheetBehavior.from(bsd.findViewById(R.id.design_bottom_sheet)!!)
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED)
                 imm!!.showSoftInput(sQBinding.txtQuestion, 0)
@@ -590,7 +593,7 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
     }
 
     private fun configureQuestionData(sQBinding: SheetQuestionEditorBinding, question: Question) {
-        Tools.setEditTextSingleLine(sQBinding.txtQuestion)
+        sQBinding.txtQuestion.singleLine()
         sQBinding.txtQuestion.setText(question.question)
         val selected = sQBinding.glQuestionTypes.children.single {
             (it.tag as String?)?.toInt() == question.questionTypeId
@@ -679,9 +682,9 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
             .show()
     }
 
-    override fun onStartTrackingTouch(seekBar: SeekBar?) { }
-    override fun onStopTrackingTouch(seekBar: SeekBar?) { }
-    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+    override fun onStartTrackingTouch(seekBar: SeekBar) { }
+    override fun onStopTrackingTouch(seekBar: SeekBar) { }
+    override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         val sBinding = sBinding ?: return
         val degrees = 360 * (sBinding.sbHue.progress / 100.0f)
 

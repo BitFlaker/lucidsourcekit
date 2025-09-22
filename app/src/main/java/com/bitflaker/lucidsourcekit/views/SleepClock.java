@@ -28,6 +28,7 @@ import com.bitflaker.lucidsourcekit.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -232,8 +233,8 @@ public class SleepClock extends View {
             xAlarm = radius + (float)Math.cos(startAngle + angleAlarm) * (radius - timeSetterButtonRadius);
             yAlarm = radius + (float)Math.sin(startAngle + angleAlarm) * (radius - timeSetterButtonRadius);
             boolean isAlarmWithinREM = false;
-            for (int i = 0; i < Brainwaves.remAfterMinutes.length; i++) {
-                Pair<Integer, Integer> pair = Brainwaves.getRemStageAfterAndDuration(i);
+            for (int i = 0; i < Brainwaves.Companion.getRemAfterMinutes().length; i++) {
+                Pair<Integer, Integer> pair = Brainwaves.Companion.getRemStageAfterAndDuration(i);
                 float angleHour = (float)(startAngle + angleBedtime + ((pair.first/60.0d) * currentAngleOffset));
                 float periodDurationRad = (float)((pair.second/60.0d*currentAngleOffset));
                 float periodDuration = (float)(periodDurationRad * (180.0f / Math.PI));
@@ -268,11 +269,9 @@ public class SleepClock extends View {
         drawMarkers(canvas, offset, markersLow, false);
         drawMarkers(canvas, offset, markersHigh, true);
 
-        if (!drewAtLeastOnce) {
+        if (!drewAtLeastOnce && mFirstDrawFinishedListener != null) {
             drewAtLeastOnce = true;
-            if (mFirstDrawFinishedListener != null) {
-                mFirstDrawFinishedListener.onEvent();
-            }
+            mFirstDrawFinishedListener.onEvent();
         }
     }
 
@@ -473,8 +472,8 @@ public class SleepClock extends View {
         invalidate();
     }
 
-    public void setBedTime(int hours, int minutes) {
-        angleBedtime = (float)(((hours + (minutes / 60.0)) * (2 * Math.PI)) / 24.0);
+    public void setBedTime(int hour, int minute) {
+        angleBedtime = (float)(((hour + (minute / 60.0)) * (2 * Math.PI)) / 24.0);
         calculateTimes();
         movingButtonId = 0;
         rotateButtons(angleBedtime);
@@ -482,8 +481,8 @@ public class SleepClock extends View {
 //        invalidate();
     }
 
-    public void setAlarmTime(int hours, int minutes) {
-        angleAlarm = (float)(((hours + (minutes / 60.0)) * (2 * Math.PI)) / 24.0);
+    public void setAlarmTime(int hour, int minute) {
+        angleAlarm = (float)(((hour + (minute / 60.0)) * (2 * Math.PI)) / 24.0);
         calculateTimes();
         movingButtonId = 1;
         rotateButtons(angleAlarm);
@@ -525,13 +524,23 @@ public class SleepClock extends View {
         this.drawTimeSetterButtons = drawTimeSetterButtons;
     }
 
-    public void setMarkersHigh(ArrayList<Long> markers) {
-        markersHigh = markers.toArray(new Long[0]);
+    public void setMarkersHigh(List<Long> markers) {
+        if (markers == null) {
+            markersHigh = new Long[0];
+        }
+        else {
+            markersHigh = markers.toArray(new Long[0]);
+        }
         invalidate();
     }
 
-    public void setMarkersLow(ArrayList<Long> markers) {
-        markersLow = markers.toArray(new Long[0]);
+    public void setMarkersLow(List<Long> markers) {
+        if (markers == null) {
+            markersLow = new Long[0];
+        }
+        else {
+            markersLow = markers.toArray(new Long[0]);
+        }
         invalidate();
     }
 
@@ -557,5 +566,6 @@ public class SleepClock extends View {
 
     public void setOnFirstDrawFinishedListener(OnFirstDrawFinished eventListener) {
         mFirstDrawFinishedListener = eventListener;
+        invalidate();
     }
 }

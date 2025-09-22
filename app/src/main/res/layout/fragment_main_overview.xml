@@ -288,14 +288,15 @@
                 android:textSize="12sp"
                 android:visibility="gone" />
 
-            <include
-                android:id="@+id/dje_remember_dream"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv_remember_dream"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="24dp"
                 android:layout_marginHorizontal="10dp"
-                layout="@layout/entry_journal" />
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/crd_no_remember_entry"

@@ -74,8 +74,8 @@ public class RodGraph extends View {
     private double getMaxValueFrom(List<DataValue> data) {
         double maxVal = 0;
         for (DataValue dv : data) {
-            if(dv.value() > maxVal) {
-                maxVal = dv.value();
+            if(dv.getValue() > maxVal) {
+                maxVal = dv.getValue();
             }
         }
         return maxVal;
@@ -111,8 +111,8 @@ public class RodGraph extends View {
 
             bottomPointWithTextMargin = drawRodBackground(canvas, marginForRodRadius, xPos, bottomPoint);
 
-            if(current.value() > -1){
-                double progressHeight = (bottomPointWithTextMargin - (bottomPointWithTextMargin / yMax * current.value())) + ((marginForRodRadius / yMax) * current.value());
+            if(current.getValue() > -1){
+                double progressHeight = (bottomPointWithTextMargin - (bottomPointWithTextMargin / yMax * current.getValue())) + ((marginForRodRadius / yMax) * current.getValue());
                 canvas.drawLine(xPos, bottomPointWithTextMargin, xPos, (float)progressHeight, dataLinePaint);
             }
         }
@@ -160,8 +160,8 @@ public class RodGraph extends View {
         Paint.FontMetrics metric = dataLabelPaint.getFontMetrics();
         int textHeight = (int) Math.ceil(metric.descent - metric.ascent);
         int yText = 0;
-        if(dataPoint.label() != null && !dataPoint.label().isEmpty()){
-            String[] lines = dataPoint.label().split("\n");
+        if(dataPoint.getLabel() != null && !dataPoint.getLabel().isEmpty()){
+            String[] lines = dataPoint.getLabel().split("\n");
             yText = (int)metric.descent;
             for (int j = lines.length - 1; j >= 0; j--){
                 canvas.drawText(lines[j], xPos, getHeight() - yText, dataLabelPaint);

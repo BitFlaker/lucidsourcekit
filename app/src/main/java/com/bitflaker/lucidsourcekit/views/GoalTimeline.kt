@@ -58,7 +58,7 @@ class GoalTimeline @JvmOverloads constructor(
         strokeCap = Paint.Cap.ROUND
     }
 
-    var achieved: ArrayList<Long> = arrayListOf()
+    var achieved: MutableList<Long> = arrayListOf()
         set(values) {
             field = ArrayList(values)
             field.sort()

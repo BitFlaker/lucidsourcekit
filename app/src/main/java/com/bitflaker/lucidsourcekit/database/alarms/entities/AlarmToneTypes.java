@@ -16,10 +16,8 @@ public class AlarmToneTypes {
         this.description = description;
     }
 
-    public static AlarmToneTypes[] populateData(){
-        return new AlarmToneTypes[] {
-                new AlarmToneTypes(AlarmToneType.RINGTONE.ordinal(), "Ringtone"),
-                new AlarmToneTypes(AlarmToneType.CUSTOM_FILE.ordinal(), "Custom file")
-        };
-    }
+    public static AlarmToneTypes[] defaultData = new AlarmToneTypes[] {
+            new AlarmToneTypes(AlarmToneType.RINGTONE.ordinal(), "Ringtone"),
+            new AlarmToneTypes(AlarmToneType.CUSTOM_FILE.ordinal(), "Custom file")
+    };
 }

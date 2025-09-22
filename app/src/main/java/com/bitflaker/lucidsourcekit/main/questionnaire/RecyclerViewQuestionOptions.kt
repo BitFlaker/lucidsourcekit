@@ -64,7 +64,7 @@ class RecyclerViewQuestionOptions(
             // Show the Soft-Keyboard after a short delay after which the focus has probably been
             // received (otherwise the keyboard will not show up when the field has not yet received the focus)
             val imm = getSystemService(context, InputMethodManager::class.java)
-            Handler(Looper.getMainLooper()).postDelayed(kotlinx.coroutines.Runnable {
+            Handler(Looper.getMainLooper()).postDelayed({
                 imm!!.showSoftInput(holder.binding.txtQuestionOption, 0)
             }, 50)
         }

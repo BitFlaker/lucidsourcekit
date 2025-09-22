@@ -1,6 +1,7 @@
 package com.bitflaker.lucidsourcekit.database.goals.entities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -40,7 +41,19 @@ public class Goal {
     }
 
     @Ignore
+    public Goal() { }
 
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return obj instanceof Goal goal &&
+                goal.goalId == goalId &&
+                goal.description.equals(description) &&
+                goal.isSelected == isSelected &&
+                goal.difficulty == difficulty &&
+                goal.difficultyLocked == difficultyLocked;
+    }
+
+    @Ignore
     @NonNull
     @Override
     public Goal clone() {

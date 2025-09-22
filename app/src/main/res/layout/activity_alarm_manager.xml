@@ -18,7 +18,7 @@
             android:id="@+id/txt_alarms_heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="16dp"
             android:text="Alarms"
             android:textColor="?attr/primaryTextColor"
             android:textSize="20sp"
