@@ -44,6 +44,9 @@ import com.bitflaker.lucidsourcekit.databinding.SheetJournalEntryBinding
 import com.bitflaker.lucidsourcekit.main.dreamjournal.RecyclerViewAdapterDreamJournal.MainViewHolder
 import com.bitflaker.lucidsourcekit.utils.RecordingObjectTools
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
+import com.bitflaker.lucidsourcekit.utils.attrColorStateList
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
@@ -125,7 +128,7 @@ class RecyclerViewAdapterDreamJournal(
 
         // Set top margin to 0 for the very first entry to prevent oddly large spacing
         holder.binding.llTopDayHeader.updateLayoutParams<LinearLayout.LayoutParams> {
-            topMargin = if (position == 0) 0 else Tools.dpToPx(activity, 14.0)
+            topMargin = if (position == 0) 0 else 14.dpToPx
         }
 
         // Show entry time if current position is the first entry for the day
@@ -157,7 +160,7 @@ class RecyclerViewAdapterDreamJournal(
         holder.binding.txtTitle.text = current.journalEntry.title
         holder.binding.txtDescription.text = if (hasTextContent) current.journalEntry.description else "This dream journal entry contains no text. How about adding some content now?"
         holder.binding.txtDescription.setTypeface(null, if (hasTextContent) Typeface.NORMAL else Typeface.ITALIC)
-        holder.binding.txtDescription.setTextColor(Tools.getAttrColor(if (hasTextContent) R.attr.secondaryTextColor else R.attr.tertiaryTextColor, activity.theme))
+        holder.binding.txtDescription.setTextColor(activity.attrColor(if (hasTextContent) R.attr.secondaryTextColor else R.attr.tertiaryTextColor))
 
         // Set audio recordings count
         holder.binding.txtRecordingsCount.text = String.format(Locale.getDefault(), "%d", current.audioLocations.size)
@@ -182,8 +185,8 @@ class RecyclerViewAdapterDreamJournal(
         }
 
         // Set questionnaire counter styles and click listener
-        holder.binding.btnFilledOutQuestionnaires.setTextColor(Tools.getAttrColor(if (hasQuestionnaires) R.attr.colorPrimary else R.attr.tertiaryTextColor, activity.theme))
-        holder.binding.btnFilledOutQuestionnaires.setIconTint(Tools.getAttrColorStateList(if (hasQuestionnaires) R.attr.colorPrimary else R.attr.tertiaryTextColor, activity.theme))
+        holder.binding.btnFilledOutQuestionnaires.setTextColor(activity.attrColor(if (hasQuestionnaires) R.attr.colorPrimary else R.attr.tertiaryTextColor))
+        holder.binding.btnFilledOutQuestionnaires.setIconTint(activity.attrColorStateList(if (hasQuestionnaires) R.attr.colorPrimary else R.attr.tertiaryTextColor))
         holder.binding.btnFilledOutQuestionnaires.setOnClickListener {
             onQuestionnaireAddClickListener?.invoke(current)
         }
@@ -200,8 +203,8 @@ class RecyclerViewAdapterDreamJournal(
 
     private fun generateIconHighlight(iconId: Int): ImageView = ImageView(activity).apply {
         setImageResource(iconId)
-        setImageTintList(Tools.getAttrColorStateList(R.attr.secondaryTextColor, activity.theme))
-        setLayoutParams(LinearLayout.LayoutParams(Tools.dpToPx(activity, 20.0), Tools.dpToPx(activity, 20.0)))
+        imageTintList = activity.attrColorStateList(R.attr.secondaryTextColor)
+        layoutParams = LinearLayout.LayoutParams(20.dpToPx, 20.dpToPx)
     }
 
     fun viewDreamJournalEntry(current: DreamJournalEntry) {
@@ -321,7 +324,7 @@ class RecyclerViewAdapterDreamJournal(
         entryContainer.addView(playButton)
 
         // Generate and add labels
-        val labelsContainer = recordingTools.generateLabelsContrainer()
+        val labelsContainer = recordingTools.generateLabelsContainer()
         labelsContainer.addView(recordingTools.generateHeading())
         labelsContainer.addView(recordingTools.generateTimestamp(audioLocation))
         entryContainer.addView(labelsContainer)
@@ -468,13 +471,13 @@ class RecyclerViewAdapterDreamJournal(
     }
 
     private fun generateTagView(content: String): TextView {
-        val dp8 = Tools.dpToPx(activity, 8.0)
+        val dp8 = 8.dpToPx
         return TextView(activity).apply {
-            setTextColor(Tools.getAttrColorStateList(R.attr.primaryTextColor, activity.theme))
+            setTextColor(activity.attrColorStateList(R.attr.primaryTextColor))
             setPadding(dp8, dp8 / 2, dp8, dp8 / 2)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
             background = ResourcesCompat.getDrawable(activity.resources, R.drawable.small_rounded_rectangle, activity.theme)
-            backgroundTintList = Tools.getAttrColorStateList(R.attr.colorSurfaceContainerHigh, activity.theme)
+            backgroundTintList = activity.attrColorStateList(R.attr.colorSurfaceContainerHigh)
             isSingleLine = true
             text = content
             layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
@@ -506,7 +509,7 @@ class RecyclerViewAdapterDreamJournal(
         var recordingsWidth = getViewWidth(binding.txtRecordingsCount)
         if (binding.txtRecordingsCount.isGone) {
             // TODO: find a way not to hardcode this: get the sum of all horizontal compound drawable widths (.intrinsicWidth(), .bounds().width() are all 0 at this point)
-            recordingsWidth += Tools.dpToPx(activity, 20.0)
+            recordingsWidth += 20.dpToPx
         }
         return recordingsWidth + getViewWidth(binding.llTitleIcons)
     }
@@ -525,7 +528,7 @@ class RecyclerViewAdapterDreamJournal(
         // Get static values
         val color = if (elevationLevel == 0) R.attr.colorSurfaceContainer else R.attr.colorSurfaceContainerHigh
         val layoutWidth = getContainerWidth(container, activity, padding)
-        val dividerSpacing = Tools.dpToPx(context, 4.0)
+        val dividerSpacing = 4.dpToPx
 
         // Generate tag items
         var totalTagsWidth = -dividerSpacing
@@ -575,13 +578,13 @@ class RecyclerViewAdapterDreamJournal(
     }
 
     private fun generateTagInfo(context: Context, content: String, elevationLevel: Int): TextView {
-        val dp8 = Tools.dpToPx(context, 8.0)
+        val dp8 = 8.dpToPx
         val background = if (elevationLevel == 0) R.drawable.round_border_dashed_surface else R.drawable.round_border_dashed
         val foreground = if (elevationLevel == 0) R.attr.tertiaryTextColor else R.attr.secondaryTextColor
         return TextView(context).apply {
             setBackgroundResource(background)
             setPadding(dp8, dp8 / 2, dp8, dp8 / 2)
-            setTextColor(Tools.getAttrColor(foreground, context.theme))
+            setTextColor(context.attrColor(foreground))
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
             setGravity(Gravity.CENTER_VERTICAL)
             text = content
@@ -596,16 +599,16 @@ class RecyclerViewAdapterDreamJournal(
     }
 
     private fun generateTagView(context: Context, content: String, color: Int, elevationLevel: Int): TextView {
-        val dp8 = Tools.dpToPx(context, 8.0)
+        val dp8 = 8.dpToPx
         val textColor = if (elevationLevel == 0) R.attr.secondaryTextColor else R.attr.primaryTextColor
         return TextView(context).apply {
-            setTextColor(Tools.getAttrColorStateList(textColor, context.theme))
+            setTextColor(context.attrColorStateList(textColor))
             setPadding(dp8, dp8 / 2, dp8, dp8 / 2)
             isSingleLine = true
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
             text = content
             background = ResourcesCompat.getDrawable(context.resources, R.drawable.small_rounded_rectangle, context.theme)
-            backgroundTintList = Tools.getAttrColorStateList(color, context.theme)
+            backgroundTintList = context.attrColorStateList(color)
         }
     }
 

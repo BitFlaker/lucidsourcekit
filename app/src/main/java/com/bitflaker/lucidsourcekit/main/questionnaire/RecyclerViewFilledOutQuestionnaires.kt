@@ -14,6 +14,8 @@ import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.resulttables.CompletedQuestionnaireDetails
 import com.bitflaker.lucidsourcekit.databinding.EntryQuestionnaireBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 
 class RecyclerViewFilledOutQuestionnaires(
     val context: Context,
@@ -34,14 +36,14 @@ class RecyclerViewFilledOutQuestionnaires(
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
         val current = items[position]
-        holder.binding.crdQuestionnaire.setCardBackgroundColor(Tools.getAttrColor(R.attr.colorSurfaceContainerLow, context.theme))
+        holder.binding.crdQuestionnaire.setCardBackgroundColor(context.attrColor(R.attr.colorSurfaceContainerLow))
         holder.binding.crdQuestionnaire.setOnClickListener { onQuestionnaireClickListener?.invoke(current.id) }
         holder.binding.txtQuestionnaireName.text = current.title
         holder.binding.txtQuestionnaireDescription.text = current.description
         holder.binding.llQuestionnaireStats.visibility = View.GONE
         val color = current.colorCode?.toColorInt() ?: Color.TRANSPARENT
         holder.binding.vwColorIndicator.backgroundTintList = ColorStateList.valueOf(color)
-        holder.binding.txtQuestionnaireName.updatePadding(left = if (color == Color.TRANSPARENT) 0 else Tools.dpToPx(context, 22.0))
+        holder.binding.txtQuestionnaireName.updatePadding(left = if (color == Color.TRANSPARENT) 0 else 22.dpToPx)
     }
 
     fun addCompletedQuestionnaire(completed: CompletedQuestionnaireDetails) {

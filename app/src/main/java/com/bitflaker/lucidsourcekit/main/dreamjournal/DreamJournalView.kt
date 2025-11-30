@@ -33,6 +33,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import androidx.core.view.isVisible
+import com.bitflaker.lucidsourcekit.utils.attrColor
 import com.bitflaker.lucidsourcekit.utils.showToastLong
 import kotlinx.coroutines.coroutineScope
 
@@ -125,7 +126,7 @@ class DreamJournalView : Fragment() {
             // Setup recyclerview and show stored journal entries
             activity.runOnUiThread {
                 rvAdapterDreamJournal = RecyclerViewAdapterDreamJournal(this@DreamJournalView, activity, this@DreamJournalView, journalEntries)
-                rvAdapterDreamJournal.onEntryCountChangedListener = ::setNoEntriesVisibility
+                rvAdapterDreamJournal.onEntryCountChangedListener = { itemCount -> activity.runOnUiThread { setNoEntriesVisibility(itemCount) } }
                 rvAdapterDreamJournal.onQuestionnaireAddClickListener = ::viewQuestionnaires
                 binding.recyclerView.setLayoutManager(LinearLayoutManager(context))
                 binding.recyclerView.setAdapter(rvAdapterDreamJournal)
@@ -270,10 +271,10 @@ class DreamJournalView : Fragment() {
 
     private fun animateFab() {
         val context = requireContext()
-        @ColorInt val colorClosed = Tools.getAttrColor(R.attr.colorPrimaryContainer, context.theme)
-        @ColorInt val colorOnClosed = Tools.getAttrColor(R.attr.colorOnPrimaryContainer, context.theme)
-        @ColorInt val colorOpen = Tools.getAttrColor(R.attr.colorSurfaceContainerHigh, context.theme)
-        @ColorInt val colorOnOpen = Tools.getAttrColor(R.attr.colorOnSurface, context.theme)
+        @ColorInt val colorClosed = context.attrColor(R.attr.colorPrimaryContainer)
+        @ColorInt val colorOnClosed = context.attrColor(R.attr.colorOnPrimaryContainer)
+        @ColorInt val colorOpen = context.attrColor(R.attr.colorSurfaceContainerHigh)
+        @ColorInt val colorOnOpen = context.attrColor(R.attr.colorOnSurface)
 
         if (isFabOpen) {
             binding.btnAddJournalEntry.startAnimation(rotateForward)

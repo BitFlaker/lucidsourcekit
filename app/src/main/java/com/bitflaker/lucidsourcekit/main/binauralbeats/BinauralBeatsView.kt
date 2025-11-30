@@ -20,6 +20,8 @@ import com.bitflaker.lucidsourcekit.databinding.FragmentMainBinauralBeatsBinding
 import com.bitflaker.lucidsourcekit.databinding.SheetBinauralAutoStopBinding
 import com.bitflaker.lucidsourcekit.databinding.SheetBinauralBeatsBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.Locale
@@ -106,8 +108,8 @@ class BinauralBeatsView : Fragment() {
         binding.tlBinauralLegend.setData(
             labels,
             Brainwaves.stageColors,
-            Tools.getAttrColor(R.attr.secondaryTextColor, context.theme),
-            Tools.getAttrColor(R.attr.tertiaryTextColor, context.theme),
+            context.attrColor(R.attr.secondaryTextColor),
+            context.attrColor(R.attr.tertiaryTextColor),
             18
         )
     }
@@ -210,7 +212,7 @@ class BinauralBeatsView : Fragment() {
 
         // Set values for selected track and update from `no selection` view
         val lParams = (binding.llBbpCarrierFreqHeading.layoutParams as LinearLayout.LayoutParams).apply {
-            topMargin = Tools.dpToPx(context, 24.0)
+            topMargin = 24.dpToPx
         }
         binding.llBbpCarrierFreqHeading.setLayoutParams(lParams)
         binding.llBbpTimeContainer.visibility = View.VISIBLE
@@ -221,9 +223,9 @@ class BinauralBeatsView : Fragment() {
         binding.txtCurrentBinauralFrequency.text = "0.00"
         binding.txtCarrierFrequency.text = String.format(Locale.ENGLISH, "%.0f Hz", binauralBeat.baseFrequency)
         binding.txtCarrierFrequency.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-        binding.txtCarrierFrequency.setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, context.theme))
+        binding.txtCarrierFrequency.setTextColor(context.attrColor(R.attr.primaryTextColor))
         binding.txtCarrierFrequency.setCompoundDrawables(null, null, null, null)
-        binding.txtBbpCarrierFreqHeading.setTextColor(Tools.getAttrColor(R.attr.secondaryTextColor, context.theme))
+        binding.txtBbpCarrierFreqHeading.setTextColor(context.attrColor(R.attr.secondaryTextColor))
         binding.btnPlayTrack.setIcon(ResourcesCompat.getDrawable(context.resources, R.drawable.ic_baseline_play_arrow_24, context.theme))
 
 //        binding.txtCurrTrackName.setVisibility(View.VISIBLE);

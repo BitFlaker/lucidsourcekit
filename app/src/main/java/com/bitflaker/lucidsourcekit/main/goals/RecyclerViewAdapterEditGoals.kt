@@ -15,6 +15,8 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.Goal
 import com.bitflaker.lucidsourcekit.databinding.EntryGoalBinding
 import com.bitflaker.lucidsourcekit.main.goals.RecyclerViewAdapterEditGoals.MainViewHolderGoals
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
+import com.bitflaker.lucidsourcekit.utils.attrColorStateList
 
 class RecyclerViewAdapterEditGoals(private val context: Context) : RecyclerView.Adapter<MainViewHolderGoals>() {
     private lateinit var mRecyclerView: RecyclerView
@@ -56,9 +58,9 @@ class RecyclerViewAdapterEditGoals(private val context: Context) : RecyclerView.
             currentGoal.difficulty,
             1f,
             3f,
-            Tools.getAttrColor(R.attr.colorSuccess, context.theme),
-            Tools.getAttrColor(R.attr.colorWarning, context.theme),
-            Tools.getAttrColor(R.attr.colorError, context.theme)
+            context.attrColor(R.attr.colorSuccess),
+            context.attrColor(R.attr.colorWarning),
+            context.attrColor(R.attr.colorError)
         ))
         TextViewCompat.setCompoundDrawableTintList(holder.binding.txtGoalText, difficultyColor)
 
@@ -129,14 +131,14 @@ class RecyclerViewAdapterEditGoals(private val context: Context) : RecyclerView.
 
         fun select() {
             isSelected = true
-            binding.clGoalContainer.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurfaceContainer, context.theme))
+            binding.clGoalContainer.setBackgroundTintList(context.attrColorStateList(R.attr.colorSurfaceContainer))
             val icon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_baseline_check_24, context.theme)
             binding.txtGoalText.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
         }
 
         fun deselect() {
             isSelected = false
-            binding.clGoalContainer.setBackgroundTintList(Tools.getAttrColorStateList(R.attr.colorSurface, context.theme))
+            binding.clGoalContainer.setBackgroundTintList(context.attrColorStateList(R.attr.colorSurface))
             val icon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_baseline_circle_24, context.theme)
             binding.txtGoalText.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
         }

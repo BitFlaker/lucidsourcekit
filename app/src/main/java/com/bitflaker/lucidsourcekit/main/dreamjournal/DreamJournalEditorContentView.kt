@@ -27,7 +27,6 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.res.ResourcesCompat
@@ -45,6 +44,8 @@ import com.bitflaker.lucidsourcekit.databinding.SheetJournalTagsEditorBinding
 import com.bitflaker.lucidsourcekit.databinding.SheetJournalTimestampBinding
 import com.bitflaker.lucidsourcekit.utils.RecordingObjectTools
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColorStateList
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.bitflaker.lucidsourcekit.utils.isPermissionGranted
 import com.bitflaker.lucidsourcekit.utils.showToastLong
 import com.bitflaker.lucidsourcekit.utils.singleLine
@@ -86,7 +87,7 @@ class DreamJournalEditorContentView(private val entry: DreamJournalEntry, privat
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         db = MainDatabase.getInstance(context)
-        recordingTools = RecordingObjectTools(context)
+        recordingTools = RecordingObjectTools(requireContext())
 
         mRecorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             MediaRecorder(requireContext())
@@ -244,12 +245,12 @@ class DreamJournalEditorContentView(private val entry: DreamJournalEntry, privat
     }
 
     private fun generateEditText(): EditText {
-        val dpm5 = Tools.dpToPx(requireContext(), -5.0)
+        val dpm5 = -5.dpToPx
         val editText = EditText(context).apply {
             setLayoutParams(LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
                 setMargins(0, dpm5, 0, dpm5)
             })
-            setMinWidth(Tools.dpToPx(context, 70.0))
+            setMinWidth(70.dpToPx)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
         }
 
@@ -459,17 +460,17 @@ class DreamJournalEditorContentView(private val entry: DreamJournalEntry, privat
 
     private fun insertTagChip(chipText: String, tagsContainer: ViewGroup, index: Int = -1) {
         val tagChip = Chip(context).apply {
-            setLayoutParams(LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-                leftMargin = Tools.dpToPx(context, 3.0)
-                rightMargin = Tools.dpToPx(context, 3.0)
-            })
+            layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
+                leftMargin = 3.dpToPx
+                rightMargin = 3.dpToPx
+            }
             text = chipText
             chipStrokeWidth = 0f
             isCheckedIconVisible = false
             isCloseIconVisible = true
-            chipBackgroundColor = Tools.getAttrColorStateList(R.attr.colorSurfaceContainerHigh, context.theme)
+            chipBackgroundColor = context.attrColorStateList(R.attr.colorSurfaceContainerHigh)
             closeIconTint = ColorStateList.valueOf(resources.getColor(R.color.white, context.theme))
-            setTextColor(Tools.getAttrColorStateList(R.attr.primaryTextColor, context.theme))
+            setTextColor(context.attrColorStateList(R.attr.primaryTextColor))
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
         }
 
@@ -536,7 +537,7 @@ class DreamJournalEditorContentView(private val entry: DreamJournalEntry, privat
         entryContainer.addView(playButton)
 
         // Generate and add labels
-        val labelsContainer = recordingTools.generateLabelsContrainer()
+        val labelsContainer = recordingTools.generateLabelsContainer()
         labelsContainer.addView(recordingTools.generateHeading())
         labelsContainer.addView(recordingTools.generateTimestamp(recording))
         entryContainer.addView(labelsContainer)

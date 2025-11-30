@@ -17,6 +17,8 @@ import com.bitflaker.lucidsourcekit.databinding.ActivityAlarmManagerBinding
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler.cancelRepeatingAlarm
 import com.bitflaker.lucidsourcekit.main.alarms.RecyclerViewAdapterAlarms.OnSelectionModeStateChanged
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColorStateList
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.bitflaker.lucidsourcekit.utils.onBackPressed
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
@@ -78,18 +80,18 @@ class AlarmManagerView : AppCompatActivity() {
         }
 
         // Configure the alarm listing adapter
-        adapterAlarms.horizontalPadding = Tools.dpToPx(this, 8.0)
+        adapterAlarms.horizontalPadding = 8.dpToPx
         adapterAlarms.onSelectionModeStateChangedListener = object : OnSelectionModeStateChanged {
             override fun onSelectionModeEntered() {
-                binding.fabAddAlarm.backgroundTintList = Tools.getAttrColorStateList(R.attr.colorErrorContainer, theme)
-                binding.fabAddAlarm.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnErrorContainer, theme))
+                binding.fabAddAlarm.backgroundTintList = attrColorStateList(R.attr.colorErrorContainer)
+                binding.fabAddAlarm.setImageTintList(attrColorStateList(R.attr.colorOnErrorContainer))
                 binding.fabAddAlarm.setImageResource(R.drawable.ic_baseline_delete_24)
                 isInSelectionMode = true
             }
 
             override fun onSelectionModeLeft() {
-                binding.fabAddAlarm.backgroundTintList = Tools.getAttrColorStateList(R.attr.colorPrimaryContainer, theme)
-                binding.fabAddAlarm.setImageTintList(Tools.getAttrColorStateList(R.attr.colorOnPrimaryContainer, theme))
+                binding.fabAddAlarm.backgroundTintList = attrColorStateList(R.attr.colorPrimaryContainer)
+                binding.fabAddAlarm.setImageTintList(attrColorStateList(R.attr.colorOnPrimaryContainer))
                 binding.fabAddAlarm.setImageResource(R.drawable.ic_round_add_24)
                 isInSelectionMode = false
             }

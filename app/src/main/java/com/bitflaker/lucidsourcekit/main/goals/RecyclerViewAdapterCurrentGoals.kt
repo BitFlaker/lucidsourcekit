@@ -14,6 +14,7 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleTransaction
 import com.bitflaker.lucidsourcekit.databinding.EntryCurrentGoalBinding
 import com.bitflaker.lucidsourcekit.databinding.SheetGoalTransactionsBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColorStateList
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,8 +32,8 @@ class RecyclerViewAdapterCurrentGoals(
     private lateinit var goalAchievedCount: HashMap<Int, Int>
     private val activity = fragment.requireActivity()
     private val db: MainDatabase = MainDatabase.getInstance(activity)
-    private val colorNotAchieved = Tools.getAttrColorStateList(R.attr.colorSurfaceContainer, activity.theme)
-    private val colorAchieved = Tools.getAttrColorStateList(R.attr.colorTertiary, activity.theme)
+    private val colorNotAchieved = activity.attrColorStateList(R.attr.colorSurfaceContainer)
+    private val colorAchieved = activity.attrColorStateList(R.attr.colorTertiary)
 
     init {
         // Load goal achieved counts and then update entries

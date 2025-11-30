@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.util.Base64
 import android.view.View
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -17,6 +18,8 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys
@@ -37,6 +40,7 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.defaults.DefaultGoal
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionType.Companion.defaults
 import com.bitflaker.lucidsourcekit.databinding.ActivityMainBinding
+import com.bitflaker.lucidsourcekit.databinding.ActivityQuestionnaireBinding
 import com.bitflaker.lucidsourcekit.main.MainViewer
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler
 import com.bitflaker.lucidsourcekit.main.notification.visual.KeypadAdapter
@@ -44,6 +48,7 @@ import com.bitflaker.lucidsourcekit.main.notification.visual.KeypadButtonModel
 import com.bitflaker.lucidsourcekit.setup.SetupViewer
 import com.bitflaker.lucidsourcekit.utils.Crypt
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.loadLanguage
 import com.bitflaker.lucidsourcekit.utils.resolveDrawable
 import com.bitflaker.lucidsourcekit.utils.showToastLong
 import kotlinx.coroutines.Dispatchers
@@ -64,9 +69,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         test += 1
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Tools.makeStatusBarTransparent(this)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
         db = MainDatabase.getInstance(this)
 
         // Create internal data structure if it does not exist
@@ -98,7 +108,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             // Load the configured preferred language
-            Tools.loadLanguage(context)
+            loadLanguage()
 
             // Update the app open streak and longest streak values
             updateAppOpenStreak()

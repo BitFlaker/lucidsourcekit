@@ -8,6 +8,9 @@ import android.util.AttributeSet
 import android.view.View
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
+import com.bitflaker.lucidsourcekit.utils.dpToPx
+import com.bitflaker.lucidsourcekit.utils.spToPx
 import java.text.DateFormat
 import java.util.Calendar
 import kotlin.math.max
@@ -17,24 +20,24 @@ class GoalTimeline @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private val spacing = Tools.dpToPx(context, 8.0)
+    private val spacing = 8.dpToPx
     private val timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT)
     private val textBounds = Rect()
     private val midnightTimestamp = Tools.getMidnightTime()
-    private val fullHeight = Tools.dpToPx(context, 768.0)
+    private val fullHeight = 768.dpToPx
     private val totalDayTime = 1000 * 60 * 60 * 24f
     private var actualHeight = fullHeight
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.DITHER_FLAG).apply {
-        color = Tools.getAttrColor(R.attr.primaryTextColor, context.theme)
+        color = context.attrColor(R.attr.primaryTextColor)
         textAlign = Paint.Align.LEFT
         isAntiAlias = true
-        textSize = Tools.spToPx(context, 11f).toFloat()
+        textSize = 11.spToPx.toFloat()
     }
     private val paint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
-        color = Tools.getAttrColor(R.attr.colorPrimary, context.theme)
-        strokeWidth = Tools.dpToPx(context, 3.0).toFloat()
+        color = context.attrColor(R.attr.colorPrimary)
+        strokeWidth = 3.dpToPx.toFloat()
         xfermode = null
         pathEffect = null
         strokeCap = Paint.Cap.ROUND
@@ -42,8 +45,8 @@ class GoalTimeline @JvmOverloads constructor(
     private val backgroundPaint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
-        color = Tools.getAttrColor(R.attr.colorSurfaceContainer, context.theme)
-        strokeWidth = Tools.dpToPx(context, 3.0).toFloat()
+        color = context.attrColor(R.attr.colorSurfaceContainer)
+        strokeWidth = 3.dpToPx.toFloat()
         xfermode = null
         pathEffect = null
         strokeCap = Paint.Cap.ROUND
@@ -51,8 +54,8 @@ class GoalTimeline @JvmOverloads constructor(
     private val tickPaint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
-        color = Tools.getAttrColor(R.attr.colorPrimary, context.theme)
-        strokeWidth = Tools.dpToPx(context, 1.0).toFloat()
+        color = context.attrColor(R.attr.colorPrimary)
+        strokeWidth = 1.dpToPx.toFloat()
         xfermode = null
         pathEffect = null
         strokeCap = Paint.Cap.ROUND
@@ -75,7 +78,7 @@ class GoalTimeline @JvmOverloads constructor(
             }
             invalidate()
         }
-    var indicatorRadius: Float = Tools.dpToPx(context, 6.0).toFloat()
+    var indicatorRadius: Float = 6.dpToPx.toFloat()
     var shuffleInitTime: Long = midnightTimestamp
         set(initTimestamp) {
             field = initTimestamp - midnightTimestamp
@@ -118,12 +121,12 @@ class GoalTimeline @JvmOverloads constructor(
             // Draw line to text
             val direction = if ((i - skipped) % 2 == 0) 1 else -1
             val lineStartX = (width - paint.strokeWidth) / 2f + (indicatorRadius + tickPaint.strokeWidth / 2f + spacing) * direction
-            val lineStopX = lineStartX + Tools.dpToPx(context, 16.0) * direction
+            val lineStopX = lineStartX + 16.dpToPx * direction
             canvas.drawLine(lineStartX, yValue, lineStopX, yValue, tickPaint)
 
             // Draw time
             val time = timeFormat.format(achieved[i])
-            textPaint.color = Tools.getAttrColor(R.attr.primaryTextColor, context.theme)
+            textPaint.color = context.attrColor(R.attr.primaryTextColor)
             textPaint.isFakeBoldText = true
             textPaint.getTextBounds(time, 0, time.length, textBounds)
             val timeTextOffset = if (direction == -1) textBounds.width() else 0
@@ -131,7 +134,7 @@ class GoalTimeline @JvmOverloads constructor(
 
             val offsetTop = textBounds.height() / 2f
             val firstGoal = "achieved ${countAchievedGoals(i)} goals"
-            textPaint.color = Tools.getAttrColor(R.attr.secondaryTextColor, context.theme)
+            textPaint.color = context.attrColor(R.attr.secondaryTextColor)
             textPaint.isFakeBoldText = false
             textPaint.getTextBounds(firstGoal, 0, firstGoal.length, textBounds)
             val goalTextOffset = if (direction == -1) textBounds.width() else 0

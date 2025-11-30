@@ -3,13 +3,17 @@ package com.bitflaker.lucidsourcekit.main.dreamjournal
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.database.MainDatabase
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasTag
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry
+import com.bitflaker.lucidsourcekit.databinding.ActivityAlarmViewerBinding
 import com.bitflaker.lucidsourcekit.databinding.ActivityJournalEditorBinding
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter
 import com.bitflaker.lucidsourcekit.utils.Tools
@@ -31,10 +35,14 @@ class DreamJournalEditorView : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = MainDatabase.getInstance(this)
+        enableEdgeToEdge()
         binding = ActivityJournalEditorBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        Tools.makeStatusBarTransparent(this)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         // Parse journal entry type from extras
         var type = DreamJournalEntry.EntryType.PLAIN_TEXT

@@ -17,6 +17,7 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.LinearInterpolator
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bitflaker.lucidsourcekit.MainActivity
@@ -38,6 +39,9 @@ import kotlin.Exception
 import kotlin.Float
 import kotlin.String
 import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.bitflaker.lucidsourcekit.databinding.ActivityMainBinding
 import com.bitflaker.lucidsourcekit.utils.createTimerAction
 import com.bitflaker.lucidsourcekit.utils.vibrateFor
 
@@ -60,8 +64,14 @@ class AlarmViewer : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding = ActivityAlarmViewerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
         alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         vib = getDefaultVibrator()
 
@@ -77,8 +87,6 @@ class AlarmViewer : AppCompatActivity() {
             @Suppress("DEPRECATION")
             window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
-
-        Tools.makeStatusBarTransparent(this)
 
         // Set the icons for the alarm action slider
         binding.ossAlarmSlider.setData(resolveDrawable(R.drawable.ic_baseline_check_24), resolveDrawable(R.drawable.ic_baseline_snooze_24))

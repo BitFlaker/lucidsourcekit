@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.databinding.EntryConfirmationDigitBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColorStateList
 import java.security.InvalidParameterException
 
 class RecyclerViewAdapterConfirmationField(
@@ -42,7 +43,7 @@ class RecyclerViewAdapterConfirmationField(
                           else R.attr.colorError
 
         // Set stroke color and click listener
-        holder.binding.crdDigitContainer.setStrokeColor(Tools.getAttrColorStateList(strokeColor, context.theme))
+        holder.binding.crdDigitContainer.setStrokeColor(context.attrColorStateList(strokeColor))
         holder.binding.crdDigitContainer.setOnClickListener {
             if (position != selectedIndex) {
                 val oldIndex = selectedIndex

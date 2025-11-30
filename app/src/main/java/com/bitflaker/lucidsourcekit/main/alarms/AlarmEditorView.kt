@@ -33,6 +33,7 @@ import com.bitflaker.lucidsourcekit.database.MainDatabase
 import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm
 import com.bitflaker.lucidsourcekit.databinding.ActivityAlarmEditorBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.bitflaker.lucidsourcekit.utils.getParcelableExtraSafe
 import com.bitflaker.lucidsourcekit.utils.isPermissionGranted
 import com.bitflaker.lucidsourcekit.utils.showToastLong
@@ -344,16 +345,16 @@ class AlarmEditorView : AppCompatActivity() {
         // Create and add colon separator
         container.addView(TextView(this).apply {
             text = ":"
-            setLayoutParams(LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-                leftMargin = Tools.dpToPx(this@AlarmEditorView, 5.0)
-                rightMargin = Tools.dpToPx(this@AlarmEditorView, 5.0)
-            })
+            layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
+                leftMargin = 5.dpToPx
+                rightMargin = 5.dpToPx
+            }
         })
 
         // Create and add second part
         val secondsNumberPicker = NumberPicker(this).apply {
-            setMaxValue(59)
-            setMinValue(0)
+            maxValue = 59
+            minValue = 0
             value = currentVolIncSec
         }
         container.addView(secondsNumberPicker)

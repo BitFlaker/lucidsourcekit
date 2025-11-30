@@ -22,6 +22,7 @@ import android.view.animation.LinearInterpolator
 import androidx.annotation.ColorInt
 import androidx.core.animation.doOnEnd
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.spToPx
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -32,7 +33,7 @@ class GradientCircle @JvmOverloads constructor(
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val labelPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.DITHER_FLAG).apply {
         isAntiAlias = true
-        textSize = Tools.spToPx(context, 16f).toFloat()
+        textSize = 16.spToPx.toFloat()
         xfermode = PorterDuffXfermode(PorterDuff.Mode.XOR)
         color = Color.WHITE
         typeface = Typeface.MONOSPACE

@@ -27,7 +27,9 @@ import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.SleepQuality
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionOptions
 import com.bitflaker.lucidsourcekit.main.questionnaire.QuestionnaireControlType
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
 import com.bitflaker.lucidsourcekit.utils.await
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.bitflaker.lucidsourcekit.utils.generateFileName
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -53,8 +55,8 @@ class ExportDialog {
         suspend fun promptExportData(context: Activity, launcher: SimpleActivityLauncher) {
             if (context !is LifecycleOwner) throw IllegalArgumentException("context has to implement LifecycleOwner for exporting data")
             val cal = Calendar.getInstance()
-            val dp24 = Tools.dpToPx(context, 24.0)
-            val dp12 = Tools.dpToPx(context, 12.0)
+            val dp24 = 24.dpToPx
+            val dp12 = 12.dpToPx
 
             val db = MainDatabase.getInstance(context)
             val journalTS = db.journalEntryDao.getOldestTime()
@@ -75,7 +77,7 @@ class ExportDialog {
 
             // Configure message view
             val message = TextView(context)
-            message.setTextColor(Tools.getAttrColor(R.attr.secondaryTextColor, context.theme))
+            message.setTextColor(context.attrColor(R.attr.secondaryTextColor))
             message.setPadding(0, 0, 0, dp24)
             message.text = "Export dream journals and questionnaires to an external file. To export to PDF, use the default Android PDF printer"
             contentContainer.addView(message)
@@ -131,7 +133,7 @@ class ExportDialog {
         }
 
         private fun showExportingDialog(context: Activity): AlertDialog {
-            val dp24 = Tools.dpToPx(context, 24.0)
+            val dp24 = 24.dpToPx
             return MaterialAlertDialogBuilder(context, R.style.Theme_LucidSourceKit_ThemedDialog)
                     .setTitle("Exporting data")
                     .setView(LinearLayout(context).apply {
@@ -142,7 +144,7 @@ class ExportDialog {
                         })
                         addView(TextView(context).apply {
                             text = "Exporting dream journal and questionnaire data, please be patient..."
-                            setTextColor(Tools.getAttrColor(R.attr.secondaryTextColor, context.theme))
+                            setTextColor(context.attrColor(R.attr.secondaryTextColor))
                             gravity = Gravity.CENTER_VERTICAL
                             updatePadding(left = dp24)
                         })

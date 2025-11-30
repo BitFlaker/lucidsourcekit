@@ -71,23 +71,6 @@ object Tools {
     )
 
     @JvmStatic
-    @Deprecated("Use Activity.loadLanguage() instead")
-    suspend fun loadLanguage(activity: Activity) {
-        val lang = activity.getSetting(DataStoreKeys.LANGUAGE)
-        val locale = Locale(lang)
-        Locale.setDefault(locale)
-        val config = Configuration()
-        config.setLocales(LocaleList(locale))
-        activity.baseContext.resources.updateConfiguration(config, activity.baseContext.resources.displayMetrics)
-    }
-
-    @JvmStatic
-    @Deprecated("Use Context.attrColorStateList(Int) instead")
-    fun getAttrColorStateList(colorAttr: Int, theme: Theme): ColorStateList {
-        return ColorStateList.valueOf(getAttrColor(colorAttr, theme))
-    }
-
-    @JvmStatic
     @Deprecated("Use Context.attrColor(Int) instead")
     fun getAttrColor(colorAttr: Int, theme: Theme): Int {
         return getAttrValue(colorAttr, theme).data
@@ -98,13 +81,6 @@ object Tools {
         val typedValue = TypedValue()
         theme.resolveAttribute(attr, typedValue, true)
         return typedValue
-    }
-
-    @JvmStatic
-    @Deprecated("Use edgeToEdge() instead")
-    fun makeStatusBarTransparent(activity: Activity) {
-        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        activity.window.statusBarColor = Color.TRANSPARENT
     }
 
     @JvmStatic

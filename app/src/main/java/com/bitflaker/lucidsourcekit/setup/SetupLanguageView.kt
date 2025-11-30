@@ -13,6 +13,7 @@ import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys
 import com.bitflaker.lucidsourcekit.data.datastore.updateSetting
 import com.bitflaker.lucidsourcekit.databinding.FragmentSetupLanguageBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.loadLanguage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -41,7 +42,7 @@ class SetupLanguageView : Fragment() {
                 binding.txtLanguageSupportNotice.isVisible = lang == "de"
                 lifecycleScope.launch(Dispatchers.IO) {
                     requireContext().updateSetting(DataStoreKeys.LANGUAGE, lang)
-                    Tools.loadLanguage(requireActivity())
+                    requireActivity().loadLanguage()
                     onLanguageChangedListener?.invoke()
                 }
             }

@@ -23,6 +23,7 @@ import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler.cancelRepeatingAlar
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler.scheduleAlarmRepeatedlyAt
 import com.bitflaker.lucidsourcekit.main.alarms.RecyclerViewAdapterAlarms.MainViewHolderAlarms
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -170,8 +171,8 @@ class RecyclerViewAdapterAlarms(
                 }
 
                 // Highlight the repeat pattern weekdays
-                val colorTertiary = Tools.getAttrColor(R.attr.tertiaryTextColor, activity.theme)
-                val colorPrimary = Tools.getAttrColor(R.attr.secondaryTextColor, activity.theme)
+                val colorTertiary = activity.attrColor(R.attr.tertiaryTextColor)
+                val colorPrimary = activity.attrColor(R.attr.secondaryTextColor)
                 for (i in alarm.pattern.indices) {
                     val dayIndicator = weekdays[(i + alarm.pattern.size - 1) % alarm.pattern.size]
                     if (alarm.pattern[i]) {

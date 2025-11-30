@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
 
 class ProgressIndicator : View {
     private val paint = Paint()
@@ -21,7 +22,7 @@ class ProgressIndicator : View {
     }
 
     private fun setup() {
-        paint.color = Tools.getAttrColor(R.attr.colorOutlineVariant, context.theme)
+        paint.color = context.attrColor(R.attr.colorOutlineVariant)
         paint.strokeCap = Paint.Cap.ROUND
     }
 

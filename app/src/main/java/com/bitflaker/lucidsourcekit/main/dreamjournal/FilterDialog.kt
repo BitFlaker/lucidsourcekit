@@ -37,6 +37,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.radiobutton.MaterialRadioButton
 import java.util.Locale
 import androidx.core.view.isVisible
+import com.bitflaker.lucidsourcekit.utils.attrColorStateList
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 
 class FilterDialog(
     private val context: Context,
@@ -67,7 +69,7 @@ class FilterDialog(
         // Set default style tag filter
         binding.chpGrpFilterTags.removeAllViews()
         binding.txtTagFilterInfo.visibility = View.GONE
-        TextViewCompat.setCompoundDrawableTintList(binding.btnFilterEntryTags, Tools.getAttrColorStateList(R.attr.colorOutlineVariant, context.theme))
+        TextViewCompat.setCompoundDrawableTintList(binding.btnFilterEntryTags, context.attrColorStateList(R.attr.colorOutlineVariant))
 
         // Set map from title buttons to categories and set handlers to open the correct
         // category when clicking on a title button
@@ -202,7 +204,7 @@ class FilterDialog(
         // Get icons and colors based on whether anything was selected
         if (selected.isEmpty()) {
             icon = ResourcesCompat.getDrawable(context.resources, R.drawable.rounded_add_24, context.theme)!!
-            icon.setBounds(0, 0, Tools.dpToPx(context, 24.0), Tools.dpToPx(context, 24.0))
+            icon.setBounds(0, 0, 24.dpToPx, 24.dpToPx)
             titleIcon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_baseline_horizontal_rule_24, context.theme)!!
             colorAttrIcon = R.attr.colorOutline
             colorAttrDrawable = R.attr.colorOutlineVariant
@@ -218,13 +220,13 @@ class FilterDialog(
         }
 
         // Set the icon on the category
-        TextViewCompat.setCompoundDrawableTintList(categoryButton, Tools.getAttrColorStateList(colorAttrDrawable, context.theme))
+        TextViewCompat.setCompoundDrawableTintList(categoryButton, context.attrColorStateList(colorAttrDrawable))
         categoryButton.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null)
 
         // Set the icon and button color of the title button
         titleButtonMap[container]?.apply {
-            backgroundTintList = Tools.getAttrColorStateList(colorAttrBackground, context.theme)
-            setIconTint(Tools.getAttrColorStateList(colorAttrIcon, context.theme))
+            backgroundTintList = context.attrColorStateList(colorAttrBackground)
+            setIconTint(context.attrColorStateList(colorAttrIcon))
             setIcon(titleIcon)
         }
     }
@@ -272,8 +274,8 @@ class FilterDialog(
     private fun generateTagFilterChip(enteredTag: String, isTitle: Boolean): Chip {
         val colorAttrBackground = if (isTitle) R.attr.colorSecondary else R.attr.colorSurfaceContainer
         val colorAttrForeground = if (isTitle) R.attr.colorOnSecondary else R.attr.colorOnSurface
-        val colorBackground = Tools.getAttrColorStateList(colorAttrBackground, context.theme)
-        val colorForeground = Tools.getAttrColorStateList(colorAttrForeground, context.theme)
+        val colorBackground = context.attrColorStateList(colorAttrBackground)
+        val colorForeground = context.attrColorStateList(colorAttrForeground)
 
         return Chip(context).apply {
             text = enteredTag
@@ -304,7 +306,7 @@ class FilterDialog(
         var visibility = View.VISIBLE
         if (count == 0) {
             icon = ResourcesCompat.getDrawable(context.resources, R.drawable.rounded_add_24, context.theme)
-            icon?.setBounds(0, 0, Tools.dpToPx(context, 24.0), Tools.dpToPx(context, 24.0))
+            icon?.setBounds(0, 0, 24.dpToPx, 24.dpToPx)
             visibility = View.GONE
         }
         binding.btnFilterEntryTags.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null)

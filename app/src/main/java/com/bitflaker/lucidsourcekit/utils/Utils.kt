@@ -134,6 +134,8 @@ val Int.pxToDp: Int get() = (this / getSystem().displayMetrics.density).toInt()
 
 val Int.dpToPx: Int get() = (this * getSystem().displayMetrics.density).toInt()
 
+val Double.dpToPx: Double get() = this * getSystem().displayMetrics.density
+
 val Int.spToPx: Int get() = toFloat().spToPx
 
 val Float.spToPx: Int get() = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, this, getSystem().displayMetrics).toInt()

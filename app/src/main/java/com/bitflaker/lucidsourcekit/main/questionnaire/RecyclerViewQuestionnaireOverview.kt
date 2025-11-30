@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.resulttables.QuestionnaireDetails
 import com.bitflaker.lucidsourcekit.databinding.EntryQuestionnaireBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 
 class RecyclerViewQuestionnaireOverview(
     val context: Context,
@@ -38,7 +39,7 @@ class RecyclerViewQuestionnaireOverview(
         holder.binding.txtBadgeQuestionCount.text = "${current.questionCount} questions"
         val color = current.colorCode?.toColorInt() ?: Color.TRANSPARENT
         holder.binding.vwColorIndicator.backgroundTintList = ColorStateList.valueOf(color)
-        holder.binding.txtQuestionnaireName.updatePadding(left = if (color == Color.TRANSPARENT) 0 else Tools.dpToPx(context, 22.0))
+        holder.binding.txtQuestionnaireName.updatePadding(left = if (color == Color.TRANSPARENT) 0 else 22.dpToPx)
 
         // Calculate average questionnaire fill out duration
         val avgSecs = current.averageDuration / 1000

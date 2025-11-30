@@ -15,6 +15,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.TransitionManager
@@ -22,9 +24,12 @@ import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys
 import com.bitflaker.lucidsourcekit.data.datastore.getSetting
 import com.bitflaker.lucidsourcekit.data.datastore.updateSetting
+import com.bitflaker.lucidsourcekit.databinding.ActivityAlarmViewerBinding
 import com.bitflaker.lucidsourcekit.databinding.ActivityVisualNotificationBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
 import com.bitflaker.lucidsourcekit.utils.fadeIn
+import com.bitflaker.lucidsourcekit.utils.spToPx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Timer
@@ -54,6 +59,11 @@ class VisualNotificationActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityVisualNotificationBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         // Request to wake the device and display on lock screen
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
@@ -76,8 +86,6 @@ class VisualNotificationActivity : AppCompatActivity() {
             currentDigits = getSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_DIGITS)
         }
 
-        Tools.makeStatusBarTransparent(this)
-
         // Configure gradient circle
         binding.gcCircle.setMaskColor(Color.BLACK)
         binding.gcCircle.setColor(circleColor)
@@ -85,12 +93,12 @@ class VisualNotificationActivity : AppCompatActivity() {
         binding.gcCircle.setStops(0.6f, 0.005f)
 
         // Configure gradient circle inner text
-        binding.gcCircle.setTextColor(Tools.getAttrColor(com.google.android.material.R.attr.colorOutline, theme))
+        binding.gcCircle.setTextColor(attrColor(com.google.android.material.R.attr.colorOutline))
         binding.gcCircle.setTextMaskCharacter(presetMaskCharacters[4])
         binding.gcCircle.setJitterEnabled(true)
         binding.gcCircle.setMaskJitter(48)
         binding.gcCircle.setTextJitter(24)
-        binding.gcCircle.setTextSize(Tools.spToPx(this, 20f).toFloat())
+        binding.gcCircle.setTextSize(20.spToPx.toFloat())
 
         // Start attention grabbing flashing animation
         binding.gsStripe.startAnimations(stripeAnimationDelay)

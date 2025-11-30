@@ -7,7 +7,10 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.bitflaker.lucidsourcekit.R
@@ -16,9 +19,8 @@ import com.bitflaker.lucidsourcekit.data.datastore.updateSetting
 import com.bitflaker.lucidsourcekit.data.enums.AuthTypes
 import com.bitflaker.lucidsourcekit.databinding.ActivitySetupViewerBinding
 import com.bitflaker.lucidsourcekit.utils.Crypt
-import com.bitflaker.lucidsourcekit.utils.Tools.dpToPx
-import com.bitflaker.lucidsourcekit.utils.Tools.getAttrColorStateList
-import com.bitflaker.lucidsourcekit.utils.Tools.makeStatusBarTransparent
+import com.bitflaker.lucidsourcekit.utils.attrColorStateList
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.bitflaker.lucidsourcekit.utils.resolveDrawable
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -54,11 +56,15 @@ class SetupViewer : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        vpAdapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
+        enableEdgeToEdge()
         binding = ActivitySetupViewerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        makeStatusBarTransparent(this)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+        vpAdapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
 
         // Add base fragments and tabs
         vpAdapter.addFragment(pageLanguage, PAGE_LABEL_LANGUAGE)
@@ -73,18 +79,18 @@ class SetupViewer : AppCompatActivity() {
         repeat(pageCount) {
             val dotPage = ImageView(this).apply {
                 scaleType = ImageView.ScaleType.FIT_CENTER
-                backgroundTintList = getAttrColorStateList(R.attr.colorSurfaceContainerHigh, theme)
+                backgroundTintList = attrColorStateList(R.attr.colorSurfaceContainerHigh)
                 setBackgroundResource(R.drawable.page_dot)
             }
-            val dp8 = dpToPx(this, 8.0)
-            val dp2 = dpToPx(this, 2.0)
+            val dp8 = 8.dpToPx
+            val dp2 = 2.dpToPx
             val lp = RelativeLayout.LayoutParams(dp8, dp8).apply {
                 setMargins(dp2, 0, dp2, 0)
             }
             binding.pageDotContainer.addView(dotPage, lp)
             pageDots.add(dotPage)
         }
-        pageDots[0].setBackgroundTintList(getAttrColorStateList(R.attr.colorPrimary, theme))
+        pageDots[0].backgroundTintList = attrColorStateList(R.attr.colorPrimary)
 
         // Setup page action listeners
         pageLanguage.onLanguageChangedListener = ::languageChanged
@@ -170,7 +176,7 @@ class SetupViewer : AppCompatActivity() {
     private fun tabSelected(): OnTabSelectedListener = object : OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab) {
             binding.viewpager.currentItem = tab.position
-            pageDots[tab.position].backgroundTintList = getAttrColorStateList(R.attr.colorPrimary, theme)
+            pageDots[tab.position].backgroundTintList = attrColorStateList(R.attr.colorPrimary)
 
             val isLastPage = binding.tablayout.selectedTabPosition + 1 == pageCount
             if (isLastPage) {
@@ -183,7 +189,7 @@ class SetupViewer : AppCompatActivity() {
         }
 
         override fun onTabUnselected(tab: TabLayout.Tab) {
-            pageDots[tab.position].backgroundTintList = getAttrColorStateList(R.attr.colorSurfaceContainerHigh, theme)
+            pageDots[tab.position].backgroundTintList = attrColorStateList(R.attr.colorSurfaceContainerHigh)
         }
 
         override fun onTabReselected(tab: TabLayout.Tab) { }
@@ -215,7 +221,7 @@ class SetupViewer : AppCompatActivity() {
         consented.set(currentConsent)
     }
 
-    private fun languageChanged() {
+    private fun languageChanged() = runOnUiThread {
         binding.btnNext.text = resources.getString(R.string.setup_next)
         (vpAdapter.getFragment(PAGE_LABEL_LANGUAGE) as SetupLanguageView).onLanguageUpdated()
         (vpAdapter.getFragment(PAGE_LABEL_CONSENT) as SetupConsentView).onLanguageUpdated()

@@ -11,14 +11,17 @@ import com.bitflaker.lucidsourcekit.MainActivity
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
+import com.bitflaker.lucidsourcekit.utils.attrColorStateList
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.google.android.material.button.MaterialButton
 
 class JournalTypeDialog {
     companion object {
         fun generateContent(context: Context, listener: () -> Unit): View {
-            val dp12 = Tools.dpToPx(context, 12.0)
-            val dp24 = Tools.dpToPx(context, 24.0)
-            val dp128 = Tools.dpToPx(context, 128.0)
+            val dp12 = 12.dpToPx
+            val dp24 = 24.dpToPx
+            val dp128 = 128.dpToPx
 
             return LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
@@ -27,7 +30,7 @@ class JournalTypeDialog {
                     layoutParams = LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
                     setPadding(0, 0, 0, dp12)
                     text = "Select the dream journal entry type you would like to create below"
-                    setTextColor(Tools.getAttrColor(R.attr.secondaryTextColor, context.theme))
+                    setTextColor(context.attrColor(R.attr.secondaryTextColor))
                 })
                 addView(LinearLayout(context).apply {
                     orientation = LinearLayout.HORIZONTAL
@@ -38,13 +41,13 @@ class JournalTypeDialog {
                             weight = 1.0f
                         }
                         text = "Text"
-                        setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, context.theme))
+                        setTextColor(context.attrColor(R.attr.primaryTextColor))
                         icon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_baseline_text_fields_24, context.theme)
                         iconGravity = MaterialButton.ICON_GRAVITY_TEXT_TOP
-                        iconTint = Tools.getAttrColorStateList(R.attr.primaryTextColor, context.theme)
+                        iconTint = context.attrColorStateList(R.attr.primaryTextColor)
                         cornerRadius = dp12
-                        backgroundTintList = Tools.getAttrColorStateList(R.attr.colorSurfaceContainerHighest, context.theme)
-                        rippleColor = Tools.getAttrColorStateList(R.attr.colorOutlineVariant, context.theme)
+                        backgroundTintList = context.attrColorStateList(R.attr.colorSurfaceContainerHighest)
+                        rippleColor = context.attrColorStateList(R.attr.colorOutlineVariant)
                         setOnClickListener {
                             showEntry(context, DreamJournalEntry.EntryType.PLAIN_TEXT)
                             listener()
@@ -55,13 +58,13 @@ class JournalTypeDialog {
                             weight = 1.0f
                         }
                         text = "Form"
-                        setTextColor(Tools.getAttrColor(R.attr.primaryTextColor, context.theme))
+                        setTextColor(context.attrColor(R.attr.primaryTextColor))
                         icon = ResourcesCompat.getDrawable(context.resources, R.drawable.rounded_convert_to_text_24, context.theme)
                         iconGravity = MaterialButton.ICON_GRAVITY_TEXT_TOP
-                        iconTint = Tools.getAttrColorStateList(R.attr.primaryTextColor, context.theme)
+                        iconTint = context.attrColorStateList(R.attr.primaryTextColor)
                         cornerRadius = dp12
-                        backgroundTintList = Tools.getAttrColorStateList(R.attr.colorSurfaceContainerHighest, context.theme)
-                        rippleColor = Tools.getAttrColorStateList(R.attr.colorOutlineVariant, context.theme)
+                        backgroundTintList = context.attrColorStateList(R.attr.colorSurfaceContainerHighest)
+                        rippleColor = context.attrColorStateList(R.attr.colorOutlineVariant)
                         setOnClickListener {
                             showEntry(context, DreamJournalEntry.EntryType.FORMS_TEXT)
                             listener.invoke()

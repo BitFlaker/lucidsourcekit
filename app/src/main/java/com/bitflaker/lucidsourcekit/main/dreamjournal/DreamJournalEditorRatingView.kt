@@ -21,6 +21,9 @@ import com.bitflaker.lucidsourcekit.data.enums.journalratings.SleepQuality
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry
 import com.bitflaker.lucidsourcekit.databinding.FragmentJournalEditorRatingBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
+import com.bitflaker.lucidsourcekit.utils.attrColorStateList
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.security.InvalidParameterException
 
@@ -46,8 +49,8 @@ class DreamJournalEditorRatingView(val entry: DreamJournalEntry) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val context = requireContext()
-        unselectedIconColor = Tools.getAttrColorStateList(R.attr.colorSurfaceContainerHigh, context.theme)
-        selectedIconColor = Tools.getAttrColorStateList(R.attr.colorOnSurface, context.theme)
+        unselectedIconColor = context.attrColorStateList(R.attr.colorSurfaceContainerHigh)
+        selectedIconColor = context.attrColorStateList(R.attr.colorOnSurface)
 
         // Initialize indicator image arrays
         dreamMoods = arrayOf(
@@ -152,8 +155,8 @@ class DreamJournalEditorRatingView(val entry: DreamJournalEntry) : Fragment() {
             val isSelected = i == value
             icons[i].setImageTintList(if (isSelected) selectedIconColor else unselectedIconColor)
             icons[i].updateLayoutParams<LinearLayout.LayoutParams> {
-                topMargin = if (isSelected) Tools.dpToPx(requireContext(), 4.0) else 0
-                height = if (isSelected) Tools.dpToPx(requireContext(), 20.0) else Tools.dpToPx(requireContext(), 16.0)
+                topMargin = if (isSelected) 4.dpToPx else 0
+                height = if (isSelected) 20.dpToPx else 16.dpToPx
             }
             icons[i].invalidate()
         }
@@ -189,8 +192,8 @@ class DreamJournalEditorRatingView(val entry: DreamJournalEntry) : Fragment() {
         val emptyDescription = description.isNullOrEmpty()
 
         // Set text colors for title and description
-        binding.txtJournalTitle.setTextColor(Tools.getAttrColor(if (emptyTitle) R.attr.tertiaryTextColor else R.attr.primaryTextColor, context.theme))
-        binding.txtJournalDescription.setTextColor(Tools.getAttrColor(if (emptyDescription) R.attr.tertiaryTextColor else R.attr.secondaryTextColor, context.theme))
+        binding.txtJournalTitle.setTextColor(context.attrColor(if (emptyTitle) R.attr.tertiaryTextColor else R.attr.primaryTextColor))
+        binding.txtJournalDescription.setTextColor(context.attrColor(if (emptyDescription) R.attr.tertiaryTextColor else R.attr.secondaryTextColor))
 
         // Set text values for title and description
         binding.txtJournalTitle.text = if (emptyTitle) "No title provided" else title

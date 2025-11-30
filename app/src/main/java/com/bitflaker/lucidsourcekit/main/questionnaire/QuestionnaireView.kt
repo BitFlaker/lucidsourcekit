@@ -30,6 +30,7 @@ import com.bitflaker.lucidsourcekit.main.questionnaire.results.ControlResultRang
 import com.bitflaker.lucidsourcekit.main.questionnaire.results.ControlResultSingleSelect
 import com.bitflaker.lucidsourcekit.main.questionnaire.results.ControlResultText
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.DateFormat
@@ -235,16 +236,16 @@ class QuestionnaireView : AppCompatActivity() {
             binding.btnQuestionnaireNext.icon = ResourcesCompat.getDrawable(resources, R.drawable.rounded_check_18, theme)
             binding.btnQuestionnaireNext.iconGravity = MaterialButton.ICON_GRAVITY_START
             binding.btnQuestionnaireNext.updatePadding(
-                right = Tools.dpToPx(this, 20.0),
-                left = Tools.dpToPx(this, 16.0)
+                right = 20.dpToPx,
+                left = 16.dpToPx
             )
         } else {
             binding.btnQuestionnaireNext.text = "Next"
             binding.btnQuestionnaireNext.icon = ResourcesCompat.getDrawable(resources, R.drawable.rounded_chevron_right_24, theme)
             binding.btnQuestionnaireNext.iconGravity = MaterialButton.ICON_GRAVITY_END
             binding.btnQuestionnaireNext.updatePadding(
-                right = Tools.dpToPx(this, 16.0),
-                left = Tools.dpToPx(this, 28.0)
+                right = 16.dpToPx,
+                left = 28.dpToPx
             )
         }
     }

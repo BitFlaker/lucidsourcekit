@@ -24,6 +24,7 @@ import com.bitflaker.lucidsourcekit.main.questionnaire.results.ControlResultRang
 import com.bitflaker.lucidsourcekit.main.questionnaire.results.ControlResultSingleSelect
 import com.bitflaker.lucidsourcekit.main.questionnaire.results.ControlResultText
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.google.android.material.button.MaterialButton
 import java.util.Locale
 
@@ -235,7 +236,7 @@ class RecyclerViewQuestionnaireControl(
                 lParams.height = GridLayout.LayoutParams.WRAP_CONTENT
                 lParams.width = GridLayout.LayoutParams.MATCH_PARENT
                 button.layoutParams = lParams
-                button.minHeight = Tools.dpToPx(context, 64.0)
+                button.minHeight = 64.dpToPx
                 button.isCheckable = true
                 button.isToggleCheckedStateOnClick = isMultiSelect
                 button.cornerRadius = context.resources.getDimension(R.dimen.cardRadius).toInt()

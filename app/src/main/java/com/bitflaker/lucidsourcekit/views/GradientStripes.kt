@@ -9,44 +9,41 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 import kotlin.math.max
+import androidx.core.graphics.toColorInt
 
 class GradientStripes @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-    private var stripeColor = Color.parseColor("#43474E")
-    private var stripeThickness = Tools.dpToPx(context, 3.0).toFloat()
-    private var stripeGap = Tools.dpToPx(context, 0.0).toFloat()
+    private var stripeColor = "#43474E".toColorInt()
+    private var stripeThickness = 3.dpToPx.toFloat()
+    private var stripeGap = 0.dpToPx.toFloat()
     private var maxAlpha = 192f
     private var stripeCount = 4
     private var currentPositionOffset = 1f
     private var currentExpansion = 0f
-    private val animatorPosition: ValueAnimator
-    private val animatorExpansion: ValueAnimator
+    private val animatorPosition: ValueAnimator = ValueAnimator.ofFloat(1f, 0f).apply {
+        duration = 500
+        interpolator = AccelerateDecelerateInterpolator()
+        addUpdateListener { animation ->
+            currentPositionOffset = animation.animatedValue as Float
+            invalidate()
+        }
+    }
+    private val animatorExpansion: ValueAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+        duration = 600
+        startDelay = animatorPosition.duration - 150
+        interpolator = AccelerateDecelerateInterpolator()
+        addUpdateListener { animation ->
+            currentExpansion = animation.animatedValue as Float
+            invalidate()
+        }
+    }
     private var paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         strokeWidth = stripeThickness
         color = stripeColor
         strokeCap = Paint.Cap.ROUND
-    }
-
-    init {
-        animatorPosition = ValueAnimator.ofFloat(1f, 0f).apply {
-            duration = 500
-            interpolator = AccelerateDecelerateInterpolator()
-            addUpdateListener { animation ->
-                currentPositionOffset = animation.animatedValue as Float
-                invalidate()
-            }
-        }
-        animatorExpansion = ValueAnimator.ofFloat(0f, 1f).apply {
-            duration = 600
-            startDelay = animatorPosition.duration - 150
-            interpolator = AccelerateDecelerateInterpolator()
-            addUpdateListener { animation ->
-                currentExpansion = animation.animatedValue as Float
-                invalidate()
-            }
-        }
     }
 
     override fun onDraw(canvas: Canvas) {

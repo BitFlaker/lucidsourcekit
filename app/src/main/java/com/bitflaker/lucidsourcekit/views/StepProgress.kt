@@ -7,15 +7,17 @@ import android.util.AttributeSet
 import android.view.View
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 
 class StepProgress @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-    private var colorActive = Tools.getAttrColor(R.attr.colorOutlineVariant, context.theme)
-    private var colorCurrent = Tools.getAttrColor(R.attr.colorOutline, context.theme)
-    private var colorInactive = Tools.getAttrColor(R.attr.colorSurfaceContainer, context.theme)
-    private var strokeHeight = Tools.dpToPx(context, 6.0).toFloat()
-    private var strokeGap = Tools.dpToPx(context, 8.0).toFloat()
+    private var colorActive = context.attrColor(R.attr.colorOutlineVariant)
+    private var colorCurrent = context.attrColor(R.attr.colorOutline)
+    private var colorInactive = context.attrColor(R.attr.colorSurfaceContainer)
+    private var strokeHeight = 6.dpToPx.toFloat()
+    private var strokeGap = 8.dpToPx.toFloat()
     private var paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         strokeWidth = strokeHeight
         strokeCap = Paint.Cap.ROUND

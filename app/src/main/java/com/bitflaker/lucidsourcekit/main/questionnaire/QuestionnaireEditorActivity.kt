@@ -38,6 +38,9 @@ import com.bitflaker.lucidsourcekit.databinding.ActivityQuestionnaireEditorBindi
 import com.bitflaker.lucidsourcekit.databinding.SheetColorPickerBinding
 import com.bitflaker.lucidsourcekit.databinding.SheetQuestionEditorBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
+import com.bitflaker.lucidsourcekit.utils.attrColorStateList
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.bitflaker.lucidsourcekit.utils.singleLine
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -358,15 +361,15 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
     }
 
     private fun generatePresetColor(color: Int): MaterialCardView {
-        val dp32 = Tools.dpToPx(this, 32.0)
-        val dp24 = Tools.dpToPx(this, 24.0)
-        val dp22 = Tools.dpToPx(this, 18.0)
-        val dp14 = Tools.dpToPx(this, 14.0)
+        val dp32 = 32.dpToPx
+        val dp24 = 24.dpToPx
+        val dp22 = 18.dpToPx
+        val dp14 = 14.dpToPx
         val isPicker = color == Color.TRANSPARENT
         val iconDrawable = if (isPicker) R.drawable.rounded_colorize_24 else R.drawable.ic_baseline_cross_24
         val iconSize = if (isPicker) dp22 else dp14
         val iconVisible = if (isPicker) View.VISIBLE else View.GONE
-        val iconTint = Tools.getAttrColorStateList(if (isPicker) R.attr.colorOutline else R.attr.colorSurface, theme)
+        val iconTint = attrColorStateList(if (isPicker) R.attr.colorOutline else R.attr.colorSurface)
 
         val card = MaterialCardView(this)
         card.layoutParams = LinearLayout.LayoutParams(dp32, dp32)
@@ -404,8 +407,8 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
     }
 
     private fun handleColorSelection(card: MaterialCardView?, color: Int, suppressColorPicker: Boolean = false) {
-        val iconTintSelected = Tools.getAttrColorStateList(R.attr.colorSurface, theme)
-        val dp1 = Tools.dpToPx(this, 1.0)
+        val iconTintSelected = attrColorStateList(R.attr.colorSurface)
+        val dp1 = 1.dpToPx
         var anySelection = false
         for ((i, currentCard) in binding.llColorSelect.children.withIndex()) {
             if (currentCard !is MaterialCardView) continue
@@ -420,14 +423,14 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
                 }
             }
 
-            val colorSurface = Tools.getAttrColor(R.attr.colorSurface, theme)
+            val colorSurface = attrColor(R.attr.colorSurface)
             currentCard.strokeWidth = if (select) dp1 else 0
             currentCard.setCardBackgroundColor(
                 if (select) colorSurface else if (isChildPicker) colorSurface else currentCard.strokeColorStateList?.defaultColor ?: colorSurface
             )
             for (child in currentCard.children) {
                 if (child is ImageView) {
-                    child.imageTintList = if (select) iconTintSelected else if (isChildPicker) Tools.getAttrColorStateList(R.attr.colorOutline, theme) else iconTintSelected
+                    child.imageTintList = if (select) iconTintSelected else if (isChildPicker) attrColorStateList(R.attr.colorOutline) else iconTintSelected
                     if (isChildPicker) continue
                 }
                 child.visibility = if (select) View.VISIBLE else View.GONE
@@ -480,7 +483,7 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
     }
 
     private fun getHorizontalGradient(vararg stops: Int): GradientDrawable {
-        val dp24 = Tools.dpToPx(baseContext, 24.0)
+        val dp24 = 24.dpToPx
         return GradientDrawable(
             GradientDrawable.Orientation.LEFT_RIGHT,
             stops

@@ -21,6 +21,8 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.Goal
 import com.bitflaker.lucidsourcekit.databinding.ActivityGoalsEditorBinding
 import com.bitflaker.lucidsourcekit.databinding.SheetGoalsEditorBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
+import com.bitflaker.lucidsourcekit.utils.attrColorStateList
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -54,19 +56,17 @@ class GoalsEditorView : AppCompatActivity() {
 
         // Turn `Add` button to a `Delete` button when multiple entries are being selected
         editGoalsAdapter.onMultiSelectEnterListener = {
-            binding.btnAddGoal.backgroundTintList = Tools.getAttrColorStateList(R.attr.colorErrorContainer, theme)
+            binding.btnAddGoal.backgroundTintList = attrColorStateList(R.attr.colorErrorContainer)
             binding.btnAddGoal.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_delete_24, theme))
-            binding.btnAddGoal.imageTintList =
-                Tools.getAttrColorStateList(R.attr.colorOnErrorContainer, theme)
+            binding.btnAddGoal.imageTintList = attrColorStateList(R.attr.colorOnErrorContainer)
             isInSelectionMode = true
         }
 
         // Turn `Delete` button to an `Add` button when multiple entries are no longer being selected
         editGoalsAdapter.onMultiSelectExitListener = {
-            binding.btnAddGoal.backgroundTintList = Tools.getAttrColorStateList(R.attr.colorPrimaryContainer, theme)
+            binding.btnAddGoal.backgroundTintList = attrColorStateList(R.attr.colorPrimaryContainer)
             binding.btnAddGoal.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_round_add_24, theme))
-            binding.btnAddGoal.imageTintList =
-                Tools.getAttrColorStateList(R.attr.colorOnPrimaryContainer, theme)
+            binding.btnAddGoal.imageTintList = attrColorStateList(R.attr.colorOnPrimaryContainer)
             isInSelectionMode = false
         }
 
@@ -219,16 +219,12 @@ class GoalsEditorView : AppCompatActivity() {
     private fun setLockIcon(toggleLockDifficulty: ImageButton, isLocked: AtomicBoolean) {
         if (isLocked.get()) {
             toggleLockDifficulty.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_lock_24, theme))
-            toggleLockDifficulty.imageTintList =
-                Tools.getAttrColorStateList(R.attr.primaryTextColor, theme)
-            toggleLockDifficulty.backgroundTintList =
-                Tools.getAttrColorStateList(R.attr.colorSurfaceContainerLow, theme)
+            toggleLockDifficulty.imageTintList = attrColorStateList(R.attr.primaryTextColor)
+            toggleLockDifficulty.backgroundTintList = attrColorStateList(R.attr.colorSurfaceContainerLow)
         } else {
             toggleLockDifficulty.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_lock_open_24, theme))
-            toggleLockDifficulty.imageTintList =
-                Tools.getAttrColorStateList(R.attr.secondaryTextColor, theme)
-            toggleLockDifficulty.backgroundTintList =
-                Tools.getAttrColorStateList(R.attr.colorSurfaceContainerLow, theme)
+            toggleLockDifficulty.imageTintList = attrColorStateList(R.attr.secondaryTextColor)
+            toggleLockDifficulty.backgroundTintList = attrColorStateList(R.attr.colorSurfaceContainerLow)
         }
     }
 
@@ -237,9 +233,9 @@ class GoalsEditorView : AppCompatActivity() {
             value,
             slider.valueFrom,
             slider.valueTo,
-            Tools.getAttrColor(R.attr.colorSuccess, theme),
-            Tools.getAttrColor(R.attr.colorWarning, theme),
-            Tools.getAttrColor(R.attr.colorError, theme)
+            attrColor(R.attr.colorSuccess),
+            attrColor(R.attr.colorWarning),
+            attrColor(R.attr.colorError)
         )
 
         // Turn color to active and inactive color state lists

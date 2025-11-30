@@ -21,6 +21,8 @@ import com.bitflaker.lucidsourcekit.database.MainDatabase
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.TagCount
 import com.bitflaker.lucidsourcekit.databinding.FragmentMainStatisticsBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.bitflaker.lucidsourcekit.views.ProportionLineChart
 import com.bitflaker.lucidsourcekit.views.RangeProgress
 import com.bitflaker.lucidsourcekit.views.RodGraph
@@ -96,7 +98,7 @@ class StatisticsView : Fragment() {
         }
 
         // Set listener for filter of heatmap of dream journal entry types
-        binding.htmDreamCountHeatmap.setOnWeekCountCalculatedListener { weekCount: Int ->
+        binding.htmDreamCountHeatmap.onWeekCountCalculatedListener = { weekCount: Int ->
             val calendar = Calendar.getInstance()
             calendar.firstDayOfWeek = Calendar.MONDAY
             var dayOfWeekIndex = calendar.get(Calendar.DAY_OF_WEEK) - 2
@@ -150,22 +152,18 @@ class StatisticsView : Fragment() {
     }
 
     private fun setAppUsageStats(totalTime: Long, journalTime: Float, otherTime: Float) {
-        val theme = requireContext().theme
+        val context = requireContext()
         val hours = TimeUnit.MILLISECONDS.toHours(totalTime)
         val minutes = TimeUnit.MILLISECONDS.toMinutes(totalTime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(totalTime))
         binding.pcTimeSpentProportions.setValues(
             arrayOf(
-                ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.colorPrimary, theme), journalTime, "Dream journal"),
-                ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.colorTertiary, theme), 0f, "Binaural beats"),
-                ProportionLineChart.DataPoint(Tools.getAttrColor(R.attr.colorSecondary, theme), otherTime, "Other")
+                ProportionLineChart.DataPoint(context.attrColor(R.attr.colorPrimary), journalTime, "Dream journal"),
+                ProportionLineChart.DataPoint(context.attrColor(R.attr.colorTertiary), 0f, "Binaural beats"),
+                ProportionLineChart.DataPoint(context.attrColor(R.attr.colorSecondary), otherTime, "Other")
             )
         )
-        binding.txtTimeSpentValue.text = if (hours == 0L) String.format(
-            Locale.ENGLISH, "%d min", minutes
-        )
-        else String.format(
-            Locale.ENGLISH, "%d hr %d min", hours, minutes
-        )
+        binding.txtTimeSpentValue.text = if (hours == 0L) String.format(Locale.ENGLISH, "%d min", minutes)
+                                                     else String.format(Locale.ENGLISH, "%d hr %d min", hours, minutes)
     }
 
     private fun groupSessionDurationsByDay(appOpenTimes: List<AppOpenStats>): HashMap<Long, MutableList<Long>> {
@@ -286,15 +284,15 @@ class StatisticsView : Fragment() {
             binding.ccgLucidPercentage.setData(
                 lucidEntriesCount,
                 totalEntriesCount - lucidEntriesCount,
-                Tools.dpToPx(requireContext(), 15.0).toFloat(),
-                Tools.dpToPx(requireContext(), 1.25).toFloat()
+                15.dpToPx.toFloat(),
+                1.25.dpToPx.toFloat()
             )
 
             // Set average mood data
             if (hasAvgMoodsData) {
                 generateRodChart(
                     binding.rgAvgDreamMoods,
-                    Tools.dpToPx(requireContext(), 3.0).toFloat(),
+                    3.dpToPx.toFloat(),
                     moodIcons,
                     avgMoods
                 )
@@ -304,7 +302,7 @@ class StatisticsView : Fragment() {
             if (hasAvgDreamClarityData) {
                 generateRodChart(
                     binding.rgAvgClarities,
-                    Tools.dpToPx(requireContext(), 3.0).toFloat(),
+                    3.dpToPx.toFloat(),
                     clarityIcons,
                     avgClarities
                 )
@@ -314,7 +312,7 @@ class StatisticsView : Fragment() {
             if (hasAvgSleepQualityData) {
                 generateRodChart(
                     binding.rgAvgSleepQualities,
-                    Tools.dpToPx(requireContext(), 3.0).toFloat(),
+                    3.dpToPx.toFloat(),
                     qualityIcons,
                     avgQualities
                 )
@@ -350,9 +348,9 @@ class StatisticsView : Fragment() {
             rngProg.setBackgroundAttrColor(R.attr.colorSurfaceContainer)
             val llParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                Tools.dpToPx(requireContext(), 25.0)
+                25.dpToPx
             )
-            val margin = Tools.dpToPx(requireContext(), 5.0)
+            val margin = 5.dpToPx
             llParams.setMargins(0, margin, 0, margin)
             rngProg.layoutParams = llParams
             binding.llMostUsedTags.addView(rngProg)
@@ -427,7 +425,7 @@ class StatisticsView : Fragment() {
             data.add(DataValue(averageValues[j], label))
             calendar.add(Calendar.DAY_OF_MONTH, -1)
         }
-        rg.setData(data, lineWidth, Tools.dpToPx(requireContext(), 24.0), icons)
+        rg.setData(data, lineWidth, 24.dpToPx, icons)
         rg.minimumHeight = rg.minHeight
     }
 

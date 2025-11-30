@@ -16,6 +16,8 @@ import com.bitflaker.lucidsourcekit.database.questionnaire.entities.resulttables
 import com.bitflaker.lucidsourcekit.databinding.EntryDateBinding
 import com.bitflaker.lucidsourcekit.databinding.EntryQuestionnaireBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -66,16 +68,16 @@ class RecyclerViewAllFilledOutQuestionnaires(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val current = items[position]
         if (holder is MainViewHolderQuestionnaire && current != null) {
-            holder.binding.crdQuestionnaire.radius = Tools.dpToPx(context, 14.0).toFloat()
-            holder.binding.crdQuestionnaire.setCardBackgroundColor(Tools.getAttrColor(R.attr.colorSurfaceContainer, context.theme))
+            holder.binding.crdQuestionnaire.radius = 14.dpToPx.toFloat()
+            holder.binding.crdQuestionnaire.setCardBackgroundColor(context.attrColor(R.attr.colorSurfaceContainer))
             holder.binding.crdQuestionnaire.updateLayoutParams<RecyclerView.LayoutParams> {
-                val dp24 = Tools.dpToPx(context, 12.0)
-                val dp4 = Tools.dpToPx(context, 4.0)
+                val dp24 = 12.dpToPx
+                val dp4 = 4.dpToPx
                 setMargins(dp24, dp4, dp24, dp4)
             }
 
-            val dp4 = Tools.dpToPx(context, 16.0)
-            val dp8 = Tools.dpToPx(context, 16.0)
+            val dp4 = 16.dpToPx
+            val dp8 = 16.dpToPx
             holder.binding.clQuestionnaire.setPadding(dp8, dp4, dp8, dp4)
 
             holder.binding.crdQuestionnaire.setOnClickListener { onQuestionnaireClickListener?.invoke(current.id) }
@@ -84,12 +86,12 @@ class RecyclerViewAllFilledOutQuestionnaires(
             holder.binding.llQuestionnaireStats.visibility = View.GONE
             val color = current.colorCode?.toColorInt() ?: Color.TRANSPARENT
             holder.binding.vwColorIndicator.backgroundTintList = ColorStateList.valueOf(color)
-            holder.binding.txtQuestionnaireName.updatePadding(left = if (color == Color.TRANSPARENT) 0 else Tools.dpToPx(context, 22.0))
+            holder.binding.txtQuestionnaireName.updatePadding(left = if (color == Color.TRANSPARENT) 0 else 22.dpToPx)
         }
         else if (holder is MainViewHolderHeading) {
             if (position + 1 >= items.size) return
             val next = items[position + 1] ?: return
-            holder.binding.root.updatePadding(top = if (position == 0) Tools.dpToPx(context, 8.0) else Tools.dpToPx(context, 16.0))
+            holder.binding.root.updatePadding(top = if (position == 0) 8.dpToPx else 16.dpToPx)
             holder.binding.txtDate.text = dateFormat.format(next.timestamp)
             holder.binding.txtDayOfWeek.text = dayOfWeekFormat.format(next.timestamp)
         }
