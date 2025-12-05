@@ -79,13 +79,12 @@ class DreamJournalEditorContentView(private val entry: DreamJournalEntry, privat
     var onContinueButtonClicked: (() -> Unit)? = null
     var onCloseButtonClicked: (() -> Unit)? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentJournalEditorContentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         db = MainDatabase.getInstance(context)
         recordingTools = RecordingObjectTools(requireContext())
 
@@ -245,7 +244,7 @@ class DreamJournalEditorContentView(private val entry: DreamJournalEntry, privat
     }
 
     private fun generateEditText(): EditText {
-        val dpm5 = -5.dpToPx
+        val dpm5 = (-5).dpToPx
         val editText = EditText(context).apply {
             setLayoutParams(LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
                 setMargins(0, dpm5, 0, dpm5)
@@ -284,7 +283,7 @@ class DreamJournalEditorContentView(private val entry: DreamJournalEntry, privat
         // split at the first occurrence and return the parts
         if (splitPos < sentence.length) {
             return arrayOf(
-                sentence.substring(0, splitPos + 1),
+                sentence.take(splitPos + 1),
                 sentence.substring(splitPos + 1)
             )
         }

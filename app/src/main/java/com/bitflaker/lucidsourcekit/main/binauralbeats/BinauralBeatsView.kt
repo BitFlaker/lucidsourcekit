@@ -20,6 +20,7 @@ import com.bitflaker.lucidsourcekit.databinding.SheetBinauralBeatsBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.attrColor
 import com.bitflaker.lucidsourcekit.utils.dpToPx
+import com.bitflaker.lucidsourcekit.utils.insetDefault
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.Locale
@@ -49,8 +50,9 @@ class BinauralBeatsView : Fragment() {
         autoStopInterval = -1
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMainBinauralBeatsBinding.inflate(inflater, container, false)
+        binding.root.insetDefault()
         return binding.root
     }
 

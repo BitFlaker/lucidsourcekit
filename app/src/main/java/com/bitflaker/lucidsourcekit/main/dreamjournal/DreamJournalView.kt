@@ -31,6 +31,7 @@ import kotlinx.coroutines.launch
 import java.text.DateFormat
 import androidx.core.view.isVisible
 import com.bitflaker.lucidsourcekit.utils.attrColor
+import com.bitflaker.lucidsourcekit.utils.insetDefault
 import com.bitflaker.lucidsourcekit.utils.showToastLong
 import kotlinx.coroutines.coroutineScope
 
@@ -93,8 +94,9 @@ class DreamJournalView : Fragment() {
         SortEntry("Description - Z to A", SortBy.Description, true)
     )
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMainJournalBinding.inflate(inflater, container, false)
+        binding.root.insetDefault()
         return binding.root
     }
 

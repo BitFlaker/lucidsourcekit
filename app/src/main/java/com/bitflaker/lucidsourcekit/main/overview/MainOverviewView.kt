@@ -20,6 +20,7 @@ import com.bitflaker.lucidsourcekit.main.dreamjournal.RecyclerViewAdapterDreamJo
 import com.bitflaker.lucidsourcekit.main.notification.NotificationManagerView
 import com.bitflaker.lucidsourcekit.main.questionnaire.QuestionnaireOverviewActivity
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.insetNoTop
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -39,7 +40,7 @@ class MainOverviewView : Fragment() {
             }
         }
     }
-    private val alarmManagerLauncher = registerForActivityResult(StartActivityForResult()) { result ->
+    private val alarmManagerLauncher = registerForActivityResult(StartActivityForResult()) {
         lifecycleScope.launch(Dispatchers.IO) {
             val storedAlarms = db.storedAlarmDao.getAllActive()
             requireActivity().runOnUiThread {
@@ -51,6 +52,7 @@ class MainOverviewView : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentMainOverviewBinding.inflate(layoutInflater)
+        binding.root.insetNoTop()
         return binding.root
     }
 

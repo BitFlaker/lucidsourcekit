@@ -23,6 +23,7 @@ import com.bitflaker.lucidsourcekit.databinding.FragmentMainStatisticsBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.attrColor
 import com.bitflaker.lucidsourcekit.utils.dpToPx
+import com.bitflaker.lucidsourcekit.utils.insetDefault
 import com.bitflaker.lucidsourcekit.views.ProportionLineChart
 import com.bitflaker.lucidsourcekit.views.RangeProgress
 import com.bitflaker.lucidsourcekit.views.RodGraph
@@ -53,6 +54,7 @@ class StatisticsView : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMainStatisticsBinding.inflate(getLayoutInflater())
+        binding.root.insetDefault()
         return binding.root
     }
 

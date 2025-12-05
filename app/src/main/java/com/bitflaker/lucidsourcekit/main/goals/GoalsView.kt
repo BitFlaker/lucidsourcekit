@@ -27,6 +27,7 @@ import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal
 import com.bitflaker.lucidsourcekit.databinding.FragmentMainGoalsBinding
 import com.bitflaker.lucidsourcekit.databinding.SheetGoalsAlgorithmEditorBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.insetDefault
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.slider.Slider
 
@@ -43,8 +44,9 @@ class GoalsView : Fragment() {
     private lateinit var db: MainDatabase
     private lateinit var binding: FragmentMainGoalsBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMainGoalsBinding.inflate(inflater, container, false)
+        binding.root.insetDefault()
         return binding.root
     }
 
