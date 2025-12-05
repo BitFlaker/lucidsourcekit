@@ -14,8 +14,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bitflaker.lucidsourcekit.R
-import com.bitflaker.lucidsourcekit.data.Brainwaves
-import com.bitflaker.lucidsourcekit.data.records.BinauralBeat
 import com.bitflaker.lucidsourcekit.databinding.FragmentMainBinauralBeatsBinding
 import com.bitflaker.lucidsourcekit.databinding.SheetBinauralAutoStopBinding
 import com.bitflaker.lucidsourcekit.databinding.SheetBinauralBeatsBinding

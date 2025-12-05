@@ -37,7 +37,7 @@ import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.database.MainDatabase
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryTag
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.results.DreamJournalEntry
 import com.bitflaker.lucidsourcekit.databinding.FragmentJournalEditorContentBinding
 import com.bitflaker.lucidsourcekit.databinding.SheetJournalRecordingBinding
 import com.bitflaker.lucidsourcekit.databinding.SheetJournalTagsEditorBinding

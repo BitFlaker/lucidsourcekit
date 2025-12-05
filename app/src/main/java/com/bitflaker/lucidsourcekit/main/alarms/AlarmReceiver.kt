@@ -10,8 +10,8 @@ import android.util.Log
 import android.view.Display
 import androidx.core.app.NotificationCompat
 import com.bitflaker.lucidsourcekit.R
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys
-import com.bitflaker.lucidsourcekit.data.datastore.getSetting
+import com.bitflaker.lucidsourcekit.datastore.DataStoreKeys
+import com.bitflaker.lucidsourcekit.datastore.getSetting
 import com.bitflaker.lucidsourcekit.database.MainDatabase
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationMessage
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler.cancelOneTimeAlarm

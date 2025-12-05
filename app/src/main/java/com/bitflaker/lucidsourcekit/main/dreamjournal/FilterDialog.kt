@@ -23,10 +23,9 @@ import androidx.core.view.children
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.DialogFragment
 import com.bitflaker.lucidsourcekit.R
-import com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamClarity
-import com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamMoods
-import com.bitflaker.lucidsourcekit.data.enums.journalratings.SleepQuality
-import com.bitflaker.lucidsourcekit.data.records.AppliedFilter
+import com.bitflaker.lucidsourcekit.main.dreamjournal.rating.DreamClarity
+import com.bitflaker.lucidsourcekit.main.dreamjournal.rating.DreamMoods
+import com.bitflaker.lucidsourcekit.main.dreamjournal.rating.SleepQuality
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamType
 import com.bitflaker.lucidsourcekit.databinding.DialogFilterBinding
 import com.bitflaker.lucidsourcekit.utils.Tools

@@ -15,11 +15,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bitflaker.lucidsourcekit.R
-import com.bitflaker.lucidsourcekit.data.enums.SortBy
-import com.bitflaker.lucidsourcekit.data.records.AppliedFilter
-import com.bitflaker.lucidsourcekit.data.records.SortEntry
 import com.bitflaker.lucidsourcekit.database.MainDatabase
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.results.DreamJournalEntry
 import com.bitflaker.lucidsourcekit.databinding.FragmentMainJournalBinding
 import com.bitflaker.lucidsourcekit.databinding.SheetQuestionnaireListBinding
 import com.bitflaker.lucidsourcekit.main.questionnaire.CompletedQuestionnaireViewerActivity

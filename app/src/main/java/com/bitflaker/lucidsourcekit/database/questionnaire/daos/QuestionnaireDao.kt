@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.Questionnaire
-import com.bitflaker.lucidsourcekit.database.questionnaire.entities.resulttables.QuestionnaireDetails
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.results.QuestionnaireDetails
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 

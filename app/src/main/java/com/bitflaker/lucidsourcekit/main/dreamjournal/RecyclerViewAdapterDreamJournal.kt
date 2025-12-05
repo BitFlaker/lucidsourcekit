@@ -29,16 +29,14 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.RecyclerView
 import com.bitflaker.lucidsourcekit.R
-import com.bitflaker.lucidsourcekit.data.enums.SortBy
-import com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamMoods
-import com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamTypes
-import com.bitflaker.lucidsourcekit.data.records.AppliedFilter
+import com.bitflaker.lucidsourcekit.main.dreamjournal.rating.DreamMoods
+import com.bitflaker.lucidsourcekit.main.dreamjournal.rating.DreamTypes
 import com.bitflaker.lucidsourcekit.database.MainDatabase
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.AudioLocation
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamClarity
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.SleepQuality
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.results.DreamJournalEntry
 import com.bitflaker.lucidsourcekit.databinding.EntryJournalBinding
 import com.bitflaker.lucidsourcekit.databinding.SheetJournalEntryBinding
 import com.bitflaker.lucidsourcekit.main.dreamjournal.RecyclerViewAdapterDreamJournal.MainViewHolder
@@ -435,8 +433,8 @@ class RecyclerViewAdapterDreamJournal(
         ArrayList(),
         ArrayList(),
         DreamMoods.None,
-        com.bitflaker.lucidsourcekit.data.enums.journalratings.DreamClarity.None,
-        com.bitflaker.lucidsourcekit.data.enums.journalratings.SleepQuality.None
+        com.bitflaker.lucidsourcekit.main.dreamjournal.rating.DreamClarity.None,
+        com.bitflaker.lucidsourcekit.main.dreamjournal.rating.SleepQuality.None
     )
 
     fun updateDataForEntry(newData: DreamJournalEntry, scrollToPositionCallback: Consumer<Int>) {

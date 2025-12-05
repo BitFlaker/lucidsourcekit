@@ -14,9 +14,9 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.bitflaker.lucidsourcekit.R
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys
-import com.bitflaker.lucidsourcekit.data.datastore.updateSetting
-import com.bitflaker.lucidsourcekit.data.enums.AuthTypes
+import com.bitflaker.lucidsourcekit.datastore.DataStoreKeys
+import com.bitflaker.lucidsourcekit.datastore.updateSetting
+import com.bitflaker.lucidsourcekit.main.AuthTypes
 import com.bitflaker.lucidsourcekit.databinding.ActivitySetupViewerBinding
 import com.bitflaker.lucidsourcekit.utils.Crypt
 import com.bitflaker.lucidsourcekit.utils.attrColorStateList
@@ -147,7 +147,7 @@ class SetupViewer : AppCompatActivity() {
             return
         }
         val secretKey = Crypt.generateSecretKey()
-        val pinCipher = Crypt.encryptStringBlowfish(pageAuthentication.pin, secretKey)
+        val pinCipher = Crypt.encryptStringBlowfish(pageAuthentication.pin, secretKey) ?: ""
         updateSetting(DataStoreKeys.AUTHENTICATION_TYPE, "pin")
         updateSetting(DataStoreKeys.AUTHENTICATION_HASH, pinCipher)
         updateSetting(DataStoreKeys.AUTHENTICATION_SALT, Base64.encodeToString(secretKey, Base64.NO_WRAP))

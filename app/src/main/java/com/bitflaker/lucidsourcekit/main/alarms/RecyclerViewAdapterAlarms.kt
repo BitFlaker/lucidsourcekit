@@ -17,7 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.database.MainDatabase
-import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm
+import com.bitflaker.lucidsourcekit.database.alarms.entities.StoredAlarm
 import com.bitflaker.lucidsourcekit.databinding.EntryAlarmBinding
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler.cancelRepeatingAlarm
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler.scheduleAlarmRepeatedlyAt

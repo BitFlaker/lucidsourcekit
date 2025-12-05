@@ -11,13 +11,11 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 import com.bitflaker.lucidsourcekit.database.alarms.daos.AlarmToneTypesDao;
-import com.bitflaker.lucidsourcekit.database.alarms.entities.Alarm;
 import com.bitflaker.lucidsourcekit.database.alarms.entities.AlarmToneTypes;
-import com.bitflaker.lucidsourcekit.database.alarms.entities.Weekdays;
-import com.bitflaker.lucidsourcekit.database.alarms.updated.daos.ActiveAlarmDao;
-import com.bitflaker.lucidsourcekit.database.alarms.updated.daos.StoredAlarmDao;
-import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarm;
-import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm;
+import com.bitflaker.lucidsourcekit.database.alarms.daos.ActiveAlarmDao;
+import com.bitflaker.lucidsourcekit.database.alarms.daos.StoredAlarmDao;
+import com.bitflaker.lucidsourcekit.database.alarms.entities.ActiveAlarm;
+import com.bitflaker.lucidsourcekit.database.alarms.entities.StoredAlarm;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.daos.AudioLocationDao;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.daos.DreamClarityDao;
 import com.bitflaker.lucidsourcekit.database.dreamjournal.daos.DreamMoodDao;
@@ -68,17 +66,15 @@ import org.json.JSONObject;
 @Database(entities = {JournalEntryTag.class, DreamType.class, SleepQuality.class,
         DreamMood.class, DreamClarity.class, AudioLocation.class, JournalEntry.class,
         JournalEntryHasTag.class, JournalEntryHasType.class, Goal.class, Shuffle.class,
-        ShuffleHasGoal.class, Alarm.class, AlarmToneTypes.class,
-        Weekdays.class, ActiveAlarm.class, StoredAlarm.class,
+        ShuffleHasGoal.class, AlarmToneTypes.class, ActiveAlarm.class, StoredAlarm.class,
         NotificationMessage.class, NotificationCategory.class, ShuffleTransaction.class,
         Questionnaire.class, Question.class, QuestionType.class, CompletedQuestionnaire.class,
         QuestionnaireAnswer.class, QuestionOptions.class, SelectedOptions.class},
-        version = 19,
+        version = 20,
         exportSchema = false
 )
 @TypeConverters({Converters.class})
 public abstract class MainDatabase extends RoomDatabase {
-
     public final static String MAIN_DATABASE_NAME = "journalDatabase.db";
 
     // Dream Journal tables
@@ -146,6 +142,7 @@ public abstract class MainDatabase extends RoomDatabase {
                 .addMigrations(MainDatabaseMigrations.MIGRATION_16_17)
                 .addMigrations(MainDatabaseMigrations.MIGRATION_17_18)
                 .addMigrations(MainDatabaseMigrations.MIGRATION_18_19)
+                .addMigrations(MainDatabaseMigrations.MIGRATION_19_20)
                 .build();
     }
 

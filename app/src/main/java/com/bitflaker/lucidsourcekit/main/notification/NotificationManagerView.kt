@@ -27,9 +27,9 @@ import com.bitflaker.lucidsourcekit.databinding.ActivityNotificationManagerBindi
 import com.bitflaker.lucidsourcekit.databinding.SheetNotificationSettingsBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.R
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys
-import com.bitflaker.lucidsourcekit.data.datastore.getSetting
-import com.bitflaker.lucidsourcekit.data.datastore.updateSetting
+import com.bitflaker.lucidsourcekit.datastore.DataStoreKeys
+import com.bitflaker.lucidsourcekit.datastore.getSetting
+import com.bitflaker.lucidsourcekit.datastore.updateSetting
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler
 import com.bitflaker.lucidsourcekit.utils.showToastLong
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -43,7 +43,6 @@ import java.util.Locale
 import kotlin.Array
 import kotlin.Int
 import kotlin.IntArray
-import kotlin.Long
 import kotlin.arrayOf
 import kotlin.text.format
 

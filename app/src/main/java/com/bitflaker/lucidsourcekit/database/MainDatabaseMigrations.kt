@@ -355,4 +355,14 @@ object MainDatabaseMigrations {
             db.execSQL("CREATE INDEX index_NotificationMessage_notificationCategoryId ON NotificationMessage (notificationCategoryId);")
         }
     }
+
+
+    @JvmField
+    val MIGRATION_19_20: Migration = object : Migration(19, 20) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("DROP TABLE Weekdays;")
+            db.execSQL("DROP TABLE Alarm;")
+        }
+    }
+
 }

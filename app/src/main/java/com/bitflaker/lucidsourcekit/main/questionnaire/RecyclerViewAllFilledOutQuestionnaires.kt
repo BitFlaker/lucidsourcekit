@@ -12,7 +12,7 @@ import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bitflaker.lucidsourcekit.R
-import com.bitflaker.lucidsourcekit.database.questionnaire.entities.resulttables.CompletedQuestionnaireDetails
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.results.CompletedQuestionnaireDetails
 import com.bitflaker.lucidsourcekit.databinding.EntryDateBinding
 import com.bitflaker.lucidsourcekit.databinding.EntryQuestionnaireBinding
 import com.bitflaker.lucidsourcekit.utils.Tools

@@ -11,8 +11,8 @@ import android.util.TypedValue;
 import android.view.View;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.data.records.DataValue;
 import com.bitflaker.lucidsourcekit.utils.Tools;
+import com.bitflaker.lucidsourcekit.views.types.DataValue;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -21,9 +21,9 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.bitflaker.lucidsourcekit.R
-import com.bitflaker.lucidsourcekit.data.export.ExportDialog
-import com.bitflaker.lucidsourcekit.data.export.SimpleActivityLauncher
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry
+import com.bitflaker.lucidsourcekit.utils.export.ExportDialog
+import com.bitflaker.lucidsourcekit.utils.export.SimpleActivityLauncher
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.results.DreamJournalEntry
 import com.bitflaker.lucidsourcekit.databinding.ActivityMainViewerBinding
 import com.bitflaker.lucidsourcekit.databinding.DialogProgressBinding
 import com.bitflaker.lucidsourcekit.main.about.AboutActivity
@@ -33,9 +33,9 @@ import com.bitflaker.lucidsourcekit.main.goals.GoalsView
 import com.bitflaker.lucidsourcekit.main.overview.MainOverviewView
 import com.bitflaker.lucidsourcekit.main.statistics.StatisticsView
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter
-import com.bitflaker.lucidsourcekit.utils.BackupTask
-import com.bitflaker.lucidsourcekit.utils.BackupTask.Companion.deleteOldBeforeImportBackup
-import com.bitflaker.lucidsourcekit.utils.BackupTaskCallback
+import com.bitflaker.lucidsourcekit.utils.backup.BackupTask
+import com.bitflaker.lucidsourcekit.utils.backup.BackupTask.Companion.deleteOldBeforeImportBackup
+import com.bitflaker.lucidsourcekit.utils.backup.BackupTaskCallback
 import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.generateFileName
 import com.bitflaker.lucidsourcekit.utils.showToastLong

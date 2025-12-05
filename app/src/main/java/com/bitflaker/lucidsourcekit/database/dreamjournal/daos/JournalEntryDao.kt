@@ -7,8 +7,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntry
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.AverageEntryValues
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.results.AverageEntryValues
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.results.DreamJournalEntry
 
 @Dao
 interface JournalEntryDao {

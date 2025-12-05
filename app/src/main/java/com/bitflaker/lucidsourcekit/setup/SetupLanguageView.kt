@@ -9,10 +9,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.bitflaker.lucidsourcekit.R
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys
-import com.bitflaker.lucidsourcekit.data.datastore.updateSetting
+import com.bitflaker.lucidsourcekit.datastore.DataStoreKeys
+import com.bitflaker.lucidsourcekit.datastore.updateSetting
 import com.bitflaker.lucidsourcekit.databinding.FragmentSetupLanguageBinding
-import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.loadLanguage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

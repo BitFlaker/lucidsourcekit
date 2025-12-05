@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.data.enums.AuthTypes;
+import com.bitflaker.lucidsourcekit.main.AuthTypes;
 import com.bitflaker.lucidsourcekit.databinding.FragmentSetupPrivacyBinding;
 
 public class SetupPrivacyView extends Fragment {

@@ -18,9 +18,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.bitflaker.lucidsourcekit.R
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys
-import com.bitflaker.lucidsourcekit.data.datastore.getSetting
-import com.bitflaker.lucidsourcekit.data.datastore.updateSetting
+import com.bitflaker.lucidsourcekit.datastore.DataStoreKeys
+import com.bitflaker.lucidsourcekit.datastore.getSetting
+import com.bitflaker.lucidsourcekit.datastore.updateSetting
 import com.bitflaker.lucidsourcekit.database.MainDatabase
 import com.bitflaker.lucidsourcekit.database.goals.entities.Shuffle
 import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal

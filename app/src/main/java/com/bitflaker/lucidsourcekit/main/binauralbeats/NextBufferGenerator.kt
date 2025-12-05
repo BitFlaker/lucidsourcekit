@@ -1,8 +1,5 @@
 package com.bitflaker.lucidsourcekit.main.binauralbeats
 
-import com.bitflaker.lucidsourcekit.data.AudioBufferPosition
-import com.bitflaker.lucidsourcekit.data.FastSineTable
-import com.bitflaker.lucidsourcekit.data.records.BinauralBeat
 import com.bitflaker.lucidsourcekit.utils.Ref
 
 object NextBufferGenerator {

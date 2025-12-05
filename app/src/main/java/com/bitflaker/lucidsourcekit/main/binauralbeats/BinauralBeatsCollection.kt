@@ -1,8 +1,5 @@
 package com.bitflaker.lucidsourcekit.main.binauralbeats
 
-import com.bitflaker.lucidsourcekit.data.BinauralBeatStages
-import com.bitflaker.lucidsourcekit.data.records.BinauralBeat
-
 object BinauralBeatsCollection {
     val binauralBeats = arrayListOf(
         BinauralBeat(

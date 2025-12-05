@@ -4,8 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bitflaker.lucidsourcekit.data.Brainwaves
-import com.bitflaker.lucidsourcekit.data.records.BinauralBeat
 import com.bitflaker.lucidsourcekit.databinding.EntryBinauralBinding
 import com.bitflaker.lucidsourcekit.main.binauralbeats.RecyclerViewAdapterBinauralBeatsSelector.MainViewHolderBinauralBeats
 import java.util.Locale

@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bitflaker.lucidsourcekit.database.MainDatabase
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.results.DreamJournalEntry
 import com.bitflaker.lucidsourcekit.databinding.FragmentMainOverviewBinding
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmEditorView
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmManagerView

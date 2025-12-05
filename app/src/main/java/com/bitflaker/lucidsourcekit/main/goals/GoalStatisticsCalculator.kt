@@ -2,7 +2,7 @@ package com.bitflaker.lucidsourcekit.main.goals
 
 import com.bitflaker.lucidsourcekit.database.MainDatabase
 import com.bitflaker.lucidsourcekit.database.goals.entities.Goal
-import com.bitflaker.lucidsourcekit.database.goals.entities.resulttables.DetailedShuffleHasGoal
+import com.bitflaker.lucidsourcekit.database.goals.entities.results.DetailedShuffleHasGoal
 import com.bitflaker.lucidsourcekit.utils.Tools
 
 class GoalStatisticsCalculator(

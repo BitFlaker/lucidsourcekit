@@ -28,9 +28,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.bitflaker.lucidsourcekit.R
-import com.bitflaker.lucidsourcekit.data.enums.AlarmToneType
 import com.bitflaker.lucidsourcekit.database.MainDatabase
-import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm
+import com.bitflaker.lucidsourcekit.database.alarms.entities.StoredAlarm
 import com.bitflaker.lucidsourcekit.databinding.ActivityAlarmEditorBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.dpToPx

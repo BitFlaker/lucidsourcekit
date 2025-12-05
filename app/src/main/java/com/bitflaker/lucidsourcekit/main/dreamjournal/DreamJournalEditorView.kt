@@ -12,11 +12,9 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.database.MainDatabase
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasTag
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry
-import com.bitflaker.lucidsourcekit.databinding.ActivityAlarmViewerBinding
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.results.DreamJournalEntry
 import com.bitflaker.lucidsourcekit.databinding.ActivityJournalEditorBinding
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter
-import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.onBackPressed
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout

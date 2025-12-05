@@ -9,8 +9,7 @@ import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import com.bitflaker.lucidsourcekit.MainActivity
 import com.bitflaker.lucidsourcekit.R
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry
-import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.results.DreamJournalEntry
 import com.bitflaker.lucidsourcekit.utils.attrColor
 import com.bitflaker.lucidsourcekit.utils.attrColorStateList
 import com.bitflaker.lucidsourcekit.utils.dpToPx

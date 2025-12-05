@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.bitflaker.lucidsourcekit.data.BackgroundNoise
 import com.bitflaker.lucidsourcekit.databinding.EntryBinauralBackgroundNoiseBinding
 import com.bitflaker.lucidsourcekit.main.binauralbeats.RecyclerViewAdapterBackgroundNoisesManager.MainViewHolderBackgroundNoises
 

@@ -1,7 +1,7 @@
 package com.bitflaker.lucidsourcekit.utils.zip
 
 import android.os.Build
-import com.bitflaker.lucidsourcekit.utils.BackupTaskCallback
+import com.bitflaker.lucidsourcekit.utils.backup.BackupTaskCallback
 import dalvik.system.ZipPathValidator
 import kotlinx.coroutines.coroutineScope
 import java.io.BufferedInputStream

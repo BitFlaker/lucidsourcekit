@@ -23,9 +23,8 @@ import androidx.lifecycle.lifecycleScope
 import com.bitflaker.lucidsourcekit.MainActivity
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.database.MainDatabase
-import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.StoredAlarm
+import com.bitflaker.lucidsourcekit.database.alarms.entities.StoredAlarm
 import com.bitflaker.lucidsourcekit.databinding.ActivityAlarmViewerBinding
-import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.resolveDrawable
 import com.bitflaker.lucidsourcekit.utils.getDefaultVibrator
 import com.bitflaker.lucidsourcekit.utils.onBackPressed
@@ -41,7 +40,6 @@ import kotlin.String
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.bitflaker.lucidsourcekit.databinding.ActivityMainBinding
 import com.bitflaker.lucidsourcekit.utils.createTimerAction
 import com.bitflaker.lucidsourcekit.utils.vibrateFor
 

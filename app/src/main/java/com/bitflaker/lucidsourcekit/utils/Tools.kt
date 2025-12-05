@@ -2,12 +2,10 @@ package com.bitflaker.lucidsourcekit.utils
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.animation.ValueAnimator.AnimatorUpdateListener
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.content.res.Configuration
 import android.content.res.Resources
 import android.content.res.Resources.Theme
 import android.graphics.Bitmap
@@ -16,15 +14,14 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.VectorDrawable
-import android.os.LocaleList
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.ColorInt
 import com.bitflaker.lucidsourcekit.R
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys
-import com.bitflaker.lucidsourcekit.data.datastore.getSetting
+import com.bitflaker.lucidsourcekit.datastore.DataStoreKeys
+import com.bitflaker.lucidsourcekit.datastore.getSetting
 import com.bitflaker.lucidsourcekit.database.MainDatabase
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamClarity
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood

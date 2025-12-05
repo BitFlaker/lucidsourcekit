@@ -21,10 +21,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.TransitionManager
 import com.bitflaker.lucidsourcekit.R
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys
-import com.bitflaker.lucidsourcekit.data.datastore.getSetting
-import com.bitflaker.lucidsourcekit.data.datastore.updateSetting
-import com.bitflaker.lucidsourcekit.databinding.ActivityAlarmViewerBinding
+import com.bitflaker.lucidsourcekit.datastore.DataStoreKeys
+import com.bitflaker.lucidsourcekit.datastore.getSetting
+import com.bitflaker.lucidsourcekit.datastore.updateSetting
 import com.bitflaker.lucidsourcekit.databinding.ActivityVisualNotificationBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.attrColor

@@ -4,11 +4,9 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.DreamJournalEntry
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.CompletedQuestionnaire
-import com.bitflaker.lucidsourcekit.database.questionnaire.entities.resulttables.CompletedQuestionnaireDetails
+import com.bitflaker.lucidsourcekit.database.questionnaire.entities.results.CompletedQuestionnaireDetails
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 

@@ -7,9 +7,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal
-import com.bitflaker.lucidsourcekit.database.goals.entities.resulttables.DetailedShuffleHasGoal
-import com.bitflaker.lucidsourcekit.database.goals.entities.resulttables.GoalStats
-import com.bitflaker.lucidsourcekit.database.goals.entities.resulttables.ShuffleHasGoalStats
+import com.bitflaker.lucidsourcekit.database.goals.entities.results.DetailedShuffleHasGoal
+import com.bitflaker.lucidsourcekit.database.goals.entities.results.GoalStats
+import com.bitflaker.lucidsourcekit.database.goals.entities.results.ShuffleHasGoalStats
 
 @Dao
 interface ShuffleHasGoalDao {

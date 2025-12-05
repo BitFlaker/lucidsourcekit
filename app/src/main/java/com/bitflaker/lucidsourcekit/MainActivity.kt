@@ -22,25 +22,24 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreKeys
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreMigrator.migrateSetupFinishedToDataStore
-import com.bitflaker.lucidsourcekit.data.datastore.DataStoreMigrator.migrateSharedPreferencesToDataStore
-import com.bitflaker.lucidsourcekit.data.datastore.getSetting
-import com.bitflaker.lucidsourcekit.data.datastore.updateSetting
+import com.bitflaker.lucidsourcekit.datastore.DataStoreKeys
+import com.bitflaker.lucidsourcekit.datastore.DataStoreMigrator.migrateSetupFinishedToDataStore
+import com.bitflaker.lucidsourcekit.datastore.DataStoreMigrator.migrateSharedPreferencesToDataStore
+import com.bitflaker.lucidsourcekit.datastore.getSetting
+import com.bitflaker.lucidsourcekit.datastore.updateSetting
 import com.bitflaker.lucidsourcekit.database.MainDatabase
 import com.bitflaker.lucidsourcekit.database.alarms.entities.AlarmToneTypes
-import com.bitflaker.lucidsourcekit.database.alarms.updated.entities.ActiveAlarm
+import com.bitflaker.lucidsourcekit.database.alarms.entities.ActiveAlarm
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamClarity
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamMood
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.DreamType
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.SleepQuality
+import com.bitflaker.lucidsourcekit.database.goals.entities.Goal
 import com.bitflaker.lucidsourcekit.database.goals.entities.Shuffle
 import com.bitflaker.lucidsourcekit.database.goals.entities.ShuffleHasGoal
-import com.bitflaker.lucidsourcekit.database.goals.entities.defaults.DefaultGoals
 import com.bitflaker.lucidsourcekit.database.notifications.entities.NotificationCategory
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionType.Companion.defaults
 import com.bitflaker.lucidsourcekit.databinding.ActivityMainBinding
-import com.bitflaker.lucidsourcekit.databinding.ActivityQuestionnaireBinding
 import com.bitflaker.lucidsourcekit.main.MainViewer
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler
 import com.bitflaker.lucidsourcekit.main.notification.visual.KeypadAdapter
@@ -166,7 +165,7 @@ class MainActivity : AppCompatActivity() {
 
         // Add default sample goals in case no goals are present in the database
         if (db.goalDao.getGoalCount() == 0) {
-            db.goalDao.insertAll(DefaultGoals(this).goalsList)
+            db.goalDao.insertAll(Goal.defaultData(this))
         }
     }
 

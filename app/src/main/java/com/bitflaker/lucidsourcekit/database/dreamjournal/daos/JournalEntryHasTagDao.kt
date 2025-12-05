@@ -5,7 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasTag
-import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.resulttables.TagCount
+import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.results.TagCount
 
 @Dao
 interface JournalEntryHasTagDao {

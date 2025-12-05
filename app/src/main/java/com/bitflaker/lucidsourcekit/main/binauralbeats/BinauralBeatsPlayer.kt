@@ -4,8 +4,6 @@ import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioTrack
 import android.os.Process
-import com.bitflaker.lucidsourcekit.data.AudioBufferPosition
-import com.bitflaker.lucidsourcekit.data.records.BinauralBeat
 import com.bitflaker.lucidsourcekit.main.binauralbeats.NextBufferGenerator.BufferGeneratorResult
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
