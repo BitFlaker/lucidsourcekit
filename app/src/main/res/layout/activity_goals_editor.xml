@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.goals.GoalsEditorView">
+    tools:context=".main.goals.views.GoalsEditorView">
 
     <TextView
         android:id="@+id/txt_edit_goals_heading"

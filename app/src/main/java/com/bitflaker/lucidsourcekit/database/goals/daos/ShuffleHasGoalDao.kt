@@ -31,7 +31,7 @@ interface ShuffleHasGoalDao {
     @Query("SELECT COUNT(*) FROM ShuffleHasGoal LEFT JOIN Shuffle ON ShuffleHasGoal.shuffleId = Shuffle.shuffleId WHERE Shuffle.dayStartTimestamp >= :dayStartTimestamp and Shuffle.dayEndTimestamp <= :dayEndTimestamp")
     suspend fun getAmountOfTotalDrawnGoals(dayStartTimestamp: Long, dayEndTimestamp: Long): Int
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(shuffleHasGoals: List<ShuffleHasGoal>)
 
     @Query("DELETE FROM ShuffleHasGoal WHERE shuffleId = :id")

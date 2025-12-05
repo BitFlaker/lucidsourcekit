@@ -42,7 +42,7 @@ import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionType
 import com.bitflaker.lucidsourcekit.databinding.ActivityMainBinding
 import com.bitflaker.lucidsourcekit.main.MainViewer
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler
-import com.bitflaker.lucidsourcekit.main.notification.visual.KeypadAdapter
+import com.bitflaker.lucidsourcekit.main.notification.visual.views.KeypadAdapter
 import com.bitflaker.lucidsourcekit.main.notification.visual.KeypadButtonModel
 import com.bitflaker.lucidsourcekit.setup.SetupViewer
 import com.bitflaker.lucidsourcekit.utils.Crypt

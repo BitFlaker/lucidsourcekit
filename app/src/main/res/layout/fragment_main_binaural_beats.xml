@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".main.binauralbeats.BinauralBeatsView">
+    tools:context=".main.binauralbeats.views.BinauralBeatsView">
 
     <TextView
         android:id="@+id/txt_binaural_beats_heading"

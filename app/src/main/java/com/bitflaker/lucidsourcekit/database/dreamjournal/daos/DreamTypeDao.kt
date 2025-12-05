@@ -12,7 +12,7 @@ interface DreamTypeDao {
     @Query("SELECT * FROM DreamType")
     suspend fun getAll(): MutableList<DreamType>
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(types: Array<DreamType>)
 
     @Delete

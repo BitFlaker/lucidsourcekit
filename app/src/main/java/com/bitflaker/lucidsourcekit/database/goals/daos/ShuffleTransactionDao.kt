@@ -26,10 +26,10 @@ interface ShuffleTransactionDao {
     @Query("SELECT achievedAt FROM ShuffleTransaction WHERE shuffleId = :shuffleId ORDER BY achievedAt ASC")
     suspend fun getAchievedTimes(shuffleId: Int): MutableList<Long>
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(shuffleTransactions: List<ShuffleTransaction>)
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(shuffleTransaction: ShuffleTransaction)
 
     @Delete

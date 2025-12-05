@@ -16,10 +16,10 @@ interface NotificationCategoryDao {
     @Query("SELECT * FROM NotificationCategory WHERE id = :notificationCategoryId")
     suspend fun getById(notificationCategoryId: String): NotificationCategory
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(notificationCategories: Array<NotificationCategory>)
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(notificationCategory: NotificationCategory)
 
     @Delete

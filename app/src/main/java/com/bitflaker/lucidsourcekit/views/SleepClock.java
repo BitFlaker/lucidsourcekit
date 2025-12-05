@@ -23,7 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.main.binauralbeats.Brainwaves;
+import com.bitflaker.lucidsourcekit.main.binauralbeats.presets.Brainwaves;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 
 import java.util.Calendar;

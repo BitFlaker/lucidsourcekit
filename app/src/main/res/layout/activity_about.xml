@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.about.AboutActivity">
+    tools:context=".main.about.views.AboutActivity">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_about_close"

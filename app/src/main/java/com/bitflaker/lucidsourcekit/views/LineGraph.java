@@ -16,8 +16,8 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.main.binauralbeats.FrequencyData;
-import com.bitflaker.lucidsourcekit.main.binauralbeats.FrequencyList;
+import com.bitflaker.lucidsourcekit.main.binauralbeats.player.FrequencyData;
+import com.bitflaker.lucidsourcekit.main.binauralbeats.player.FrequencyList;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 
 import java.util.ArrayList;

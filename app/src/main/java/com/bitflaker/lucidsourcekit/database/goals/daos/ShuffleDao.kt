@@ -15,10 +15,10 @@ interface ShuffleDao {
     @Query("SELECT * FROM Shuffle WHERE dayStartTimestamp = :dayStartTimestamp and dayEndTimestamp = :dayEndTimestamp ORDER BY shuffleId DESC LIMIT 1")
     suspend fun getLastShuffleInDay(dayStartTimestamp: Long, dayEndTimestamp: Long): Shuffle?
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(vararg shuffles: Shuffle)
 
-    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(shuffles: Shuffle): Long
 
     @Delete

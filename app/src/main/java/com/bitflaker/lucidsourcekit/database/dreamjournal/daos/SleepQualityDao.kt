@@ -12,7 +12,7 @@ interface SleepQualityDao {
     @Query("SELECT * FROM SleepQuality")
     suspend fun getAll(): List<SleepQuality>
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(sleepQualities: Array<SleepQuality>)
 
     @Delete

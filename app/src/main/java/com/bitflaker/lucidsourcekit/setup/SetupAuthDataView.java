@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.bitflaker.lucidsourcekit.R;
 import com.bitflaker.lucidsourcekit.main.AuthTypes;
 import com.bitflaker.lucidsourcekit.databinding.FragmentSetupAuthDataBinding;
-import com.bitflaker.lucidsourcekit.main.notification.visual.KeypadAdapter;
+import com.bitflaker.lucidsourcekit.main.notification.visual.views.KeypadAdapter;
 import com.bitflaker.lucidsourcekit.main.notification.visual.KeypadButtonModel;
 
 import java.util.Arrays;

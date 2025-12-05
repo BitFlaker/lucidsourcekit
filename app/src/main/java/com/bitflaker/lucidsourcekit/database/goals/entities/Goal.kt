@@ -65,7 +65,7 @@ class Goal {
         result = 31 * result + difficulty.hashCode()
         result = 31 * result + difficultyLocked.hashCode()
         result = 31 * result + isSelected.hashCode()
-        result = 31 * result + (description?.hashCode() ?: 0)
+        result = 31 * result + description.hashCode()
         return result
     }
 

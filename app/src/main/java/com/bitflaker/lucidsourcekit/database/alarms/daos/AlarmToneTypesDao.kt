@@ -12,10 +12,10 @@ interface AlarmToneTypesDao {
     @Query("SELECT * FROM AlarmToneTypes")
     suspend fun getAll(): MutableList<AlarmToneTypes>
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(alarmToneTypes: Array<AlarmToneTypes>)
 
-    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(alarmToneTypes: AlarmToneTypes): Long
 
     @Delete

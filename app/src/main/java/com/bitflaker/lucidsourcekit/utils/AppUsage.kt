@@ -13,7 +13,7 @@ import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.datastore.DataStoreKeys
 import com.bitflaker.lucidsourcekit.datastore.getSetting
 import com.bitflaker.lucidsourcekit.datastore.updateSetting
-import com.bitflaker.lucidsourcekit.main.dreamjournal.DreamJournalEditorView
+import com.bitflaker.lucidsourcekit.main.dreamjournal.views.DreamJournalEditorView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -83,12 +83,7 @@ class AppUsage {
         private fun checkUsageStatsPermission(context: Context): Boolean {
             val appOpsManager = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
             val uid = context.packageManager.getApplicationInfo(context.packageName, 0).uid
-            val accessMode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                appOpsManager.unsafeCheckOpNoThrow("android:get_usage_stats", uid, context.packageName)
-            } else {
-                @Suppress("DEPRECATION")
-                appOpsManager.checkOpNoThrow("android:get_usage_stats", uid, context.packageName)
-            }
+            val accessMode = appOpsManager.checkOpNoThrow("android:get_usage_stats", uid, context.packageName)
             return accessMode == AppOpsManager.MODE_ALLOWED
         }
     }

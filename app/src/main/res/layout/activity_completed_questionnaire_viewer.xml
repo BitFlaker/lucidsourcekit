@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.questionnaire.CompletedQuestionnaireViewerActivity">
+    tools:context=".main.questionnaire.views.CompletedQuestionnaireViewerActivity">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_questionnaire_close"

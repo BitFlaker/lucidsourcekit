@@ -16,8 +16,6 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.bitflaker.lucidsourcekit.R
@@ -26,12 +24,12 @@ import com.bitflaker.lucidsourcekit.utils.export.SimpleActivityLauncher
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.results.DreamJournalEntry
 import com.bitflaker.lucidsourcekit.databinding.ActivityMainViewerBinding
 import com.bitflaker.lucidsourcekit.databinding.DialogProgressBinding
-import com.bitflaker.lucidsourcekit.main.about.AboutActivity
-import com.bitflaker.lucidsourcekit.main.binauralbeats.BinauralBeatsView
-import com.bitflaker.lucidsourcekit.main.dreamjournal.DreamJournalView
-import com.bitflaker.lucidsourcekit.main.goals.GoalsView
-import com.bitflaker.lucidsourcekit.main.overview.MainOverviewView
-import com.bitflaker.lucidsourcekit.main.statistics.StatisticsView
+import com.bitflaker.lucidsourcekit.main.about.views.AboutActivity
+import com.bitflaker.lucidsourcekit.main.binauralbeats.views.BinauralBeatsView
+import com.bitflaker.lucidsourcekit.main.dreamjournal.views.DreamJournalView
+import com.bitflaker.lucidsourcekit.main.goals.views.GoalsView
+import com.bitflaker.lucidsourcekit.main.overview.views.MainOverviewView
+import com.bitflaker.lucidsourcekit.main.statistics.views.StatisticsView
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter
 import com.bitflaker.lucidsourcekit.utils.backup.BackupTask
 import com.bitflaker.lucidsourcekit.utils.backup.BackupTask.Companion.deleteOldBeforeImportBackup

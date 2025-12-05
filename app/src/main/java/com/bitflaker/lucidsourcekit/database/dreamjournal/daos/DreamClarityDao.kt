@@ -12,7 +12,7 @@ interface DreamClarityDao {
     @Query("SELECT * FROM DreamClarity")
     suspend fun getAll(): MutableList<DreamClarity>
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(dreamClarities: Array<DreamClarity>)
 
     @Delete

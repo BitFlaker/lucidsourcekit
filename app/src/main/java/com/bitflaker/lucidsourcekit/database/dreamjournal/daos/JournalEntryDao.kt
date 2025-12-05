@@ -55,10 +55,10 @@ interface JournalEntryDao {
     @Query("SELECT timeStamp FROM JournalEntry WHERE timeStamp >= :from AND timeStamp < :to ORDER BY timeStamp DESC")
     suspend fun getTimestampsBetween(from: Long, to: Long): List<Long>
 
-    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(entries: List<JournalEntry>): List<Long>
 
-    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entry: JournalEntry): Long
 
     @Delete

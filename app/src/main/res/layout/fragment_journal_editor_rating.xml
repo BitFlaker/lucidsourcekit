@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".main.dreamjournal.DreamJournalEditorRatingView">
+    tools:context=".main.dreamjournal.views.DreamJournalEditorRatingView">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_dj_close_editor"

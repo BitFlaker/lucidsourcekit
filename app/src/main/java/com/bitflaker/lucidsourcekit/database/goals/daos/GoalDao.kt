@@ -29,10 +29,10 @@ interface GoalDao {
     @Query("SELECT IFNULL(SUM(difficulty) / COUNT(goalId), 0) FROM Goal")
     suspend fun getAverageDifficulty(): Double
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(goals: List<Goal>)
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(goal: Goal)
 
     @Delete

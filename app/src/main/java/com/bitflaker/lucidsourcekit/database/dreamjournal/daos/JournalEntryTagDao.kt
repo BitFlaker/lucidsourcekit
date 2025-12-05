@@ -24,7 +24,7 @@ interface JournalEntryTagDao {
     @Insert
     suspend fun insertAll(vararg tags: JournalEntryTag): List<Long>
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(journalEntryTags: MutableList<JournalEntryTag>): List<Long>
 
     @Delete

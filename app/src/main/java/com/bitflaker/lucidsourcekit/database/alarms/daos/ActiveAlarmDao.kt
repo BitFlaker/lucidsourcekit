@@ -28,7 +28,7 @@ interface ActiveAlarmDao {
     @Update
     suspend fun update(alarm: ActiveAlarm)
 
-    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(alarm: ActiveAlarm)
 
     @Delete

@@ -22,10 +22,10 @@ interface NotificationMessageDao {
     @Query("SELECT COUNT(*) FROM NotificationMessage WHERE notificationCategoryId = :notificationCategoryId")
     suspend fun getCountOfMessagesForCategoryAndObfuscationType(notificationCategoryId: String): Int
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(notificationMessages: List<NotificationMessage>)
 
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(notificationMessage: NotificationMessage): Long
 
     @Delete

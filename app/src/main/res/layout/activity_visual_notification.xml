@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".main.notification.visual.VisualNotificationActivity">
+    tools:context=".main.notification.visual.views.VisualNotificationActivity">
 
     <com.bitflaker.lucidsourcekit.views.GradientCircle
         android:id="@+id/gc_circle"

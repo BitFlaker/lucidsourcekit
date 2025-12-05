@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    tools:context=".main.alarms.AlarmEditorView">
+    tools:context=".main.alarms.views.AlarmEditorView">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

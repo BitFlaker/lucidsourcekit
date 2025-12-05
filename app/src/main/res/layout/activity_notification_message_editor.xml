@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.notification.NotificationManagerEditorView">
+    tools:context=".main.notification.views.NotificationManagerEditorView">
 
     <TextView
         android:id="@+id/txt_notification_editor_heading"

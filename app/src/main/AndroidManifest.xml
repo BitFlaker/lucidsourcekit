@@ -35,57 +35,57 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LucidSourceKit.Default">
         <activity
-            android:name=".main.about.AboutActivity"
+            android:name=".main.about.views.AboutActivity"
             android:exported="false" />
         <activity
-            android:name=".main.questionnaire.CompletedQuestionnaireViewerActivity"
+            android:name=".main.questionnaire.views.CompletedQuestionnaireViewerActivity"
             android:exported="false" />
         <activity
-            android:name=".main.questionnaire.QuestionnaireEditorActivity"
+            android:name=".main.questionnaire.views.QuestionnaireEditorActivity"
             android:exported="false" />
         <activity
-            android:name=".main.questionnaire.QuestionnaireOverviewActivity"
+            android:name=".main.questionnaire.views.QuestionnaireOverviewActivity"
             android:exported="false" />
         <activity
-            android:name=".main.questionnaire.QuestionnaireView"
+            android:name=".main.questionnaire.views.QuestionnaireView"
             android:exported="false" />
         <activity
-            android:name=".main.notification.visual.VisualNotificationActivity"
+            android:name=".main.notification.visual.views.VisualNotificationActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".main.notification.NotificationManagerEditorView"
+            android:name=".main.notification.views.NotificationManagerEditorView"
             android:configChanges="orientation"
             android:exported="false" />
         <activity
-            android:name=".main.notification.NotificationManagerView"
+            android:name=".main.notification.views.NotificationManagerView"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".main.alarms.AlarmViewer"
+            android:name=".main.alarms.views.AlarmViewer"
             android:autoRemoveFromRecents="true"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait"
             android:showOnLockScreen="true" />
         <activity
-            android:name=".main.alarms.AlarmEditorView"
+            android:name=".main.alarms.views.AlarmEditorView"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".main.alarms.AlarmManagerView"
+            android:name=".main.alarms.views.AlarmManagerView"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".main.dreamjournal.DreamJournalEditorView"
+            android:name=".main.dreamjournal.views.DreamJournalEditorView"
             android:configChanges="orientation|screenSize"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".main.goals.GoalsEditorView"
+            android:name=".main.goals.views.GoalsEditorView"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
@@ -116,7 +116,7 @@
         </activity>
 
         <receiver
-            android:name=".main.alarms.AlarmReceiver"
+            android:name=".receivers.AlarmReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.goals.GoalsView">
+    tools:context=".main.goals.views.GoalsView">
 
     <TextView
         android:id="@+id/txt_goals_heading"
