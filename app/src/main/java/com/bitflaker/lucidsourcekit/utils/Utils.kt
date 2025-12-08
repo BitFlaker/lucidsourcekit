@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Resources.getSystem
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.LocaleList
@@ -32,6 +33,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bitflaker.lucidsourcekit.datastore.DataStoreKeys
 import com.bitflaker.lucidsourcekit.datastore.getSetting
+import com.bitflaker.lucidsourcekit.utils.Tools.drawableToBitmap
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -130,16 +132,32 @@ fun Context.resolveDrawable(drawable: Int): Drawable? {
     return ResourcesCompat.getDrawable(resources, drawable, theme)
 }
 
+fun Context.resolveDrawableBitmap(id: Int, tint: Int, size: Int): Bitmap? {
+    val drawable = resolveDrawable(id) ?: return null
+    return drawableToBitmap(drawable, tint, size)
+}
+
 val Int.pxToDp: Int get() = (this / getSystem().displayMetrics.density).toInt()
 
 val Int.dpToPx: Int get() = (this * getSystem().displayMetrics.density).toInt()
-
 val Double.dpToPx: Double get() = this * getSystem().displayMetrics.density
+val Float.dpToPx: Float get() = this * getSystem().displayMetrics.density
 
-val Int.spToPx: Int get() = toFloat().spToPx
+val Int.spToPx: Int get() = toFloat().spToPx.toInt()
+val Float.spToPx: Float get() = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, this, getSystem().displayMetrics)
 
-val Float.spToPx: Int get() = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, this, getSystem().displayMetrics).toInt()
+val Double.radToDeg: Double get() = this * (180.0 / Math.PI)
+val Float.radToDeg: Float get() = toDouble().radToDeg.toFloat()
+val Double.degToRad: Double get() = this * (Math.PI / 180.0)
+val Float.degToRad: Float get() = toDouble().degToRad.toFloat()
 
+fun Float.getDecimals(): Float {
+    return this - this.toInt()
+}
+
+fun Double.getDecimals(): Double {
+    return this - this.toInt()
+}
 
 fun Context.attrColorStateList(colorAttr: Int): ColorStateList {
     return ColorStateList.valueOf(attrColor(colorAttr))

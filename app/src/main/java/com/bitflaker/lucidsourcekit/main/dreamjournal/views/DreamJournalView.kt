@@ -120,7 +120,7 @@ class DreamJournalView : Fragment() {
             // TODO: Cache the questionnaire counts per day e.g. 1 day with 4 entries does not need to
             //       query the count 4 times
             journalEntries.forEach({ e ->
-                val dayFrom = Tools.getMidnightTime(e.journalEntry.timeStamp)
+                val dayFrom = Tools.getMidnightMillis(e.journalEntry.timeStamp)
                 val dayTo = dayFrom + 24 * 60 * 60 * 1000
                 e.questionnaireCount = db.getCompletedQuestionnaireDao().getQuestionnaireCount(dayFrom, dayTo).blockingGet()
             })
@@ -178,7 +178,7 @@ class DreamJournalView : Fragment() {
         bsd.setContentView(sBinding.root)
 
         // Load all completed questionnaires of selected day
-        val dayFrom = Tools.getMidnightTime(timestamp)
+        val dayFrom = Tools.getMidnightMillis(timestamp)
         val dayTo = dayFrom + 24 * 60 * 60 * 1000
         val completed = db.completedQuestionnaireDao.getByTimeFrame(dayFrom, dayTo).blockingGet()
 
@@ -329,7 +329,7 @@ class DreamJournalView : Fragment() {
 
     private suspend fun getDreamJournalEntry(entryId: Int): DreamJournalEntry {
         val entry = db.journalEntryDao.getEntryDataById(entryId)
-        val dayFrom = Tools.getMidnightTime(entry.journalEntry.timeStamp)
+        val dayFrom = Tools.getMidnightMillis(entry.journalEntry.timeStamp)
         val dayTo = dayFrom + 24 * 60 * 60 * 1000
         entry.questionnaireCount = db.getCompletedQuestionnaireDao().getQuestionnaireCount(dayFrom, dayTo).blockingGet()
         return entry

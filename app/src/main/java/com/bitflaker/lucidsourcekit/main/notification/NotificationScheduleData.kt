@@ -9,7 +9,7 @@ class NotificationScheduleData(var timestamp: Long, var id: String?) {
     val scheduleTime: Long
         get() {
             val cal = Calendar.getInstance()
-            cal.timeInMillis = Tools.getMidnightTime() + timestamp
+            cal.timeInMillis = Tools.getMidnightMillis() + timestamp
             if (isNextDay) {
                 cal.add(Calendar.HOUR_OF_DAY, 24)
             }

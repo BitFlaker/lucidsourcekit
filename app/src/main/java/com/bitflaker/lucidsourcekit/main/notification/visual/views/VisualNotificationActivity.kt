@@ -168,7 +168,7 @@ class VisualNotificationActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             // Check if there are any digits yet, otherwise directly generate some
-            val generatedToday = getSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_TIME) < Tools.getMidnightTime()
+            val generatedToday = getSetting(DataStoreKeys.NOTIFICATION_RC_REMINDER_FULL_SCREEN_CONFIRM_TIME) < Tools.getMidnightMillis()
             if (generatedToday || currentDigits.isEmpty()) {
                 generateNextDigit(ByteArray(0))
                 return@launch

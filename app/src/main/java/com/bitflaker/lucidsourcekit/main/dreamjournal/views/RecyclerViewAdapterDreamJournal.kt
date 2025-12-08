@@ -489,7 +489,7 @@ class RecyclerViewAdapterDreamJournal(
     fun indexOfEntry(entry: DreamJournalEntry): Int = differ.getCurrentList().indexOf(entry)
 
     fun getEntriesByDate(timestamp: Long): List<Int> {
-        val dayFrom = Tools.getMidnightTime(timestamp)
+        val dayFrom = Tools.getMidnightMillis(timestamp)
         val dayTo = dayFrom + 24 * 60 * 60 * 1000
         val entries = getEntriesInTimeFrame(differ.getCurrentList(), dayFrom, dayTo)
         itemsBeforeFilter?.let {

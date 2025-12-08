@@ -16,7 +16,7 @@ object DataStoreKeys {
 
     // App open streak
     val FIRST_OPEN_TIME_TODAY_DAY = DefaultPreferenceKey("FIRST_OPEN_TIME_TODAY_DAY", Calendar.getInstance().timeInMillis)
-    val FIRST_OPEN_LATEST_DAY = DefaultPreferenceKey("FIRST_OPEN_LATEST_DAY", Tools.getMidnightTime())
+    val FIRST_OPEN_LATEST_DAY = DefaultPreferenceKey("FIRST_OPEN_LATEST_DAY", Tools.getMidnightMillis())
     val APP_OPEN_STREAK = DefaultPreferenceKey("APP_OPEN_STREAK", 0L)
     val APP_OPEN_STREAK_LONGEST = DefaultPreferenceKey("APP_OPEN_STREAK_LONGEST", 0L)
 

@@ -93,7 +93,7 @@ class QuestionnaireView : AppCompatActivity() {
                     currentDate[Calendar.YEAR] = year
                     currentDate[Calendar.MONTH] = monthOfYear
                     currentDate[Calendar.DAY_OF_MONTH] = dayOfMonth
-                    specificDate = Tools.getMidnightTime(currentDate.timeInMillis)
+                    specificDate = Tools.getMidnightMillis(currentDate.timeInMillis)
                     binding.btnQuestionnaireDate.text = DateFormat.getDateInstance(DateFormat.SHORT).format(currentDate.time)
                 },
                 currentDate[Calendar.YEAR],

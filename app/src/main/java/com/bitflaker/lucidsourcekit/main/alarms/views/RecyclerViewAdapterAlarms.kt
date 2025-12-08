@@ -156,7 +156,7 @@ class RecyclerViewAdapterAlarms(
                             scheduleAlarmRepeatedlyAt(
                                 activity,
                                 alarm.alarmId,
-                                Tools.getMidnightTime() + alarm.alarmTimestamp,
+                                Tools.getMidnightMillis() + alarm.alarmTimestamp,
                                 alarm.pattern,
                                 index,
                                 1000 * 60 * 60 * 24

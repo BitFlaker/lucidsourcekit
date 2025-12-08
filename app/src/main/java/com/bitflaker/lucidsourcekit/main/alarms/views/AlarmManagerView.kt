@@ -20,6 +20,7 @@ import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.attrColorStateList
 import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.bitflaker.lucidsourcekit.utils.onBackPressed
+import com.bitflaker.lucidsourcekit.views.SleepClock.ClockType
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -68,7 +69,7 @@ class AlarmManagerView : AppCompatActivity() {
         }
 
         // Start the animation cycle of the clock
-        binding.slpClock.startClock()
+        binding.slpClock.setClockType(ClockType.DEFAULT)
 
         // Set handler for Add / Delete alarm button
         binding.fabAddAlarm.setOnClickListener {
@@ -163,8 +164,8 @@ class AlarmManagerView : AppCompatActivity() {
             } }
 
         runOnUiThread {
-            binding.slpClock.setMarkersHigh(alarmEnabledTimes[true]?.toList())
-            binding.slpClock.setMarkersLow(alarmEnabledTimes[false]?.toList())
+            binding.slpClock.setActiveAlarmMarkers(alarmEnabledTimes[true]?.toList())
+            binding.slpClock.setInactiveAlarmMarkers(alarmEnabledTimes[false]?.toList())
         }
     }
 

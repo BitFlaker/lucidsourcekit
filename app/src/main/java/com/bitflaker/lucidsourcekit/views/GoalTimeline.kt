@@ -23,7 +23,7 @@ class GoalTimeline @JvmOverloads constructor(
     private val spacing = 8.dpToPx
     private val timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT)
     private val textBounds = Rect()
-    private val midnightTimestamp = Tools.getMidnightTime()
+    private val midnightTimestamp = Tools.getMidnightMillis()
     private val fullHeight = 768.dpToPx
     private val totalDayTime = 1000 * 60 * 60 * 24f
     private var actualHeight = fullHeight

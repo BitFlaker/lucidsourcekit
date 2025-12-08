@@ -170,7 +170,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private suspend fun updateAppOpenStreak() {
-        val todayMidnightMillis = Tools.getMidnightTime()
+        val todayMidnightMillis = Tools.getMidnightMillis()
         val timeSinceFirstOpenLatestDay = todayMidnightMillis - getSetting(DataStoreKeys.FIRST_OPEN_LATEST_DAY)
         val dayMillis = TimeUnit.DAYS.toMillis(1)
         if (timeSinceFirstOpenLatestDay == dayMillis) {

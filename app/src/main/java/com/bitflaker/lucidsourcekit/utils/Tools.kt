@@ -357,11 +357,11 @@ object Tools {
 
     fun getTimeFromCurrentMidnight(timeInMillis: Long): Long {
         val cal = Calendar.getInstance()
-        cal.setTimeInMillis(getMidnightTime() + timeInMillis)
+        cal.setTimeInMillis(getMidnightMillis() + timeInMillis)
         return cal.timeInMillis
     }
 
-    fun getMidnightTime(timestamp: Long): Long {
+    fun getMidnightMillis(timestamp: Long): Long {
         val cal = Calendar.getInstance()
         cal.setTimeInMillis(timestamp)
         cal.set(Calendar.HOUR_OF_DAY, 0)
@@ -372,13 +372,18 @@ object Tools {
     }
 
     @JvmStatic
-    fun getMidnightTime(): Long {
+    fun getMidnightMillis(): Long {
+        return getMidnightCalendar().timeInMillis
+    }
+
+    @JvmStatic
+    fun getMidnightCalendar(): Calendar {
         val cal = Calendar.getInstance()
         cal.set(Calendar.HOUR_OF_DAY, 0)
         cal.set(Calendar.MINUTE, 0)
         cal.set(Calendar.SECOND, 0)
         cal.set(Calendar.MILLISECOND, 0)
-        return cal.timeInMillis
+        return cal
     }
 
     fun getUniqueNotificationId(notificationCategoryId: String): Int {

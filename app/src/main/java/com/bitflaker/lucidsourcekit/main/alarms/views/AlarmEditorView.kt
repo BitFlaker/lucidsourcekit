@@ -39,6 +39,7 @@ import com.bitflaker.lucidsourcekit.utils.getParcelableExtraSafe
 import com.bitflaker.lucidsourcekit.utils.isPermissionGranted
 import com.bitflaker.lucidsourcekit.utils.showToastLong
 import com.bitflaker.lucidsourcekit.utils.singleLine
+import com.bitflaker.lucidsourcekit.views.SleepClock.ClockType
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
@@ -202,8 +203,7 @@ class AlarmEditorView : AppCompatActivity() {
         }
 
         // Set sleep clock properties
-        binding.slpClkSetTime.setDrawHours(true)
-        binding.slpClkSetTime.isDrawTimeSetterButtons = true
+        binding.slpClkSetTime.setClockType(ClockType.TIME_SELECTORS)
 
         // Set handler for change in selected alarm tone type
         binding.chpGrpAlarmTone.setOnCheckedStateChangeListener { _, _ ->
@@ -299,7 +299,7 @@ class AlarmEditorView : AppCompatActivity() {
         storedAlarm = db.storedAlarmDao.getById(alarmId)
         runOnUiThread {
             setEditValuesFromItem()
-            binding.slpClkSetTime.setOnFirstDrawFinishedListener {
+            binding.slpClkSetTime.onFirstDrawFinishedListener = {
                 val alarmHours = TimeUnit.MILLISECONDS.toHours(storedAlarm.alarmTimestamp)
                 val alarmMinutes = TimeUnit.MILLISECONDS.toMinutes(storedAlarm.alarmTimestamp) - TimeUnit.HOURS.toMinutes(alarmHours)
                 val bedtimeHours = TimeUnit.MILLISECONDS.toHours(storedAlarm.bedtimeTimestamp)
@@ -310,6 +310,7 @@ class AlarmEditorView : AppCompatActivity() {
                     setTimeChangedListeners()
                 }
             }
+            binding.slpClkSetTime.invalidate()
         }
     }
 
@@ -393,7 +394,7 @@ class AlarmEditorView : AppCompatActivity() {
         AlarmHandler.scheduleAlarmRepeatedlyAt(
             applicationContext,
             storedAlarm.alarmId,
-            Tools.getMidnightTime() + storedAlarm.alarmTimestamp,
+            Tools.getMidnightMillis() + storedAlarm.alarmTimestamp,
             storedAlarm.pattern,
             Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1,
             1000 * 60 * 60 * 24
@@ -429,14 +430,14 @@ class AlarmEditorView : AppCompatActivity() {
     private fun setTimeChangedListeners() {
         // Set bed time text and handler
         binding.txtTimeBedtime.text = String.format(Locale.ENGLISH, "%02d:%02d", binding.slpClkSetTime.hoursToBedTime, binding.slpClkSetTime.minutesToBedTime)
-        binding.slpClkSetTime.setOnBedtimeChangedListener { hours, minutes ->
+        binding.slpClkSetTime.onBedtimeChangedListener = { hours, minutes ->
             storedAlarm.bedtimeTimestamp = hours.toLong() * 60L * 60L * 1000L + minutes.toLong() * 60L * 1000L
             binding.txtTimeBedtime.text = String.format(Locale.ENGLISH, "%02d:%02d", hours, minutes)
         }
 
         // Set alarm time text and handler
         binding.txtTimeAlarm.text = String.format(Locale.ENGLISH, "%02d:%02d", binding.slpClkSetTime.hoursToAlarm, binding.slpClkSetTime.minutesToAlarm)
-        binding.slpClkSetTime.setOnAlarmTimeChangedListener { hours, minutes ->
+        binding.slpClkSetTime.onAlarmTimeChangedListener = { hours, minutes ->
             storedAlarm.alarmTimestamp = hours.toLong() * 60L * 60L * 1000L + minutes.toLong() * 60L * 1000L
             binding.txtTimeAlarm.text = String.format(Locale.ENGLISH, "%02d:%02d", hours, minutes)
         }

@@ -172,13 +172,13 @@ class StatisticsView : Fragment() {
 
     private fun groupSessionDurationsByDay(appOpenTimes: List<AppUsage.AppOpenStats>): HashMap<Long, MutableList<Long>> {
         val daySessionDurations = HashMap<Long, MutableList<Long>>()
-        val currentMidnight = Tools.getMidnightTime()
+        val currentMidnight = Tools.getMidnightMillis()
         for (i in 0..6) {
             daySessionDurations.put(currentMidnight - 1000 * 60 * 60 * 24 * i, ArrayList())
         }
         for (i in appOpenTimes.indices) {
             val appOpenStats = appOpenTimes[i]
-            val midnightTime = Tools.getMidnightTime(appOpenStats.openedAt)
+            val midnightTime = Tools.getMidnightMillis(appOpenStats.openedAt)
             daySessionDurations[midnightTime]?.add(appOpenStats.openFor)
         }
         return daySessionDurations
@@ -202,7 +202,7 @@ class StatisticsView : Fragment() {
         binding.txtAverageSessionCount.text = String.format(Locale.getDefault(), "%s x", df.format(averageDailyAppOpens))
         binding.txtAverageSessionLength.text = String.format(Locale.getDefault(), "%d min", averageSessionLengthMin)
         binding.ichSessionHeatmap.setTimestamps(appOpenTimes.stream().map {
-            it.openedAt - Tools.getMidnightTime(it.openedAt)
+            it.openedAt - Tools.getMidnightMillis(it.openedAt)
         }.collect(Collectors.toList()))
     }
 
@@ -289,8 +289,8 @@ class StatisticsView : Fragment() {
             binding.ccgLucidPercentage.setData(
                 lucidEntriesCount,
                 totalEntriesCount - lucidEntriesCount,
-                15.dpToPx.toFloat(),
-                1.25.dpToPx.toFloat()
+                15f.dpToPx,
+                1.25f.dpToPx
             )
 
             // Set average mood data
