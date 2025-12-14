@@ -10,7 +10,12 @@ import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Resources.getSystem
+import android.content.res.TypedArray
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.LocaleList
@@ -19,6 +24,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.text.InputType
+import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -27,13 +33,15 @@ import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.StyleableRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.createBitmap
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.datastore.DataStoreKeys
 import com.bitflaker.lucidsourcekit.datastore.getSetting
-import com.bitflaker.lucidsourcekit.utils.Tools.drawableToBitmap
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -134,7 +142,7 @@ fun Context.resolveDrawable(drawable: Int): Drawable? {
 
 fun Context.resolveDrawableBitmap(id: Int, tint: Int, size: Int): Bitmap? {
     val drawable = resolveDrawable(id) ?: return null
-    return drawableToBitmap(drawable, tint, size)
+    return drawable.toBitmap(tint, size)
 }
 
 val Int.pxToDp: Int get() = (this / getSystem().displayMetrics.density).toInt()
@@ -150,6 +158,29 @@ val Double.radToDeg: Double get() = this * (180.0 / Math.PI)
 val Float.radToDeg: Float get() = toDouble().radToDeg.toFloat()
 val Double.degToRad: Double get() = this * (Math.PI / 180.0)
 val Float.degToRad: Float get() = toDouble().degToRad.toFloat()
+
+fun Paint.getTextBounds(text: String, bounds: Rect) {
+    this.getTextBounds(text, 0, text.length, bounds)
+}
+
+fun AttributeSet.obtainStyledAttributes(context: Context, attrs: IntArray): TypedArray {
+    return context.theme.obtainStyledAttributes(this, attrs, 0, 0)
+}
+
+fun TypedArray?.getDimension(index: Int): Float? {
+    if (this?.hasValue(index) != true) {
+        return null
+    }
+    return getDimension(index, 0f)
+}
+
+fun TypedArray?.getBitmap(index: Int, tint: Int, size: Int): Bitmap? {
+    if (this?.hasValue(index) != true) {
+        return null
+    }
+    val drawable = getDrawable(R.styleable.IconOutOf_icon) ?: return null
+    return drawable.toBitmap(tint, size)
+}
 
 fun Float.getDecimals(): Float {
     return this - this.toInt()
@@ -167,10 +198,33 @@ fun Context.attrColor(colorAttr: Int): Int {
     return typedValue(colorAttr).data
 }
 
+fun Context.color(color: Int): Int {
+    return resources.getColor(color, theme)
+}
+
 fun Context.typedValue(attr: Int): TypedValue {
     val typedValue = TypedValue()
     theme.resolveAttribute(attr, typedValue, true)
     return typedValue
+}
+
+fun Drawable.toBitmap(size: Int): Bitmap {
+    setBounds(0, 0, size, size)
+    if (this is BitmapDrawable) return this.bitmap
+    val bitmap = createBitmap(size, size)
+    val canvas = Canvas(bitmap)
+    draw(canvas)
+    return bitmap
+}
+
+fun Drawable.toBitmap(tint: Int, size: Int): Bitmap {
+    setTint(tint)
+    setBounds(0, 0, size, size)
+    if (this is BitmapDrawable) return this.bitmap
+    val bitmap = createBitmap(size, size)
+    val canvas = Canvas(bitmap)
+    draw(canvas)
+    return bitmap
 }
 
 suspend fun Activity.loadLanguage() {

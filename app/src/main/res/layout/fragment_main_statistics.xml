@@ -60,7 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:description="Check-ins"
-                    app:diameter="32dp"
+                    app:diameter="36dp"
                     app:icon="@drawable/ic_baseline_local_fire_department_24"
                     app:layout_constraintVertical_chainStyle="spread"
                     app:layout_constraintBottom_toTopOf="@+id/ioo_streak_goal"
@@ -68,26 +68,26 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:lineWidth="4dp"
-                    app:textOfSpacing="2dp"
+                    app:textOfSpacing="5dp"
                     app:textSizeValue="16sp"
                     app:textSizeValueOf="12sp"
-                    app:textSpacing="6dp" />
+                    app:textSpacing="8dp" />
 
                 <com.bitflaker.lucidsourcekit.views.IconOutOf
                     android:id="@+id/ioo_streak_goal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:description="Goal tracking"
-                    app:diameter="32dp"
+                    app:diameter="36dp"
                     app:icon="@drawable/ic_baseline_local_fire_department_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/ioo_streak_check_in"
                     app:layout_constraintTop_toBottomOf="@+id/ioo_streak_check_in"
                     app:lineWidth="4dp"
-                    app:textOfSpacing="2dp"
+                    app:textOfSpacing="5dp"
                     app:textSizeValue="16sp"
                     app:textSizeValueOf="12sp"
-                    app:textSpacing="6dp" />
+                    app:textSpacing="8dp" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <GridLayout

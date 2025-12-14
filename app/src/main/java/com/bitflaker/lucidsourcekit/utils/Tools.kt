@@ -307,6 +307,7 @@ object Tools {
     }.start()
 
     @JvmStatic
+    @Deprecated("Use Drawable.toBitmap(...) instead")
     fun drawableToBitmap(drawable: Drawable, size: Int): Bitmap {
         if (drawable is BitmapDrawable) return drawable.bitmap
         val bitmap = createBitmap(size, size)
@@ -317,6 +318,7 @@ object Tools {
     }
 
     @JvmStatic
+    @Deprecated("Use Drawable.toBitmap(...) instead")
     fun drawableToBitmap(drawable: Drawable, tint: Int, size: Int): Bitmap {
         if (drawable is BitmapDrawable) return drawable.bitmap
         val bitmap = createBitmap(size, size)

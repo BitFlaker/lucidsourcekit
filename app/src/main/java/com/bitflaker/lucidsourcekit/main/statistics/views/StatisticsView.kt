@@ -1,5 +1,6 @@
 package com.bitflaker.lucidsourcekit.main.statistics.views
 
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -129,8 +130,8 @@ class StatisticsView : Fragment() {
         lifecycleScope.launch(Dispatchers.IO) {
             val currentStreakValue = requireContext().getSetting(DataStoreKeys.APP_OPEN_STREAK)
             val bestStreakValue = requireContext().getSetting(DataStoreKeys.APP_OPEN_STREAK_LONGEST)
-            binding.iooStreakCheckIn.setValue(currentStreakValue.toInt())
-            binding.iooStreakCheckIn.setMaxValue(bestStreakValue.toInt())
+            binding.iooStreakCheckIn.value = currentStreakValue.toInt() + 6
+            binding.iooStreakCheckIn.maxValue = bestStreakValue.toInt() + 20
         }
 
         // TODO: refresh stats after entry modified/added/deleted
@@ -297,7 +298,6 @@ class StatisticsView : Fragment() {
             if (hasAvgMoodsData) {
                 generateRodChart(
                     binding.rgAvgDreamMoods,
-                    3.dpToPx.toFloat(),
                     moodIcons,
                     avgMoods
                 )
@@ -307,7 +307,6 @@ class StatisticsView : Fragment() {
             if (hasAvgDreamClarityData) {
                 generateRodChart(
                     binding.rgAvgClarities,
-                    3.dpToPx.toFloat(),
                     clarityIcons,
                     avgClarities
                 )
@@ -317,7 +316,6 @@ class StatisticsView : Fragment() {
             if (hasAvgSleepQualityData) {
                 generateRodChart(
                     binding.rgAvgSleepQualities,
-                    3.dpToPx.toFloat(),
                     qualityIcons,
                     avgQualities
                 )
@@ -415,7 +413,7 @@ class StatisticsView : Fragment() {
         return (sum / i).toFloat()
     }
 
-    private fun generateRodChart(rg: RodGraph, lineWidth: Float, icons: Array<Drawable>, averageValues: MutableList<Double>) {
+    private fun generateRodChart(rg: RodGraph, icons: Array<Drawable>, averageValues: MutableList<Double>) {
         val data: MutableList<DataValue> = arrayListOf()
         val calendar = Calendar.getInstance()
         val df = SimpleDateFormat("d\nMMM", Locale.getDefault())
@@ -430,8 +428,10 @@ class StatisticsView : Fragment() {
             data.add(DataValue(averageValues[j], label))
             calendar.add(Calendar.DAY_OF_MONTH, -1)
         }
-        rg.setData(data, lineWidth, 24.dpToPx, icons)
-        rg.minimumHeight = rg.minHeight
+        rg.data = data
+        rg.iconSize = 24.dpToPx
+        rg.icons = icons
+        rg.invalidate()
     }
 
     private suspend fun getAveragesForLastNDays(amount: Int, daysBeforeToday: Int) {
