@@ -9,22 +9,14 @@ import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.attrColor
 
-class ProgressIndicator : View {
-    private val paint = Paint()
+class ProgressIndicator @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
+    private val paint = Paint().apply {
+        color = context.attrColor(R.attr.colorOutlineVariant)
+        strokeCap = Paint.Cap.ROUND
+    }
     private var progress = 0f
-
-    constructor(context: Context?) : super(context) {
-        setup()
-    }
-
-    constructor(context: Context?, attributeSet: AttributeSet?) : super(context, attributeSet) {
-        setup()
-    }
-
-    private fun setup() {
-        paint.color = context.attrColor(R.attr.colorOutlineVariant)
-        paint.strokeCap = Paint.Cap.ROUND
-    }
 
     override fun onDraw(canvas: Canvas) {
         paint.strokeWidth = height.toFloat()

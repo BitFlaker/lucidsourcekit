@@ -240,33 +240,24 @@ class RecyclerViewAdapterDreamJournal(
             binding.fblTags.addView(generateTagView(tag))
         }
 
-        // Set correct progress track color
-        binding.rpDreamMood.setBackgroundAttrColor(R.attr.colorSurfaceContainerHigh)
-        binding.rpDreamClarity.setBackgroundAttrColor(R.attr.colorSurfaceContainerHigh)
-        binding.rpSleepQuality.setBackgroundAttrColor(R.attr.colorSurfaceContainerHigh)
-
         // Set values to display for ratings
-        binding.rpDreamMood.setData(
-            4f,
-            DreamMood.valueOf(current.journalEntry.moodId).toFloat(),
-            "DREAM MOOD",
-            Tools.resolveIconDreamMood(activity, current.journalEntry.moodId),
-            null
-        )
-        binding.rpDreamClarity.setData(
-            3f,
-            DreamClarity.valueOf(current.journalEntry.clarityId).toFloat(),
-            "DREAM CLARITY",
-            Tools.resolveIconDreamClarity(activity, current.journalEntry.clarityId),
-            null
-        )
-        binding.rpSleepQuality.setData(
-            3f,
-            SleepQuality.valueOf(current.journalEntry.qualityId).toFloat(),
-            "SLEEP QUALITY",
-            Tools.resolveIconSleepQuality(activity, current.journalEntry.qualityId),
-            null
-        )
+        binding.rpDreamMood.label = "DREAM MOOD"
+        binding.rpDreamMood.setValue(DreamMood.valueOf(current.journalEntry.moodId).toFloat(), 4f)
+        binding.rpDreamMood.setBackgroundAttrColor(R.attr.colorSurfaceContainerHigh)
+        binding.rpDreamMood.icon = Tools.resolveIconDreamMood(activity, current.journalEntry.moodId)
+        binding.rpDreamMood.invalidate()
+
+        binding.rpDreamClarity.label = "DREAM CLARITY"
+        binding.rpDreamClarity.setValue(DreamClarity.valueOf(current.journalEntry.clarityId).toFloat(), 3f)
+        binding.rpDreamClarity.setBackgroundAttrColor(R.attr.colorSurfaceContainerHigh)
+        binding.rpDreamClarity.icon = Tools.resolveIconDreamClarity(activity, current.journalEntry.clarityId)
+        binding.rpDreamClarity.invalidate()
+
+        binding.rpSleepQuality.label = "SLEEP QUALITY"
+        binding.rpSleepQuality.setValue(SleepQuality.valueOf(current.journalEntry.qualityId).toFloat(), 3f)
+        binding.rpSleepQuality.setBackgroundAttrColor(R.attr.colorSurfaceContainerHigh)
+        binding.rpSleepQuality.icon = Tools.resolveIconSleepQuality(activity, current.journalEntry.qualityId)
+        binding.rpSleepQuality.invalidate()
 
         // Set handler to delete the journal entry
         binding.btnDeleteEntry.setOnClickListener {

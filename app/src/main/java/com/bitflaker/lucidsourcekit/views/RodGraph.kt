@@ -85,7 +85,7 @@ class RodGraph @JvmOverloads constructor(
         val actualTextMargin = max(0f, textMargin - extraTextMargin)
 
         // Get the maximum text area height
-        textHeight = data.maxOf { it.getLines().count() } * textLineHeight
+        textHeight = (data.maxOfOrNull { it.getLines().count() } ?: 0) * textLineHeight
 
         // Get the bottom y position of the progress lines
         val lineBottomY = height - textHeight - actualTextMargin - iconLineInset
@@ -148,7 +148,7 @@ class RodGraph @JvmOverloads constructor(
         // TODO: Re-calculate the minimum height when the data, icons, iconSize changes
 
         val iconCount = iconBitmaps?.size ?: 4
-        textHeight = data.maxOf { it.getLines().count() } * textLineHeight
+        textHeight = (data.maxOfOrNull { it.getLines().count() } ?: 0) * textLineHeight
         minimumHeight = ceil(iconCount * iconSize + textHeight).toInt()
 
         // TODO: Do not overwrite a custom defined height with the automatically calculated one here

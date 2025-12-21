@@ -145,6 +145,11 @@ fun Context.resolveDrawableBitmap(id: Int, tint: Int, size: Int): Bitmap? {
     return drawable.toBitmap(tint, size)
 }
 
+fun Context.resolveDrawableBitmap(id: Int, size: Int): Bitmap? {
+    val drawable = resolveDrawable(id) ?: return null
+    return drawable.toBitmap(size)
+}
+
 val Int.pxToDp: Int get() = (this / getSystem().displayMetrics.density).toInt()
 
 val Int.dpToPx: Int get() = (this * getSystem().displayMetrics.density).toInt()

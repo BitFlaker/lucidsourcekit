@@ -74,7 +74,7 @@ class GradientCircle @JvmOverloads constructor(
     private val textBounds: Rect = Rect()
     private val textOffsetY = labelPaint.textSize * 0f
     private val textPhrases = Array(3) { "" }
-    private val textDimensions = Array(4) { IntArray(2) { 0 } }
+    private val textDimensions = Array(4) { IntArray(2) }
     private var currentTextSlide = -1f
     private var textMaskCharacter = "#"
     private var textMaskCharacters = 0

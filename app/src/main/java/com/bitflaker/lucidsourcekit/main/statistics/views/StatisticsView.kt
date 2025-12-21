@@ -160,12 +160,10 @@ class StatisticsView : Fragment() {
         val context = requireContext()
         val hours = TimeUnit.MILLISECONDS.toHours(totalTime)
         val minutes = TimeUnit.MILLISECONDS.toMinutes(totalTime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(totalTime))
-        binding.pcTimeSpentProportions.setValues(
-            arrayOf(
-                ProportionLineChart.DataPoint(context.attrColor(R.attr.colorPrimary), journalTime, "Dream journal"),
-                ProportionLineChart.DataPoint(context.attrColor(R.attr.colorTertiary), 0f, "Binaural beats"),
-                ProportionLineChart.DataPoint(context.attrColor(R.attr.colorSecondary), otherTime, "Other")
-            )
+        binding.pcTimeSpentProportions.values = arrayOf(
+            ProportionLineChart.DataPoint(context.attrColor(R.attr.colorPrimary), journalTime, "Dream journal"),
+            ProportionLineChart.DataPoint(context.attrColor(R.attr.colorTertiary), 0f, "Binaural beats"),
+            ProportionLineChart.DataPoint(context.attrColor(R.attr.colorSecondary), otherTime, "Other")
         )
         binding.txtTimeSpentValue.text = if (hours == 0L) String.format(Locale.ENGLISH, "%d min", minutes)
                                                      else String.format(Locale.ENGLISH, "%d hr %d min", hours, minutes)
@@ -237,22 +235,18 @@ class StatisticsView : Fragment() {
                 return@runOnUiThread
             }
 
+            binding.rpGoalsReached.label = "ACHIEVED"
+            binding.rpGoalsReached.text = String.format(Locale.ENGLISH, "%d/%d", goalShuffleData.achievedCount, goalShuffleData.goalCount)
+            binding.rpGoalsReached.setValue(goalShuffleData.achievedCount.toFloat(), goalShuffleData.goalCount.toFloat())
             binding.rpGoalsReached.setBackgroundAttrColor(R.attr.colorSurfaceContainer)
+            binding.rpGoalsReached.invalidate()
+
+            binding.rpAvgGoalDiff.label = "AVERAGE DIFFICULTY LEVEL"
+            binding.rpAvgGoalDiff.text = String.format(Locale.ENGLISH, "%.2f", goalShuffleData.avgDifficulty)
+            binding.rpAvgGoalDiff.setValue(goalShuffleData.avgDifficulty.toFloat(), 3f)
             binding.rpAvgGoalDiff.setBackgroundAttrColor(R.attr.colorSurfaceContainer)
-            binding.rpGoalsReached.setData(
-                goalShuffleData.goalCount.toFloat(),
-                goalShuffleData.achievedCount.toFloat(),
-                "ACHIEVED",
-                null,
-                String.format(Locale.ENGLISH, "%d/%d", goalShuffleData.achievedCount, goalShuffleData.goalCount)
-            )
-            binding.rpAvgGoalDiff.setData(
-                3f,
-                goalShuffleData.avgDifficulty.toFloat(),
-                "AVERAGE DIFFICULTY LEVEL",
-                null,
-                String.format(Locale.ENGLISH, "%.2f", goalShuffleData.avgDifficulty)
-            )
+            binding.rpAvgGoalDiff.invalidate()
+
             binding.llGoalsReached.visibility = View.VISIBLE
         }
     }
@@ -347,7 +341,7 @@ class StatisticsView : Fragment() {
     private fun generateMostUsedTagsStats(tagCounts: List<TagCount>) {
         val maxCount = tagCounts[0].count
         for (p in tagCounts) {
-            val rngProg = RangeProgress(context)
+            val rngProg = RangeProgress(requireContext())
             rngProg.setBackgroundAttrColor(R.attr.colorSurfaceContainer)
             val llParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -355,9 +349,14 @@ class StatisticsView : Fragment() {
             )
             val margin = 5.dpToPx
             llParams.setMargins(0, margin, 0, margin)
+
             rngProg.layoutParams = llParams
+            rngProg.label = p.tag
+            rngProg.text = p.count.toString()
+            rngProg.setValue(p.count.toFloat(), maxCount.toFloat())
+            rngProg.invalidate()
+
             binding.llMostUsedTags.addView(rngProg)
-            rngProg.setData(maxCount.toFloat(), p.count.toFloat(), p.tag, null, p.count.toString())
         }
     }
 
@@ -367,34 +366,25 @@ class StatisticsView : Fragment() {
         val averageQuality = calcAverage(avgQualities, true)
         val averageDreamCount = calcAverage(dreamCounts, false)
 
-        binding.rpDreamMood.setData(
-            4f,
-            averageMood,
-            "DREAM MOOD",
-            moodIcons[averageMood.roundToInt()],
-            null
-        )
-        binding.rpDreamClarity.setData(
-            3f,
-            averageClarity,
-            "DREAM CLARITY",
-            clarityIcons[averageClarity.roundToInt()],
-            null
-        )
-        binding.rpSleepQuality.setData(
-            3f,
-            averageQuality,
-            "SLEEP QUALITY",
-            qualityIcons[averageQuality.roundToInt()],
-            null
-        )
-        binding.rpDreamsPerNight.setData(
-            Collections.max(dreamCounts).toFloat(),
-            averageDreamCount,
-            "DREAMS PER NIGHT",
-            null,
-            String.format(Locale.ENGLISH, "%.2f", averageDreamCount)
-        )
+        binding.rpDreamMood.label = "DREAM MOOD"
+        binding.rpDreamMood.setValue(averageMood, 4f)
+        binding.rpDreamMood.icon = moodIcons[averageMood.roundToInt()]
+        binding.rpDreamMood.invalidate()
+
+        binding.rpDreamClarity.label = "DREAM CLARITY"
+        binding.rpDreamClarity.setValue(averageClarity, 3f)
+        binding.rpDreamClarity.icon = clarityIcons[averageClarity.roundToInt()]
+        binding.rpDreamClarity.invalidate()
+
+        binding.rpSleepQuality.label = "SLEEP QUALITY"
+        binding.rpSleepQuality.setValue(averageQuality, 3f)
+        binding.rpSleepQuality.icon = qualityIcons[averageQuality.roundToInt()]
+        binding.rpSleepQuality.invalidate()
+
+        binding.rpDreamsPerNight.label = "DREAMS PER NIGHT"
+        binding.rpDreamsPerNight.text = String.format(Locale.ENGLISH, "%.2f", averageDreamCount)
+        binding.rpDreamsPerNight.setValue(averageDreamCount, Collections.max(dreamCounts).toFloat())
+        binding.rpDreamsPerNight.invalidate()
     }
 
     private fun calcAverage(vals: MutableList<Double>, ignoreMissedDays: Boolean): Float {

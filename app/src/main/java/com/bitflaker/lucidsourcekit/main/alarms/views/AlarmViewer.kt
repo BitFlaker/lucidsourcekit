@@ -88,9 +88,6 @@ class AlarmViewer : AppCompatActivity() {
             window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
 
-        // Set the icons for the alarm action slider
-        binding.ossAlarmSlider.setData(resolveDrawable(R.drawable.ic_baseline_check_24), resolveDrawable(R.drawable.ic_baseline_snooze_24))
-
         // Get the id of the stored alarm
         val id = intent.getLongExtra("STORED_ALARM_ID", -1)
         if (id == -1L) {
@@ -134,9 +131,9 @@ class AlarmViewer : AppCompatActivity() {
         } else if (alarmStopByMode == AlarmStopByMode.SWIPE) {
             binding.llAlarmStopButtonContainer.visibility = View.GONE
             binding.crdAlarmSliderContainer.visibility = View.VISIBLE
-            binding.ossAlarmSlider.setOnLeftSideSelectedListener { stopAlarm() }
-            binding.ossAlarmSlider.setOnRightSideSelectedListener { snoozeAlarmSelected() }
-            binding.ossAlarmSlider.setOnFadedAwayListener {
+            binding.ossAlarmSlider.onLeftSideSelectedListener = ::stopAlarm
+            binding.ossAlarmSlider.onRightSideSelectedListener = ::snoozeAlarmSelected
+            binding.ossAlarmSlider.onFadedAwayListener = {
                 binding.crdAlarmSliderContainer.visibility = View.GONE
                 showActions()
             }
