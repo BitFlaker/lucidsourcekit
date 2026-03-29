@@ -94,8 +94,8 @@ class SetupViewer : AppCompatActivity() {
 
         // Setup page action listeners
         pageLanguage.onLanguageChangedListener = ::languageChanged
-        pageConsent.setOnConsentChangedListener(::consentChanged)
-        pagePrivacy.setOnAuthTypeChangedListener { authType ->
+        pageConsent.onConsentChangedListener = ::consentChanged
+        pagePrivacy.onAuthTypeChangedListener = { authType ->
             selectedAuthType = authType
             pageAuthentication.showCredentialsSetup(authType)
         }

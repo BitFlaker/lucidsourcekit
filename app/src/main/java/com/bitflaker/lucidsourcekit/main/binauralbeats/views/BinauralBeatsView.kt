@@ -108,14 +108,7 @@ class BinauralBeatsView : Fragment() {
         binding.lgBinauralTimeProgress.setDrawProgressIndicator(false)
 
         // Configure frequency legend text and color
-        val labels = arrayOf("β", "α", "θ", "δ")
-        binding.tlBinauralLegend.setData(
-            labels,
-            Brainwaves.stageColors,
-            context.attrColor(R.attr.secondaryTextColor),
-            context.attrColor(R.attr.tertiaryTextColor),
-            18
-        )
+        binding.tlBinauralLegend.setData(arrayOf("β", "α", "θ", "δ"), Brainwaves.stageColors)
     }
 
     private fun showTrackSelector() {
