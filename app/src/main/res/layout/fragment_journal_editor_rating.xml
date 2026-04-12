@@ -305,10 +305,11 @@
                         android:src="@drawable/ic_baseline_star_border_24"
                         app:tint="?attr/primaryTextColor" />
 
-                    <androidx.legacy.widget.Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="5" />
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="5"
+                        android:visibility="invisible"/>
 
                     <ImageView
                         android:id="@+id/img_bad_quality"
@@ -330,10 +331,11 @@
                         android:src="@drawable/ic_baseline_star_24"
                         app:tint="?attr/tertiaryTextColor" />
 
-                    <androidx.legacy.widget.Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="5" />
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="5"
+                        android:visibility="invisible"/>
 
                     <ImageView
                         android:id="@+id/img_very_good_quality"
@@ -430,10 +432,11 @@
                         android:src="@drawable/ic_baseline_brightness_4_24"
                         app:tint="?attr/primaryTextColor" />
 
-                    <androidx.legacy.widget.Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="5" />
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="5"
+                        android:visibility="invisible"/>
 
                     <ImageView
                         android:id="@+id/img_unclear"
@@ -455,10 +458,11 @@
                         android:src="@drawable/ic_baseline_brightness_6_24"
                         app:tint="?attr/tertiaryTextColor" />
 
-                    <androidx.legacy.widget.Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="5" />
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="5"
+                        android:visibility="invisible"/>
 
                     <ImageView
                         android:id="@+id/img_very_clear"

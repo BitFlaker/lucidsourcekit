@@ -222,6 +222,7 @@
                 android:minHeight="32dp"
                 android:text="Open source licenses"
                 android:textColor="?attr/tertiaryTextColor"
+                android:textAlignment="viewStart"
                 app:layout_constraintTop_toBottomOf="@+id/crd_source_code"
                 app:layout_constraintStart_toStartOf="parent"
                 app:rippleColor="?attr/colorSurfaceContainer" />
@@ -235,6 +236,7 @@
                 android:minHeight="32dp"
                 android:text="Privacy policy"
                 android:textColor="?attr/tertiaryTextColor"
+                android:textAlignment="viewStart"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btn_oss_licenses"
                 app:rippleColor="?attr/colorSurfaceContainer" />
@@ -248,6 +250,7 @@
                 android:minHeight="32dp"
                 android:text="Readme"
                 android:textColor="?attr/tertiaryTextColor"
+                android:textAlignment="viewStart"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btn_privacy_policy"
                 app:rippleColor="?attr/colorSurfaceContainer" />

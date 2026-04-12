@@ -9,7 +9,6 @@ buildscript {
     }
     dependencies {
         classpath(libs.gradle)
-        classpath(libs.oss.licenses.plugin)
         classpath(libs.kotlin.gradle.plugin)
     }
 }

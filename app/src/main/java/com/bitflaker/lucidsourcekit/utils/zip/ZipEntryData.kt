@@ -1,5 +1,6 @@
 package com.bitflaker.lucidsourcekit.utils.zip
 
+@ConsistentCopyVisibility
 data class ZipEntryData internal constructor(override val path: String, override val name: String, val data: ByteArray) : ZipEntry() {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

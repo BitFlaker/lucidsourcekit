@@ -2,6 +2,7 @@ package com.bitflaker.lucidsourcekit.utils.zip.builder
 
 import java.io.File
 
+@ConsistentCopyVisibility
 data class ZipEntryFileBuilder internal constructor(val file: File) : ZipEntryBuilder() {
     override val name: String = file.name
 

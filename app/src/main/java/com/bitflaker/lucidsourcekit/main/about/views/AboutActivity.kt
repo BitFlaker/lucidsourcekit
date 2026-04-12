@@ -9,7 +9,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bitflaker.lucidsourcekit.databinding.ActivityAboutBinding
 import com.bitflaker.lucidsourcekit.utils.Tools
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 
 class AboutActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAboutBinding
@@ -48,7 +47,10 @@ class AboutActivity : AppCompatActivity() {
             )
         }
         binding.btnOssLicenses.setOnClickListener {
-            startActivity(Intent(this, OssLicensesMenuActivity::class.java))
+            // Open old OSS licenses view (v2 will cause NavDisplay crashes)
+            @Suppress("DEPRECATION") startActivity(Intent(this,
+                com.google.android.gms.oss.licenses.OssLicensesMenuActivity::class.java
+            ))
         }
         binding.btnPrivacyPolicy.setOnClickListener {
             startActivity(
