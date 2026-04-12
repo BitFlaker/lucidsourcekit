@@ -100,7 +100,7 @@ class DreamJournalEditorContentView(private val entry: DreamJournalEntry, privat
 
         // Generate form content editor in case of form entry type
         if (entryType == DreamJournalEntry.EntryType.FORMS_TEXT) {
-            binding.flxDjFormDream.visibility = View.VISIBLE
+            binding.clDjFormDream.visibility = View.VISIBLE
             binding.txtDjDescriptionDream.visibility = View.GONE
             generateFormContent()
         }
@@ -233,19 +233,24 @@ class DreamJournalEditorContentView(private val entry: DreamJournalEntry, privat
 
             // Generate TextViews for all sentence parts
             for (sentence in sentences) {
-                binding.flxDjFormDream.addView(generateTextView(sentence))
+                binding.clDjFormDream.addView(generateTextView(sentence))
             }
 
             // Always append an additional EditText to the end for additional notes
             if (i < formsTemplate.size - 1) {
-                binding.flxDjFormDream.addView(generateEditText())
+                binding.clDjFormDream.addView(generateEditText())
             }
         }
+
+        binding.flTagFlow.referencedIds = binding.clDjFormDream.children.map { it.id }.toList().toIntArray()
+        binding.flTagFlow.requestLayout()
+        binding.flTagFlow.invalidate()
     }
 
     private fun generateEditText(): EditText {
         val dpm5 = (-5).dpToPx
         val editText = EditText(context).apply {
+            id = View.generateViewId()
             setLayoutParams(LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
                 setMargins(0, dpm5, 0, dpm5)
             })
@@ -271,6 +276,7 @@ class DreamJournalEditorContentView(private val entry: DreamJournalEntry, privat
     }
 
     private fun generateTextView(sentence: String?): TextView = TextView(context).apply {
+        id = View.generateViewId()
         setLayoutParams(LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT))
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
         text = sentence
@@ -306,9 +312,9 @@ class DreamJournalEditorContentView(private val entry: DreamJournalEntry, privat
 
     fun getFormResult(): String {
         val sb = StringBuilder()
-        binding.flxDjFormDream.children.forEach {
-            sb.append((it as TextView).text)
-        }
+        binding.clDjFormDream.children
+            .filter { it is TextView }
+            .forEach { sb.append((it as TextView).text) }
         return sb.toString()
     }
 
@@ -407,7 +413,7 @@ class DreamJournalEditorContentView(private val entry: DreamJournalEntry, privat
 
         // Show all currently assigned tags
         for (tag in entry.stringTags) {
-            insertTagChip(tag, sBinding.flxDjTagsToAdd)
+            insertTagChip(tag, sBinding)
         }
 
         // Set the autosuggest values to the available tags
@@ -452,13 +458,14 @@ class DreamJournalEditorContentView(private val entry: DreamJournalEntry, privat
 
         if (isUnassignedTag) {
             entry.journalEntryTags.add(JournalEntryTag(enteredTag))
-            insertTagChip(enteredTag, sBinding.flxDjTagsToAdd, 0)
+            insertTagChip(enteredTag, sBinding, 0)
             sBinding.txtDjTagsEnter.setText("")
         }
     }
 
-    private fun insertTagChip(chipText: String, tagsContainer: ViewGroup, index: Int = -1) {
+    private fun insertTagChip(chipText: String, sBinding: SheetJournalTagsEditorBinding, index: Int = -1) {
         val tagChip = Chip(context).apply {
+            id = View.generateViewId()
             layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
                 leftMargin = 3.dpToPx
                 rightMargin = 3.dpToPx
@@ -476,10 +483,17 @@ class DreamJournalEditorContentView(private val entry: DreamJournalEntry, privat
         // Add remove handler to remove tag from view and journal object
         tagChip.setOnCloseIconClickListener {
             removeTag(chipText)
-            tagsContainer.removeView(tagChip)
+
+            sBinding.clDjTags.removeView(tagChip)
+            sBinding.flTagFlow.referencedIds = sBinding.clDjTags.children.map { it.id }.toList().toIntArray()
+            sBinding.flTagFlow.requestLayout()
+            sBinding.flTagFlow.invalidate()
         }
 
-        tagsContainer.addView(tagChip, index)
+        sBinding.clDjTags.addView(tagChip, index)
+        sBinding.flTagFlow.referencedIds = sBinding.clDjTags.children.map { it.id }.toList().toIntArray()
+        sBinding.flTagFlow.requestLayout()
+        sBinding.flTagFlow.invalidate()
     }
 
     private fun removeTag(tag: String) {

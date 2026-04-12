@@ -235,10 +235,13 @@ class RecyclerViewAdapterDreamJournal(
         }
 
         // Show all tags
-        binding.fblTags.isVisible = current.journalEntryTags.isNotEmpty()
+        binding.clTags.isVisible = current.journalEntryTags.isNotEmpty()
         for (tag in current.stringTags) {
-            binding.fblTags.addView(generateTagView(tag))
+            binding.clTags.addView(generateTagView(tag))
         }
+        binding.flTagFlow.referencedIds = binding.clTags.children.map { it.id }.toList().toIntArray()
+        binding.flTagFlow.requestLayout()
+        binding.flTagFlow.invalidate()
 
         // Set values to display for ratings
         binding.rpDreamMood.label = "DREAM MOOD"
@@ -464,6 +467,7 @@ class RecyclerViewAdapterDreamJournal(
     private fun generateTagView(content: String): TextView {
         val dp8 = 8.dpToPx
         return TextView(activity).apply {
+            id = View.generateViewId()
             setTextColor(activity.attrColorStateList(R.attr.primaryTextColor))
             setPadding(dp8, dp8 / 2, dp8, dp8 / 2)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)

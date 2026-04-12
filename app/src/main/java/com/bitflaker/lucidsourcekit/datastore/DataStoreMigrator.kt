@@ -2,13 +2,12 @@ package com.bitflaker.lucidsourcekit.datastore
 
 import android.content.Context
 import android.util.Log
-import androidx.preference.PreferenceManager
 import java.io.File
 import androidx.core.content.edit
 
 object DataStoreMigrator {
     suspend fun migrateSharedPreferencesToDataStore(context: Context) {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        @Suppress("DEPRECATION") val preferences = android.preference.PreferenceManager.getDefaultSharedPreferences(context)
         val isAlreadyMigrated = preferences.getBoolean("DATA_STORE_MIGRATION_FINISHED", false)
         if (isAlreadyMigrated) {
             return

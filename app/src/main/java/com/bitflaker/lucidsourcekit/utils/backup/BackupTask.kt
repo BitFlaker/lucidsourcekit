@@ -92,7 +92,7 @@ class BackupTask private constructor(
     private suspend fun backupDatabase() = coroutineScope {
         val outputStream = context.contentResolver.openOutputStream(uri) ?: throw StreamCorruptedException("Failed to open export stream")
 
-        val preferenceEntry = MainDatabase.exportSharedPreferences(context)
+        val preferenceEntry = MainDatabase.exportDeprecatedSharedPreferences(context)
 
         val zipStructure = ZipStructureBuilder()
             .addDirectoryContent(dataRecordings)

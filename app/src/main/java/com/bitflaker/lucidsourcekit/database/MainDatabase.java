@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
-import androidx.preference.PreferenceManager;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -147,8 +146,8 @@ public abstract class MainDatabase extends RoomDatabase {
     }
 
     @NonNull
-    public static byte[] exportSharedPreferences(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+    public static byte[] exportDeprecatedSharedPreferences(Context context) {
+        @SuppressWarnings("deprecation") SharedPreferences preferences = android.preference.PreferenceManager.getDefaultSharedPreferences(context);
         return new JSONObject(preferences.getAll()).toString().getBytes();
     }
 }

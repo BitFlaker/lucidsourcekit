@@ -41,7 +41,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.flexbox)
     implementation(libs.material)
     implementation(libs.play.services.oss.licenses)
     implementation(libs.androidx.core.ktx)
@@ -49,9 +48,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.biometric)
     implementation(libs.androidx.viewpager2)
-    implementation(libs.androidx.preference.ktx)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.activity)
     annotationProcessor(libs.androidx.room.compiler)
