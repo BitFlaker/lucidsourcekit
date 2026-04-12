@@ -1,6 +1,6 @@
 [versions]
-gradle = "8.13.2"
-kotlinVersion = "2.2.0"
+gradle = "9.1.0"
+kotlinVersion = "2.2.10"
 material = "1.13.0"
 activity = "1.13.0"
 coreKtx = "1.18.0"
