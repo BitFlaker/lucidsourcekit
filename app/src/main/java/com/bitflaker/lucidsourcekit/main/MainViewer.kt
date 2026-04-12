@@ -19,14 +19,13 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.bitflaker.lucidsourcekit.R
-import com.bitflaker.lucidsourcekit.utils.export.ExportDialog
-import com.bitflaker.lucidsourcekit.utils.export.SimpleActivityLauncher
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.results.DreamJournalEntry
 import com.bitflaker.lucidsourcekit.databinding.ActivityMainViewerBinding
 import com.bitflaker.lucidsourcekit.databinding.DialogProgressBinding
 import com.bitflaker.lucidsourcekit.main.about.views.AboutActivity
 import com.bitflaker.lucidsourcekit.main.binauralbeats.views.BinauralBeatsView
 import com.bitflaker.lucidsourcekit.main.dreamjournal.views.DreamJournalView
+import com.bitflaker.lucidsourcekit.main.export.views.ExportActivity
 import com.bitflaker.lucidsourcekit.main.goals.views.GoalsView
 import com.bitflaker.lucidsourcekit.main.overview.views.MainOverviewView
 import com.bitflaker.lucidsourcekit.main.statistics.views.StatisticsView
@@ -40,8 +39,6 @@ import com.bitflaker.lucidsourcekit.utils.showToastLong
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.Locale
 
 
@@ -62,14 +59,12 @@ class MainViewer : AppCompatActivity() {
     private val vwPageStats: StatisticsView = StatisticsView()
     private val vwPageGoals: GoalsView = GoalsView()
     private val vwPageBinauralBeats: BinauralBeatsView = BinauralBeatsView()
-
     private lateinit var binding: ActivityMainViewerBinding
-    private lateinit var launcher: SimpleActivityLauncher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        lifecycleScope
         vpAdapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
-        launcher = SimpleActivityLauncher(this, 2)
         binding = ActivityMainViewerBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
@@ -117,9 +112,7 @@ class MainViewer : AppCompatActivity() {
                         promptImportBackup()
                     }
                     R.id.itm_export -> {
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            ExportDialog.promptExportData(this@MainViewer, launcher)
-                        }
+                        startActivity(Intent(this, ExportActivity::class.java))
                     }
                     R.id.itm_about -> {
                         startActivity(Intent(this, AboutActivity::class.java))

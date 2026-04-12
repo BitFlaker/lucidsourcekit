@@ -37,6 +37,7 @@ import com.bitflaker.lucidsourcekit.utils.attrColor
 import com.bitflaker.lucidsourcekit.utils.insetDefault
 import com.bitflaker.lucidsourcekit.utils.showToastLong
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 
 class DreamJournalView : Fragment() {
     private lateinit var binding: FragmentMainJournalBinding
@@ -73,7 +74,7 @@ class DreamJournalView : Fragment() {
                 }
 
                 questionnaireAdapter?.let {
-                    val completed = db.getCompletedQuestionnaireDao().getDetailsById(id).blockingGet()
+                    val completed = db.getCompletedQuestionnaireDao().getDetailsById(id)
                     requireActivity().runOnUiThread {
                         it.addCompletedQuestionnaire(completed)
                         questionnaireSheetBinding!!.txtNoQuestionnairesTitle.visibility = View.GONE
@@ -122,7 +123,7 @@ class DreamJournalView : Fragment() {
             journalEntries.forEach({ e ->
                 val dayFrom = Tools.getMidnightMillis(e.journalEntry.timeStamp)
                 val dayTo = dayFrom + 24 * 60 * 60 * 1000
-                e.questionnaireCount = db.getCompletedQuestionnaireDao().getQuestionnaireCount(dayFrom, dayTo).blockingGet()
+                e.questionnaireCount = db.getCompletedQuestionnaireDao().getQuestionnaireCount(dayFrom, dayTo)
             })
 
             // Setup recyclerview and show stored journal entries
@@ -171,46 +172,50 @@ class DreamJournalView : Fragment() {
     }
 
     private fun viewQuestionnaires(entry: DreamJournalEntry) {
-        val context = requireContext()
-        val timestamp = entry.journalEntry.timeStamp
-        val bsd = BottomSheetDialog(context, R.style.BottomSheetDialogStyle)
-        val sBinding = SheetQuestionnaireListBinding.inflate(layoutInflater)
-        bsd.setContentView(sBinding.root)
+        lifecycleScope.launch {
+            val context = requireContext()
+            val timestamp = entry.journalEntry.timeStamp
+            val bsd = BottomSheetDialog(context, R.style.BottomSheetDialogStyle)
+            val sBinding = SheetQuestionnaireListBinding.inflate(layoutInflater)
+            bsd.setContentView(sBinding.root)
 
-        // Load all completed questionnaires of selected day
-        val dayFrom = Tools.getMidnightMillis(timestamp)
-        val dayTo = dayFrom + 24 * 60 * 60 * 1000
-        val completed = db.completedQuestionnaireDao.getByTimeFrame(dayFrom, dayTo).blockingGet()
+            // Load all completed questionnaires of selected day
+            val completed = withContext(Dispatchers.IO) {
+                val dayFrom = Tools.getMidnightMillis(timestamp)
+                val dayTo = dayFrom + 24 * 60 * 60 * 1000
+                db.completedQuestionnaireDao.getByTimeFrame(dayFrom, dayTo)
+            }
 
-        // Set selected date
-        sBinding.txtQuestionnairesDate.text = DateFormat.getDateInstance(DateFormat.MEDIUM).format(timestamp)
+            // Set selected date
+            sBinding.txtQuestionnairesDate.text = DateFormat.getDateInstance(DateFormat.MEDIUM).format(timestamp)
 
-        // Set visibility of placeholder in case no questionnaires have been completed on selected day
-        val emptyVisibility = if (completed.isEmpty()) View.VISIBLE else View.GONE
-        sBinding.txtNoQuestionnairesTitle.visibility = emptyVisibility
-        sBinding.txtNoQuestionnairesSubTitle.visibility = emptyVisibility
+            // Set visibility of placeholder in case no questionnaires have been completed on selected day
+            val emptyVisibility = if (completed.isEmpty()) View.VISIBLE else View.GONE
+            sBinding.txtNoQuestionnairesTitle.visibility = emptyVisibility
+            sBinding.txtNoQuestionnairesSubTitle.visibility = emptyVisibility
 
-        // Configure recycler view for viewing completed questionnaires of selected day
-        val adapter = RecyclerViewFilledOutQuestionnaires(context, completed)
-        adapter.onQuestionnaireClickListener = { completedId ->
-            startActivity(Intent(context, QuestionnaireEditorActivity::class.java).apply {
-                putExtra("COMPLETED_QUESTIONNAIRE_ID", completedId)
-            })
+            // Configure recycler view for viewing completed questionnaires of selected day
+            val adapter = RecyclerViewFilledOutQuestionnaires(context, completed)
+            adapter.onQuestionnaireClickListener = { completedId ->
+                startActivity(Intent(context, QuestionnaireEditorActivity::class.java).apply {
+                    putExtra("COMPLETED_QUESTIONNAIRE_ID", completedId)
+                })
+            }
+            sBinding.rcvQuestionnairesFilledOut.setLayoutManager(LinearLayoutManager(context))
+            sBinding.rcvQuestionnairesFilledOut.setAdapter(adapter)
+            questionnaireAdapter = adapter
+
+            // Set handler for filling out new questionnaire on selected day
+            sBinding.btnFillOutQuestionnaire.setOnClickListener {
+                entryIdToUpdateQuestionnaires = entry.journalEntry.entryId
+                editorLauncher.launch(Intent(context, QuestionnaireView::class.java).apply {
+                    putExtra("USE_SPECIFIC_DATE", Tools.getDateInMillis(timestamp))
+                })
+            }
+
+            questionnaireSheetBinding = sBinding
+            bsd.show()
         }
-        sBinding.rcvQuestionnairesFilledOut.setLayoutManager(LinearLayoutManager(context))
-        sBinding.rcvQuestionnairesFilledOut.setAdapter(adapter)
-        questionnaireAdapter = adapter
-
-        // Set handler for filling out new questionnaire on selected day
-        sBinding.btnFillOutQuestionnaire.setOnClickListener {
-            entryIdToUpdateQuestionnaires = entry.journalEntry.entryId
-            editorLauncher.launch(Intent(context, QuestionnaireView::class.java).apply {
-                putExtra("USE_SPECIFIC_DATE", Tools.getDateInMillis(timestamp))
-            })
-        }
-
-        questionnaireSheetBinding = sBinding
-        bsd.show()
     }
 
     private fun resetFilters(callback: Runnable? = null) {
@@ -310,7 +315,7 @@ class DreamJournalView : Fragment() {
     }
 
     private suspend fun reloadEntryDataByCompleted(id: Int) = coroutineScope {
-        val completed = db!!.getCompletedQuestionnaireDao().getById(id).blockingGet()
+        val completed = db.getCompletedQuestionnaireDao().getById(id)
         val idsToReload = rvAdapterDreamJournal.getEntriesByDate(completed.timestamp)
         val entriesToReload = arrayListOf<DreamJournalEntry>()
         for (id in idsToReload) {
@@ -331,7 +336,7 @@ class DreamJournalView : Fragment() {
         val entry = db.journalEntryDao.getEntryDataById(entryId)
         val dayFrom = Tools.getMidnightMillis(entry.journalEntry.timeStamp)
         val dayTo = dayFrom + 24 * 60 * 60 * 1000
-        entry.questionnaireCount = db.getCompletedQuestionnaireDao().getQuestionnaireCount(dayFrom, dayTo).blockingGet()
+        entry.questionnaireCount = db.getCompletedQuestionnaireDao().getQuestionnaireCount(dayFrom, dayTo)
         return entry
     }
 

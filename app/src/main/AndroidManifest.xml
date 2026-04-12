@@ -35,6 +35,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LucidSourceKit.Default">
         <activity
+            android:name=".main.export.templates.template1.ExportTemplate1Activity"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".main.export.views.ExportActivity"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".main.about.views.AboutActivity"
             android:exported="false" />
         <activity

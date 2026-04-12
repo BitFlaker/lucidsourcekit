@@ -42,6 +42,7 @@ import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionType
 import com.bitflaker.lucidsourcekit.databinding.ActivityMainBinding
 import com.bitflaker.lucidsourcekit.main.MainViewer
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler
+import com.bitflaker.lucidsourcekit.main.export.views.ExportActivity
 import com.bitflaker.lucidsourcekit.main.notification.visual.views.KeypadAdapter
 import com.bitflaker.lucidsourcekit.main.notification.visual.KeypadButtonModel
 import com.bitflaker.lucidsourcekit.setup.SetupViewer
@@ -61,12 +62,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var storedSalt: ByteArray
     private val enteredPin = StringBuilder()
     private lateinit var db: MainDatabase
-    companion object {
-        var test: Int = 0
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        test += 1
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -180,7 +177,7 @@ class MainActivity : AppCompatActivity() {
             if (streak > getSetting(DataStoreKeys.APP_OPEN_STREAK_LONGEST)) {
                 updateSetting(DataStoreKeys.APP_OPEN_STREAK_LONGEST, streak)
             }
-        } else if (timeSinceFirstOpenLatestDay > dayMillis || timeSinceFirstOpenLatestDay < 0) {
+        } else if (timeSinceFirstOpenLatestDay !in 0..dayMillis) {
             updateSetting(DataStoreKeys.FIRST_OPEN_LATEST_DAY, todayMidnightMillis)
             updateSetting(DataStoreKeys.APP_OPEN_STREAK, 0L)
         }

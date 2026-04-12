@@ -7,29 +7,27 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionType
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface QuestionTypeDao {
     @Query("SELECT * FROM QuestionType ORDER BY id")
-    fun getAll(): Single<List<QuestionType>>
+    suspend fun getAll(): List<QuestionType>
 
     @Query("SELECT * FROM QuestionType WHERE id = :id")
-    fun getById(id: Int): Single<QuestionType>
+    suspend fun getById(id: Int): QuestionType
 
     @Update
-    fun update(entry: QuestionType): Completable
+    suspend fun update(entry: QuestionType)
 
     @Insert
-    fun insert(entry: QuestionType): Completable
+    suspend fun insert(entry: QuestionType)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(entry: List<QuestionType>)
 
     @Delete
-    fun delete(entry: QuestionType): Completable
+    suspend fun delete(entry: QuestionType)
 
     @Delete
-    fun deleteAll(entries: List<QuestionType>)
+    suspend fun deleteAll(entries: List<QuestionType>)
 }

@@ -23,6 +23,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,6 +46,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 // TODO: Prompt to discard changes on phone back navigation press
@@ -86,65 +90,71 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
         // Try to get the questionnaire id from the intent extras, otherwise create empty questionnaire, then query all questions
         questionnaireId = intent.getIntExtra("QUESTIONNAIRE_ID", -1)
         completedQuestionnaireId = intent.getIntExtra("COMPLETED_QUESTIONNAIRE_ID", -1)
-        val isViewer = completedQuestionnaireId != -1
-        if (isViewer) {
-            completedQuestionnaire = db.completedQuestionnaireDao.getById(completedQuestionnaireId).blockingGet()
-            questionnaireId = completedQuestionnaire.questionnaireId
-        }
-        questionnaire = if (questionnaireId == -1) Questionnaire() else db.questionnaireDao.getById(questionnaireId).blockingGet()
-        val allQuestions = if (completedQuestionnaireId == -1) { getEditorQuestions() } else { getViewerQuestions() }
 
-        // Set general data
-        binding.txtTitle.text = questionnaire.title
-        binding.txtQuestionnaireName.setText(questionnaire.title)
-        binding.txtQuestionnaireDescription.setText(questionnaire.description)
-
-        // Configure recyclerview containing all questions for the current questionnaire
-        adapter = RecyclerViewQuestions(this, allQuestions, isViewer)
-        binding.rcvQuestions.layoutManager = LinearLayoutManager(this)
-        binding.rcvQuestions.adapter = adapter
-
-        // Configure for editor or viewer state
-        if (isViewer) {
-            binding.txtTitle.visibility = View.VISIBLE
-            val color = questionnaire.colorCode
-            if (color != null) {
-                binding.imgSeparator.imageTintList = ColorStateList.valueOf(color.toColorInt())
-                binding.vwColorDivider.visibility = View.VISIBLE
+        val context = this
+        lifecycleScope.launch {
+            val isViewer = completedQuestionnaireId != -1
+            val allQuestions = withContext(Dispatchers.IO) {
+                if (isViewer) {
+                    completedQuestionnaire = db.completedQuestionnaireDao.getById(completedQuestionnaireId)
+                    questionnaireId = completedQuestionnaire.questionnaireId
+                }
+                questionnaire = if (questionnaireId == -1) Questionnaire() else db.questionnaireDao.getById(questionnaireId)
+                if (completedQuestionnaireId == -1) { getEditorQuestions() } else { getViewerQuestions() }
             }
-            binding.btnAddQuestion.visibility = View.GONE
-            binding.btnSaveQuestionnaire.visibility = View.GONE
-            binding.llColorSelect.visibility = View.GONE
-            binding.btnDeleteQuestionnaire.visibility = View.GONE
-            binding.txtQuestionnaireName.visibility = View.GONE
-            binding.txtQuestionnaireDescription.isEnabled = false
-            binding.btnClose.setOnClickListener { finish() }
-        }
-        else {
-            setupEditor()
+
+            // Set general data
+            binding.txtTitle.text = questionnaire.title
+            binding.txtQuestionnaireName.setText(questionnaire.title)
+            binding.txtQuestionnaireDescription.setText(questionnaire.description)
+
+            // Configure recyclerview containing all questions for the current questionnaire
+            adapter = RecyclerViewQuestions(context, allQuestions, isViewer)
+            binding.rcvQuestions.layoutManager = LinearLayoutManager(context)
+            binding.rcvQuestions.adapter = adapter
+
+            // Configure for editor or viewer state
+            if (isViewer) {
+                binding.txtTitle.visibility = View.VISIBLE
+                val color = questionnaire.colorCode
+                if (color != null) {
+                    binding.imgSeparator.imageTintList = ColorStateList.valueOf(color.toColorInt())
+                    binding.vwColorDivider.visibility = View.VISIBLE
+                }
+                binding.btnAddQuestion.visibility = View.GONE
+                binding.btnSaveQuestionnaire.visibility = View.GONE
+                binding.llColorSelect.visibility = View.GONE
+                binding.btnDeleteQuestionnaire.visibility = View.GONE
+                binding.txtQuestionnaireName.visibility = View.GONE
+                binding.txtQuestionnaireDescription.isEnabled = false
+                binding.btnClose.setOnClickListener { finish() }
+            }
+            else {
+                setupEditor()
+            }
         }
     }
 
-    private fun getViewerQuestions(): MutableList<Question> {
-        return db.questionnaireAnswerDao.getAll(completedQuestionnaireId).blockingGet().map { answer ->
-            val question = db.questionDao.getById(answer.questionId).blockingGet().apply {
+    private suspend fun getViewerQuestions(): MutableList<Question> {
+        return db.questionnaireAnswerDao.getAll(completedQuestionnaireId).map { answer ->
+            val question = db.questionDao.getById(answer.questionId).apply {
                 value = answer.value
             }
             if (question.questionTypeId == QuestionnaireControlType.SingleSelect.ordinal || question.questionTypeId == QuestionnaireControlType.MultiSelect.ordinal) {
-                question.options = db.selectedOptionsDao.getById(completedQuestionnaireId, answer.questionId).blockingGet().map {
-                    db.questionOptionsDao.getById(answer.questionId, it.optionId).blockingGet()
+                question.options = db.selectedOptionsDao.getById(completedQuestionnaireId, answer.questionId).map {
+                    db.questionOptionsDao.getById(answer.questionId, it.optionId)
                 }.toMutableList()
             }
             question
         }.toMutableList()
     }
 
-    private fun getEditorQuestions(): MutableList<Question> {
+    private suspend fun getEditorQuestions(): MutableList<Question> {
         // Get all the questions for the selected questionnaire and in case the question has
         // options, get all the options and save them in the question
-        return if (questionnaireId == -1) mutableListOf() else db.questionDao.getAllForQuestionnaire(questionnaireId).blockingGet().map {
+        return if (questionnaireId == -1) mutableListOf() else db.questionDao.getAllForQuestionnaire(questionnaireId).map {
             if (it.questionTypeId == QuestionnaireControlType.SingleSelect.ordinal || it.questionTypeId == QuestionnaireControlType.MultiSelect.ordinal) {
-                it.options = db.questionOptionsDao.getAllForQuestion(it.id).blockingGet().toMutableList()
+                it.options = db.questionOptionsDao.getAllForQuestion(it.id).toMutableList()
             }
             it
         }.toMutableList()
@@ -164,7 +174,16 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
         // Configure button to save questionnaire
         binding.btnSaveQuestionnaire.setOnClickListener {
             if (binding.txtQuestionnaireName.text.isNotBlank() && binding.txtQuestionnaireDescription.text.isNotBlank() && adapter.questions.isNotEmpty()) {
-                saveQuestionnaire()
+                lifecycleScope.launch {
+                    val isCreateMode = saveQuestionnaire()
+
+                    // Finish activity successfully
+                    val data = Intent()
+                    data.putExtra("QUESTIONNAIRE_ID", questionnaireId)
+                    data.putExtra("IS_CREATE_MODE", isCreateMode)
+                    setResult(RESULT_OK, data)
+                    finish()
+                }
             } else {
                 showInfoDialog(
                     "Missing fields",
@@ -180,36 +199,16 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
                 .setTitle("Delete Questionnaire")
                 .setMessage("Do you really want to delete this questionnaire? This cannot be undone")
                 .setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
-                    // Delete question / Mark questions as hidden
-                    val existingQuestions = db.questionDao.getAllForQuestionnaire(questionnaireId).blockingGet()
-                    val questionIds = existingQuestions.filter { !it.isHidden }.map { it.id }
-                    for (id in questionIds) {
-                        val isReferenced = db.questionDao.isQuestionReferenced(id).blockingGet()
-                        val hiddenQuestion = existingQuestions.single { it.id == id }
-                        if (isReferenced) {
-                            hiddenQuestion.isHidden = true
-                            db.questionDao.update(hiddenQuestion).blockingSubscribe()
-                        } else {
-                            db.questionDao.delete(hiddenQuestion).blockingSubscribe()
-                        }
-                    }
+                    lifecycleScope.launch {
+                        deleteHideQuestionnaire()
 
-                    // Delete questionnaire / Mark questionnaire as hidden
-                    val isQuestionnaireReferenced =
-                        db.questionnaireDao.isReferenced(questionnaireId).blockingGet()
-                    if (isQuestionnaireReferenced) {
-                        questionnaire.isHidden = true
-                        db.questionnaireDao.update(questionnaire).blockingSubscribe()
-                    } else {
-                        db.questionnaireDao.delete(questionnaire).blockingSubscribe()
+                        // Close editor window and notify about deleted questionnaire
+                        val data = Intent()
+                        data.putExtra("QUESTIONNAIRE_ID", questionnaireId)
+                        data.putExtra("IS_DELETED", true)
+                        setResult(RESULT_OK, data)
+                        finish()
                     }
-
-                    // Close editor window and notify about deleted questionnaire
-                    val data = Intent()
-                    data.putExtra("QUESTIONNAIRE_ID", questionnaireId)
-                    data.putExtra("IS_DELETED", true)
-                    setResult(RESULT_OK, data)
-                    finish()
                 }
                 .setNegativeButton(resources.getString(R.string.no), null)
                 .show()
@@ -219,24 +218,50 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
         binding.btnClose.setOnClickListener { promptDiscardChanges() }
     }
 
-    private fun saveQuestionnaire() {
+    private suspend fun deleteHideQuestionnaire() = withContext(Dispatchers.IO) {
+        // Delete question / Mark questions as hidden
+        val existingQuestions = db.questionDao.getAllForQuestionnaire(questionnaireId)
+        val questionIds = existingQuestions.filter { !it.isHidden }.map { it.id }
+        for (id in questionIds) {
+            val isReferenced = db.questionDao.isQuestionReferenced(id)
+            val hiddenQuestion = existingQuestions.single { it.id == id }
+            if (isReferenced) {
+                hiddenQuestion.isHidden = true
+                db.questionDao.update(hiddenQuestion)
+            } else {
+                db.questionDao.delete(hiddenQuestion)
+            }
+        }
+
+        // Delete questionnaire / Mark questionnaire as hidden
+        val isQuestionnaireReferenced =
+            db.questionnaireDao.isReferenced(questionnaireId)
+        if (isQuestionnaireReferenced) {
+            questionnaire.isHidden = true
+            db.questionnaireDao.update(questionnaire)
+        } else {
+            db.questionnaireDao.delete(questionnaire)
+        }
+    }
+
+    private suspend fun saveQuestionnaire(): Boolean = withContext(Dispatchers.IO) {
         // Save the questionnaire itself
         val isCreateMode = questionnaire.id == 0
         questionnaire.title = binding.txtQuestionnaireName.text.toString()
         questionnaire.description = binding.txtQuestionnaireDescription.text.toString()
         questionnaire.colorCode = if (selectedColor == -1) null else String.format("#%06X", (0xFFFFFF and selectedColor))
         if (isCreateMode) {
-            questionnaireId = db.questionnaireDao.insert(questionnaire).blockingGet().toInt()
+            questionnaireId = db.questionnaireDao.insert(questionnaire).toInt()
         }
         else {
-            db.questionnaireDao.update(questionnaire).blockingSubscribe()
+            db.questionnaireDao.update(questionnaire)
         }
 
         // Save the questions of the questionnaire
         val ids = mutableListOf<Int>()
         for (question in adapter.questions) {
             if (question.id > 0) {
-                db.questionDao.update(question).blockingSubscribe()
+                db.questionDao.update(question)
 
                 // Handle the editing of options (Preventing filled out questionnaires to change the option values)
                 val options = question.options
@@ -245,47 +270,47 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
                     for ((i, option) in options.withIndex()) {
                         if (option.id == -1) {
                             option.questionId = question.id
-                            option.id = db.questionOptionsDao.getNextId(question.id).blockingGet()
+                            option.id = db.questionOptionsDao.getNextId(question.id)
                             option.orderNr = i
-                            db.questionOptionsDao.insert(option).blockingSubscribe()
+                            db.questionOptionsDao.insert(option)
                         }
                         else {
-                            val originalOption = db.questionOptionsDao.getById(question.id, option.id).blockingGet()
+                            val originalOption = db.questionOptionsDao.getById(question.id, option.id)
                             if (originalOption.text == option.text) {
                                 option.questionId = question.id
                                 option.orderNr = i
-                                db.questionOptionsDao.update(option).blockingSubscribe()
+                                db.questionOptionsDao.update(option)
                             }
                             else {
-                                val isReferenced = db.questionOptionsDao.isReferenced(question.id, option.id).blockingGet()
+                                val isReferenced = db.questionOptionsDao.isReferenced(question.id, option.id)
                                 if (isReferenced) {
                                     originalOption.isHidden = true
-                                    db.questionOptionsDao.update(option).blockingSubscribe()
+                                    db.questionOptionsDao.update(option)
                                 }
                                 else {
-                                    db.questionOptionsDao.delete(originalOption).blockingSubscribe()
+                                    db.questionOptionsDao.delete(originalOption)
                                 }
                                 option.questionId = question.id
-                                option.id = db.questionOptionsDao.getNextId(question.id).blockingGet()
+                                option.id = db.questionOptionsDao.getNextId(question.id)
                                 option.orderNr = i
-                                db.questionOptionsDao.insert(option).blockingSubscribe()
+                                db.questionOptionsDao.insert(option)
                             }
                         }
                         optionIds.add(option.id)
                     }
 
                     // Delete options / Mark options as hidden in case they have been removed
-                    val existingOptions = db.questionOptionsDao.getAllForQuestion(question.id).blockingGet()
+                    val existingOptions = db.questionOptionsDao.getAllForQuestion(question.id)
                     val removedOptions = existingOptions.filter { !it.isHidden }.map { it.id }.filter { !optionIds.contains(it) }
                     for (removedId in removedOptions) {
-                        val isReferenced = db.questionOptionsDao.isReferenced(question.id, removedId).blockingGet()
+                        val isReferenced = db.questionOptionsDao.isReferenced(question.id, removedId)
                         val hiddenOption = existingOptions.single { it.id == removedId }
                         if (isReferenced) {
                             hiddenOption.isHidden = true
-                            db.questionOptionsDao.update(hiddenOption).blockingSubscribe()
+                            db.questionOptionsDao.update(hiddenOption)
                         }
                         else {
-                            db.questionOptionsDao.delete(hiddenOption).blockingSubscribe()
+                            db.questionOptionsDao.delete(hiddenOption)
                         }
                     }
                 }
@@ -293,7 +318,7 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
             else {
                 question.id = 0
                 question.questionnaireId = questionnaireId
-                val id = db.questionDao.insert(question).blockingGet()
+                val id = db.questionDao.insert(question)
                 question.id = id.toInt()
 
                 // Add all options in case there are any
@@ -303,7 +328,7 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
                         option.questionId = question.id
                         option.id = i + 1
                         option.orderNr = i
-                        db.questionOptionsDao.insert(option).blockingSubscribe()
+                        db.questionOptionsDao.insert(option)
                     }
                 }
             }
@@ -311,26 +336,21 @@ class QuestionnaireEditorActivity : AppCompatActivity(), SeekBar.OnSeekBarChange
         }
 
         // Delete question / Mark questions as hidden in case they have been removed
-        val existingQuestions = db.questionDao.getAllForQuestionnaire(questionnaireId).blockingGet()
+        val existingQuestions = db.questionDao.getAllForQuestionnaire(questionnaireId)
         val removedQuestions = existingQuestions.filter { !it.isHidden }.map { it.id }.filter { !ids.contains(it) }
         for (removedId in removedQuestions) {
-            val isReferenced = db.questionDao.isQuestionReferenced(removedId).blockingGet()
+            val isReferenced = db.questionDao.isQuestionReferenced(removedId)
             val hiddenQuestion = existingQuestions.single { it.id == removedId }
             if (isReferenced) {
                 hiddenQuestion.isHidden = true
-                db.questionDao.update(hiddenQuestion).blockingSubscribe()
+                db.questionDao.update(hiddenQuestion)
             }
             else {
-                db.questionDao.delete(hiddenQuestion).blockingSubscribe()
+                db.questionDao.delete(hiddenQuestion)
             }
         }
 
-        // Finish activity successfully
-        val data = Intent()
-        data.putExtra("QUESTIONNAIRE_ID", questionnaireId)
-        data.putExtra("IS_CREATE_MODE", isCreateMode)
-        setResult(RESULT_OK, data)
-        finish()
+        isCreateMode
     }
 
     private fun configurePresetColors() {

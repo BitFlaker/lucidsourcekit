@@ -5,26 +5,24 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.SelectedOptions
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface SelectedOptionsDao {
     @Query("SELECT * FROM SelectedOptions ORDER BY completedQuestionnaireId, questionId, optionId")
-    fun getAll(): Single<List<SelectedOptions>>
+    suspend fun getAll(): List<SelectedOptions>
 
     @Query("SELECT * FROM SelectedOptions WHERE completedQuestionnaireId = :completedQuestionnaireId AND questionId = :questionId ORDER BY completedQuestionnaireId, questionId, optionId")
-    fun getById(completedQuestionnaireId: Int, questionId: Int): Single<List<SelectedOptions>>
+    suspend fun getById(completedQuestionnaireId: Int, questionId: Int): List<SelectedOptions>
 
     @Insert
-    fun insert(entry: SelectedOptions): Completable
+    suspend fun insert(entry: SelectedOptions)
 
     @Insert
-    fun insertAll(entry: List<SelectedOptions>): Completable
+    suspend fun insertAll(entry: List<SelectedOptions>)
 
     @Delete
-    fun delete(entry: SelectedOptions): Completable
+    suspend fun delete(entry: SelectedOptions)
 
     @Delete
-    fun deleteAll(entries: List<SelectedOptions>)
+    suspend fun deleteAll(entries: List<SelectedOptions>)
 }

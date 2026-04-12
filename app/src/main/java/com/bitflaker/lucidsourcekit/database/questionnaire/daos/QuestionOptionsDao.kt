@@ -6,37 +6,36 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionOptions
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface QuestionOptionsDao {
     @Query("SELECT * FROM QuestionOptions ORDER BY questionId, id")
-    fun getAll(): Single<List<QuestionOptions>>
+    suspend fun getAll(): List<QuestionOptions>
 
     @Query("SELECT * FROM QuestionOptions WHERE questionId = :questionId AND isHidden = 0 ORDER BY orderNr, id")
-    fun getAllForQuestion(questionId: Int): Single<List<QuestionOptions>>
+    suspend fun getAllForQuestion(questionId: Int): List<QuestionOptions>
 
     @Query("SELECT MAX(id) + 1 FROM QuestionOptions WHERE questionId = :questionId")
-    fun getNextId(questionId: Int): Single<Int>
+    suspend fun getNextId(questionId: Int): Int
 
     @Query("SELECT * FROM QuestionOptions WHERE questionId = :questionId AND id = :optionId")
-    fun getById(questionId: Int, optionId: Int): Single<QuestionOptions>
+    suspend fun getById(questionId: Int, optionId: Int): QuestionOptions
 
     @Query("SELECT COUNT(*) > 0 FROM SelectedOptions WHERE questionId = :questionId AND optionId = :optionId")
-    fun isReferenced(questionId: Int, optionId: Int): Single<Boolean>
+    suspend fun isReferenced(questionId: Int, optionId: Int): Boolean
 
     @Update
-    fun update(entry: QuestionOptions): Completable
+    suspend fun update(entry: QuestionOptions)
 
     @Insert
-    fun insert(entry: QuestionOptions): Completable
+    suspend fun insert(entry: QuestionOptions)
 
     @Insert
-    fun insertAll(entry: List<QuestionOptions>): Completable
+    suspend fun insertAll(entry: List<QuestionOptions>)
 
     @Delete
-    fun delete(entry: QuestionOptions): Completable
+    suspend fun delete(entry: QuestionOptions)
+
     @Delete
-    fun deleteAll(entries: List<QuestionOptions>)
+    suspend fun deleteAll(entries: List<QuestionOptions>)
 }

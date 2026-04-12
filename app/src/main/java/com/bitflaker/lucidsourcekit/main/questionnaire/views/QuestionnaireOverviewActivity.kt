@@ -8,9 +8,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bitflaker.lucidsourcekit.database.MainDatabase
 import com.bitflaker.lucidsourcekit.databinding.ActivityQuestionnaireOverviewBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class QuestionnaireOverviewActivity : AppCompatActivity() {
     private lateinit var binding: ActivityQuestionnaireOverviewBinding
@@ -24,7 +28,9 @@ class QuestionnaireOverviewActivity : AppCompatActivity() {
             adapter.removeQuestionnaire(id)
         }
         else if (result.resultCode == RESULT_OK && id != -1) {
-            reloadEntryData(id, isCreateMode)
+            lifecycleScope.launch(Dispatchers.IO) {
+                reloadEntryData(id, isCreateMode)
+            }
         }
     }
 
@@ -41,42 +47,50 @@ class QuestionnaireOverviewActivity : AppCompatActivity() {
 
         // Get all questionnaires
         db = MainDatabase.getInstance(this)
-        val questionnaires = db.questionnaireDao.getAllDetails().blockingGet().toMutableList()
 
-        // Set visibility of no questionnaires found notice
-        val visibilityNoEntries = if (questionnaires.isEmpty()) View.VISIBLE else View.GONE
-        binding.txtNoQuestionnairesTitle.visibility = visibilityNoEntries
-        binding.txtNoQuestionnairesSubTitle.visibility = visibilityNoEntries
+        val context = this
+        lifecycleScope.launch {
+            val questionnaires = withContext(Dispatchers.IO) {
+                db.questionnaireDao.getAllDetails().toMutableList()
+            }
 
-        // Configure questionnaire recycler view
-        binding.rcvQuestionnaires.layoutManager = LinearLayoutManager(this)
-        adapter = RecyclerViewQuestionnaireOverview(this, questionnaires)
-        adapter.onQuestionnaireClickListener = { id ->
-            val intent = Intent(this, QuestionnaireEditorActivity::class.java)
-            intent.putExtra("QUESTIONNAIRE_ID", id)
-            editorLauncher.launch(intent)
+            // Set visibility of no questionnaires found notice
+            val visibilityNoEntries = if (questionnaires.isEmpty()) View.VISIBLE else View.GONE
+            binding.txtNoQuestionnairesTitle.visibility = visibilityNoEntries
+            binding.txtNoQuestionnairesSubTitle.visibility = visibilityNoEntries
+
+            // Configure questionnaire recycler view
+            binding.rcvQuestionnaires.layoutManager = LinearLayoutManager(context)
+            adapter = RecyclerViewQuestionnaireOverview(context, questionnaires)
+            adapter.onQuestionnaireClickListener = { id ->
+                val intent = Intent(context, QuestionnaireEditorActivity::class.java)
+                intent.putExtra("QUESTIONNAIRE_ID", id)
+                editorLauncher.launch(intent)
+            }
+            binding.rcvQuestionnaires.adapter = adapter
+
+            // Configure create questionnaire button
+            binding.btnAddQuestionnaire.setOnClickListener {
+                val intent = Intent(context, QuestionnaireEditorActivity::class.java)
+                intent.putExtra("QUESTIONNAIRE_ID", -1)
+                editorLauncher.launch(intent)
+            }
+
+            // Configure back button
+            binding.btnQuestionnaireClose.setOnClickListener { finish() }
         }
-        binding.rcvQuestionnaires.adapter = adapter
-
-        // Configure create questionnaire button
-        binding.btnAddQuestionnaire.setOnClickListener {
-            val intent = Intent(this, QuestionnaireEditorActivity::class.java)
-            intent.putExtra("QUESTIONNAIRE_ID", -1)
-            editorLauncher.launch(intent)
-        }
-
-        // Configure back button
-        binding.btnQuestionnaireClose.setOnClickListener { finish() }
     }
 
-    private fun reloadEntryData(questionnaireId: Int, isCreateMode: Boolean) {
+    private suspend fun reloadEntryData(questionnaireId: Int, isCreateMode: Boolean) {
         // TODO: When reordering is implemented, add checks for changes in ordering as well
-        val questionnaire = db.questionnaireDao.getDetailsById(questionnaireId).blockingGet()
-        if (isCreateMode) {
-            adapter.addQuestionnaire(questionnaire)
-        }
-        else {
-            adapter.updateQuestionnaire(questionnaire)
+        val questionnaire = db.questionnaireDao.getDetailsById(questionnaireId)
+        withContext(Dispatchers.Main) {
+            if (isCreateMode) {
+                adapter.addQuestionnaire(questionnaire)
+            }
+            else {
+                adapter.updateQuestionnaire(questionnaire)
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.database.MainDatabase
@@ -35,6 +36,9 @@ import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.Calendar
 
@@ -53,7 +57,7 @@ class QuestionnaireView : AppCompatActivity() {
     private var questionIndex: Int = 0
         set(value) {
             field = value
-            runOnUiThread {
+            lifecycleScope.launch(Dispatchers.Main) {
                 adapter.questionContext = showCurrentQuestion()
             }
         }
@@ -103,24 +107,34 @@ class QuestionnaireView : AppCompatActivity() {
         }
 
         // Configure recyclerview for selecting questionnaire to fill out
-        val questionnaires = db.questionnaireDao.getAllDetails().blockingGet().toMutableList()
-        binding.rcvQuestionnaires.layoutManager = LinearLayoutManager(this)
-        val questionnaireAdapter = RecyclerViewQuestionnaireOverview(this, questionnaires)
-        questionnaireAdapter.onQuestionnaireClickListener = { id ->
-            binding.spQuestionnaireProgress.visibility = View.VISIBLE
-            binding.svQuestionViewer.visibility = View.VISIBLE
-            binding.btnQuestionnaireNext.visibility = View.VISIBLE
-            binding.btnQuestionnaireBack.visibility = View.VISIBLE
-            binding.rcvQuestionnaires.visibility = View.GONE
-            binding.btnQuestionnaireDate.visibility = View.GONE
-            showQuestionnaireEditor(id)
+        val context = this
+        lifecycleScope.launch {
+            val questionnaires = withContext(Dispatchers.IO) {
+                db.questionnaireDao.getAllDetails().toMutableList()
+            }
+            binding.rcvQuestionnaires.layoutManager = LinearLayoutManager(context)
+            val questionnaireAdapter = RecyclerViewQuestionnaireOverview(context, questionnaires)
+            questionnaireAdapter.onQuestionnaireClickListener = { id ->
+                binding.spQuestionnaireProgress.visibility = View.VISIBLE
+                binding.svQuestionViewer.visibility = View.VISIBLE
+                binding.btnQuestionnaireNext.visibility = View.VISIBLE
+                binding.btnQuestionnaireBack.visibility = View.VISIBLE
+                binding.rcvQuestionnaires.visibility = View.GONE
+                binding.btnQuestionnaireDate.visibility = View.GONE
+                lifecycleScope.launch {
+                    showQuestionnaireEditor(id)
+                }
+            }
+            binding.rcvQuestionnaires.adapter = questionnaireAdapter
         }
-        binding.rcvQuestionnaires.adapter = questionnaireAdapter
     }
 
-    private fun showQuestionnaireEditor(questionnaireId: Int) {
-        questionnaire = db.questionnaireDao.getById(questionnaireId).blockingGet()
-        questions = db.questionDao.getAllForQuestionnaire(questionnaire.id).blockingGet()
+    private suspend fun showQuestionnaireEditor(questionnaireId: Int) {
+        withContext(Dispatchers.IO) {
+            questionnaire = db.questionnaireDao.getById(questionnaireId)
+            questions = db.questionDao.getAllForQuestionnaire(questionnaire.id)
+        }
+
         binding.txtQuestionnaireTitle.text = questionnaire.title
         binding.spQuestionnaireProgress.totalStepCount = questions.size
         results = Array(questions.size) { null }
@@ -141,11 +155,16 @@ class QuestionnaireView : AppCompatActivity() {
         binding.btnQuestionnaireNext.setOnClickListener {
             storeResult()
             if (questionIndex == questions.size - 1) {
-                val id = saveQuestionnaireToDB()
-                val data = Intent()
-                data.putExtra("COMPLETED_QUESTIONNAIRE_ID", id)
-                setResult(RESULT_OK, data)
-                finish()
+                lifecycleScope.launch {
+                    val id = withContext(Dispatchers.IO) {
+                        saveQuestionnaireToDB()
+                    }
+
+                    setResult(RESULT_OK, Intent().apply {
+                        putExtra("COMPLETED_QUESTIONNAIRE_ID", id)
+                    })
+                    finish()
+                }
             } else {
                 questionIndex++
             }
@@ -160,14 +179,14 @@ class QuestionnaireView : AppCompatActivity() {
         results[questionIndex] = holder.result
     }
 
-    private fun saveQuestionnaireToDB(): Int {
+    private suspend fun saveQuestionnaireToDB(): Int {
         var completedTime = Calendar.getInstance().timeInMillis
         val duration = completedTime - fillOutStartTime
         if (specificDate > 0) {
             completedTime = specificDate + Tools.getTimeOfDayMillis(completedTime)
         }
         val completed = CompletedQuestionnaire(questionnaire.id, duration, completedTime)
-        val id = db.completedQuestionnaireDao.insert(completed).blockingGet().toInt()
+        val id = db.completedQuestionnaireDao.insert(completed).toInt()
         for (i in questions.indices) {
             val question = questions[i]
             val result = results[i]
@@ -182,27 +201,28 @@ class QuestionnaireView : AppCompatActivity() {
 
             // Save the answer to the database
             val answer = QuestionnaireAnswer(id, question.id, value)
-            db.questionnaireAnswerDao.insert(answer).blockingSubscribe()
+            db.questionnaireAnswerDao.insert(answer)
 
             // In case the type was a selection type, store the selected value(s) to the database as well
             when (question.questionTypeId) {
                 QuestionnaireControlType.SingleSelect.ordinal -> {
                     val selectedId = (result as? ControlResultSingleSelect)?.result ?: throw IllegalStateException("Single select must be set when saving")
                     val selected = SelectedOptions(id, question.id, selectedId)
-                    db.selectedOptionsDao.insert(selected).blockingSubscribe()
+                    db.selectedOptionsDao.insert(selected)
                 }
                 QuestionnaireControlType.MultiSelect.ordinal -> {
                     val selectedIds = (result as? ControlResultMultiSelect)?.result ?: throw IllegalStateException("Multi select must be set when saving")
                     db.selectedOptionsDao.insertAll(selectedIds.map {
                         SelectedOptions(id, question.id, it)
-                    }).blockingSubscribe()
+                    })
                 }
             }
         }
+
         return id
     }
 
-    private fun showCurrentQuestion(): QuestionnaireControlContext {
+    private suspend fun showCurrentQuestion(): QuestionnaireControlContext {
         val current = questions[questionIndex]
         val result = results[questionIndex]
 
@@ -221,11 +241,13 @@ class QuestionnaireView : AppCompatActivity() {
             ?: throw IllegalArgumentException("Unknown question type ${current.questionTypeId}")
 
         // Get the correct options for the current question type
-        val options = when (type) {
-            QuestionnaireControlType.Range -> RangeOptions(current.valueFrom!!, current.valueTo!!)
-            QuestionnaireControlType.SingleSelect -> ChoiceOptions(getOptions(current.id))
-            QuestionnaireControlType.MultiSelect -> ChoiceOptions(getOptions(current.id))
-            else -> null
+        val options = withContext(Dispatchers.IO) {
+            when (type) {
+                QuestionnaireControlType.Range -> RangeOptions(current.valueFrom!!, current.valueTo!!)
+                QuestionnaireControlType.SingleSelect -> ChoiceOptions(getOptions(current.id))
+                QuestionnaireControlType.MultiSelect -> ChoiceOptions(getOptions(current.id))
+                else -> null
+            }
         }
 
         // Return the final context for the current question
@@ -252,8 +274,8 @@ class QuestionnaireView : AppCompatActivity() {
         }
     }
 
-    private fun getOptions(questionId: Int): List<QuestionOptions> {
-        return db.questionOptionsDao.getAllForQuestion(questionId).blockingGet()
+    private suspend fun getOptions(questionId: Int): List<QuestionOptions> {
+        return db.questionOptionsDao.getAllForQuestion(questionId)
     }
 
     private fun promptDiscardChanges() {

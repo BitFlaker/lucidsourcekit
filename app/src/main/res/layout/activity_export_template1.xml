@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="595px"
+    android:layout_height="842px"
+    android:paddingTop="128px"
+    android:paddingHorizontal="48px"
+    android:paddingBottom="60px"
+    android:orientation="vertical"
+    tools:context=".main.export.templates.template1.ExportTemplate1Activity">
+
+    <TextView
+        android:id="@+id/txt_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="24.03.2024"
+        android:textSize="16px"
+        android:textColor="#000"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txt_sub_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Monday"
+        android:textSize="14px"
+        android:textColor="#222" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcv_journal_entries"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8px" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcv_questionnaires"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="24px" />
+</LinearLayout>

@@ -6,32 +6,30 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionnaireAnswer
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface QuestionnaireAnswerDao {
     @Query("SELECT * FROM QuestionnaireAnswer ORDER BY completedQuestionnaireId, questionId")
-    fun getAll(): Single<List<QuestionnaireAnswer>>
+    suspend fun getAll(): List<QuestionnaireAnswer>
 
     @Query("SELECT * FROM QuestionnaireAnswer WHERE completedQuestionnaireId = :completedQuestionnaireId AND questionId = :questionId")
-    fun getById(completedQuestionnaireId: Int, questionId: Int): Single<QuestionnaireAnswer>
+    suspend fun getById(completedQuestionnaireId: Int, questionId: Int): QuestionnaireAnswer
 
     @Query("SELECT * FROM QuestionnaireAnswer WHERE completedQuestionnaireId = :completedQuestionnaireId")
-    fun getAll(completedQuestionnaireId: Int): Single<List<QuestionnaireAnswer>>
+    suspend fun getAll(completedQuestionnaireId: Int): List<QuestionnaireAnswer>
 
     @Update
-    fun update(entry: QuestionnaireAnswer): Completable
+    suspend fun update(entry: QuestionnaireAnswer)
 
     @Insert
-    fun insert(entry: QuestionnaireAnswer): Completable
+    suspend fun insert(entry: QuestionnaireAnswer)
 
     @Delete
-    fun delete(entry: QuestionnaireAnswer): Completable
+    suspend fun delete(entry: QuestionnaireAnswer)
 
     @Delete
-    fun deleteAll(entries: List<QuestionnaireAnswer>): Completable
+    suspend fun deleteAll(entries: List<QuestionnaireAnswer>)
 
     @Query("DELETE FROM QuestionnaireAnswer")
-    fun deleteAll(): Completable
+    suspend fun deleteAll()
 }

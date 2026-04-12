@@ -33,7 +33,6 @@ import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.StyleableRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.createBitmap
@@ -42,12 +41,10 @@ import androidx.core.view.WindowInsetsCompat
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.datastore.DataStoreKeys
 import com.bitflaker.lucidsourcekit.datastore.getSetting
-import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -55,15 +52,6 @@ import java.util.Timer
 import java.util.TimerTask
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-
-suspend fun <T : Any> Single<T>.await(): T {
-    return suspendCancellableCoroutine { cont ->
-        val disposable = subscribe({ cont.resume(it) }, { cont.resumeWithException(it) })
-        cont.invokeOnCancellation { disposable.dispose() }
-    }
-}
 
 fun ComponentActivity.onBackPressed(action: (() -> Unit)) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {

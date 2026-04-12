@@ -7,13 +7,11 @@ import androidx.room.Query
 import androidx.room.Update
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.Questionnaire
 import com.bitflaker.lucidsourcekit.database.questionnaire.entities.results.QuestionnaireDetails
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface QuestionnaireDao {
     @Query("SELECT * FROM Questionnaire ORDER BY id")
-    fun getAll(): Single<List<Questionnaire>>
+    suspend fun getAll(): List<Questionnaire>
 
     @Query("""SELECT fq.*, COUNT(cq.id) AS completedCount, AVG(cq.answerDuration) AS averageDuration 
             FROM (
@@ -26,7 +24,7 @@ interface QuestionnaireDao {
             ) fq
             LEFT JOIN CompletedQuestionnaire cq ON fq.id = cq.questionnaireId
             GROUP BY fq.id, fq.title, fq.description, fq.isCompact, fq.colorCode, fq.questionCount""")
-    fun getAllDetails(): Single<List<QuestionnaireDetails>>
+    suspend fun getAllDetails(): List<QuestionnaireDetails>
 
     @Query("""SELECT fq.*, COUNT(cq.id) AS completedCount, AVG(cq.answerDuration) AS averageDuration 
             FROM (
@@ -38,26 +36,26 @@ interface QuestionnaireDao {
                 ORDER BY q.id
             ) fq
             LEFT JOIN CompletedQuestionnaire cq ON fq.id = cq.questionnaireId""")
-    fun getDetailsById(questionnaireId: Int): Single<QuestionnaireDetails>
+    suspend fun getDetailsById(questionnaireId: Int): QuestionnaireDetails
 
     @Query("SELECT (SELECT COUNT(*) FROM Question WHERE questionnaireId = :id) + (SELECT COUNT(*) FROM CompletedQuestionnaire WHERE questionnaireId = :id) > 0")
-    fun isReferenced(id: Int): Single<Boolean>
+    suspend fun isReferenced(id: Int): Boolean
 
     @Query("SELECT * FROM Questionnaire WHERE id = :id")
-    fun getById(id: Int): Single<Questionnaire>
+    suspend fun getById(id: Int): Questionnaire
 
     @Update
-    fun update(entry: Questionnaire): Completable
+    suspend fun update(entry: Questionnaire)
 
     @Insert
-    fun insert(entry: Questionnaire): Single<Long>
+    suspend fun insert(entry: Questionnaire): Long
 
     @Delete
-    fun delete(entry: Questionnaire): Completable
+    suspend fun delete(entry: Questionnaire)
 
     @Delete
-    fun deleteAll(entries: List<Questionnaire>)
+    suspend fun deleteAll(entries: List<Questionnaire>)
 
     @Query("SELECT COUNT(*) FROM Questionnaire WHERE title = :title")
-    fun exists(title: String): Single<Boolean>
+    suspend fun exists(title: String): Boolean
 }

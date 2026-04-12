@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:tag="no-wrap-layout">
+
+    <TextView
+        android:id="@+id/txt_journal_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="12px"
+        android:text="Journal entry title"
+        android:textSize="16px"
+        android:textColor="#000"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/txt_journal_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="This is an example journal entry text. It is serves as a placeholder text to immitate an actual dream journal entry description. This is an example journal entry text. It is serves as a placeholder text to immitate an actual dream journal entry description. This is an example journal entry text. It is serves as a placeholder text to immitate an actual dream journal entry description."
+        android:textSize="14px"
+        android:textColor="#222" />
+</LinearLayout>

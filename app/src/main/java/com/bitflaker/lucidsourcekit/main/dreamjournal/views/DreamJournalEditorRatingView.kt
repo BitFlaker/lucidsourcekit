@@ -163,11 +163,11 @@ class DreamJournalEditorRatingView(val entry: DreamJournalEntry) : Fragment() {
 
     private fun restoreStoredEntry() {
         // Restore slider states and values
-        binding.sldDjDreamMood.value = DreamMoods.getEnum(entry.journalEntry.moodId).ordinal.toFloat()
+        binding.sldDjDreamMood.value = DreamMoods.getEnum(entry.journalEntry.moodId)?.ordinal?.toFloat() ?: 0.0f
         handleIconSlider(binding.sldDjDreamMood.value.toInt(), dreamMoods)
-        binding.sldDjDreamClarity.value = DreamClarity.getEnum(entry.journalEntry.clarityId).ordinal.toFloat()
+        binding.sldDjDreamClarity.value = DreamClarity.getEnum(entry.journalEntry.clarityId)?.ordinal?.toFloat() ?: 0.0f
         handleIconSlider(binding.sldDjDreamClarity.value.toInt(), dreamClarities)
-        binding.sldDjSleepQuality.value = SleepQuality.getEnum(entry.journalEntry.qualityId).ordinal.toFloat()
+        binding.sldDjSleepQuality.value = SleepQuality.getEnum(entry.journalEntry.qualityId)?.ordinal?.toFloat() ?: 0.0f
         handleIconSlider(binding.sldDjSleepQuality.value.toInt(), sleepQualities)
 
         // Restore toggle button states

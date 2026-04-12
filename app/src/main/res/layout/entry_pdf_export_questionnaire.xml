@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:tag="no-wrap-layout"
+    android:paddingTop="16px">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="16px"
+        app:strokeWidth="1px"
+        app:strokeColor="#444">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="12px">
+
+            <TextView
+                android:id="@+id/txt_questionnaire_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="12px"
+                android:layout_marginHorizontal="16px"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="16px"
+                android:text="Questionnaire Title"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv_questionnaire"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>
