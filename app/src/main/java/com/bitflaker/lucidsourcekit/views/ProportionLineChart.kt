@@ -21,7 +21,7 @@ class ProportionLineChart @JvmOverloads constructor(
     // Pre-configured paints
     private var trackWidth = 12.dpToPx
     @ColorInt
-    private val trackColor = context.attrColor(R.attr.colorSurface)
+    private val trackColor = context.attrColor(R.attr.colorSurfaceContainer)
 
     private val dataLabelPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.DITHER_FLAG).apply {
         color = context.attrColor(R.attr.secondaryTextColor)

@@ -39,7 +39,7 @@ class RangeProgress @JvmOverloads constructor(
         textSize = 14f.spToPx
     }
     private val dataLinePaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.DITHER_FLAG).apply {
-        color = context.attrColor(R.attr.colorSurfaceContainer)
+        color = context.attrColor(R.attr.colorSurface)
         strokeCap = Paint.Cap.ROUND
         strokeWidth = 0f
     }
@@ -87,7 +87,7 @@ class RangeProgress @JvmOverloads constructor(
     // Internal values
     private var progressColors = intArrayOf(
         context.attrColor(R.attr.colorTertiary),
-        context.attrColor(R.attr.colorSurfaceContainer)
+        context.attrColor(R.attr.colorSurface)
     )
     private var textColors = intArrayOf(
         context.attrColor(R.attr.colorOnTertiary),

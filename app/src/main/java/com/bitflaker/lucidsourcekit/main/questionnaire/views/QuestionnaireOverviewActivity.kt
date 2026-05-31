@@ -45,6 +45,16 @@ class QuestionnaireOverviewActivity : AppCompatActivity() {
             insets
         }
 
+        // Configure back button
+        binding.btnQuestionnaireClose.setOnClickListener { finish() }
+
+        // Configure create questionnaire button
+        binding.btnAddQuestionnaire.setOnClickListener {
+            val intent = Intent(this, QuestionnaireEditorActivity::class.java)
+            intent.putExtra("QUESTIONNAIRE_ID", -1)
+            editorLauncher.launch(intent)
+        }
+
         // Get all questionnaires
         db = MainDatabase.getInstance(this)
 
@@ -68,16 +78,6 @@ class QuestionnaireOverviewActivity : AppCompatActivity() {
                 editorLauncher.launch(intent)
             }
             binding.rcvQuestionnaires.adapter = adapter
-
-            // Configure create questionnaire button
-            binding.btnAddQuestionnaire.setOnClickListener {
-                val intent = Intent(context, QuestionnaireEditorActivity::class.java)
-                intent.putExtra("QUESTIONNAIRE_ID", -1)
-                editorLauncher.launch(intent)
-            }
-
-            // Configure back button
-            binding.btnQuestionnaireClose.setOnClickListener { finish() }
         }
     }
 

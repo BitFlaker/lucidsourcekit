@@ -39,7 +39,6 @@ class RecyclerViewAdapterAlarms(
 ) : RecyclerView.Adapter<MainViewHolderAlarms>() {
     class MainViewHolderAlarms(var binding: EntryAlarmBinding) : RecyclerView.ViewHolder(binding.root)
 
-    private lateinit var weekdays: List<TextView>
     private val db = MainDatabase.getInstance(activity)
     private val loadedItems = ArrayList<MainViewHolderAlarms>()
     var onSelectionModeStateChangedListener: OnSelectionModeStateChanged? = null
@@ -68,15 +67,6 @@ class RecyclerViewAdapterAlarms(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolderAlarms {
         val binding = EntryAlarmBinding.inflate(LayoutInflater.from(activity), parent, false)
-        weekdays = listOf(
-            binding.txtAlarmsWeekMo,
-            binding.txtAlarmsWeekTu,
-            binding.txtAlarmsWeekWe,
-            binding.txtAlarmsWeekTh,
-            binding.txtAlarmsWeekFr,
-            binding.txtAlarmsWeekSa,
-            binding.txtAlarmsWeekSu
-        )
         return MainViewHolderAlarms(binding)
     }
 
@@ -151,7 +141,7 @@ class RecyclerViewAdapterAlarms(
                 holder.binding.swtAlarmActive.setOnClickListener {
                     alarm.isAlarmActive = holder.binding.swtAlarmActive.isChecked
                     lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                        if (holder.binding.swtAlarmActive.isChecked) {
+                        if (alarm.isAlarmActive) {
                             val index = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1
                             scheduleAlarmRepeatedlyAt(
                                 activity,
@@ -166,21 +156,32 @@ class RecyclerViewAdapterAlarms(
                             cancelRepeatingAlarm(activity, alarm.alarmId)
                             updateStoredAlarmFromDatabase(position, alarm)
                         }
+                        lifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                            onEntryActiveStateChangedListener?.invoke(storedAlarms[position], alarm.isAlarmActive)
+                        }
                     }
-                    onEntryActiveStateChangedListener?.invoke(storedAlarms[position], holder.binding.swtAlarmActive.isChecked)
                 }
 
                 // Highlight the repeat pattern weekdays
+                val weekdays = listOf(
+                    holder.binding.txtAlarmsWeekMo,
+                    holder.binding.txtAlarmsWeekTu,
+                    holder.binding.txtAlarmsWeekWe,
+                    holder.binding.txtAlarmsWeekTh,
+                    holder.binding.txtAlarmsWeekFr,
+                    holder.binding.txtAlarmsWeekSa,
+                    holder.binding.txtAlarmsWeekSu
+                )
                 val colorTertiary = activity.attrColor(R.attr.tertiaryTextColor)
-                val colorPrimary = activity.attrColor(R.attr.secondaryTextColor)
+                val colorPrimary = activity.attrColor(R.attr.primaryTextColor)
                 for (i in alarm.pattern.indices) {
                     val dayIndicator = weekdays[(i + alarm.pattern.size - 1) % alarm.pattern.size]
                     if (alarm.pattern[i]) {
                         dayIndicator.setTextColor(colorPrimary)
-                        dayIndicator.paintFlags = dayIndicator.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+//                        dayIndicator.paintFlags = dayIndicator.paintFlags or Paint.UNDERLINE_TEXT_FLAG
                     } else {
                         dayIndicator.setTextColor(colorTertiary)
-                        dayIndicator.paintFlags = dayIndicator.paintFlags and (Paint.UNDERLINE_TEXT_FLAG.inv())
+//                        dayIndicator.paintFlags = dayIndicator.paintFlags and (Paint.UNDERLINE_TEXT_FLAG.inv())
                     }
                 }
 

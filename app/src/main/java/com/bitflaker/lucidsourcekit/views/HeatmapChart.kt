@@ -98,7 +98,7 @@ class HeatmapChart : View {
         fullTileColor = context.attrColor(R.attr.colorTertiary)
         mainColor = resources.getColor(R.color.lighter_orange, context.theme)
         @ColorInt val defaultColor = resources.getColor(R.color.white, context.theme)
-        @ColorInt val trackColor = context.attrColor(R.attr.colorSurfaceContainer)
+        @ColorInt val trackColor = context.attrColor(R.attr.colorSurface)
         @ColorInt val secondaryTextColor = context.attrColor(R.attr.secondaryTextColor)
 
         dataLinePaint.isAntiAlias = true

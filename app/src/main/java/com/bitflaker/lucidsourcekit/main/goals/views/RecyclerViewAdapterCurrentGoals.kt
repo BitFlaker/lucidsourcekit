@@ -31,7 +31,7 @@ class RecyclerViewAdapterCurrentGoals(
     private lateinit var goalAchievedCount: HashMap<Int, Int>
     private val activity = fragment.requireActivity()
     private val db: MainDatabase = MainDatabase.getInstance(activity)
-    private val colorNotAchieved = activity.attrColorStateList(R.attr.colorSurfaceContainer)
+    private val colorNotAchieved = activity.attrColorStateList(R.attr.colorSurfaceContainerHighest)
     private val colorAchieved = activity.attrColorStateList(R.attr.colorTertiary)
 
     init {
@@ -58,7 +58,7 @@ class RecyclerViewAdapterCurrentGoals(
         holder.binding.txtGoal.text = currentGoal.description
 
         val achievedCount = goalAchievedCount.getOrDefault(currentGoal.goalId, 0)
-        holder.binding.imgAchievedCounterBackground.setImageTintList(if (achievedCount == 0) colorNotAchieved else colorAchieved)
+        holder.binding.imgAchievedCounterBackground.imageTintList = if (achievedCount == 0) colorNotAchieved else colorAchieved
         holder.binding.txtAchievedCounter.visibility = if (achievedCount == 0) View.GONE else View.VISIBLE
         holder.binding.txtAchievedCounterPlaceholder.visibility = if (achievedCount == 0) View.VISIBLE else View.GONE
         holder.binding.txtAchievedCounter.text = String.format(Locale.getDefault(), "%d", achievedCount)
@@ -69,7 +69,7 @@ class RecyclerViewAdapterCurrentGoals(
                 val transaction = ShuffleTransaction(shuffleId, currentGoal.goalId, Calendar.getInstance().timeInMillis)
                 db.getShuffleTransactionDao().insert(transaction)
                 val newCount = goalAchievedCount.getOrDefault(currentGoal.goalId, 0) + 1
-                goalAchievedCount.put(currentGoal.goalId, newCount)
+                goalAchievedCount[currentGoal.goalId] = newCount
 
                 activity.runOnUiThread {
                     // TODO: This could theoretically cause issues, but probably won't
@@ -105,7 +105,7 @@ class RecyclerViewAdapterCurrentGoals(
                     // Set listener to refresh entry when an entry was removed
                     manager.onDeletedListener = {
                         val newCount = goalAchievedCount.getOrDefault(currentGoal.goalId, 0) - 1
-                        goalAchievedCount.put(currentGoal.goalId, newCount)
+                        goalAchievedCount[currentGoal.goalId] = newCount
                         notifyItemChanged(position)
                         if (transactions.isEmpty()) {
                             sBinding.txtNoneAchieved.visibility = View.VISIBLE

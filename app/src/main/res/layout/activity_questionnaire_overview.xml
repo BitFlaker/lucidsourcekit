@@ -10,7 +10,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_questionnaire_close"
         style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="51dp"
+        android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginVertical="4dp"
         android:layout_marginStart="8dp"

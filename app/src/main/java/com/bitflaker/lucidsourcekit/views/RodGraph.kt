@@ -32,7 +32,7 @@ class RodGraph @JvmOverloads constructor(
         strokeWidth = 9f.dpToPx
     }
     private val dataLinePaintBackground = Paint(Paint.ANTI_ALIAS_FLAG or Paint.DITHER_FLAG).apply {
-        color = context.attrColor(R.attr.colorSurfaceContainer)
+        color = context.attrColor(R.attr.colorSurface)
         strokeCap = Paint.Cap.ROUND
         strokeWidth = 9f.dpToPx
     }

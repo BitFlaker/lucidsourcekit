@@ -238,13 +238,11 @@ class StatisticsView : Fragment() {
             binding.rpGoalsReached.label = "ACHIEVED"
             binding.rpGoalsReached.text = String.format(Locale.ENGLISH, "%d/%d", goalShuffleData.achievedCount, goalShuffleData.goalCount)
             binding.rpGoalsReached.setValue(goalShuffleData.achievedCount.toFloat(), goalShuffleData.goalCount.toFloat())
-            binding.rpGoalsReached.setBackgroundAttrColor(R.attr.colorSurfaceContainer)
             binding.rpGoalsReached.invalidate()
 
             binding.rpAvgGoalDiff.label = "AVERAGE DIFFICULTY LEVEL"
             binding.rpAvgGoalDiff.text = String.format(Locale.ENGLISH, "%.2f", goalShuffleData.avgDifficulty)
             binding.rpAvgGoalDiff.setValue(goalShuffleData.avgDifficulty.toFloat(), 3f)
-            binding.rpAvgGoalDiff.setBackgroundAttrColor(R.attr.colorSurfaceContainer)
             binding.rpAvgGoalDiff.invalidate()
 
             binding.llGoalsReached.visibility = View.VISIBLE
@@ -342,7 +340,7 @@ class StatisticsView : Fragment() {
         val maxCount = tagCounts[0].count
         for (p in tagCounts) {
             val rngProg = RangeProgress(requireContext())
-            rngProg.setBackgroundAttrColor(R.attr.colorSurfaceContainer)
+            rngProg.setBackgroundAttrColor(R.attr.colorSurface)
             val llParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 25.dpToPx

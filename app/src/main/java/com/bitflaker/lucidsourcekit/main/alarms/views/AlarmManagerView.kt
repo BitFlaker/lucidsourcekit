@@ -68,6 +68,9 @@ class AlarmManagerView : AppCompatActivity() {
             insets
         }
 
+        // Configure back button
+        binding.btnAlarmsClose.setOnClickListener { finish() }
+
         // Start the animation cycle of the clock
         binding.slpClock.setClockType(ClockType.DEFAULT)
 

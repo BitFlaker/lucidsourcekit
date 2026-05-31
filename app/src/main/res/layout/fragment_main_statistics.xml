@@ -176,9 +176,9 @@
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="48dp"
                 app:contentPadding="8dp"
-                app:strokeWidth="1dp"
+                app:strokeWidth="0dp"
                 app:strokeColor="?attr/colorSurfaceContainerHighest"
-                style="@style/LSK.MaterialCardView.Outlined">
+                style="@style/LSK.MaterialCardView.Filled">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -210,7 +210,7 @@
                         android:textColor="?attr/tertiaryTextColor"
                         android:textSize="11sp"
                         android:textAllCaps="true"
-                        app:backgroundTint="?attr/colorSurface"
+                        app:backgroundTint="?attr/colorSurfaceContainer"
                         app:iconPadding="4dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -237,13 +237,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginHorizontal="20dp"
-                app:cardBackgroundColor="@android:color/transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:strokeColor="?attr/colorSurfaceContainerHighest"
-                app:strokeWidth="1dp"
-                style="@style/LSK.MaterialCardView.Outlined">
+                app:strokeWidth="0dp"
+                style="@style/LSK.MaterialCardView.Filled">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -288,15 +287,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="24dp"
-                app:cardBackgroundColor="@android:color/transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:strokeColor="?attr/colorSurfaceContainerHighest"
-                app:strokeWidth="1dp"
+                app:strokeWidth="0dp"
                 app:contentPaddingLeft="0dp"
                 app:contentPaddingRight="0dp"
-                style="@style/LSK.MaterialCardView.Outlined">
+                style="@style/LSK.MaterialCardView.Filled">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -420,7 +418,7 @@
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="40dp"
                 android:nestedScrollingEnabled="true"
                 android:scrollbars="none"
                 android:clipToPadding="false">
@@ -461,23 +459,20 @@
                 android:id="@+id/crd_lucid_dream_ratio"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:contentPadding="0dp"
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="48dp"
+                android:layout_marginTop="12dp"
                 app:strokeWidth="0dp"
                 app:strokeColor="?attr/colorOutlineVariant"
-                style="@style/LSK.MaterialCardView.Outlined">
+                style="@style/LSK.MaterialCardView.Filled">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
                         android:text="Lucid dream ratio"
                         android:textColor="?attr/tertiaryTextColor"
                         android:textSize="11sp"
@@ -536,22 +531,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="64dp"
-                app:contentPadding="0dp"
+                android:layout_marginTop="24dp"
                 app:strokeWidth="0dp"
                 app:strokeColor="?attr/colorOutlineVariant"
-                style="@style/LSK.MaterialCardView.Outlined">
+                style="@style/LSK.MaterialCardView.Filled">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="2dp"
                         android:text="Overall average ratings"
                         android:textColor="?attr/tertiaryTextColor"
                         android:textSize="11sp"
@@ -601,22 +593,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="64dp"
-                app:contentPadding="0dp"
+                android:layout_marginTop="24dp"
                 app:strokeWidth="0dp"
                 app:strokeColor="?attr/colorOutlineVariant"
-                style="@style/LSK.MaterialCardView.Outlined">
+                style="@style/LSK.MaterialCardView.Filled">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="2dp"
                         android:text="Dream mood"
                         android:textColor="?attr/tertiaryTextColor"
                         android:textSize="11sp"
@@ -637,22 +626,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="64dp"
-                app:contentPadding="0dp"
+                android:layout_marginTop="24dp"
                 app:strokeWidth="0dp"
                 app:strokeColor="?attr/colorOutlineVariant"
-                style="@style/LSK.MaterialCardView.Outlined">
+                style="@style/LSK.MaterialCardView.Filled">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="2dp"
                         android:text="Dream clarity"
                         android:textColor="?attr/tertiaryTextColor"
                         android:textSize="11sp"
@@ -673,22 +659,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="64dp"
-                app:contentPadding="0dp"
+                android:layout_marginTop="24dp"
                 app:strokeWidth="0dp"
                 app:strokeColor="?attr/colorOutlineVariant"
-                style="@style/LSK.MaterialCardView.Outlined">
+                style="@style/LSK.MaterialCardView.Filled">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="2dp"
                         android:text="Sleep quality"
                         android:textColor="?attr/tertiaryTextColor"
                         android:textSize="11sp"
@@ -709,22 +692,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="64dp"
-                app:contentPadding="0dp"
+                android:layout_marginTop="24dp"
                 app:strokeWidth="0dp"
                 app:strokeColor="?attr/colorOutlineVariant"
-                style="@style/LSK.MaterialCardView.Outlined">
+                style="@style/LSK.MaterialCardView.Filled">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="2dp"
                         android:text="Tag frequency"
                         android:textColor="?attr/tertiaryTextColor"
                         android:textSize="11sp"
@@ -768,22 +748,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="64dp"
-                app:contentPadding="0dp"
+                android:layout_marginTop="24dp"
                 app:strokeWidth="0dp"
                 app:strokeColor="?attr/colorOutlineVariant"
-                style="@style/LSK.MaterialCardView.Outlined">
+                style="@style/LSK.MaterialCardView.Filled">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="2dp"
                         android:text="Goals"
                         android:textColor="?attr/tertiaryTextColor"
                         android:textSize="11sp"

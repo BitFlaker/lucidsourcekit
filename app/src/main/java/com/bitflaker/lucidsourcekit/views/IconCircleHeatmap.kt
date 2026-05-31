@@ -51,7 +51,7 @@ class IconCircleHeatmap : View {
         isFakeBoldText = true
     }
     private val dataTrackPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.DITHER_FLAG).apply {
-        color = context.attrColor(R.attr.colorSurfaceContainer)
+        color = context.attrColor(R.attr.colorSurface)
         style = Paint.Style.STROKE
         strokeCap = Paint.Cap.ROUND
         strokeWidth = trackWidth
