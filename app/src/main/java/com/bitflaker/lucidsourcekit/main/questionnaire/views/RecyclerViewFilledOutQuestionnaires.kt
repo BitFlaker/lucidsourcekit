@@ -22,6 +22,7 @@ class RecyclerViewFilledOutQuestionnaires(
 ): RecyclerView.Adapter<RecyclerViewFilledOutQuestionnaires.MainViewHolder>() {
     class MainViewHolder(val binding: EntryQuestionnaireBinding) : ViewHolder(binding.root)
 
+    var cardBackgroundColor: Int? = null
     var onQuestionnaireClickListener: ((Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
@@ -35,7 +36,7 @@ class RecyclerViewFilledOutQuestionnaires(
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
         val current = items[position]
-        holder.binding.crdQuestionnaire.setCardBackgroundColor(context.attrColor(R.attr.colorSurfaceContainerLow))
+        holder.binding.crdQuestionnaire.setCardBackgroundColor(cardBackgroundColor ?: context.attrColor(R.attr.colorSurfaceContainerLow))
         holder.binding.crdQuestionnaire.setOnClickListener { onQuestionnaireClickListener?.invoke(current.id) }
         holder.binding.txtQuestionnaireName.text = current.title
         holder.binding.txtQuestionnaireDescription.text = current.description

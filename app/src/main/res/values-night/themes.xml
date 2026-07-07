@@ -61,6 +61,11 @@
         <item name="materialAlertDialogTheme">@style/Theme.LucidSourceKit.ThemedDialog</item>
     </style>
 
+    <style name="SqShapeAppearanceOverlay" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">30%</item>
+    </style>
+
     <style name="FloatingShapeAppearanceOverlay" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
@@ -172,6 +177,7 @@
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:backgroundTint">?attr/colorSurfaceContainer</item>
         <item name="android:theme">@style/Theme.LucidSourceKit.Default</item>
         <item name="android:backgroundDimAmount">0.72</item>
     </style>

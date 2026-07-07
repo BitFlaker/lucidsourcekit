@@ -40,7 +40,7 @@
         app:rippleColor="?attr/colorOutlineVariant"
         app:icon="@drawable/rounded_close_24"
         app:iconTint="?attr/secondaryTextColor"
-        app:backgroundTint="?attr/colorSurfaceContainerLow"
+        app:backgroundTint="?attr/colorSurfaceContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

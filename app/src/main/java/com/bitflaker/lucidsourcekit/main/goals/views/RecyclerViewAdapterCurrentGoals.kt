@@ -60,7 +60,7 @@ class RecyclerViewAdapterCurrentGoals(
         val achievedCount = goalAchievedCount.getOrDefault(currentGoal.goalId, 0)
         holder.binding.imgAchievedCounterBackground.imageTintList = if (achievedCount == 0) colorNotAchieved else colorAchieved
         holder.binding.txtAchievedCounter.visibility = if (achievedCount == 0) View.GONE else View.VISIBLE
-        holder.binding.txtAchievedCounterPlaceholder.visibility = if (achievedCount == 0) View.VISIBLE else View.GONE
+        holder.binding.imgAchievedCounterBackground.setImageResource(if (achievedCount == 0) R.drawable.outline_circle_24 else R.drawable.circle)
         holder.binding.txtAchievedCounter.text = String.format(Locale.getDefault(), "%d", achievedCount)
 
         // Set click listener to increase the achieved count of the current goal by 1

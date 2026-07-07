@@ -2,7 +2,7 @@
     <color name="success">#b3ffab</color>
     <color name="warning">#ffebab</color>
     <color name="white_60p">#99FFFFFF</color>
-    <color name="white_50p">#4DFFFFFF</color>
+    <color name="white_50p">#73FFFFFF</color>
     <color name="pastel_orange">#e1a154</color>
     <color name="lighter_red">#C32C2C</color>
     <color name="lighter_orange">#C37F2C</color>
@@ -55,9 +55,9 @@
     <color name="md_theme_surfaceBright">#36393E</color>
     <color name="md_theme_surfaceContainerLowest">#000000</color>
     <color name="md_theme_surfaceContainerLow">#111212</color>
-    <color name="md_theme_surfaceContainer">#191A1A</color>
-    <color name="md_theme_surfaceContainerHigh">#282929</color>
-    <color name="md_theme_surfaceContainerHighest">#323333</color>
+    <color name="md_theme_surfaceContainer">#282828</color>
+    <color name="md_theme_surfaceContainerHigh">#383838</color>
+    <color name="md_theme_surfaceContainerHighest">#474747</color>
     <color name="md_theme_primary_mediumContrast">#A6CEFF</color>
     <color name="md_theme_onPrimary_mediumContrast">#00172D</color>
     <color name="md_theme_primaryContainer_mediumContrast">#6A94C4</color>

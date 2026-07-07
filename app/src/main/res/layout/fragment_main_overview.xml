@@ -54,14 +54,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginHorizontal="4dp"
+                android:layout_marginHorizontal="16dp"
                 android:paddingVertical="12dp">
 
 <!--                    TODO: perform 'click' action on materialbutton when linear layout was pressed -->
 
                 <LinearLayout
                     android:id="@+id/ll_qa_notifications"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center_horizontal"
@@ -92,7 +92,7 @@
 
                 <LinearLayout
                     android:id="@+id/ll_qa_lockscreen"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
@@ -123,7 +123,7 @@
 
                 <LinearLayout
                     android:id="@+id/ll_qa_questionnaire"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
@@ -154,7 +154,7 @@
 
                 <LinearLayout
                     android:id="@+id/ll_qa_more"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
@@ -254,10 +254,12 @@
                     android:id="@+id/btn_manage_alarms"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
                     android:text="Manage"
                     android:textColor="?attr/colorPrimary"
                     android:translationZ="6dp"
                     android:layout_marginTop="-24dp"
+                    app:cornerRadius="14dp"
                     app:backgroundTint="?attr/colorPrimaryContainer"
                     app:icon="@drawable/ic_baseline_access_alarm_24"
                     app:iconPadding="8dp"

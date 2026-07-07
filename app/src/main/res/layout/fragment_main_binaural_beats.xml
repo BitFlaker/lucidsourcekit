@@ -248,7 +248,7 @@
                     app:iconGravity="textStart"
                     app:iconSize="26dp"
                     app:iconTint="?attr/colorPrimary"
-                    app:shapeAppearance="@style/FloatingShapeAppearanceOverlay" />
+                    app:shapeAppearance="@style/SqShapeAppearanceOverlay" />
 
                 <ImageButton
                     android:id="@+id/btn_auto_stop"

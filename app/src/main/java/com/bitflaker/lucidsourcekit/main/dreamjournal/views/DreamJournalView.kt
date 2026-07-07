@@ -201,6 +201,7 @@ class DreamJournalView : Fragment() {
                     putExtra("COMPLETED_QUESTIONNAIRE_ID", completedId)
                 })
             }
+            adapter.cardBackgroundColor = context.attrColor(R.attr.colorSurfaceContainer)
             sBinding.rcvQuestionnairesFilledOut.setLayoutManager(LinearLayoutManager(context))
             sBinding.rcvQuestionnairesFilledOut.setAdapter(adapter)
             questionnaireAdapter = adapter

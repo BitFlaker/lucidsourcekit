@@ -151,7 +151,7 @@
         android:layout_marginTop="12dp"
         app:cardCornerRadius="0dp"
         app:strokeWidth="0dp"
-        app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+        app:cardBackgroundColor="?attr/colorSurfaceContainer"
         app:layout_constraintTop_toBottomOf="@+id/ll_notification_timeframe">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -220,7 +220,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="0dp"
         app:strokeWidth="0dp"
-        app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+        app:cardBackgroundColor="?attr/colorSurfaceContainer"
         app:layout_constraintTop_toBottomOf="@+id/crd_daily_notifications">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -292,7 +292,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="0dp"
         app:strokeWidth="0dp"
-        app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+        app:cardBackgroundColor="?attr/colorSurfaceContainer"
         app:layout_constraintTop_toBottomOf="@+id/crd_notification_messages">
 
         <androidx.constraintlayout.widget.ConstraintLayout

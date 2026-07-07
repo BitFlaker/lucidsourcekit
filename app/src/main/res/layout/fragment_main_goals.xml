@@ -239,12 +239,15 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_adjust_algorithm"
+                    style="@style/Widget.Material3.Button.Icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingHorizontal="14dp"
                     android:text="Personalize"
                     android:textColor="?attr/colorPrimary"
                     android:translationZ="6dp"
                     android:layout_marginTop="-24dp"
+                    app:cornerRadius="14dp"
                     app:backgroundTint="?attr/colorPrimaryContainer"
                     app:icon="@drawable/ic_baseline_auto_graph_24"
                     app:iconPadding="8dp"
