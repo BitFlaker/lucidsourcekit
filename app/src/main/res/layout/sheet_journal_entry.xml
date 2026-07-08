@@ -123,7 +123,7 @@
                 android:minHeight="48dp"
                 android:src="@drawable/ic_round_loop_24"
                 android:background="@drawable/ripple_round"
-                android:backgroundTint="?attr/colorSurfaceContainerLow"
+                android:backgroundTint="?attr/colorSurfaceContainer"
                 app:tint="?attr/secondaryTextColor" />
 
             <ImageButton
@@ -134,7 +134,7 @@
                 android:minHeight="48dp"
                 android:src="@drawable/rounded_award_star_24"
                 android:background="@drawable/ripple_round"
-                android:backgroundTint="?attr/colorSurfaceContainerLow"
+                android:backgroundTint="?attr/colorSurfaceContainer"
                 app:tint="?attr/secondaryTextColor" />
 
             <ImageButton
@@ -145,7 +145,7 @@
                 android:minHeight="48dp"
                 android:src="@drawable/ic_baseline_accessibility_new_24"
                 android:background="@drawable/ripple_round"
-                android:backgroundTint="?attr/colorSurfaceContainerLow"
+                android:backgroundTint="?attr/colorSurfaceContainer"
                 app:tint="?attr/secondaryTextColor" />
 
             <ImageButton
@@ -156,7 +156,7 @@
                 android:minHeight="48dp"
                 android:src="@drawable/rounded_cinematic_blur_24"
                 android:background="@drawable/ripple_round"
-                android:backgroundTint="?attr/colorSurfaceContainerLow"
+                android:backgroundTint="?attr/colorSurfaceContainer"
                 app:tint="?attr/secondaryTextColor" />
 
             <ImageButton
@@ -167,7 +167,7 @@
                 android:minHeight="48dp"
                 android:src="@drawable/rounded_sentiment_stressed_24"
                 android:background="@drawable/ripple_round"
-                android:backgroundTint="?attr/colorSurfaceContainerLow"
+                android:backgroundTint="?attr/colorSurfaceContainer"
                 app:tint="?attr/secondaryTextColor" />
         </LinearLayout>
 

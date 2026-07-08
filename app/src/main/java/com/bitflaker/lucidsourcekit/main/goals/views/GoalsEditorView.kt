@@ -220,11 +220,9 @@ class GoalsEditorView : AppCompatActivity() {
         if (isLocked.get()) {
             toggleLockDifficulty.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_lock_24, theme))
             toggleLockDifficulty.imageTintList = attrColorStateList(R.attr.primaryTextColor)
-            toggleLockDifficulty.backgroundTintList = attrColorStateList(R.attr.colorSurfaceContainerLow)
         } else {
             toggleLockDifficulty.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_lock_open_24, theme))
             toggleLockDifficulty.imageTintList = attrColorStateList(R.attr.secondaryTextColor)
-            toggleLockDifficulty.backgroundTintList = attrColorStateList(R.attr.colorSurfaceContainerLow)
         }
     }
 

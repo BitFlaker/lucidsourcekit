@@ -2,13 +2,19 @@ package com.bitflaker.lucidsourcekit
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
@@ -18,8 +24,10 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bitflaker.lucidsourcekit.datastore.DataStoreKeys
@@ -42,15 +50,18 @@ import com.bitflaker.lucidsourcekit.database.questionnaire.entities.QuestionType
 import com.bitflaker.lucidsourcekit.databinding.ActivityMainBinding
 import com.bitflaker.lucidsourcekit.main.MainViewer
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler
-import com.bitflaker.lucidsourcekit.main.export.views.ExportActivity
 import com.bitflaker.lucidsourcekit.main.notification.visual.views.KeypadAdapter
 import com.bitflaker.lucidsourcekit.main.notification.visual.KeypadButtonModel
 import com.bitflaker.lucidsourcekit.setup.SetupViewer
 import com.bitflaker.lucidsourcekit.utils.Crypt
 import com.bitflaker.lucidsourcekit.utils.Tools
+import com.bitflaker.lucidsourcekit.utils.attrColor
+import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.bitflaker.lucidsourcekit.utils.loadLanguage
 import com.bitflaker.lucidsourcekit.utils.resolveDrawable
 import com.bitflaker.lucidsourcekit.utils.showToastLong
+import com.bitflaker.lucidsourcekit.utils.spToPx
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -66,6 +77,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val exceptionHandler = GlobalExceptionHandler(this)
+        Thread.setDefaultUncaughtExceptionHandler(exceptionHandler)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
@@ -73,10 +86,6 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        db = MainDatabase.getInstance(this)
-
-        // Create internal data structure if it does not exist
-        ensureValidDataStructure()
 
         // TODO: remove enforce dark mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -87,48 +96,131 @@ class MainActivity : AppCompatActivity() {
         }
 //        setTheme(Tools.getTheme());
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            val context = this@MainActivity
+        // Create internal data structure if it does not exist
+        ensureValidDataStructure()
 
-            // Migrate shared preferences to the new DataStore
-            migrateSharedPreferencesToDataStore(context)
-            migrateSetupFinishedToDataStore(context)
+        // Check for any logged crash traces
+        val ctx = this
+        val anyCrashReports = exceptionHandler.collectCrashTraces { traces ->
+            val description = "To help fix this issue, please copy the below crash report and create a new issue on GitHub."
+            val showCount = traces.size > 1
+            for ((index, trace) in traces.withIndex()) {
+                val countSuffix = " ${index + 1}/${traces.size}"
+                val title = "Crash report" + if (showCount) countSuffix else ""
 
-            // Launch the setup viewer if the setup has not yet been completed
-            if (!getSetting(DataStoreKeys.APP_SETUP_FINISHED)) {
-                startActivity(Intent(this@MainActivity, SetupViewer::class.java).apply {
-                    setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                })
-                finish()
-                return@launch
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(title)
+                    .setMessage(description)
+                    .setView(LinearLayout(ctx).apply {
+                        setPadding(
+                            20.dpToPx,
+                            8.dpToPx,
+                            20.dpToPx,
+                            0
+                        )
+                        addView(TextView(ctx).apply {
+                            setHorizontallyScrolling(true)
+                            setTextIsSelectable(true)
+                            maxHeight = (context.resources.displayMetrics.heightPixels * 0.25).toInt().coerceAtLeast(48.dpToPx)
+                            textSize = 5.spToPx.toFloat()
+                            text = trace
+                            background = GradientDrawable().apply {
+                                shape = GradientDrawable.RECTANGLE
+                                cornerRadius = 12.dpToPx.toFloat()
+                                setColor(ctx.attrColor(R.attr.colorSurfaceContainerLow))
+                                setStroke(1.dpToPx, ctx.attrColor(R.attr.colorOutlineVariant))
+                            }
+
+                            updatePadding(
+                                left = 8.dpToPx,
+                                top = 4.dpToPx,
+                                right = 8.dpToPx,
+                                bottom = 4.dpToPx,
+                            )
+                        })
+                    })
+                    .setNegativeButton("Cancel") { _, _ ->
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            loadApplication()
+                        }
+                    }
+                    .setPositiveButton("Report") { _, _ ->
+                        // Copy crash report to clipboard
+                        val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                        val data = ClipData.newPlainText("Crash Report", trace)
+                        clipboard.setPrimaryClip(data)
+
+                        // Open GitHub page with issue bug template
+                        startActivity(
+                            Intent(
+                                Intent.ACTION_VIEW,
+                                "https://github.com/BitFlaker/lucidsourcekit/issues/new?template=bug_report.md".toUri()
+                            )
+                        )
+
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            loadApplication()
+                        }
+                    }
+                    .setCancelable(true)
+                    .show()
             }
+        }
+        db = MainDatabase.getInstance(this)
+        binding.btnFingerprintUnlock.setOnClickListener { requestBiometricAuthentication() }
 
-            // Load the configured preferred language
-            loadLanguage()
+//        throw IllegalArgumentException("asdasldh aoishd iuasd sas")
 
-            // Update the app open streak and longest streak values
-            updateAppOpenStreak()
-
-            // Populate all static database values
-            ensureStaticDatabaseValuesExist()
-
-            // Ensure notification channels exist if supported
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createNotificationChannels()
+        if (!anyCrashReports) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                loadApplication()
             }
-
-            // Re-enable all notifications and alarms which are enabled but are not running correctly
-            AlarmHandler.reEnableAlarmsIfNotRunning(applicationContext, db.activeAlarmDao.getAllDetails())
-            AlarmHandler.reEnableNotificationsIfNotRunning(applicationContext)
-
-            // Shuffle goals for today if no shuffle currently exists
-            shuffleGoalsForToday()
-
-            // Create login form or start immediately in case no authentication is required
-            startApplicationLogin()
         }
 
-        binding.btnFingerprintUnlock.setOnClickListener { requestBiometricAuthentication() }
+    }
+
+    private suspend fun loadApplication() {
+        val context = this@MainActivity
+
+        // Migrate shared preferences to the new DataStore
+        migrateSharedPreferencesToDataStore(context)
+        migrateSetupFinishedToDataStore(context)
+
+        // Launch the setup viewer if the setup has not yet been completed
+        if (!getSetting(DataStoreKeys.APP_SETUP_FINISHED)) {
+            startActivity(Intent(context, SetupViewer::class.java).apply {
+                setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            })
+            finish()
+            return
+        }
+
+        // Load the configured preferred language
+        loadLanguage()
+
+        // Update the app open streak and longest streak values
+        updateAppOpenStreak()
+
+        // Populate all static database values
+        ensureStaticDatabaseValuesExist()
+
+        // Ensure notification channels exist if supported
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannels()
+        }
+
+        // Re-enable all notifications and alarms which are enabled but are not running correctly
+        AlarmHandler.reEnableAlarmsIfNotRunning(
+            applicationContext,
+            db.activeAlarmDao.getAllDetails()
+        )
+        AlarmHandler.reEnableNotificationsIfNotRunning(applicationContext)
+
+        // Shuffle goals for today if no shuffle currently exists
+        shuffleGoalsForToday()
+
+        // Create login form or start immediately in case no authentication is required
+        startApplicationLogin()
     }
 
     private fun ensureValidDataStructure() {
