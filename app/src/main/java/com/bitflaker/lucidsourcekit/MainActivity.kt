@@ -87,22 +87,13 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // TODO: remove enforce dark mode
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        when (currentNightMode) {
-            Configuration.UI_MODE_NIGHT_NO -> { }
-            Configuration.UI_MODE_NIGHT_YES -> { }
-        }
-//        setTheme(Tools.getTheme());
-
         // Create internal data structure if it does not exist
         ensureValidDataStructure()
 
         // Check for any logged crash traces
         val ctx = this
         val anyCrashReports = exceptionHandler.collectCrashTraces { traces ->
-            val description = "To help fix this issue, please copy the below crash report and create a new issue on GitHub."
+            val description = "To help fix this issue, copy the below crash report and create a new issue on GitHub."
             val showCount = traces.size > 1
             for ((index, trace) in traces.withIndex()) {
                 val countSuffix = " ${index + 1}/${traces.size}"
@@ -141,10 +132,11 @@ class MainActivity : AppCompatActivity() {
                     })
                     .setNegativeButton("Cancel") { _, _ ->
                         lifecycleScope.launch(Dispatchers.IO) {
+                            forceDarkMode()
                             loadApplication()
                         }
                     }
-                    .setPositiveButton("Report") { _, _ ->
+                    .setPositiveButton("Copy & Report") { _, _ ->
                         // Copy crash report to clipboard
                         val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                         val data = ClipData.newPlainText("Crash Report", trace)
@@ -159,24 +151,36 @@ class MainActivity : AppCompatActivity() {
                         )
 
                         lifecycleScope.launch(Dispatchers.IO) {
+                            forceDarkMode()
                             loadApplication()
                         }
                     }
-                    .setCancelable(true)
+                    .setCancelable(false)
                     .show()
             }
         }
         db = MainDatabase.getInstance(this)
         binding.btnFingerprintUnlock.setOnClickListener { requestBiometricAuthentication() }
 
-//        throw IllegalArgumentException("asdasldh aoishd iuasd sas")
-
         if (!anyCrashReports) {
             lifecycleScope.launch(Dispatchers.IO) {
+                forceDarkMode()
                 loadApplication()
             }
         }
+    }
 
+    private fun forceDarkMode() {
+        // TODO: remove enforce dark mode
+        runOnUiThread {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            when (currentNightMode) {
+                Configuration.UI_MODE_NIGHT_NO -> { }
+                Configuration.UI_MODE_NIGHT_YES -> { }
+            }
+//        setTheme(Tools.getTheme());
+        }
     }
 
     private suspend fun loadApplication() {
