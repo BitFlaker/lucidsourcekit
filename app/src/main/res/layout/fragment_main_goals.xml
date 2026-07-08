@@ -219,7 +219,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginStart="16dp"
+                            android:layout_marginStart="12dp"
                             android:layout_marginTop="16dp"
                             android:text="Goals today"
                             android:textAllCaps="true"
@@ -230,7 +230,7 @@
                             android:id="@+id/rcv_current_goals"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="8dp"
+                            android:layout_marginHorizontal="4dp"
                             android:layout_marginTop="48dp"
                             android:overScrollMode="never" />
 

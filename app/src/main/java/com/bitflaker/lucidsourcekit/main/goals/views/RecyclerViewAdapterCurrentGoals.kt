@@ -31,7 +31,7 @@ class RecyclerViewAdapterCurrentGoals(
     private lateinit var goalAchievedCount: HashMap<Int, Int>
     private val activity = fragment.requireActivity()
     private val db: MainDatabase = MainDatabase.getInstance(activity)
-    private val colorNotAchieved = activity.attrColorStateList(R.attr.colorSurfaceContainerHighest)
+    private val colorNotAchieved = activity.attrColorStateList(R.attr.colorSurfaceContainerLowest)
     private val colorAchieved = activity.attrColorStateList(R.attr.colorTertiary)
 
     init {
@@ -58,10 +58,10 @@ class RecyclerViewAdapterCurrentGoals(
         holder.binding.txtGoal.text = currentGoal.description
 
         val achievedCount = goalAchievedCount.getOrDefault(currentGoal.goalId, 0)
-        holder.binding.imgAchievedCounterBackground.imageTintList = if (achievedCount == 0) colorNotAchieved else colorAchieved
-        holder.binding.txtAchievedCounter.visibility = if (achievedCount == 0) View.GONE else View.VISIBLE
-        holder.binding.imgAchievedCounterBackground.setImageResource(if (achievedCount == 0) R.drawable.outline_circle_24 else R.drawable.circle)
         holder.binding.txtAchievedCounter.text = String.format(Locale.getDefault(), "%d", achievedCount)
+        holder.binding.txtAchievedCounter.visibility = if (achievedCount == 0) View.GONE else View.VISIBLE
+        holder.binding.imgAchievedCounterBackground.setImageResource(if (achievedCount == 0) R.drawable.circle else R.drawable.circle)
+        holder.binding.imgAchievedCounterBackground.imageTintList = if (achievedCount == 0) colorNotAchieved else colorAchieved
 
         // Set click listener to increase the achieved count of the current goal by 1
         holder.binding.crdCurrentGoal.setOnClickListener {
