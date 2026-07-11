@@ -82,7 +82,8 @@
                 android:inputType="textPassword"
                 android:padding="12dp"
                 android:textColor="?attr/primaryTextColor"
-                android:textColorHint="?attr/tertiaryTextColor" />
+                android:textColorHint="?attr/tertiaryTextColor"
+                android:imeOptions="actionDone" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_unlock"

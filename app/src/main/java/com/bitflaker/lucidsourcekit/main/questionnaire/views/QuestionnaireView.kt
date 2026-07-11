@@ -68,8 +68,9 @@ class QuestionnaireView : AppCompatActivity() {
         binding = ActivityQuestionnaireBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, maxOf(ime.bottom, systemBars.bottom))
             insets
         }
 

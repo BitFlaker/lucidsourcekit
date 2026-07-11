@@ -13,7 +13,7 @@ import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryH
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.results.DreamJournalEntry
 import com.bitflaker.lucidsourcekit.databinding.ActivityJournalEditorBinding
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter
-import com.bitflaker.lucidsourcekit.utils.insetNoTop
+import com.bitflaker.lucidsourcekit.utils.insetDefault
 import com.bitflaker.lucidsourcekit.utils.onBackPressed
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
@@ -35,7 +35,7 @@ class DreamJournalEditorView : AppCompatActivity() {
         binding = ActivityJournalEditorBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
-        binding.root.insetNoTop()
+        binding.root.insetDefault()
 
         // Parse journal entry type from extras
         var type = DreamJournalEntry.EntryType.PLAIN_TEXT

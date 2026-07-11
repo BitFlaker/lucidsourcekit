@@ -27,6 +27,7 @@ import com.bitflaker.lucidsourcekit.utils.dpToPx
 import com.bitflaker.lucidsourcekit.utils.export.DefaultActivityLauncher
 import com.bitflaker.lucidsourcekit.utils.export.ExportConfiguration
 import com.bitflaker.lucidsourcekit.utils.generateFileName
+import com.bitflaker.lucidsourcekit.utils.insetDefault
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import kotlinx.coroutines.Dispatchers
@@ -56,11 +57,7 @@ class ExportActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityExportBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        binding.main.insetDefault()
 
         db = MainDatabase.getInstance(this)
         binding.btnExportClose.setOnClickListener {

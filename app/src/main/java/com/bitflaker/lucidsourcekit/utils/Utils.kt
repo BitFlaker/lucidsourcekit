@@ -248,16 +248,18 @@ fun showToastLong(context: Context, message: String) {
 
 fun View.insetNoTop() {
     ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
+        val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
         val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-        v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
+        v.setPadding(systemBars.left, 0, systemBars.right, maxOf(ime.bottom, systemBars.bottom))
         insets
     }
 }
 
 fun View.insetDefault() {
     ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
+        val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
         val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-        v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+        v.setPadding(systemBars.left, systemBars.top, systemBars.right, maxOf(ime.bottom, systemBars.bottom))
         insets
     }
 }

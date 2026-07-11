@@ -21,6 +21,7 @@ import com.bitflaker.lucidsourcekit.databinding.ActivitySetupViewerBinding
 import com.bitflaker.lucidsourcekit.utils.Crypt
 import com.bitflaker.lucidsourcekit.utils.attrColorStateList
 import com.bitflaker.lucidsourcekit.utils.dpToPx
+import com.bitflaker.lucidsourcekit.utils.insetDefault
 import com.bitflaker.lucidsourcekit.utils.resolveDrawable
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -59,11 +60,7 @@ class SetupViewer : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivitySetupViewerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        binding.root.insetDefault()
         vpAdapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
 
         // Add base fragments and tabs

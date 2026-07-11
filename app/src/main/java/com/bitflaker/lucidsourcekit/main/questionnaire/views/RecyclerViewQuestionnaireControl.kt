@@ -76,7 +76,6 @@ class RecyclerViewQuestionnaireControl(
 
     class MainViewHolder(val binding: ViewBinding, val context: Context) : ViewHolder(binding.root) {
         var result: ControlResult? = null
-        val maxTextLength = 500
         var resultListener: ((Boolean) -> Unit)? = null
 
         fun bind(
@@ -100,15 +99,6 @@ class RecyclerViewQuestionnaireControl(
                 result = ControlResultText("")
                 resultListener?.invoke(true)
             }
-            cb.etQcText.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
-                override fun afterTextChanged(s: Editable?) {
-                    cb.txtCharCount.text = String.format(Locale.getDefault(), "%d / %d", s?.length ?: 0, maxTextLength)
-                    val res = result as ControlResultText
-                    res.result = s?.toString() ?: ""
-                }
-            })
 
             // Set correct state according to current result value
             val resultText = (result as? ControlResultText)?.result

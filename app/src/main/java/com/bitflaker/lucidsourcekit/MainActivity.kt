@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -319,6 +320,14 @@ class MainActivity : AppCompatActivity() {
     private fun setupPasswordAuthentication() {
         binding.llPwAuthContainer.visibility = View.VISIBLE
         binding.llPinAuthContainer.visibility = View.GONE
+        binding.txtPassword.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                binding.btnUnlock.performClick()
+                true
+            } else {
+                false
+            }
+        }
         binding.btnUnlock.setOnClickListener {
             try {
                 val hash = Crypt.encryptString((binding.txtPassword).getText().toString(), storedSalt)
