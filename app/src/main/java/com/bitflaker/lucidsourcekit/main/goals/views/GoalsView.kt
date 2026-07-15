@@ -29,6 +29,7 @@ import com.bitflaker.lucidsourcekit.databinding.SheetGoalsAlgorithmEditorBinding
 import com.bitflaker.lucidsourcekit.main.goals.GoalStatisticsCalculator
 import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.insetDefault
+import com.bitflaker.lucidsourcekit.utils.insetNoBottom
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.slider.Slider
 
@@ -47,7 +48,7 @@ class GoalsView : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMainGoalsBinding.inflate(inflater, container, false)
-        binding.root.insetDefault()
+        binding.root.insetNoBottom()
         return binding.root
     }
 

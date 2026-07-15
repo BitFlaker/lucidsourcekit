@@ -19,8 +19,10 @@ import com.bitflaker.lucidsourcekit.main.alarms.views.RecyclerViewAdapterAlarms
 import com.bitflaker.lucidsourcekit.main.dreamjournal.views.RecyclerViewAdapterDreamJournal
 import com.bitflaker.lucidsourcekit.main.notification.views.NotificationManagerView
 import com.bitflaker.lucidsourcekit.main.questionnaire.views.QuestionnaireOverviewActivity
+import com.bitflaker.lucidsourcekit.setup.views.OnboardingActivity
 import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.insetNoTop
+import com.bitflaker.lucidsourcekit.utils.insetSidesOnly
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -52,7 +54,7 @@ class MainOverviewView : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentMainOverviewBinding.inflate(layoutInflater)
-        binding.root.insetNoTop()
+        binding.root.insetSidesOnly()
         return binding.root
     }
 
@@ -127,7 +129,10 @@ class MainOverviewView : Fragment() {
         binding.llQaNotifications.setOnClickListener { binding.btnQaNotifications.performClick() }
 
         // More button quick access placeholder
-        binding.btnQaMore.setOnClickListener { Tools.showPlaceholderDialog(requireContext()) }
+        binding.btnQaMore.setOnClickListener {
+            startActivity(Intent(context, OnboardingActivity::class.java))
+            //Tools.showPlaceholderDialog(requireContext())
+        }
         binding.llQaMore.setOnClickListener { binding.btnQaMore.performClick() }
 
         // Lockscreen button quick access placeholder

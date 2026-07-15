@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
     <!-- Required for audio recordings in dream journal -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -24,7 +27,9 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!-- Required for getting this apps usage stats before packageSelf(...) existed -->
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" android:maxSdkVersion="27" />
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        android:maxSdkVersion="27" />
 
     <application
         android:allowBackup="true"
@@ -34,6 +39,18 @@
         android:roundIcon="@mipmap/ic_launcher_pure_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LucidSourceKit.Default">
+        <activity
+            android:name=".setup.views.AuthenticationActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false" />
+        <activity
+            android:name=".setup.views.GettingStartedActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false" />
+        <activity
+            android:name=".setup.views.OnboardingActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false" />
         <activity
             android:name=".main.export.templates.template1.ExportTemplate1Activity"
             android:configChanges="orientation"

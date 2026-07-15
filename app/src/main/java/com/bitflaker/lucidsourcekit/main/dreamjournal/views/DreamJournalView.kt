@@ -35,6 +35,7 @@ import com.bitflaker.lucidsourcekit.main.dreamjournal.SortBy
 import com.bitflaker.lucidsourcekit.main.dreamjournal.SortEntry
 import com.bitflaker.lucidsourcekit.utils.attrColor
 import com.bitflaker.lucidsourcekit.utils.insetDefault
+import com.bitflaker.lucidsourcekit.utils.insetNoBottom
 import com.bitflaker.lucidsourcekit.utils.showToastLong
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
@@ -100,7 +101,7 @@ class DreamJournalView : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMainJournalBinding.inflate(inflater, container, false)
-        binding.root.insetDefault()
+        binding.root.insetNoBottom()
         return binding.root
     }
 

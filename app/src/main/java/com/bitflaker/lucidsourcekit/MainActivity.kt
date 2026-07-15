@@ -4,7 +4,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
@@ -53,7 +52,7 @@ import com.bitflaker.lucidsourcekit.main.MainViewer
 import com.bitflaker.lucidsourcekit.main.alarms.AlarmHandler
 import com.bitflaker.lucidsourcekit.main.notification.visual.views.KeypadAdapter
 import com.bitflaker.lucidsourcekit.main.notification.visual.KeypadButtonModel
-import com.bitflaker.lucidsourcekit.setup.SetupViewer
+import com.bitflaker.lucidsourcekit.setup.views.OnboardingActivity
 import com.bitflaker.lucidsourcekit.utils.Crypt
 import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.attrColor
@@ -193,7 +192,7 @@ class MainActivity : AppCompatActivity() {
 
         // Launch the setup viewer if the setup has not yet been completed
         if (!getSetting(DataStoreKeys.APP_SETUP_FINISHED)) {
-            startActivity(Intent(context, SetupViewer::class.java).apply {
+            startActivity(Intent(context, OnboardingActivity::class.java).apply {
                 setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             })
             finish()

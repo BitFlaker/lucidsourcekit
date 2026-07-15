@@ -264,4 +264,22 @@ fun View.insetDefault() {
     }
 }
 
+fun View.insetSidesOnly() {
+    ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
+        val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+        val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+        v.setPadding(systemBars.left, 0, systemBars.right, maxOf(ime.bottom, 0))
+        insets
+    }
+}
+
+fun View.insetNoBottom() {
+    ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
+        val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+        val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+        v.setPadding(systemBars.left, systemBars.top, systemBars.right, maxOf(ime.bottom, 0))
+        insets
+    }
+}
+
 class Ref<T>(var value: T)

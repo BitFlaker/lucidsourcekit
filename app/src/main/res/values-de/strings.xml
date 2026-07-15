@@ -78,15 +78,19 @@
     <string name="total_entries_count"><![CDATA[This data is based on a total of <TOTAL_COUNT> dream journal entries.]]></string>
     <string name="goal_achievement_stats"><![CDATA[You achieved this goal <COUNT> out of <TOTAL> times. Your success rate is <PERCENTAGE>%]]></string>
     <string name="not_enough_data_available">Not enough data available!</string>
-    <string name="setup_finish_setup_title">Setup abschließen</string>
-    <string name="setup_finish_content">Der Setup der Anwendung ist abgeschlossen. Um alle Angaben zu speichern und die Anwendung zu starten, klicke auf den Fertigstellen Button.</string>
+    <string name="setup_finish_setup_title">Keine Authentifizierung</string>
+    <string name="setup_finish_content">Es werden keine Zugangsdaten abgefragt. Du wirst direkt auf der Übersicht landen.</string>
     <string name="setup_privacy_password">Geben Sie im Textfeld unten ein Passwort ein, dass Sie bei jedem öffnen der App eingeben müssen</string>
     <string name="setup_privacy_pin">Setzen Sie einen PIN den Sie bei jedem öffnen der App eingeben müssen</string>
     <string name="export_data">Backup erstellen</string>
     <string name="import_data">Backup wiederherstellen</string>
+    <string name="onboarding_title">Besitze deine Träume</string>
+    <string name="onboarding_description">Eine auf Datenschutz ausgerichtete Sammlung von lokalen Tools, die dir helfen, das Beste aus deinen Träumen herauszuholen. Alles aus Leidenschaft in einem einzigen Open-Source Projekt.</string>
+    <string name="onboarding_sub_description">Kostenlos. Für immer. Für jeden.</string>
+    <string name="onboarding_consent">Ich habe die README und Privacy Policy gelesen und akzeptiere diese</string>
     <string-array name="languages">
-        <item>English (en)</item>
-        <item>Deutsch (de)</item>
+        <item>EN</item>
+        <item>DE</item>
     </string-array>
     <string-array name="lock_types">
         <item>PIN</item>

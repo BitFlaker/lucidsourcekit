@@ -1,5 +1,6 @@
 package com.bitflaker.lucidsourcekit.main
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -30,11 +31,13 @@ import com.bitflaker.lucidsourcekit.main.goals.views.GoalsView
 import com.bitflaker.lucidsourcekit.main.overview.views.MainOverviewView
 import com.bitflaker.lucidsourcekit.main.statistics.views.StatisticsView
 import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter
+import com.bitflaker.lucidsourcekit.setup.views.GettingStartedActivity
 import com.bitflaker.lucidsourcekit.utils.backup.BackupTask
 import com.bitflaker.lucidsourcekit.utils.backup.BackupTask.Companion.deleteOldBeforeImportBackup
 import com.bitflaker.lucidsourcekit.utils.backup.BackupTaskCallback
 import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.generateFileName
+import com.bitflaker.lucidsourcekit.utils.insetNoTop
 import com.bitflaker.lucidsourcekit.utils.showToastLong
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
@@ -50,7 +53,7 @@ private const val PAGE_BINAURAL_BEATS = "binaural"
 
 class MainViewer : AppCompatActivity() {
     private val backupSaveDialogLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult(), this::backupSaveDialogResult)
-    private val backupLoadDialogLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult(), this::backupLoadDialogResult)
+    private val backupLoadDialogLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult()) { backupLoadDialogResult(this, it) }
 
     private lateinit var vpAdapter: ViewPagerAdapter
 
@@ -68,6 +71,7 @@ class MainViewer : AppCompatActivity() {
         binding = ActivityMainViewerBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
+        binding.root.insetNoTop()
 
         // Register page fragments in the desired order
         vpAdapter.addFragment(vwOverview, PAGE_OVERVIEW)
@@ -109,13 +113,18 @@ class MainViewer : AppCompatActivity() {
                         backupSaveDialogLauncher.launch(intent)
                     }
                     R.id.itm_import_data -> {
-                        promptImportBackup()
+                        promptImportBackup(this, backupLoadDialogLauncher)
                     }
                     R.id.itm_export -> {
                         startActivity(Intent(this, ExportActivity::class.java))
                     }
                     R.id.itm_about -> {
                         startActivity(Intent(this, AboutActivity::class.java))
+                    }
+                    R.id.itm_settings -> {
+                        startActivity(Intent(this, GettingStartedActivity::class.java).apply {
+                            putExtra("IS_SETTINGS", true)
+                        })
                     }
                     else -> {
                         Tools.showPlaceholderDialog(this)
@@ -150,21 +159,6 @@ class MainViewer : AppCompatActivity() {
             deleteOldBeforeImportBackup(this)
             Log.i("BackupCleaner", "Deleted old application data backup from before import")
         }, 5000)
-    }
-
-    private fun promptImportBackup() {
-        MaterialAlertDialogBuilder(this, R.style.Theme_LucidSourceKit_ThemedDialog)
-            .setTitle("Import backup")
-            .setMessage("Importing a backup will erase all of your current data! Are you sure you want to proceed?")
-            .setPositiveButton(getResources().getString(R.string.yes)) { dialog, which ->
-                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-                    addCategory(Intent.CATEGORY_OPENABLE)
-                    setType("application/zip")
-                }
-                backupLoadDialogLauncher.launch(intent)
-            }
-            .setNegativeButton(getResources().getString(R.string.no), null)
-            .show()
     }
 
     private fun backupSaveDialogResult(result: ActivityResult) {
@@ -213,55 +207,71 @@ class MainViewer : AppCompatActivity() {
         })
     }
 
-    private fun backupLoadDialogResult(result: ActivityResult) {
-        val data: Intent? = result.data
-        val uri: Uri? = data?.data
-
-        // Try to get the Uri to the backup path
-        if (result.resultCode != RESULT_OK || data == null || uri == null) {
-            Toast.makeText(this, "Failed to get backup file path", Toast.LENGTH_SHORT).show()
-            return
+    companion object {
+        fun promptImportBackup(activity: Activity, callback: ActivityResultLauncher<Intent>) {
+            MaterialAlertDialogBuilder(activity, R.style.Theme_LucidSourceKit_ThemedDialog)
+                .setTitle("Import backup")
+                .setMessage("Importing a backup will erase all of your current data! Are you sure you want to proceed?")
+                .setPositiveButton(activity.resources.getString(R.string.yes)) { _, _ ->
+                    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                        addCategory(Intent.CATEGORY_OPENABLE)
+                        setType("application/zip")
+                    }
+                    callback.launch(intent)
+                }
+                .setNegativeButton(activity.resources.getString(R.string.no), null)
+                .show()
         }
 
-        // Create the import progress dialog
-        val dBinding = DialogProgressBinding.inflate(layoutInflater, null, false)
-        val dialog = MaterialAlertDialogBuilder(this, R.style.Theme_LucidSourceKit_ThemedDialog)
-            .setTitle("Importing")
-            .setCancelable(false)
-            .setView(dBinding.getRoot())
-            .create()
-        dialog.show()
+        fun backupLoadDialogResult(activity: Activity, result: ActivityResult) {
+            val data: Intent? = result.data
+            val uri: Uri? = data?.data
 
-        dBinding.txtProgressPercentage.visibility = View.GONE
-        dBinding.prgProgress.isIndeterminate = true
-
-        // Try to restore the backup
-        val context: Context = this
-        val restartHandler = Handler(Looper.getMainLooper())
-        BackupTask.startRestore(this, uri, object : BackupTaskCallback {
-            override fun onCompleted() {
-                runOnUiThread {
-                    dBinding.txtProgressText.text = "Done! Restarting..."
-                    dBinding.prgProgress.isIndeterminate = false
-                    dBinding.prgProgress.progress = 100
-                }
-
-                // Restart app after 2 seconds to apply changes
-                restartHandler.postDelayed({ Tools.restartApp(context) }, 2000)
+            // Try to get the Uri to the backup path
+            if (result.resultCode != RESULT_OK || data == null || uri == null) {
+                Toast.makeText(activity, "Failed to get backup file path", Toast.LENGTH_SHORT).show()
+                return
             }
 
-            override fun onError(cause: Throwable) {
-                dialog.dismiss()
-                runOnUiThread {
-                    showToastLong(context, "Import failed: " + cause.message)
-                }
-            }
+            // Create the import progress dialog
+            val dBinding = DialogProgressBinding.inflate(activity.layoutInflater, null, false)
+            val dialog = MaterialAlertDialogBuilder(activity, R.style.Theme_LucidSourceKit_ThemedDialog)
+                .setTitle("Importing")
+                .setCancelable(false)
+                .setView(dBinding.getRoot())
+                .create()
+            dialog.show()
 
-            override fun onProgress(fileName: String, finished: Int, total: Int) {
-                runOnUiThread {
-                    dBinding.txtProgressText.text = fileName
+            dBinding.txtProgressPercentage.visibility = View.GONE
+            dBinding.prgProgress.isIndeterminate = true
+
+            // Try to restore the backup
+            val restartHandler = Handler(Looper.getMainLooper())
+            BackupTask.startRestore(activity, uri, object : BackupTaskCallback {
+                override fun onCompleted() {
+                    activity.runOnUiThread {
+                        dBinding.txtProgressText.text = "Done! Restarting..."
+                        dBinding.prgProgress.isIndeterminate = false
+                        dBinding.prgProgress.progress = 100
+                    }
+
+                    // Restart app after 2 seconds to apply changes
+                    restartHandler.postDelayed({ Tools.restartApp(activity) }, 2000)
                 }
-            }
-        })
+
+                override fun onError(cause: Throwable) {
+                    dialog.dismiss()
+                    activity.runOnUiThread {
+                        showToastLong(activity, "Import failed: " + cause.message)
+                    }
+                }
+
+                override fun onProgress(fileName: String, finished: Int, total: Int) {
+                    activity.runOnUiThread {
+                        dBinding.txtProgressText.text = fileName
+                    }
+                }
+            })
+        }
     }
 }

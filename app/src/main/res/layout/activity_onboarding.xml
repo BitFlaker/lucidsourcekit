@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".setup.views.OnboardingActivity">
+
+    <Space
+        android:id="@+id/sp_bar_placeholder"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_radial"
+        android:backgroundTint="#444416A5"/>
+
+    <LinearLayout
+        android:id="@+id/ll_branding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sp_bar_placeholder">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@mipmap/ic_launcher_pure_round" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LucidSourceKit"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-3dp"
+                android:text="Dreaming Toolkit"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/spnr_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/drop_down"
+        android:entries="@array/languages"
+        android:minHeight="48dp"
+        android:paddingStart="10dp"
+        android:spinnerMode="dropdown"
+        android:paddingEnd="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ll_branding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ll_branding" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spnr_language">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txt_onboarding_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/onboarding_title"
+                android:textAlignment="center"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/txt_onboarding_description"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintVertical_bias="0.18" />
+
+            <TextView
+                android:id="@+id/txt_onboarding_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:text="@string/onboarding_description"
+                android:textAlignment="center"
+                android:textColor="?attr/secondaryTextColor"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/ll_signals"
+                app:layout_constraintTop_toBottomOf="@+id/txt_onboarding_title" />
+
+            <LinearLayout
+                android:id="@+id/ll_signals"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/chk_accept">
+
+                <com.bitflaker.lucidsourcekit.views.BrainWaveView
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp" />
+
+                <com.bitflaker.lucidsourcekit.views.BrainWaveView
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp" />
+
+                <com.bitflaker.lucidsourcekit.views.BrainWaveView
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp" />
+
+                <com.bitflaker.lucidsourcekit.views.BrainWaveView
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp" />
+            </LinearLayout>
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/chk_accept"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginBottom="12dp"
+                android:text="@string/onboarding_consent"
+                android:paddingStart="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/btn_next" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_next"
+                style="@style/Widget.Material3.FloatingActionButton.Large.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginBottom="24dp"
+                android:text="@string/setup_next"
+                app:icon="@drawable/rounded_chevron_right_24"
+                app:iconGravity="textEnd"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

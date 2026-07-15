@@ -77,15 +77,21 @@
     <string name="total_entries_count"><![CDATA[This data is based on a total of <TOTAL_COUNT> dream journal entries.]]></string>
     <string name="goal_achievement_stats"><![CDATA[You achieved this goal <COUNT> out of <TOTAL> times. Your success rate is <PERCENTAGE>%]]></string>
     <string name="not_enough_data_available">Not enough data available!</string>
-    <string name="setup_finish_setup_title">Finish setup</string>
-    <string name="setup_finish_content">The setup of the app is done. To save everything and launch the app, click the finish button.</string>
+    <string name="setup_finish_setup_title">No credentials</string>
+    <string name="setup_finish_content">No credentials will be requested when launching the app. You will immediately get to the overview.</string>
     <string name="setup_privacy_password">Enter a password below which has to be entered every time you want to open this app</string>
     <string name="setup_privacy_pin">Set a pin below which has to be entered every time you want to open this app</string>
     <string name="export_data">Create backup</string>
     <string name="import_data">Restore backup</string>
+    <string name="onboarding_title">Own your dreams</string>
+    <string name="onboarding_description">A privacy-first local-only collection of tools to help you get the most out of your dreams. All in a single passion driven open source project.</string>
+    <string name="onboarding_sub_description">Free. Forever. For everyone.</string>
+    <string name="onboarding_consent">I have read and accept the README and the Privacy Policy</string>
+    <string name="get_started_title">Getting started</string>
+    <string name="get_started_description">Configurations to help you getting started. These options can be accessed at any time in the settings.</string>
     <string-array name="languages">
-        <item>English (en)</item>
-        <item>Deutsch (de)</item>
+        <item>EN</item>
+        <item>DE</item>
     </string-array>
     <string-array name="lock_types">
         <item>PIN</item>
