@@ -1,11 +1,8 @@
 package com.bitflaker.lucidsourcekit.setup.views
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Base64
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -17,14 +14,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.databinding.ActivityAuthenticationBinding
-import com.bitflaker.lucidsourcekit.databinding.FragmentSetupAuthDataBinding
 import com.bitflaker.lucidsourcekit.datastore.DataStoreKeys
 import com.bitflaker.lucidsourcekit.datastore.getSetting
 import com.bitflaker.lucidsourcekit.datastore.updateSetting
 import com.bitflaker.lucidsourcekit.main.AuthTypes
 import com.bitflaker.lucidsourcekit.main.notification.visual.KeypadButtonModel
 import com.bitflaker.lucidsourcekit.main.notification.visual.views.KeypadAdapter
-import com.bitflaker.lucidsourcekit.setup.SetupGetStartedView
 import com.bitflaker.lucidsourcekit.utils.Crypt
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
@@ -88,7 +83,6 @@ class AuthenticationActivity : AppCompatActivity() {
                     AuthTypes.Pin -> storePIN()
                     AuthTypes.None -> storeWithoutAuthentication()
                 }
-                updateSetting(DataStoreKeys.APP_SETUP_FINISHED, true)
                 finish()
             }
         }

@@ -20,6 +20,7 @@ import com.bitflaker.lucidsourcekit.databinding.ActivityOnboardingBinding
 import com.bitflaker.lucidsourcekit.datastore.DataStoreKeys
 import com.bitflaker.lucidsourcekit.datastore.updateSetting
 import com.bitflaker.lucidsourcekit.utils.loadLanguage
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -43,7 +44,7 @@ class OnboardingActivity : AppCompatActivity() {
         binding.spnrLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) { }
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
-                val lang = binding.spnrLanguage.selectedItem.toString()
+                val lang = binding.spnrLanguage.selectedItem.toString().lowercase()
                 lifecycleScope.launch(Dispatchers.IO) {
                     updateSetting(DataStoreKeys.LANGUAGE, lang)
                     loadLanguage()
@@ -55,6 +56,13 @@ class OnboardingActivity : AppCompatActivity() {
                         binding.btnNext.text = resources.getString(R.string.setup_next)
                         binding.chkAccept.text = getAcceptSpan()
                     }
+                }
+                if (lang == "de") {
+                    MaterialAlertDialogBuilder(this@OnboardingActivity, R.style.Theme_LucidSourceKit_ThemedDialog)
+                        .setTitle("Info")
+                        .setMessage("Deutsch ist momentan nur geringfügig übersetzt und einiges wird in Englisch angezeigt.")
+                        .setPositiveButton(this@OnboardingActivity.resources.getString(R.string.ok), null)
+                        .show()
                 }
             }
         }
@@ -70,8 +78,15 @@ class OnboardingActivity : AppCompatActivity() {
         // Configure "Next" button
         binding.btnNext.isEnabled = false
         binding.btnNext.setOnClickListener {
-            startActivity(Intent(this, GettingStartedActivity::class.java))
-            finish()
+            lifecycleScope.launch(Dispatchers.IO) {
+                // Default to no authentication and open the getting started settings
+                updateSetting(DataStoreKeys.AUTHENTICATION_TYPE, "none")
+                updateSetting(DataStoreKeys.APP_SETUP_FINISHED, true)
+                runOnUiThread {
+                    startActivity(Intent(this@OnboardingActivity, GettingStartedActivity::class.java))
+                    finish()
+                }
+            }
         }
     }
 

@@ -115,17 +115,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".setup.SetupViewer"
-            android:configChanges="orientation"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".main.MainViewer"
-            android:configChanges="orientation"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".setup.SetupGetStartedView"
             android:configChanges="orientation"
             android:exported="false"
             android:screenOrientation="portrait" />

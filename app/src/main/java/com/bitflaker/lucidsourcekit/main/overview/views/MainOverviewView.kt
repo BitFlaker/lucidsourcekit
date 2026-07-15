@@ -129,10 +129,7 @@ class MainOverviewView : Fragment() {
         binding.llQaNotifications.setOnClickListener { binding.btnQaNotifications.performClick() }
 
         // More button quick access placeholder
-        binding.btnQaMore.setOnClickListener {
-            startActivity(Intent(context, OnboardingActivity::class.java))
-            //Tools.showPlaceholderDialog(requireContext())
-        }
+        binding.btnQaMore.setOnClickListener { Tools.showPlaceholderDialog(requireContext()) }
         binding.llQaMore.setOnClickListener { binding.btnQaMore.performClick() }
 
         // Lockscreen button quick access placeholder

@@ -1,4 +1,4 @@
-package com.bitflaker.lucidsourcekit.setup
+package com.bitflaker.lucidsourcekit
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

@@ -24,8 +24,10 @@ import com.bitflaker.lucidsourcekit.setup.GettingStartedOption
 import com.bitflaker.lucidsourcekit.setup.RecyclerViewAdapterGettingStartedOptions
 import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.loadLanguage
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class GettingStartedActivity : AppCompatActivity() {
     private val backupLoadDialogLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult()) { backupLoadDialogResult(this, it) }
@@ -97,7 +99,7 @@ class GettingStartedActivity : AppCompatActivity() {
 
     private fun configureTitleSettings() {
         binding.txtGetStartedTitle.text = resources.getString(R.string.settings)
-        binding.txtGetStartedDescription.text = ""
+        binding.txtGetStartedDescription.text = "Here you can update the current preferences. In the future this will allow for much more customizations"
     }
 
     private fun configureLanguageDropDown() {
@@ -106,7 +108,7 @@ class GettingStartedActivity : AppCompatActivity() {
         binding.spnrLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) { }
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
-                val lang = binding.spnrLanguage.selectedItem.toString()
+                val lang = binding.spnrLanguage.selectedItem.toString().lowercase()
                 lifecycleScope.launch(Dispatchers.IO) {
                     updateSetting(DataStoreKeys.LANGUAGE, lang)
                     loadLanguage()
@@ -117,6 +119,13 @@ class GettingStartedActivity : AppCompatActivity() {
                             configureTitleSettings()
                         }
                     }
+                }
+                if (lang == "de") {
+                    MaterialAlertDialogBuilder(this@GettingStartedActivity, R.style.Theme_LucidSourceKit_ThemedDialog)
+                        .setTitle("Info")
+                        .setMessage("Deutsch ist momentan nur geringfügig übersetzt und einiges wird in Englisch angezeigt.")
+                        .setPositiveButton(this@GettingStartedActivity.resources.getString(R.string.ok), null)
+                        .show()
                 }
             }
         }

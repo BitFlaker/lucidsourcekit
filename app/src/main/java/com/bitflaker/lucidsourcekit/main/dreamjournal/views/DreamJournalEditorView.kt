@@ -12,7 +12,7 @@ import com.bitflaker.lucidsourcekit.database.MainDatabase
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.JournalEntryHasTag
 import com.bitflaker.lucidsourcekit.database.dreamjournal.entities.results.DreamJournalEntry
 import com.bitflaker.lucidsourcekit.databinding.ActivityJournalEditorBinding
-import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter
+import com.bitflaker.lucidsourcekit.ViewPagerAdapter
 import com.bitflaker.lucidsourcekit.utils.insetDefault
 import com.bitflaker.lucidsourcekit.utils.onBackPressed
 import com.google.android.material.dialog.MaterialAlertDialogBuilder

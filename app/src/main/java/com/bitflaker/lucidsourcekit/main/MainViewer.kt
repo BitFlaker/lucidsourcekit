@@ -30,7 +30,7 @@ import com.bitflaker.lucidsourcekit.main.export.views.ExportActivity
 import com.bitflaker.lucidsourcekit.main.goals.views.GoalsView
 import com.bitflaker.lucidsourcekit.main.overview.views.MainOverviewView
 import com.bitflaker.lucidsourcekit.main.statistics.views.StatisticsView
-import com.bitflaker.lucidsourcekit.setup.ViewPagerAdapter
+import com.bitflaker.lucidsourcekit.ViewPagerAdapter
 import com.bitflaker.lucidsourcekit.setup.views.GettingStartedActivity
 import com.bitflaker.lucidsourcekit.utils.backup.BackupTask
 import com.bitflaker.lucidsourcekit.utils.backup.BackupTask.Companion.deleteOldBeforeImportBackup
