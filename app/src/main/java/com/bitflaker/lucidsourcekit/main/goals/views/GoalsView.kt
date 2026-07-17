@@ -67,24 +67,6 @@ class GoalsView : Fragment() {
         binding.btnAdjustAlgorithm.setOnClickListener { setupAdjustAlgorithmSheet() }
 
         updateStats()
-
-        // Set popup handler for more options button
-        binding.btnMoreOptions.setOnClickListener {
-            val popup = PopupMenu(ContextThemeWrapper(context, R.style.Theme_LucidSourceKit_PopupMenu), binding.btnMoreOptions)
-            popup.menuInflater.inflate(R.menu.more_goals_options, popup.menu)
-            popup.setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    R.id.itm_shuffle -> Thread(this::storeNewShuffle).start()
-                    R.id.itm_edit_goals -> startActivity(Intent(context, GoalsEditorView::class.java))
-                    R.id.itm_about_goals -> {
-                        // TODO: show page with details about what goals are and what they are supposed to achieve
-                    }
-                    else -> throw InvalidParameterException("Unknown option selected")
-                }
-                true
-            }
-            popup.show()
-        }
     }
 
     private fun setupAdjustAlgorithmSheet() {

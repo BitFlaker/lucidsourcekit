@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/cardRadius" />
+            <gradient
+                android:type="linear"
+                android:angle="225"
+                android:startColor="?attr/colorSuccessHigh"
+                android:centerColor="?attr/colorSuccessRegular"
+                android:endColor="?attr/colorSuccessRegular"/>
+        </shape>
+    </item>
+    <item
+        android:left="1dp"
+        android:top="1dp"
+        android:right="1dp"
+        android:bottom="1dp">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/cardRadius" />
+            <solid android:color="?attr/colorSuccessRegular" />
+        </shape>
+    </item>
+</layer-list>

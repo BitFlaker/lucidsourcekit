@@ -11,6 +11,10 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 
+    <color name="colorSuccessLow">#0c1912</color>
+    <color name="colorSuccessRegular">#499a70</color>
+    <color name="colorSuccessHigh">#6de6a7</color>
+
     <color name="md_theme_primary">#36618E</color>
     <color name="md_theme_onPrimary">#FFFFFF</color>
     <color name="md_theme_primaryContainer">#D1E4FF</color>

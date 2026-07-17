@@ -10,7 +10,7 @@
     app:cardCornerRadius="@dimen/cardRadius"
     app:strokeWidth="0dp"
     app:cardElevation="0dp"
-    app:cardBackgroundColor="?attr/colorSurfaceContainer">
+    app:cardBackgroundColor="@android:color/transparent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,19 +22,19 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_marginStart="12dp"
-            android:src="@drawable/circle"
+            android:src="@drawable/background_card_border_success"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorTertiary" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/txt_achieved_counter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="26"
-            android:textColor="?attr/colorOnTertiary"
+            android:textColor="?attr/colorSurface"
             android:textSize="14sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/img_achieved_counter_background"
             app:layout_constraintEnd_toEndOf="@+id/img_achieved_counter_background"
             app:layout_constraintStart_toStartOf="@+id/img_achieved_counter_background"

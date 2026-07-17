@@ -8,6 +8,10 @@
         <item name="colorWarning">@color/warning</item>
         <item name="colorSuccess">@color/success</item>
 
+        <item name="colorSuccessLow">@color/colorSuccessLow</item>
+        <item name="colorSuccessRegular">@color/colorSuccessRegular</item>
+        <item name="colorSuccessHigh">@color/colorSuccessHigh</item>
+
         <item name="colorPrimary">@color/md_theme_primary</item>
         <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_primaryContainer</item>

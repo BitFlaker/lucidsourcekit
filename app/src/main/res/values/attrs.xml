@@ -18,6 +18,10 @@
     <attr name="main_overview_graphic" format="reference"/>
     <attr name="priorityColor" format="reference"/>
 
+    <attr name="colorSuccessLow" format="reference"/>
+    <attr name="colorSuccessRegular" format="reference"/>
+    <attr name="colorSuccessHigh" format="reference"/>
+
     <attr name="primaryTextColor" format="reference"/>
     <attr name="secondaryTextColor" format="reference"/>
     <attr name="tertiaryTextColor" format="reference"/>

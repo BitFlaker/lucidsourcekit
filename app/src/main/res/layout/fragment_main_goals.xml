@@ -191,29 +191,19 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
                     app:cardBackgroundColor="?attr/colorSurfaceContainer"
-                    app:strokeColor="?attr/colorSurfaceContainerHighest"
                     app:strokeWidth="0dp"
-                    app:contentPadding="8dp"
+                    app:contentPadding="0dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <ImageButton
-                        android:id="@+id/btn_more_options"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_gravity="end"
-                        android:background="@drawable/ripple_round"
-                        android:src="@drawable/rounded_more_horiz_24"
-                        android:visibility="gone"
-                        app:backgroundTint="?attr/colorSurface"
-                        app:tint="?attr/secondaryTextColor" />
-
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="32dp">
+                        android:paddingTop="8dp"
+                        android:paddingHorizontal="8dp"
+                        android:paddingBottom="40dp"
+                        android:background="@drawable/background_card_border">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -236,6 +226,19 @@
 
                     </RelativeLayout>
                 </com.google.android.material.card.MaterialCardView>
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="-1dp"
+                    android:layout_marginLeft="-8dp"
+                    android:layout_marginRight="-8dp"
+                    android:layout_marginBottom="-4dp"
+                    android:background="@drawable/background_button_card"
+                    app:layout_constraintBottom_toBottomOf="@+id/btn_adjust_algorithm"
+                    app:layout_constraintEnd_toEndOf="@+id/btn_adjust_algorithm"
+                    app:layout_constraintStart_toStartOf="@+id/btn_adjust_algorithm"
+                    app:layout_constraintTop_toBottomOf="@+id/crd_goals_today" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_adjust_algorithm"
