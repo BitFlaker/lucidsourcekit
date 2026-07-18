@@ -12,22 +12,25 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bitflaker.lucidsourcekit.R
 import com.bitflaker.lucidsourcekit.databinding.FragmentMainBinauralBeatsBinding
 import com.bitflaker.lucidsourcekit.databinding.SheetBinauralAutoStopBinding
 import com.bitflaker.lucidsourcekit.databinding.SheetBinauralBeatsBinding
-import com.bitflaker.lucidsourcekit.main.binauralbeats.player.BinauralBeatsPlayer
 import com.bitflaker.lucidsourcekit.main.binauralbeats.BinauralBeat
+import com.bitflaker.lucidsourcekit.main.binauralbeats.BinauralBeatsPlayer
 import com.bitflaker.lucidsourcekit.main.binauralbeats.presets.BinauralBeats
 import com.bitflaker.lucidsourcekit.main.binauralbeats.presets.Brainwaves
 import com.bitflaker.lucidsourcekit.utils.Tools
 import com.bitflaker.lucidsourcekit.utils.attrColor
 import com.bitflaker.lucidsourcekit.utils.dpToPx
-import com.bitflaker.lucidsourcekit.utils.insetDefault
 import com.bitflaker.lucidsourcekit.utils.insetNoBottom
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 class BinauralBeatsView : Fragment() {
@@ -38,14 +41,6 @@ class BinauralBeatsView : Fragment() {
     private var playingFinished = false
     private var isAutoStopTimerRunning = false
     private var autoStopInterval = -1
-
-//    private val noises = arrayListOf(
-//        BackgroundNoise("Flowing water", R.drawable.ic_baseline_water_24, 25f),
-//        BackgroundNoise("Explosions", R.drawable.ic_baseline_brightness_7_24, 0f),
-//        BackgroundNoise("Wind", R.drawable.ic_baseline_air_24, 75f),
-//        BackgroundNoise("Alarm", R.drawable.ic_baseline_access_alarm_24, 10f),
-//        BackgroundNoise("White noise", R.drawable.ic_baseline_waves_24, 100f)
-//    )
 
     private val stopCurrentlyPlayingTrack = Runnable {
         val context = requireContext()
@@ -216,7 +211,7 @@ class BinauralBeatsView : Fragment() {
         binding.llBbpTimeContainer.visibility = View.VISIBLE
         binding.lgBinauralTimeProgress.visibility = View.VISIBLE
         binding.txtBbpCarrierFreqHeading.visibility = View.VISIBLE
-        binding.txtBinauralBeatsTotalTime.text = String.format(" / %s", getTimeStringFromSeconds(binauralBeat.frequencyList.duration.toInt()))
+        binding.txtBinauralBeatsTotalTime.text = String.format(" / %s", getTimeStringFromSeconds(binauralBeat.duration.toInt()))
         binding.txtBinauralBeatsTimeline.text = getTimeStringFromSeconds(0)
         binding.txtCurrentBinauralFrequency.text = "0.00"
         binding.txtCarrierFrequency.text = String.format(Locale.ENGLISH, "%.0f Hz", binauralBeat.baseFrequency)
@@ -237,7 +232,8 @@ class BinauralBeatsView : Fragment() {
 
         // Set the data for the current track
         binding.lgBinauralTimeProgress.setData(
-            binauralBeat.frequencyList,
+            binauralBeat.segments,
+            binauralBeat.duration,
             32f,
             4f,
             0f,
@@ -247,7 +243,8 @@ class BinauralBeatsView : Fragment() {
         )
 
         // Create new player
-        val player = BinauralBeatsPlayer(binauralBeat)
+        val player = BinauralBeatsPlayer()
+        player.setBinauralBeat(binauralBeat)
 
         // Set handler for progress to update progress and data (e.g. frequency, ...)
         player.onProgressListener = { currentBinauralBeat, progress ->
@@ -258,15 +255,18 @@ class BinauralBeatsView : Fragment() {
         }
 
         // Set handler for a finished track (stop / repeat track)
-        player.onFinishedListener = { currentBinauralBeat ->
-            playingFinished = true
-            setEndValues(currentBinauralBeat)
-            if (repeatBeat) {
-                playingFinished = false
-                binding.lgBinauralTimeProgress.resetProgress()
-                player.play()
-            } else {
-                binding.btnPlayTrack.setIcon(ResourcesCompat.getDrawable(context.resources, R.drawable.ic_baseline_play_arrow_24, context.theme))
+        player.onFinishedListener = {
+            activity?.runOnUiThread {
+                playingFinished = true
+                setEndValues(it)
+                if (repeatBeat) {
+                    playingFinished = false
+                    binding.lgBinauralTimeProgress.resetProgress()
+                    player.setBinauralBeat(it)
+                    player.play()
+                } else {
+                    binding.btnPlayTrack.setIcon(ResourcesCompat.getDrawable(context.resources, R.drawable.ic_baseline_play_arrow_24, context.theme))
+                }
             }
         }
         binauralBeatsPlayer = player
@@ -281,16 +281,16 @@ class BinauralBeatsView : Fragment() {
 
     private fun setEndValues(currentBinauralBeat: BinauralBeat) {
         activity?.runOnUiThread {
-            val finishProgress = currentBinauralBeat.frequencyList.duration.toInt()
+            val finishProgress = currentBinauralBeat.duration.toInt()
             binding.txtBinauralBeatsTimeline.text = getTimeStringFromSeconds(finishProgress)
-            binding.txtCurrentBinauralFrequency.text = String.format(Locale.ENGLISH, "%.2f", currentBinauralBeat.frequencyList.getFrequencyAtDuration(finishProgress.toDouble()))
+            binding.txtCurrentBinauralFrequency.text = String.format(Locale.ENGLISH, "%.2f", getFrequencyAtDuration(currentBinauralBeat, finishProgress.toDouble()))
             // TODO: the progress updating is a bit a workaround and should be better
             binding.lgBinauralTimeProgress.updateProgress(binding.lgBinauralTimeProgress.durationProgress.toDouble())
         }
     }
 
     private fun setDataForProgress(binauralBeat: BinauralBeat, progress: Int) {
-        val currFreq = binauralBeat.frequencyList.getFrequencyAtDuration(progress.toDouble())
+        val currFreq = getFrequencyAtDuration(binauralBeat, progress.toDouble())
         val stageIndex = Brainwaves.getStageIndex(currFreq)
         val greekLetter = Brainwaves.stageFrequencyGreekLetters[stageIndex]
         val greekLetterName = Brainwaves.stageFrequencyGreekLetterNames[stageIndex]
@@ -301,6 +301,21 @@ class BinauralBeatsView : Fragment() {
             binding.txtCurrentBinauralFrequency.text = String.format(Locale.ENGLISH, "%.2f", currFreq)
             binding.txtBinauralBeatsTimeline.text = getTimeStringFromSeconds(progress)
         } ?: binauralBeatsPlayer!!.stop()
+    }
+
+    fun getFrequencyAtDuration(binauralBeat: BinauralBeat, duration: Double): Double {
+        var durationCounter = 0.0
+        for (current in binauralBeat.segments) {
+            durationCounter += current.duration
+            if (durationCounter >= duration) {
+                if (current.frequencyTo.isNaN()) {
+                    return current.frequencyFrom
+                }
+                val k = (current.frequencyTo - current.frequencyFrom) / current.duration
+                return k * (duration - (durationCounter - current.duration)) + current.frequencyFrom
+            }
+        }
+        return -1.0
     }
 
     private fun getTimeStringFromSeconds(totalSeconds: Int): String {

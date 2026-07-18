@@ -31,7 +31,7 @@ class RecyclerViewAdapterBinauralBeatsSelector(
         holder.binding.txtBinauralBeatsBaseFrequency.text = getBaseFrequencyString(current)
 
         // Get minute, seconds and hour parts
-        val seconds = current.frequencyList.duration.toInt()
+        val seconds = current.duration.toInt()
         val sec = seconds % 60
         val min = (seconds / 60) % 60
         val hours = (seconds / 60) / 60
@@ -46,7 +46,8 @@ class RecyclerViewAdapterBinauralBeatsSelector(
 
         // Configure the binaural beat line chart gradient
         holder.binding.lgBinauralGradient.setData(
-            current.frequencyList,
+            current.segments,
+            current.duration,
             32f,
             3f,
             0f,

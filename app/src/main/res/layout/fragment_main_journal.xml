@@ -148,7 +148,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:src="@drawable/ic_round_add_24"
-        app:borderWidth="0dp" />
+        app:borderWidth="1dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_text"
@@ -160,7 +160,7 @@
         android:layout_marginBottom="12dp"
         android:src="@drawable/ic_baseline_text_fields_24"
         android:visibility="invisible"
-        app:borderWidth="0dp" />
+        app:borderWidth="1dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_forms"
@@ -172,7 +172,7 @@
         android:layout_marginBottom="8dp"
         android:src="@drawable/rounded_convert_to_text_24"
         android:visibility="invisible"
-        app:borderWidth="0dp" />
+        app:borderWidth="1dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_questionnaire"
@@ -184,5 +184,5 @@
         android:layout_marginBottom="8dp"
         android:src="@drawable/round_history_edu_24"
         android:visibility="invisible"
-        app:borderWidth="0dp" />
+        app:borderWidth="1dp" />
 </RelativeLayout>

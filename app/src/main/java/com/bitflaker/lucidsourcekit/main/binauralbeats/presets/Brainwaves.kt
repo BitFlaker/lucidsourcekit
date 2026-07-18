@@ -49,7 +49,7 @@ class Brainwaves {
          * e.g. beta (32Hz-13Hz) => β
          * @return an array of the greek letter for frequencies in each stage
          */
-        val stageFrequencyGreekLetters = arrayOf<String>(
+        val stageFrequencyGreekLetters = arrayOf(
             "β",    // beta = 32Hz - 13Hz
             "α",    // alpha = 13Hz - 8Hz
             "θ",    // theta = 8Hz - 4Hz
@@ -61,7 +61,7 @@ class Brainwaves {
          * e.g. beta (32Hz-13Hz) => Beta
          * @return an array of greek letter's name representing frequencies in each stage
          */
-        val stageFrequencyGreekLetterNames = arrayOf<String>(
+        val stageFrequencyGreekLetterNames = arrayOf(
             "Beta",     // beta = 32Hz - 13Hz
             "Alpha",    // alpha = 13Hz - 8Hz
             "Theta",    // theta = 8Hz - 4Hz

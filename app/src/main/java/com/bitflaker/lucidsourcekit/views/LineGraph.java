@@ -16,8 +16,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.bitflaker.lucidsourcekit.R;
-import com.bitflaker.lucidsourcekit.main.binauralbeats.player.FrequencyData;
-import com.bitflaker.lucidsourcekit.main.binauralbeats.player.FrequencyList;
+import com.bitflaker.lucidsourcekit.main.binauralbeats.BinauralBeat;
 import com.bitflaker.lucidsourcekit.utils.Tools;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class LineGraph extends View {
-    private FrequencyList data = new FrequencyList();
+    private List<BinauralBeat.Segment> data = new ArrayList<>();
     private final Paint dataPainter = new Paint();
     private final Paint axisLinePaint = new Paint();
     private final Paint dataLinePaint = new Paint();
@@ -99,10 +98,10 @@ public class LineGraph extends View {
         wasScaledOnce = false;
     }
 
-    public void setData(FrequencyList data, float maxValue, float lineWidth, float padding_bottom, boolean doNotIndicateProgress, int[] colors, double[] stages) {
+    public void setData(List<BinauralBeat.Segment> data, double duration, float maxValue, float lineWidth, float padding_bottom, boolean doNotIndicateProgress, int[] colors, double[] stages) {
         // TODO: setting a second time overlays with previous and makes shader opacity 100%
         yMax = maxValue;
-        xMax = data.getDuration();
+        xMax = (float) duration;
         progress = doNotIndicateProgress ? xMax : 0;
         this.colors = colors;
         this.data = data;
@@ -195,13 +194,13 @@ public class LineGraph extends View {
         }
 
         for (int i = 0; i < data.size(); i++) {
-            FrequencyData current = data.get(i);
-            float realX = data.getDurationUntil(i) / xMax * drawAreaWidth + radiusMargin;
-            float realY = (yMax - current.getFrequency()) / yMax * drawAreaHeight + radiusMargin;
-            float nextEndX = data.getDurationUntilAfter(i) / xMax * drawAreaWidth + radiusMargin;
+            BinauralBeat.Segment current = data.get(i);
+            float realX = getDurationUntil(i) / xMax * drawAreaWidth + radiusMargin;
+            float realY = (float)((yMax - current.getFrequencyFrom()) / yMax * drawAreaHeight + radiusMargin);
+            float nextEndX = getDurationUntilAfter(i) / xMax * drawAreaWidth + radiusMargin;
             float nextEndY = realY;
-            if(!Float.isNaN(current.getFrequencyTo())) {
-                nextEndY = (yMax - current.getFrequencyTo()) / yMax * drawAreaHeight + radiusMargin;
+            if(!Double.isNaN(current.getFrequencyTo())) {
+                nextEndY = (float)((yMax - current.getFrequencyTo()) / yMax * drawAreaHeight + radiusMargin);
             }
 
             topLeft[0] = realX;
@@ -232,12 +231,39 @@ public class LineGraph extends View {
             }
 
             if(drawProgressIndicator && progress > -1 && !drewProgress && realXProgress >= topLeft[0] && realXProgress <= topRight[0]){
-                float realYProgress = (yMax - (float)data.getFrequencyAtDuration(progress)) / yMax * drawAreaHeight + radiusMargin + progressPainter.getStrokeWidth()/4.0f;
+                float realYProgress = (yMax - (float)getFrequencyAtDuration(progress)) / yMax * drawAreaHeight + radiusMargin + progressPainter.getStrokeWidth()/4.0f;
                 canvas.drawLine(realXProgress, realYProgress, realXProgress, getHeight(), progressPainter);
                 drewProgress = true;
             }
             canvas.drawLine(realX, realY, nextEndX, nextEndY, dataLinePaint);
         }
+    }
+
+    private float getDurationUntilAfter(int i) {
+        return getDurationUntil(i) + (float)data.get(i).getDuration();
+    }
+
+    private float getDurationUntil(int i) {
+        double duration = 0.0;
+        for (int j = 0; j < i; j++) {
+            duration += data.get(j).getDuration();
+        }
+        return (float)duration;
+    }
+
+    private double getFrequencyAtDuration(double duration) {
+        var durationCounter = 0.0;
+        for (BinauralBeat.Segment current : data) {
+            durationCounter += current.getDuration();
+            if (durationCounter >= duration) {
+                if (Double.isNaN(current.getFrequencyTo())) {
+                    return current.getFrequencyFrom();
+                }
+                double k = (current.getFrequencyTo() - current.getFrequencyFrom()) / current.getDuration();
+                return k * (duration - (durationCounter - current.getDuration())) + current.getFrequencyFrom();
+            }
+        }
+        return -1.0;
     }
 
     public void setBottomLineSpacing(float bottomLineSpacing) {
@@ -301,12 +327,11 @@ public class LineGraph extends View {
 
     public void resetProgress() {
         if (lgSurfaceOpacity == null) return;
-        lgSurfaceOpacity.getLocalMatrix(lgradOpacMatrix);
-        if (!doNotIndicateProgress) {
-            lgradOpacMatrix.postTranslate(-(float)((lastSetProgress/xMax) * getWidth()), 0);
-        }
+        lgradOpacMatrix = new Matrix();
         lgSurfaceOpacity.setLocalMatrix(lgradOpacMatrix);
-        lastSetProgress = progress = 0;
+        lgLineOpacity.setLocalMatrix(lgradOpacMatrix);
+        lastSetProgress = 0;
+        progress = 0;
         invalidate();
     }
 

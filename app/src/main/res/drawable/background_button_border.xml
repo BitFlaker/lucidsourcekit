@@ -1,36 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="?attr/colorControlHighlight">
-    <item android:id="@android:id/mask">
+    <item android:id="@android:id/mask" android:top="3dp" android:bottom="3dp">
         <shape android:shape="rectangle">
             <corners android:radius="@dimen/cardRadius" />
         </shape>
     </item>
     <item>
         <layer-list>
-            <item>
-                <shape android:shape="rectangle">
-                    <corners android:radius="@dimen/cardRadius" />
-                    <gradient
-                        android:type="linear"
-                        android:angle="225"
-                        android:startColor="?attr/colorOutlineVariant"
-                        android:centerColor="@android:color/transparent"
-                        android:endColor="@android:color/transparent"/>
-                </shape>
-            </item>
             <item
-                android:left="1dp"
-                android:top="1dp"
-                android:right="1dp"
-                android:bottom="1dp">
+                android:top="3dp"
+                android:bottom="3dp">
                 <shape android:shape="rectangle">
                     <corners android:radius="@dimen/cardRadius" />
                     <gradient
                         android:type="linear"
                         android:angle="225"
                         android:startColor="?attr/colorSurfaceContainerHigh"
-                        android:centerColor="?attr/colorSurfaceContainer"
-                        android:endColor="?attr/colorSurfaceContainer"/>
+                        android:centerColor="@android:color/transparent"
+                        android:endColor="@android:color/transparent"/>
+                </shape>
+            </item>
+            <item
+                android:left="1dp"
+                android:top="4dp"
+                android:right="1dp"
+                android:bottom="4dp">
+                <shape android:shape="rectangle">
+                    <corners android:radius="@dimen/cardRadius" />
+                    <gradient
+                        android:type="linear"
+                        android:angle="225"
+                        android:startColor="?attr/colorSurfaceContainerLow"
+                        android:endColor="@android:color/transparent"/>
                 </shape>
             </item>
         </layer-list>
