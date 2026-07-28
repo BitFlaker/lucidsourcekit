@@ -185,12 +185,11 @@
                 android:layout_marginTop="42dp">
 
                 <com.google.android.material.card.MaterialCardView
-                    style="@style/LSK.MaterialCardView.Outlined"
+                    style="@style/LSK.MaterialCardView.Filled"
                     android:id="@+id/crd_goals_today"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
-                    app:cardBackgroundColor="?attr/colorSurfaceContainer"
                     app:strokeWidth="0dp"
                     app:contentPadding="0dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -202,8 +201,7 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="8dp"
                         android:paddingHorizontal="8dp"
-                        android:paddingBottom="40dp"
-                        android:background="@drawable/background_card_border">
+                        android:paddingBottom="40dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -230,10 +228,10 @@
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginTop="-1dp"
-                    android:layout_marginLeft="-8dp"
-                    android:layout_marginRight="-8dp"
-                    android:layout_marginBottom="-4dp"
+                    android:layout_marginTop="-2dp"
+                    android:layout_marginLeft="-6dp"
+                    android:layout_marginRight="-6dp"
+                    android:layout_marginBottom="-2dp"
                     android:background="@drawable/background_button_card"
                     app:layout_constraintBottom_toBottomOf="@+id/btn_adjust_algorithm"
                     app:layout_constraintEnd_toEndOf="@+id/btn_adjust_algorithm"
@@ -251,8 +249,6 @@
                     android:translationZ="6dp"
                     android:layout_marginTop="-24dp"
                     app:cornerRadius="14dp"
-                    android:background="@drawable/background_button_border"
-                    app:backgroundTintMode="add"
                     app:backgroundTint="?attr/colorPrimaryContainer"
                     app:icon="@drawable/ic_baseline_auto_graph_24"
                     app:iconPadding="8dp"

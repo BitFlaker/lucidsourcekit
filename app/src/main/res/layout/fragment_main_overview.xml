@@ -75,9 +75,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:padding="18dp"
-                        android:background="@drawable/background_card_border"
-                        app:backgroundTint="@android:color/white"
-                        app:backgroundTintMode="multiply"
+                        app:backgroundTint="?attr/colorSurfaceContainer"
                         app:cornerRadius="16dp"
                         app:icon="@drawable/round_notifications_24"
                         app:rippleColor="?attr/colorSurfaceContainerHighest"
@@ -108,9 +106,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:padding="18dp"
-                        android:background="@drawable/background_card_border"
-                        app:backgroundTint="@android:color/white"
-                        app:backgroundTintMode="multiply"
+                        app:backgroundTint="?attr/colorSurfaceContainer"
                         app:cornerRadius="16dp"
                         app:icon="@drawable/rounded_screen_lock_portrait_24"
                         app:rippleColor="?attr/colorSurfaceContainerHighest"
@@ -141,9 +137,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:padding="18dp"
-                        android:background="@drawable/background_card_border"
-                        app:backgroundTint="@android:color/white"
-                        app:backgroundTintMode="multiply"
+                        app:backgroundTint="?attr/colorSurfaceContainer"
                         app:cornerRadius="16dp"
                         app:icon="@drawable/round_history_edu_24"
                         app:rippleColor="?attr/colorSurfaceContainerHighest"
@@ -174,9 +168,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:padding="18dp"
-                        android:background="@drawable/background_card_border"
-                        app:backgroundTint="@android:color/white"
-                        app:backgroundTintMode="multiply"
+                        app:backgroundTint="?attr/colorSurfaceContainer"
                         app:cornerRadius="16dp"
                         app:icon="@drawable/rounded_more_horiz_24"
                         app:rippleColor="?attr/colorSurfaceContainerHighest"
@@ -221,7 +213,7 @@
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/crd_manage_alarms"
-                    style="@style/LSK.MaterialCardView.Outlined"
+                    style="@style/LSK.MaterialCardView.Filled"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
@@ -233,41 +225,35 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:strokeWidth="0dp">
 
-                    <FrameLayout
+                    <TextView
+                        android:id="@+id/txt_no_alarms_set"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/background_card_border">
+                        android:layout_marginTop="40dp"
+                        android:layout_marginBottom="48dp"
+                        android:text="No alarms enabled"
+                        android:textAlignment="center"
+                        android:textColor="?attr/tertiaryTextColor"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
 
-                        <TextView
-                            android:id="@+id/txt_no_alarms_set"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="40dp"
-                            android:layout_marginBottom="48dp"
-                            android:text="No alarms enabled"
-                            android:textAlignment="center"
-                            android:textColor="?attr/tertiaryTextColor"
-                            android:textSize="14sp"
-                            android:visibility="gone" />
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rcv_active_alarms"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="32dp"
-                            android:nestedScrollingEnabled="false"
-                            android:overScrollMode="never"
-                            android:paddingTop="6dp" />
-                    </FrameLayout>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcv_active_alarms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="32dp"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never"
+                        android:paddingTop="6dp" />
                 </com.google.android.material.card.MaterialCardView>
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginTop="-1dp"
-                    android:layout_marginLeft="-8dp"
-                    android:layout_marginRight="-8dp"
-                    android:layout_marginBottom="-4dp"
+                    android:layout_marginTop="-2dp"
+                    android:layout_marginLeft="-6dp"
+                    android:layout_marginRight="-6dp"
+                    android:layout_marginBottom="-2dp"
                     android:background="@drawable/background_button_card"
                     app:layout_constraintBottom_toBottomOf="@+id/btn_manage_alarms"
                     app:layout_constraintEnd_toEndOf="@+id/btn_manage_alarms"
@@ -283,8 +269,6 @@
                     android:textColor="?attr/colorPrimary"
                     android:translationZ="6dp"
                     android:layout_marginTop="-24dp"
-                    android:background="@drawable/background_button_border"
-                    app:backgroundTintMode="add"
                     app:backgroundTint="?attr/colorPrimaryContainer"
                     app:cornerRadius="14dp"
                     app:icon="@drawable/rounded_alarm_24"
