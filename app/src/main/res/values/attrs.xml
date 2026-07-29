@@ -47,4 +47,14 @@
         <attr name="icon" format="reference"/>
         <attr name="lineColor" format="reference"/>
     </declare-styleable>
+
+    <declare-styleable name="IconSlider">
+        <attr name="sliderTrackHeight" format="dimension" />
+        <attr name="sliderTrackInset" format="dimension" />
+        <attr name="sliderTooltipGap" format="dimension" />
+        <attr name="sliderTrackColor" format="color" />
+        <attr name="sliderIconColor" format="color" />
+        <attr name="sliderStartColor" format="color" />
+        <attr name="sliderEndColor" format="color" />
+    </declare-styleable>
 </resources>

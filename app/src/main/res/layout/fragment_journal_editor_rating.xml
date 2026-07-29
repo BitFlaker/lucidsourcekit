@@ -103,8 +103,8 @@
                 android:id="@+id/txt_rating_dream_mood_heading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
                 android:layout_marginStart="32dp"
+                android:layout_marginTop="48dp"
                 android:text="Dream mood"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="14sp"
@@ -129,99 +129,35 @@
 <!--                app:layout_constraintTop_toTopOf="@+id/txt_rating_dream_mood_heading"-->
 <!--                app:rippleColor="?attr/colorOutlineVariant" />-->
 
-            <LinearLayout
-                android:id="@+id/ll_dream_rating_dream_mood"
+            <com.bitflaker.lucidsourcekit.views.IconSlider
+                android:id="@+id/is_dream_mood"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_rating_dream_mood_heading">
+                android:layout_marginTop="8dp"
+                android:paddingHorizontal="24dp"
+                app:layout_constraintTop_toBottomOf="@+id/txt_rating_dream_mood_heading"
+                app:sliderEndColor="?attr/colorSuccess"
+                app:sliderStartColor="?attr/colorError" />
 
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/sld_dj_dream_mood"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-4dp"
-                    android:stepSize="1"
-                    android:valueTo="4"
-                    app:trackColorActive="?attr/colorSurfaceContainerHighest"
-                    app:tickColor="?attr/colorSurfaceContainerHighest"
-                    app:trackColor="?attr/colorSurfaceContainerHighest"
-                    app:haloColor="@android:color/transparent"
-                    app:trackInsideCornerSize="4dp"
-                    app:trackHeight="4dp"
-                    app:thumbWidth="20dp"
-                    app:thumbHeight="20dp"
-                    app:thumbTrackGapSize="16dp"
-                    app:trackStopIndicatorSize="12dp"
-                    app:tickVisible="true"
-                    app:labelBehavior="floating"
-                    app:labelStyle="@style/Tooltip.Dark" />
+            <com.bitflaker.lucidsourcekit.views.IconSlider
+                android:id="@+id/is_sleep_quality"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingHorizontal="24dp"
+                app:layout_constraintTop_toBottomOf="@+id/txt_rating_sleep_quality_heading"
+                app:sliderEndColor="?attr/colorSuccess"
+                app:sliderStartColor="?attr/colorError" />
 
-                <LinearLayout
-                    android:id="@+id/ll_dj_dream_mood"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-8dp"
-                    android:layout_marginHorizontal="4dp"
-                    android:orientation="horizontal"
-                    android:visibility="visible"
-                    app:layout_constraintEnd_toEndOf="parent">
-
-                    <ImageView
-                        android:id="@+id/img_very_dissatisfied"
-                        android:layout_width="wrap_content"
-                        android:layout_height="24dp"
-                        android:layout_gravity="top"
-                        android:layout_marginTop="4dp"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/alt_very_dissatisfied_smiley_rating"
-                        android:src="@drawable/ic_baseline_sentiment_very_dissatisfied_24"
-                        app:tint="?attr/primaryTextColor" />
-
-                    <ImageView
-                        android:id="@+id/img_dissatisfied"
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:layout_gravity="top"
-                        android:layout_weight="10"
-                        android:contentDescription="@string/alt_dissatisfied_smiley_rating"
-                        android:src="@drawable/ic_baseline_sentiment_dissatisfied_24"
-                        app:tint="?attr/tertiaryTextColor" />
-
-                    <ImageView
-                        android:id="@+id/img_neutral_satisfied"
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:layout_gravity="top"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/alt_neutral_smiley_rating"
-                        android:src="@drawable/ic_baseline_sentiment_neutral_24"
-                        app:tint="?attr/tertiaryTextColor" />
-
-                    <ImageView
-                        android:id="@+id/img_satisfied"
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:layout_gravity="top"
-                        android:layout_weight="10"
-                        android:contentDescription="@string/alt_satisfied_smiley_rating"
-                        android:src="@drawable/ic_baseline_sentiment_satisfied_24"
-                        app:tint="?attr/tertiaryTextColor" />
-
-                    <ImageView
-                        android:id="@+id/img_very_satisfied"
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:layout_gravity="top"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/alt_very_satisfied_smiley_rating"
-                        android:src="@drawable/ic_baseline_sentiment_very_satisfied_24"
-                        app:tint="?attr/tertiaryTextColor" />
-                </LinearLayout>
-            </LinearLayout>
+            <com.bitflaker.lucidsourcekit.views.IconSlider
+                android:id="@+id/is_dream_clarity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingHorizontal="24dp"
+                app:layout_constraintTop_toBottomOf="@+id/txt_rating_dream_clarity_heading"
+                app:sliderEndColor="?attr/colorSuccess"
+                app:sliderStartColor="?attr/colorError" />
 
             <TextView
                 android:id="@+id/txt_rating_sleep_quality_heading"
@@ -234,7 +170,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ll_dream_rating_dream_mood" />
+                app:layout_constraintTop_toBottomOf="@+id/is_dream_mood" />
 
             <!--
             Help text:
@@ -253,101 +189,6 @@
 <!--                app:layout_constraintTop_toTopOf="@+id/txt_rating_sleep_quality_heading"-->
 <!--                app:rippleColor="?attr/colorOutlineVariant" />-->
 
-            <LinearLayout
-                android:id="@+id/ll_dream_rating_sleep_quality"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_rating_sleep_quality_heading">
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/sld_dj_sleep_quality"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-4dp"
-                    android:stepSize="1"
-                    android:valueTo="3"
-                    app:trackColorActive="?attr/colorSurfaceContainerHighest"
-                    app:tickColor="?attr/colorSurfaceContainerHighest"
-                    app:trackColor="?attr/colorSurfaceContainerHighest"
-                    app:haloColor="@android:color/transparent"
-                    app:trackInsideCornerSize="4dp"
-                    app:trackHeight="4dp"
-                    app:thumbWidth="20dp"
-                    app:thumbHeight="20dp"
-                    app:thumbTrackGapSize="16dp"
-                    app:trackStopIndicatorSize="12dp"
-                    app:tickVisible="true"
-                    app:labelBehavior="floating"
-                    app:labelStyle="@style/Tooltip.Dark" />
-
-                <LinearLayout
-                    android:id="@+id/ll_dj_sleep_quality"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-8dp"
-                    android:layout_marginHorizontal="4dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent">
-
-                    <ImageView
-                        android:id="@+id/img_very_bad_quality"
-                        android:layout_width="wrap_content"
-                        android:layout_height="24dp"
-                        android:layout_gravity="top"
-                        android:layout_marginTop="4dp"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/alt_very_bad_quality"
-                        android:src="@drawable/ic_baseline_star_border_24"
-                        app:tint="?attr/primaryTextColor" />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="5"
-                        android:visibility="invisible"/>
-
-                    <ImageView
-                        android:id="@+id/img_bad_quality"
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:layout_gravity="top"
-                        android:layout_weight="10"
-                        android:contentDescription="@string/alt_bad_quality"
-                        android:src="@drawable/ic_baseline_star_half_24"
-                        app:tint="?attr/tertiaryTextColor" />
-
-                    <ImageView
-                        android:id="@+id/img_good_quality"
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:layout_gravity="top"
-                        android:layout_weight="10"
-                        android:contentDescription="@string/alt_good_quality"
-                        android:src="@drawable/ic_baseline_star_24"
-                        app:tint="?attr/tertiaryTextColor" />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="5"
-                        android:visibility="invisible"/>
-
-                    <ImageView
-                        android:id="@+id/img_very_good_quality"
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:layout_gravity="top"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/alt_very_good_quality"
-                        android:src="@drawable/ic_baseline_stars_24"
-                        app:tint="?attr/tertiaryTextColor" />
-                </LinearLayout>
-            </LinearLayout>
-
             <TextView
                 android:id="@+id/txt_rating_dream_clarity_heading"
                 android:layout_width="wrap_content"
@@ -359,7 +200,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ll_dream_rating_sleep_quality" />
+                app:layout_constraintTop_toBottomOf="@+id/is_sleep_quality" />
 
             <!--
             Help text:
@@ -378,103 +219,6 @@
 <!--                app:layout_constraintTop_toTopOf="@+id/txt_rating_dream_clarity_heading"-->
 <!--                app:rippleColor="?attr/colorOutlineVariant" />-->
 
-            <LinearLayout
-                android:id="@+id/ll_dream_rating_dream_clarity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_rating_dream_clarity_heading">
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/sld_dj_dream_clarity"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-4dp"
-                    android:stepSize="1"
-                    android:valueTo="3"
-                    app:trackColorActive="?attr/colorSurfaceContainerHighest"
-                    app:tickColor="?attr/colorSurfaceContainerHighest"
-                    app:trackColor="?attr/colorSurfaceContainerHighest"
-                    app:haloColor="@android:color/transparent"
-                    app:trackInsideCornerSize="4dp"
-                    app:trackHeight="4dp"
-                    app:thumbWidth="20dp"
-                    app:thumbHeight="20dp"
-                    app:thumbTrackGapSize="16dp"
-                    app:trackStopIndicatorSize="12dp"
-                    app:tickVisible="true"
-                    app:labelBehavior="floating"
-                    app:labelStyle="@style/Tooltip.Dark" />
-
-                <LinearLayout
-                    android:id="@+id/ll_dj_dream_clarity"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-8dp"
-                    android:layout_marginHorizontal="4dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/sld_clarity">
-
-                    <ImageView
-                        android:id="@+id/img_very_unclear"
-                        android:layout_width="wrap_content"
-                        android:layout_height="24dp"
-                        android:layout_gravity="top"
-                        android:layout_marginTop="4dp"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/alt_very_unclear"
-                        android:src="@drawable/ic_baseline_brightness_4_24"
-                        app:tint="?attr/primaryTextColor" />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="5"
-                        android:visibility="invisible"/>
-
-                    <ImageView
-                        android:id="@+id/img_unclear"
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:layout_gravity="top"
-                        android:layout_weight="10"
-                        android:contentDescription="@string/alt_unclear"
-                        android:src="@drawable/ic_baseline_brightness_5_24"
-                        app:tint="?attr/tertiaryTextColor" />
-
-                    <ImageView
-                        android:id="@+id/img_clear"
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:layout_gravity="top"
-                        android:layout_weight="10"
-                        android:contentDescription="@string/alt_clear"
-                        android:src="@drawable/ic_baseline_brightness_6_24"
-                        app:tint="?attr/tertiaryTextColor" />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="5"
-                        android:visibility="invisible"/>
-
-                    <ImageView
-                        android:id="@+id/img_very_clear"
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:layout_gravity="top"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/alt_very_clear"
-                        android:src="@drawable/ic_baseline_brightness_7_24"
-                        app:tint="?attr/tertiaryTextColor" />
-                </LinearLayout>
-            </LinearLayout>
-
             <TextView
                 android:id="@+id/txt_rating_special_dream_heading"
                 android:layout_width="wrap_content"
@@ -486,7 +230,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ll_dream_rating_dream_clarity" />
+                app:layout_constraintTop_toBottomOf="@+id/is_dream_clarity" />
 
             <!--
             Help text:

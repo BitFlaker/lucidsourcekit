@@ -27,13 +27,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.security.InvalidParameterException
 
 class DreamJournalEditorRatingView(val entry: DreamJournalEntry) : Fragment() {
-    private val dreamMoodLabels = arrayOf("Terrible", "Poor", "Okay", "Great", "Outstanding")
-    private val sleepQualityLabels = arrayOf("Terrible", "Poor", "Great", "Outstanding")
-    private val dreamClarityLabels = arrayOf("Very Cloudy", "Cloudy", "Clear", "Crystal Clear")
     private lateinit var binding: FragmentJournalEditorRatingBinding
-    private lateinit var dreamMoods: Array<ImageView>
-    private lateinit var sleepQualities: Array<ImageView>
-    private lateinit var dreamClarities: Array<ImageView>
     private lateinit var unselectedIconColor: ColorStateList
     private lateinit var selectedIconColor: ColorStateList
     var onBackButtonListener: (() -> Unit)? = null
@@ -51,28 +45,27 @@ class DreamJournalEditorRatingView(val entry: DreamJournalEntry) : Fragment() {
         unselectedIconColor = context.attrColorStateList(R.attr.colorSurfaceContainerHigh)
         selectedIconColor = context.attrColorStateList(R.attr.colorOnSurface)
 
-        // Initialize indicator image arrays
-        dreamMoods = arrayOf(
-            binding.imgVeryDissatisfied,
-            binding.imgDissatisfied,
-            binding.imgNeutralSatisfied,
-            binding.imgSatisfied,
-            binding.imgVerySatisfied
-        )
-        sleepQualities = arrayOf(
-            binding.imgVeryBadQuality,
-            binding.imgBadQuality,
-            binding.imgGoodQuality,
-            binding.imgVeryGoodQuality
-        )
-        dreamClarities = arrayOf(
-            binding.imgVeryUnclear,
-            binding.imgUnclear,
-            binding.imgClear,
-            binding.imgVeryClear
+        binding.isDreamMood.setItems(
+            R.drawable.ic_baseline_sentiment_very_dissatisfied_24 to "Terrible",
+            R.drawable.ic_baseline_sentiment_dissatisfied_24 to "Poor",
+            R.drawable.ic_baseline_sentiment_neutral_24 to "Okay",
+            R.drawable.ic_baseline_sentiment_satisfied_24 to "Great",
+            R.drawable.ic_baseline_sentiment_very_satisfied_24 to "Outstanding",
         )
 
-        restoreStoredEntry()
+        binding.isSleepQuality.setItems(
+            R.drawable.ic_baseline_star_border_24 to "Terrible",
+            R.drawable.ic_baseline_star_half_24 to "Poor",
+            R.drawable.ic_baseline_star_24 to "Great",
+            R.drawable.ic_baseline_stars_24 to "Outstanding",
+        )
+
+        binding.isDreamClarity.setItems(
+            R.drawable.ic_baseline_brightness_4_24 to "Very Cloudy",
+            R.drawable.ic_baseline_brightness_5_24 to "Cloudy",
+            R.drawable.ic_baseline_brightness_6_24 to "Clear",
+            R.drawable.ic_baseline_brightness_7_24 to "Crystal Clear",
+        )
 
         // Set handlers for toggling special dream types
         binding.tglDjNightmare.setOnClickListener { e ->
@@ -91,24 +84,10 @@ class DreamJournalEditorRatingView(val entry: DreamJournalEntry) : Fragment() {
             toggleSpecialDreamType(e as ToggleButton, DreamTypes.FalseAwakening.id)
         }
 
-        // Set label formatter values
-        binding.sldDjDreamMood.setLabelFormatter { value -> dreamMoodLabels[value.toInt()] }
-        binding.sldDjSleepQuality.setLabelFormatter { value -> sleepQualityLabels[value.toInt()] }
-        binding.sldDjDreamClarity.setLabelFormatter { value -> dreamClarityLabels[value.toInt()] }
-
         // Set handlers for slider value changes
-        binding.sldDjDreamMood.addOnChangeListener { _, value, fromUser ->
-            handleIconSlider(value.toInt(), dreamMoods)
-            entry.journalEntry.moodId = DreamMoods.entries[value.toInt()].id
-        }
-        binding.sldDjSleepQuality.addOnChangeListener { _, value, fromUser ->
-            handleIconSlider(value.toInt(), sleepQualities)
-            entry.journalEntry.qualityId = SleepQuality.entries[value.toInt()].id
-        }
-        binding.sldDjDreamClarity.addOnChangeListener { _, value, fromUser ->
-            handleIconSlider(value.toInt(), dreamClarities)
-            entry.journalEntry.clarityId = DreamClarity.entries[value.toInt()].id
-        }
+        binding.isDreamMood.onValueChange = { entry.journalEntry.moodId = DreamMoods.entries[it].id }
+        binding.isSleepQuality.onValueChange = { entry.journalEntry.qualityId = SleepQuality.entries[it].id }
+        binding.isDreamClarity.onValueChange = { entry.journalEntry.clarityId = DreamClarity.entries[it].id }
 
         // Set handler for closing editor
         binding.btnDjCloseEditor.setOnClickListener {
@@ -134,6 +113,8 @@ class DreamJournalEditorRatingView(val entry: DreamJournalEntry) : Fragment() {
             }
             onDoneButtonListener?.invoke()
         }
+
+        restoreStoredEntry()
     }
 
     private fun toggleSpecialDreamType(button: ToggleButton, dreamType: String) {
@@ -144,31 +125,11 @@ class DreamJournalEditorRatingView(val entry: DreamJournalEntry) : Fragment() {
         }
     }
 
-    private fun handleIconSlider(value: Int, icons: Array<ImageView>) {
-        if (value >= icons.size) {
-            throw InvalidParameterException("Value exceeded icon count")
-        }
-
-        // Update the selected state of all icons
-        for (i in icons.indices) {
-            val isSelected = i == value
-            icons[i].setImageTintList(if (isSelected) selectedIconColor else unselectedIconColor)
-            icons[i].updateLayoutParams<LinearLayout.LayoutParams> {
-                topMargin = if (isSelected) 4.dpToPx else 0
-                height = if (isSelected) 20.dpToPx else 16.dpToPx
-            }
-            icons[i].invalidate()
-        }
-    }
-
     private fun restoreStoredEntry() {
         // Restore slider states and values
-        binding.sldDjDreamMood.value = DreamMoods.getEnum(entry.journalEntry.moodId)?.ordinal?.toFloat() ?: 0.0f
-        handleIconSlider(binding.sldDjDreamMood.value.toInt(), dreamMoods)
-        binding.sldDjDreamClarity.value = DreamClarity.getEnum(entry.journalEntry.clarityId)?.ordinal?.toFloat() ?: 0.0f
-        handleIconSlider(binding.sldDjDreamClarity.value.toInt(), dreamClarities)
-        binding.sldDjSleepQuality.value = SleepQuality.getEnum(entry.journalEntry.qualityId)?.ordinal?.toFloat() ?: 0.0f
-        handleIconSlider(binding.sldDjSleepQuality.value.toInt(), sleepQualities)
+        binding.isDreamMood.value = DreamMoods.getEnum(entry.journalEntry.moodId)?.ordinal ?: 0
+        binding.isDreamClarity.value = DreamClarity.getEnum(entry.journalEntry.clarityId)?.ordinal ?: 0
+        binding.isSleepQuality.value = SleepQuality.getEnum(entry.journalEntry.qualityId)?.ordinal ?: 0
 
         // Restore toggle button states
         binding.tglDjNightmare.setChecked(entry.hasSpecialType(DreamTypes.Nightmare.id))
