@@ -12,7 +12,7 @@ Please do not add new dependencies to the project. Instead, open an issue clarif
 ## PRs
 PRs should be kept relatively small (e.g. fixes, small individual features) to make reviewing them easier and getting them merged faster.
 Before implementing large features, first open an issue where the feature can be discussed.
-Please test your code before making a PR and make sure the PR is up-to-date with the `master` branch.
+Please test your code before making a PR and make sure the PR is up-to-date with the `main` branch.
 
 ## Programming language
 This project is primarily written in Kotlin.
